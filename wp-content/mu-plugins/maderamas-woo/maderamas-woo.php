@@ -19,11 +19,11 @@ defined( 'ABSPATH' ) || exit;
  *
  * @return void
  */
-function mdr_woo_bootstrap() {
+function maderamas_woo_bootstrap() {
 	if ( ! class_exists( 'WooCommerce' ) ) {
 		return;
 	}
 
 	// Хуки магазина добавляются здесь по мере реализации Фаз 2 и 4.
 }
-add_action( 'plugins_loaded', 'mdr_woo_bootstrap' );
+add_action( 'plugins_loaded', 'maderamas_woo_bootstrap' );

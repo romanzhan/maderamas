@@ -14,7 +14,7 @@ jobs:
     name: PHP — WordPress Coding Standards
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Настроить PHP
         uses: shivammathur/setup-php@v2
@@ -22,13 +22,6 @@ jobs:
           php-version: '8.3'
           tools: composer
           coverage: none
-
-      - name: Кэш зависимостей Composer
-        uses: actions/cache@v4
-        with:
-          path: vendor
-          key: composer-${{ hashFiles('composer.json') }}
-          restore-keys: composer-
 
       - name: Установить зависимости
         run: composer install --prefer-dist --no-progress --no-interaction
@@ -43,10 +36,10 @@ jobs:
     name: JS, SCSS и сборка
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Настроить Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version-file: .nvmrc
           cache: npm

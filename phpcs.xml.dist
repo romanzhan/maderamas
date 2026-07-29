@@ -31,11 +31,14 @@
 		</properties>
 	</rule>
 
-	<!-- Все глобальные функции, классы и константы префиксуем. -->
+	<!--
+		Все глобальные функции, классы и константы префиксуем.
+		Стандарт требует префикс не короче четырёх символов, поэтому используем
+		полное `maderamas` — сокращения вроде `mdr` он отклоняет как неуникальные.
+	-->
 	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
 		<properties>
 			<property name="prefixes" type="array">
-				<element value="mdr"/>
 				<element value="maderamas"/>
 			</property>
 		</properties>

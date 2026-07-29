@@ -14,8 +14,8 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Модули в порядке загрузки.
  *
- * core → i18n → woo: язык должен быть определён до того, как WooCommerce
- * начнёт формировать строки и письма.
+ * Порядок важен: язык должен быть определён до того, как WooCommerce начнёт
+ * формировать строки и письма, поэтому i18n идёт раньше woo.
  */
 $maderamas_modules = array(
 	'maderamas-core/maderamas-core.php',
