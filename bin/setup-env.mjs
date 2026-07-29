@@ -10,6 +10,25 @@
  */
 
 import { spawnSync } from 'node:child_process';
+import { existsSync } from 'node:fs';
+import path from 'node:path';
+import process from 'node:process';
+
+/**
+ * Точка входа wp-env.
+ *
+ * Вызываем её напрямую через node, а не через npx с shell: true. На Windows
+ * оболочка съедает двойные кавычки в аргументах, из-за чего JSON вида
+ * {"skipped":true} доезжает до WP-CLI как {skipped:true} и тот его отвергает.
+ */
+const WP_ENV_BIN = path.resolve( 'node_modules/@wordpress/env/bin/wp-env' );
+
+if ( ! existsSync( WP_ENV_BIN ) ) {
+	process.stderr.write(
+		'Не найден @wordpress/env. Выполни "npm install" и повтори.\n'
+	);
+	process.exit( 1 );
+}
 
 const steps = [
 	{
@@ -18,7 +37,7 @@ const steps = [
 		allowFailure: true, // Уже установлена — не повод падать.
 	},
 	{
-		title: 'Часовой пояс и формат даты',
+		title: 'Часовой пояс',
 		args: [ 'option', 'update', 'timezone_string', 'America/Argentina/Buenos_Aires' ],
 	},
 	{
@@ -51,8 +70,13 @@ const steps = [
 	},
 	{
 		title: 'Пропустить мастер первичной настройки WooCommerce',
-		args: [ 'option', 'update', 'woocommerce_onboarding_profile', '{"skipped":true}', '--format=json' ],
-		allowFailure: true,
+		args: [
+			'option',
+			'update',
+			'woocommerce_onboarding_profile',
+			'{"skipped":true}',
+			'--format=json',
+		],
 	},
 ];
 
@@ -62,14 +86,14 @@ for ( const step of steps ) {
 	process.stdout.write( `→ ${ step.title }\n` );
 
 	const result = spawnSync(
-		'npx',
-		[ 'wp-env', 'run', '--quiet', 'cli', 'wp', ...step.args ],
-		{ stdio: 'inherit', shell: process.platform === 'win32' }
+		process.execPath,
+		[ WP_ENV_BIN, 'run', 'cli', '--', 'wp', ...step.args ],
+		{ stdio: 'inherit' }
 	);
 
-	if ( result.status !== 0 ) {
+	if ( 0 !== result.status ) {
 		if ( step.allowFailure ) {
-			process.stdout.write( `  пропущено (шаг необязательный)\n` );
+			process.stdout.write( '  пропущено (шаг необязательный)\n' );
 			continue;
 		}
 		process.stderr.write( `  ОШИБКА на шаге: ${ step.title }\n` );
@@ -84,4 +108,6 @@ if ( failed > 0 ) {
 	process.exit( 1 );
 }
 
-process.stdout.write( '\nЛокальная среда готова: http://localhost:8888 (админка: admin / password)\n' );
+process.stdout.write(
+	'\nЛокальная среда готова: http://localhost:8888 (админка: admin / password)\n'
+);
