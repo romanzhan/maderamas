@@ -8,7 +8,7 @@
  * При дублировании постов склад разъезжается по языкам — это главный источник
  * ошибок в мультиязычных магазинах.
  *
- * Полная реализация — Фаза 3. Здесь только каркас: определение языка и константы,
+ * Полная реализация — Фаза 3. Здесь только каркас: реестр языков и точка входа,
  * на которые опираются остальные модули.
  *
  * @package Maderamas
@@ -16,67 +16,17 @@
 
 defined( 'ABSPATH' ) || exit;
 
+require_once __DIR__ . '/class-maderamas-lang.php';
+
 /**
- * Реестр языков сайта и определение текущего языка.
+ * Инициализация слоя перевода.
+ *
+ * В Фазе 3 здесь появятся: rewrite-правила для языковых префиксов, фильтр locale,
+ * подмена контента, метабокс переводов и вывод hreflang.
+ *
+ * @return void
  */
-final class Mdr_Lang {
-
-	/**
-	 * Язык по умолчанию. Отдаётся без префикса в URL.
-	 *
-	 * @var string
-	 */
-	const DEFAULT_LANG = 'es';
-
-	/**
-	 * Поддерживаемые языки: код языка => локаль WordPress.
-	 *
-	 * Добавление 'pt' и 'ru' сводится к правке этого массива плюс переводы контента.
-	 *
-	 * @var array<string, string>
-	 */
-	const LANGUAGES = array(
-		'es' => 'es_AR',
-		'en' => 'en_US',
-	);
-
-	/**
-	 * Текущий язык запроса. Null — ещё не определён.
-	 *
-	 * @var string|null
-	 */
-	private static $current = null;
-
-	/**
-	 * Возвращает код текущего языка.
-	 *
-	 * @return string
-	 */
-	public static function current() {
-		if ( null === self::$current ) {
-			self::$current = self::DEFAULT_LANG;
-		}
-
-		return self::$current;
-	}
-
-	/**
-	 * Текущий язык отличается от языка по умолчанию.
-	 *
-	 * @return bool
-	 */
-	public static function is_translated() {
-		return self::DEFAULT_LANG !== self::current();
-	}
-
-	/**
-	 * Имя мета-ключа, в котором хранится перевод поля.
-	 *
-	 * @param string $field Имя поля: title, content, excerpt, slug.
-	 * @param string $lang  Код языка.
-	 * @return string
-	 */
-	public static function meta_key( $field, $lang ) {
-		return sprintf( '_mdr_i18n_%1$s_%2$s', $lang, $field );
-	}
+function maderamas_i18n_bootstrap() {
+	// Хуки добавляются в Фазе 3.
 }
+add_action( 'init', 'maderamas_i18n_bootstrap', 0 );
