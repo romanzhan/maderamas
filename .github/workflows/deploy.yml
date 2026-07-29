@@ -1,28 +1,64 @@
 name: Deploy
 
-# Деплой выключен, пока в настройках репозитория не задана переменная
-# DEPLOY_ENABLED=true (Settings → Secrets and variables → Actions → Variables).
-# Так workflow можно спокойно держать в main до выбора хостинга.
+# Два окружения:
+#   staging    — выкатывается автоматически на каждый push в main
+#   production — только вручную, через "Run workflow", и с подтверждением
 #
-# Подробности и список необходимых секретов — в docs/deploy.md.
+# Мастер-выключатель: переменная репозитория DEPLOY_ENABLED=true.
+# Пока её нет, ни один деплой не срабатывает.
+#
+# Хосты, пользователи и ключи задаются отдельно для каждого окружения
+# в Settings → Environments. Подробности — в docs/deploy.md.
 
 on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      environment:
+        description: Куда выкатывать
+        type: choice
+        options:
+          - staging
+          - production
+        default: staging
 
 concurrency:
-  group: deploy-production
+  group: deploy-${{ inputs.environment || 'staging' }}
   cancel-in-progress: false
 
 jobs:
   deploy:
-    name: Выкатить на прод
+    name: Выкатить на ${{ inputs.environment || 'staging' }}
     if: vars.DEPLOY_ENABLED == 'true'
     runs-on: ubuntu-latest
-    environment: production
+    environment: ${{ inputs.environment || 'staging' }}
+
     steps:
       - uses: actions/checkout@v5
+
+      - name: Проверить, что окружение настроено
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+        run: |
+          missing=""
+          for name in DEPLOY_HOST DEPLOY_USER DEPLOY_PATH DEPLOY_SSH_KEY; do
+            eval "value=\$$name"
+            if [ -z "$value" ]; then
+              missing="$missing $name"
+            fi
+          done
+          if [ -n "$missing" ]; then
+            echo "::error::Не заданы секреты окружения:$missing. См. docs/deploy.md"
+            exit 1
+          fi
+          case "$DEPLOY_PATH" in
+            */wp-content) ;;
+            *) echo "::error::DEPLOY_PATH должен указывать на каталог wp-content, получено: $DEPLOY_PATH"; exit 1 ;;
+          esac
 
       - name: Настроить Node
         uses: actions/setup-node@v5
@@ -36,29 +72,49 @@ jobs:
       - name: Собрать ассеты темы
         run: npm run build
 
+      - name: Проверить, что сборка не пустая
+        run: |
+          test -f wp-content/themes/maderamas/build/style-index.css
+          test -f wp-content/themes/maderamas/build/index.js
+
       - name: Подготовить SSH
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_PORT: ${{ vars.DEPLOY_PORT || 22 }}
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_deploy
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/id_deploy
           chmod 600 ~/.ssh/id_deploy
-          ssh-keyscan -p "${{ vars.DEPLOY_PORT || 22 }}" -H "${{ secrets.DEPLOY_HOST }}" >> ~/.ssh/known_hosts
+          ssh-keyscan -p "$DEPLOY_PORT" -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts 2>/dev/null
 
       # Копируем ТОЛЬКО наш код. База данных, uploads, ядро WordPress
       # и сторонние плагины не трогаются никогда — см. docs/deploy.md.
-      - name: Выкатить тему
+      #
+      # --delete допустим, потому что оба каталога принадлежат только нам.
+      # На managed-хостингах, которые подкладывают в mu-plugins свои файлы,
+      # это правило надо пересмотреть.
+      - name: Выкатить тему и mu-plugins
+        env:
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+          DEPLOY_PORT: ${{ vars.DEPLOY_PORT || 22 }}
         run: |
-          rsync -az --delete \
-            -e "ssh -i ~/.ssh/id_deploy -p ${{ vars.DEPLOY_PORT || 22 }}" \
-            wp-content/themes/maderamas/ \
-            "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:${{ secrets.DEPLOY_PATH }}/themes/maderamas/"
-
-      - name: Выкатить mu-plugins
-        run: |
-          rsync -az --delete \
-            -e "ssh -i ~/.ssh/id_deploy -p ${{ vars.DEPLOY_PORT || 22 }}" \
-            wp-content/mu-plugins/ \
-            "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:${{ secrets.DEPLOY_PATH }}/mu-plugins/"
+          SSH="ssh -i ~/.ssh/id_deploy -p $DEPLOY_PORT -o StrictHostKeyChecking=yes"
+          for dir in themes/maderamas mu-plugins; do
+            echo "→ $dir"
+            rsync -az --delete --omit-dir-times --no-perms \
+              -e "$SSH" \
+              "wp-content/$dir/" \
+              "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/$dir/"
+          done
 
       - name: Убрать ключ
         if: always()
         run: rm -f ~/.ssh/id_deploy
+
+      - name: Итог
+        run: |
+          echo "### Выкачено на ${{ inputs.environment || 'staging' }}" >> $GITHUB_STEP_SUMMARY
+          echo "Коммит: \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY

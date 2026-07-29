@@ -49,6 +49,28 @@ function maderamas_core_disable_emojis() {
 add_action( 'init', 'maderamas_core_disable_emojis' );
 
 /**
+ * Запрещает индексацию на всех окружениях, кроме продакшна.
+ *
+ * Пока идёт разработка, на домене живёт старый магазин на Tiendanube.
+ * Если тестовый стенд попадёт в индекс, поисковик увидит две копии одного
+ * каталога и склеит их — с непредсказуемым выбором главной версии.
+ *
+ * Значение берём из WP_ENVIRONMENT_TYPE в wp-config, а не из настроек в базе:
+ * так признак привязан к окружению и не может быть случайно переключён
+ * из админки или затёрт переносом базы с прода.
+ *
+ * @return void
+ */
+function maderamas_core_block_indexing_outside_production() {
+	if ( 'production' === wp_get_environment_type() ) {
+		return;
+	}
+
+	add_filter( 'pre_option_blog_public', '__return_zero' );
+}
+add_action( 'plugins_loaded', 'maderamas_core_block_indexing_outside_production' );
+
+/**
  * Отключает XML-RPC.
  *
  * Магазину он не нужен, а брутфорс по нему — типовая атака на WordPress.
