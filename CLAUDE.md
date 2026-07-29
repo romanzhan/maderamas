@@ -42,6 +42,15 @@ WordPress загружает из `mu-plugins` только файлы в кор
 Язык по умолчанию `es` идёт без префикса в URL, остальные — с префиксом (`/en/…`).
 Реестр языков — константа `Maderamas_Lang::LANGUAGES`.
 
+## Известная особенность зависимостей
+
+В `package.json` есть `overrides: { "typescript": "^5.3.3" }`. Он нужен, потому что
+`@wordpress/scripts` тянет `@typescript-eslint` 6.x, который читает внутренние API
+TypeScript и ломается на TypeScript 7 с ошибкой `Cannot read properties of undefined
+(reading 'Intrinsic')`. Сам TypeScript в проекте не используется. Убирать этот
+override можно только после того, как `@wordpress/scripts` перейдёт
+на `@typescript-eslint` 8.x.
+
 ## Чего делать не надо
 
 - Не добавлять page builder'ы (Elementor и подобные) — вёрстка должна оставаться в git.
