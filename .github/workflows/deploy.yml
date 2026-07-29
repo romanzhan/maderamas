@@ -1,0 +1,64 @@
+name: Deploy
+
+# Деплой выключен, пока в настройках репозитория не задана переменная
+# DEPLOY_ENABLED=true (Settings → Secrets and variables → Actions → Variables).
+# Так workflow можно спокойно держать в main до выбора хостинга.
+#
+# Подробности и список необходимых секретов — в docs/deploy.md.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Выкатить на прод
+    if: vars.DEPLOY_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Настроить Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Установить зависимости
+        run: npm ci
+
+      - name: Собрать ассеты темы
+        run: npm run build
+
+      - name: Подготовить SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_deploy
+          chmod 600 ~/.ssh/id_deploy
+          ssh-keyscan -p "${{ vars.DEPLOY_PORT || 22 }}" -H "${{ secrets.DEPLOY_HOST }}" >> ~/.ssh/known_hosts
+
+      # Копируем ТОЛЬКО наш код. База данных, uploads, ядро WordPress
+      # и сторонние плагины не трогаются никогда — см. docs/deploy.md.
+      - name: Выкатить тему
+        run: |
+          rsync -az --delete \
+            -e "ssh -i ~/.ssh/id_deploy -p ${{ vars.DEPLOY_PORT || 22 }}" \
+            wp-content/themes/maderamas/ \
+            "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:${{ secrets.DEPLOY_PATH }}/themes/maderamas/"
+
+      - name: Выкатить mu-plugins
+        run: |
+          rsync -az --delete \
+            -e "ssh -i ~/.ssh/id_deploy -p ${{ vars.DEPLOY_PORT || 22 }}" \
+            wp-content/mu-plugins/ \
+            "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:${{ secrets.DEPLOY_PATH }}/mu-plugins/"
+
+      - name: Убрать ключ
+        if: always()
+        run: rm -f ~/.ssh/id_deploy

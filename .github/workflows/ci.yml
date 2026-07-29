@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  php:
+    name: PHP — WordPress Coding Standards
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Настроить PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: composer
+          coverage: none
+
+      - name: Кэш зависимостей Composer
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: composer-${{ hashFiles('composer.json') }}
+          restore-keys: composer-
+
+      - name: Установить зависимости
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Проверить синтаксис PHP
+        run: find wp-content -name '*.php' -not -path '*/node_modules/*' -print0 | xargs -0 -n1 php -l
+
+      - name: PHPCS
+        run: composer run lint
+
+  assets:
+    name: JS, SCSS и сборка
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Настроить Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Установить зависимости
+        run: npm ci
+
+      - name: Линтер JS
+        run: npm run lint:js
+
+      - name: Линтер стилей
+        run: npm run lint:css
+
+      - name: Сборка ассетов
+        run: npm run build

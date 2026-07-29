@@ -1,0 +1,19 @@
+/*
+Theme Name: Maderamas
+Theme URI: https://maderamas.com.ar
+Author: Maderamas
+Description: Блочная (FSE) тема интернет-магазина детской мебели maderamas.com.ar. Весь дизайн описан в theme.json.
+Version: 0.1.0
+Requires at least: 6.7
+Tested up to: 7.0
+Requires PHP: 8.2
+License: GPL-2.0-or-later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: maderamas
+Tags: e-commerce, full-site-editing, block-patterns, custom-colors, translation-ready
+*/
+
+/*
+ * Внимание: правила оформления живут в theme.json и в src/scss/.
+ * Этот файл нужен WordPress только ради заголовка темы — не наполняем его стилями.
+ */

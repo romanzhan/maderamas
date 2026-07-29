@@ -1,0 +1,135 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/theme.json",
+	"version": 3,
+	"settings": {
+		"appearanceTools": true,
+		"useRootPaddingAwareAlignments": true,
+		"layout": {
+			"contentSize": "720px",
+			"wideSize": "1240px"
+		},
+		"color": {
+			"defaultPalette": false,
+			"defaultGradients": false,
+			"defaultDuotone": false,
+			"custom": false,
+			"palette": [
+				{ "slug": "base", "color": "#FDFBF7", "name": "Base" },
+				{ "slug": "base-2", "color": "#F4EDE2", "name": "Arena" },
+				{ "slug": "contrast", "color": "#2E2822", "name": "Contraste" },
+				{ "slug": "contrast-2", "color": "#6B6154", "name": "Contraste suave" },
+				{ "slug": "primary", "color": "#B0713F", "name": "Madera" },
+				{ "slug": "primary-dark", "color": "#8A552D", "name": "Madera oscura" },
+				{ "slug": "accent", "color": "#5F7F5C", "name": "Verde" },
+				{ "slug": "accent-2", "color": "#7FA8C9", "name": "Cielo" },
+				{ "slug": "highlight", "color": "#E0785E", "name": "Coral" }
+			]
+		},
+		"typography": {
+			"defaultFontSizes": false,
+			"fluid": true,
+			"fontFamilies": [
+				{
+					"slug": "body",
+					"name": "Texto",
+					"fontFamily": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
+				},
+				{
+					"slug": "display",
+					"name": "Títulos",
+					"fontFamily": "Georgia, 'Iowan Old Style', 'Times New Roman', serif"
+				}
+			],
+			"fontSizes": [
+				{ "slug": "small", "name": "S", "size": "0.875rem", "fluid": false },
+				{ "slug": "medium", "name": "M", "size": "1rem", "fluid": false },
+				{ "slug": "large", "name": "L", "size": "1.25rem", "fluid": { "min": "1.125rem", "max": "1.375rem" } },
+				{ "slug": "x-large", "name": "XL", "size": "1.75rem", "fluid": { "min": "1.5rem", "max": "2rem" } },
+				{ "slug": "xx-large", "name": "2XL", "size": "2.5rem", "fluid": { "min": "2rem", "max": "3rem" } },
+				{ "slug": "xxx-large", "name": "3XL", "size": "3.5rem", "fluid": { "min": "2.5rem", "max": "4.25rem" } }
+			]
+		},
+		"spacing": {
+			"defaultSpacingSizes": false,
+			"units": [ "px", "em", "rem", "vh", "vw", "%" ],
+			"spacingSizes": [
+				{ "slug": "10", "name": "1", "size": "0.5rem" },
+				{ "slug": "20", "name": "2", "size": "1rem" },
+				{ "slug": "30", "name": "3", "size": "1.5rem" },
+				{ "slug": "40", "name": "4", "size": "2.5rem" },
+				{ "slug": "50", "name": "5", "size": "4rem" },
+				{ "slug": "60", "name": "6", "size": "6rem" }
+			]
+		},
+		"border": {
+			"color": true,
+			"radius": true,
+			"style": true,
+			"width": true
+		},
+		"shadow": {
+			"defaultPresets": false,
+			"presets": [
+				{ "slug": "soft", "name": "Suave", "shadow": "0 2px 8px rgba(46, 40, 34, 0.08)" },
+				{ "slug": "lifted", "name": "Elevada", "shadow": "0 12px 32px rgba(46, 40, 34, 0.12)" }
+			]
+		}
+	},
+	"styles": {
+		"color": {
+			"background": "var(--wp--preset--color--base)",
+			"text": "var(--wp--preset--color--contrast)"
+		},
+		"typography": {
+			"fontFamily": "var(--wp--preset--font-family--body)",
+			"fontSize": "var(--wp--preset--font-size--medium)",
+			"lineHeight": "1.6"
+		},
+		"spacing": {
+			"blockGap": "var(--wp--preset--spacing--30)",
+			"padding": {
+				"left": "var(--wp--preset--spacing--30)",
+				"right": "var(--wp--preset--spacing--30)"
+			}
+		},
+		"elements": {
+			"heading": {
+				"typography": {
+					"fontFamily": "var(--wp--preset--font-family--display)",
+					"fontWeight": "600",
+					"lineHeight": "1.15"
+				}
+			},
+			"h1": { "typography": { "fontSize": "var(--wp--preset--font-size--xxx-large)" } },
+			"h2": { "typography": { "fontSize": "var(--wp--preset--font-size--xx-large)" } },
+			"h3": { "typography": { "fontSize": "var(--wp--preset--font-size--x-large)" } },
+			"link": {
+				"color": { "text": "var(--wp--preset--color--primary-dark)" },
+				"typography": { "textDecoration": "underline" },
+				":hover": { "color": { "text": "var(--wp--preset--color--contrast)" } }
+			},
+			"button": {
+				"color": {
+					"background": "var(--wp--preset--color--primary)",
+					"text": "var(--wp--preset--color--base)"
+				},
+				"border": { "radius": "999px" },
+				"spacing": {
+					"padding": {
+						"top": "0.75rem",
+						"bottom": "0.75rem",
+						"left": "1.75rem",
+						"right": "1.75rem"
+					}
+				},
+				"typography": { "fontWeight": "600", "textDecoration": "none" },
+				":hover": { "color": { "background": "var(--wp--preset--color--primary-dark)" } }
+			}
+		}
+	},
+	"templateParts": [
+		{ "name": "header", "title": "Encabezado", "area": "header" },
+		{ "name": "footer", "title": "Pie de página", "area": "footer" }
+	],
+	"customTemplates": []
+}

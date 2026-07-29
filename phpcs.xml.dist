@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<ruleset name="maderamas">
+	<description>Стандарты кода maderamas.com.ar (WordPress Coding Standards)</description>
+
+	<!-- Проверяем только наш код. -->
+	<file>wp-content/themes/maderamas</file>
+	<file>wp-content/mu-plugins</file>
+
+	<exclude-pattern>*/node_modules/*</exclude-pattern>
+	<exclude-pattern>*/vendor/*</exclude-pattern>
+	<exclude-pattern>*/build/*</exclude-pattern>
+
+	<arg name="extensions" value="php"/>
+	<arg name="colors"/>
+	<arg name="parallel" value="8"/>
+	<arg value="sp"/>
+
+	<!-- Минимальные поддерживаемые версии. -->
+	<config name="minimum_wp_version" value="6.7"/>
+	<config name="testVersion" value="8.2-"/>
+
+	<rule ref="WordPress"/>
+	<rule ref="PHPCompatibilityWP"/>
+
+	<!-- Единый текстовый домен: фундамент собственного слоя перевода. -->
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="maderamas"/>
+			</property>
+		</properties>
+	</rule>
+
+	<!-- Все глобальные функции, классы и константы префиксуем. -->
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<properties>
+			<property name="prefixes" type="array">
+				<element value="mdr"/>
+				<element value="maderamas"/>
+			</property>
+		</properties>
+	</rule>
+</ruleset>

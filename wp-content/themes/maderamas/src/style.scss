@@ -1,0 +1,29 @@
+/**
+ * Стили темы Maderamas.
+ *
+ * Правило проекта: цвета, размеры шрифтов и отступы берём ТОЛЬКО из CSS-переменных,
+ * которые WordPress генерирует из theme.json. Никаких хардкод-значений здесь —
+ * иначе дизайн-система разъезжается и правки в theme.json перестают работать.
+ *
+ * Пример: color: var(--wp--preset--color--primary);
+ */
+
+/* Плавная прокрутка по якорям, но с уважением к системной настройке. */
+@media (prefers-reduced-motion: no-preference) {
+	html {
+		scroll-behavior: smooth;
+	}
+}
+
+/* Изображения не должны разрывать сетку. */
+img,
+video {
+	max-width: 100%;
+	height: auto;
+}
+
+/* Видимый фокус для клавиатурной навигации — требование доступности. */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+	outline: 2px solid var(--wp--preset--color--primary-dark);
+	outline-offset: 2px;
+}

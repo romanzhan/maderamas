@@ -1,0 +1,58 @@
+# В репозитории живёт ТОЛЬКО наш код.
+# Ядро WordPress, сторонние плагины, загрузки и база данных сюда не попадают никогда.
+
+# --- Зависимости ---
+node_modules/
+/vendor/
+
+# --- Артефакты сборки (собираются в CI перед деплоем) ---
+wp-content/themes/maderamas/build/
+
+# --- Ядро WordPress ---
+/wp-admin/
+/wp-includes/
+/wp-*.php
+/index.php
+/license.txt
+/readme.html
+wp-config.php
+
+# --- wp-content: пускаем только свою тему и mu-plugins ---
+/wp-content/plugins/
+/wp-content/uploads/
+/wp-content/upgrade/
+/wp-content/cache/
+/wp-content/languages/
+/wp-content/index.php
+/wp-content/themes/*
+!/wp-content/themes/maderamas/
+
+# --- Секреты ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.ppk
+
+# --- Локальные оверрайды среды ---
+.wp-env.override.json
+
+# --- Дампы базы ---
+*.sql
+*.sql.gz
+*.sql.zip
+
+# --- Тесты ---
+/test-results/
+/playwright-report/
+/.phpunit.result.cache
+
+# --- ОС и редакторы ---
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
