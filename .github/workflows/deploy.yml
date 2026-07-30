@@ -108,14 +108,19 @@ jobs:
         run: |
           SSH="ssh -i ~/.ssh/id_deploy -p $DEPLOY_PORT -o StrictHostKeyChecking=yes"
 
+          # --old-args: раннер и managed-хостинги нередко разъезжаются по версии
+          # rsync. С 3.2.7 клиент по умолчанию шлёт аргументы новым протоколом
+          # (secluded-args), который более старый rsync на приёме не понимает
+          # и ломает путь на своей стороне — mkdir падает с ENOENT на будто бы
+          # существующем каталоге. Флаг возвращает старый формат аргументов.
           echo "→ themes/maderamas"
-          rsync -az --delete --omit-dir-times --no-perms \
+          rsync -az --old-args --delete --omit-dir-times --no-perms \
             -e "$SSH" \
             "wp-content/themes/maderamas/" \
             "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/themes/maderamas/"
 
           echo "→ mu-plugins"
-          rsync -az --delete --omit-dir-times --no-perms \
+          rsync -az --old-args --delete --omit-dir-times --no-perms \
             --include='maderamas*' --exclude='*' \
             -e "$SSH" \
             "wp-content/mu-plugins/" \
