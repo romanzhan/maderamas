@@ -97,9 +97,50 @@ Hostinger Premium (шаредхостинг), на технический дом
   Значения `DB_*`/`ADMIN_*` при этом можно передать любые непустые —
   скрипт их не использует, если конфиг уже есть, но требует, чтобы
   переменные были заданы.
-- **Basic Auth без nginx.** На Hostinger — Apache/LiteSpeed. Либо
-  hPanel → Advanced → Password Protect Directories, либо свой `.htaccess`
-  с исключением для `/wp-admin/admin-ajax.php`, как на VPS.
+- **Basic Auth без nginx.** На Hostinger — Apache/LiteSpeed. Настроено через
+  `.htaccess` + `.htpasswd`, не через hPanel. Рабочий рецепт (со всеми
+  граблями, на которые уже наступили):
+
+  ```apache
+  # .htpasswd — ВЫШЕ webroot, не в public_html:
+  # /home/<user>/domains/<домен>/.htpasswd
+  # право на чтение — 644, иначе LiteSpeed-воркер (другой пользователь,
+  # не владелец файла) не может его прочитать и вернёт 401 всем, включая
+  # правильный пароль. Хэш — openssl passwd -apr1.
+
+  # BEGIN Basic Auth
+  <FilesMatch "^(?!admin-ajax\.php$|wp-cron\.php$).*$">
+      AuthType Basic
+      AuthName "maderamas staging"
+      AuthUserFile /home/<user>/domains/<домен>/.htpasswd
+      Require valid-user
+  </FilesMatch>
+  # END Basic Auth
+  ```
+
+  Почему не `<Files admin-ajax.php><Require all granted></Files>` рядом
+  с общим `Require valid-user` — на практике (проверено на Hostinger)
+  `AuthMerging` сливает правила вместо переопределения, и исключение не
+  срабатывает. Один `FilesMatch` с отрицательным regex работает
+  надёжно независимо от режима слияния.
+
+  **CDN у Hostinger — отдельный слой.** У них перед origin стоит
+  собственный CDN (`Server: hcdn` в заголовках ответа) — он кэширует
+  HTML и отдаёт из edge, **в обход** Basic Auth на origin. Из-за этого:
+  - в `.htaccess` надо убрать `ExpiresDefault` из блока `mod_expires`
+    (Hostinger ставит его по умолчанию на "access plus 1 weeks" —
+    это кэширует вообще всё, включая HTML, что плохо и для магазина
+    само по себе);
+  - плагин `litespeed-cache` на время действия Basic Auth должен быть
+    **выключен** — он сам расставляет длинный `Cache-Control` на HTML,
+    и это повторяет ту же дыру даже без `ExpiresDefault`;
+  - если что-то уже успело закэшироваться ДО этих правок — придётся
+    вручную почистить: hPanel → Advanced → Cache Manager → Purge All.
+    По SSH/WP-CLI это не открывается никак — команды вроде
+    `wp litespeed-purge` чистят только плагин, не CDN.
+
+  Когда Basic Auth снимают (обычно только для боевого прода) —
+  `litespeed-cache` можно включить обратно, страница уже не секретная.
 
 ## Ключ для деплоя
 
