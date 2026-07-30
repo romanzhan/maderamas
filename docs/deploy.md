@@ -34,10 +34,12 @@
 
 ## Первичная настройка сервера
 
-Разово, до первого автодеплоя.
+Разово, до первого автодеплоя. Ниже — общий сценарий для VPS (пригодится
+для прода после переезда). Текущий staging живёт не на VPS, а на шаредхостинге
+Hostinger — см. следующий раздел.
 
 1. **VPS.** Ubuntu 24.04. Панель по вкусу — CloudPanel даёт nginx, PHP-FPM,
-   MariaDB и Let's Encrypt из коробки. Для staging локация не важна.
+   MariaDB и Let's Encrypt из коробки.
 2. **DNS.** В Route 53 добавить A-запись `dev.maderamas.com.ar` → IP сервера.
    Апекс и `www` не менять.
 3. **PHP 8.3**, MariaDB, база и пользователь под сайт.
@@ -49,7 +51,7 @@
    export SITE_URL=https://dev.maderamas.com.ar
    export ADMIN_USER=roman ADMIN_EMAIL=mr.romanzhan@gmail.com ADMIN_PASS='...'
    export ENV_TYPE=staging
-   bash bootstrap-server.sh /var/www/maderamas
+   bash bin/bootstrap-server.sh /var/www/maderamas
    ```
 
    Скрипт ставит ядро и плагины теми же версиями, что в `.wp-env.json`,
@@ -57,6 +59,44 @@
 6. **SSL** на поддомен, проверить автопродление.
 7. **Basic Auth** на весь сайт, кроме `/wp-admin/admin-ajax.php` (иначе
    отвалится часть функций админки).
+
+## Staging сейчас: Hostinger (шаредхостинг)
+
+Пока `dev.maderamas.com.ar` никуда не смотрит, staging временно живёт на
+Hostinger Premium (шаредхостинг), на технический домен вида
+`https://<случайное-имя>.hostingersite.com/`. Когда понадобится постоянный
+адрес — направить DNS `dev.maderamas.com.ar` на этот аккаунт и сменить
+`SITE_URL` через `wp option update siteurl/home`.
+
+Отличия от сценария с VPS:
+
+- **Root нет.** Все настройки — через hPanel или по SSH из-под пользователя
+  хостинга. `bin/bootstrap-server.sh` тут не запускают с нуля — WordPress
+  уже установлен мастером Hostinger.
+- **SSH.** Включается в hPanel → Advanced → SSH Access. Там же — хост, порт
+  (обычно не 22) и логин. WP-CLI на Hostinger уже стоит (`wp --info`).
+- **wp-config.php уже существует**, поэтому блок создания конфига в
+  `bin/bootstrap-server.sh` не сработает — `WP_ENVIRONMENT_TYPE`,
+  `DISALLOW_FILE_EDIT` и `DISALLOW_FILE_MODS` дописываются в него руками,
+  перед строкой `/* That's all, stop editing! */`:
+
+  ```php
+  define( 'WP_ENVIRONMENT_TYPE', 'staging' );
+  define( 'DISALLOW_FILE_EDIT', true );
+  define( 'DISALLOW_FILE_MODS', true );
+  ```
+
+  `WP_ENVIRONMENT_TYPE` обязателен — от него зависит запрет индексации
+  в `maderamas-core`.
+- После этого `bin/bootstrap-server.sh` можно запустить как есть (он
+  идемпотентен): блоки скачивания ядра и создания конфига пропустятся
+  сами, а плагины, аргентинские настройки и структура URL — накатятся.
+  Значения `DB_*`/`ADMIN_*` при этом можно передать любые непустые —
+  скрипт их не использует, если конфиг уже есть, но требует, чтобы
+  переменные были заданы.
+- **Basic Auth без nginx.** На Hostinger — Apache/LiteSpeed. Либо
+  hPanel → Advanced → Password Protect Directories, либо свой `.htaccess`
+  с исключением для `/wp-admin/admin-ajax.php`, как на VPS.
 
 ## Ключ для деплоя
 
@@ -97,7 +137,11 @@ ssh-keygen -t ed25519 -C 'github-deploy-maderamas' -f ~/.ssh/maderamas_deploy -N
    а не на середине rsync.
 2. `npm ci && npm run build` — сборка ассетов темы.
 3. Проверка, что сборка не пустая.
-4. `rsync` копирует `wp-content/themes/maderamas/` и `wp-content/mu-plugins/`.
+4. `rsync` копирует `wp-content/themes/maderamas/` целиком (каталог наш) и
+   `wp-content/mu-plugins/` — но точечно, только файлы и папки с префиксом
+   `maderamas*`. Managed-хостинги (Hostinger и подобные) кладут в
+   `mu-plugins` свои файлы (автообновления, preview-domain и т.п.) — их
+   деплой не трогает.
 
 После **первого** деплоя активировать тему:
 

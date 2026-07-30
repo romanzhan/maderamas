@@ -91,9 +91,14 @@ jobs:
       # Копируем ТОЛЬКО наш код. База данных, uploads, ядро WordPress
       # и сторонние плагины не трогаются никогда — см. docs/deploy.md.
       #
-      # --delete допустим, потому что оба каталога принадлежат только нам.
-      # На managed-хостингах, которые подкладывают в mu-plugins свои файлы,
-      # это правило надо пересмотреть.
+      # themes/maderamas принадлежит только нам — --delete синхронизирует
+      # каталог полностью.
+      #
+      # mu-plugins делим с хостингом: managed-хостинги (например, Hostinger)
+      # подкладывают туда свои файлы (автообновления, preview-domain и т.п.).
+      # Поэтому туда — --include='maderamas*' --exclude='*': синхронизируем
+      # и удаляем только то, что начинается с нашего префикса, всё чужое
+      # не трогаем вообще.
       - name: Выкатить тему и mu-plugins
         env:
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
@@ -102,13 +107,19 @@ jobs:
           DEPLOY_PORT: ${{ vars.DEPLOY_PORT || 22 }}
         run: |
           SSH="ssh -i ~/.ssh/id_deploy -p $DEPLOY_PORT -o StrictHostKeyChecking=yes"
-          for dir in themes/maderamas mu-plugins; do
-            echo "→ $dir"
-            rsync -az --delete --omit-dir-times --no-perms \
-              -e "$SSH" \
-              "wp-content/$dir/" \
-              "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/$dir/"
-          done
+
+          echo "→ themes/maderamas"
+          rsync -az --delete --omit-dir-times --no-perms \
+            -e "$SSH" \
+            "wp-content/themes/maderamas/" \
+            "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/themes/maderamas/"
+
+          echo "→ mu-plugins"
+          rsync -az --delete --omit-dir-times --no-perms \
+            --include='maderamas*' --exclude='*' \
+            -e "$SSH" \
+            "wp-content/mu-plugins/" \
+            "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/mu-plugins/"
 
       - name: Убрать ключ
         if: always()
