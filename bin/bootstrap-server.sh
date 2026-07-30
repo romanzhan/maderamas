@@ -91,6 +91,14 @@ wp language core install es_AR --activate 2>/dev/null || true
 wp option update timezone_string 'America/Argentina/Buenos_Aires'
 wp rewrite structure '/%postname%/' --hard
 
+# Админка — на русском, лично для админ-пользователя. Сайт (site_locale)
+# остаётся es_AR: язык интерфейса привязан к user_meta, а не к настройке
+# сайта, поэтому фронт для посетителей не меняется.
+echo '→ Язык админки (только для администратора)'
+wp language core install ru_RU 2>/dev/null || true
+wp language plugin install woocommerce ru_RU 2>/dev/null || true
+wp user meta update "$ADMIN_USER" locale ru_RU
+
 echo '→ Настройки WooCommerce'
 wp option update woocommerce_currency ARS
 wp option update woocommerce_default_country 'AR:C'
