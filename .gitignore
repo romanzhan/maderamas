@@ -33,6 +33,7 @@ wp-config.php
 !.env.example
 *.pem
 *.key
+*.key.pub
 *.ppk
 *.local.md
 
