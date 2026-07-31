@@ -34,6 +34,7 @@ wp-config.php
 *.pem
 *.key
 *.ppk
+*.local.md
 
 # --- Локальные оверрайды среды ---
 .wp-env.override.json
