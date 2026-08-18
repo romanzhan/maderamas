@@ -12,6 +12,123 @@
 @tailwind components;
 @tailwind utilities;
 
+/**
+ * Компоненты дизайн-системы.
+ *
+ * Единая точка стилизации кнопок/полей/карточек — вместо разрозненного
+ * Tailwind прямо в разметке. Каждый компонент явно описывает hover, focus-visible,
+ * active и disabled — браузерные стили по умолчанию нигде не остаются. Цвета,
+ * шрифты, тени и длительность переходов — только именованные токены из
+ * theme.json через tailwind.config.js (хардкод запрещён, см. CLAUDE.md →
+ * «Дизайн-токены»). Числа отступов/радиусов — стоковая шкала Tailwind:
+ * theme.json's spacingSizes/radius туда сознательно не прокинуты, чтобы не
+ * переопределить уже занятые классы (rounded-lg, p-10 и т.п. — см. комментарий
+ * в tailwind.config.js).
+ *
+ * Размер интерактивных элементов — от 44×44px (Apple HIG для тач-таргетов).
+ */
+@layer components {
+
+	/* Кнопки. */
+	.btn-primary,
+	.btn-outline,
+	.btn-ghost {
+
+		@apply inline-flex min-h-11 items-center justify-center gap-2 rounded-pill px-7 py-3 text-medium font-semibold transition-colors duration-base;
+		@apply focus-visible:outline-none focus-visible:shadow-focus;
+		@apply disabled:pointer-events-none disabled:opacity-50;
+	}
+
+	.btn-primary {
+
+		@apply bg-primary text-base;
+		@apply hover:bg-primary-dark;
+		@apply active:bg-primary-dark;
+	}
+
+	.btn-outline {
+
+		@apply border border-primary bg-transparent text-primary-dark;
+		@apply hover:bg-primary hover:text-base hover:border-primary;
+		@apply active:bg-primary-dark active:border-primary-dark;
+	}
+
+	.btn-ghost {
+
+		@apply bg-transparent text-contrast;
+		@apply hover:bg-base-2;
+		@apply active:bg-border;
+	}
+
+	/* Круглая кнопка-иконка (корзина, меню, поиск) — ровно 44×44px тач-таргет. */
+	.icon-btn {
+
+		@apply inline-flex size-11 shrink-0 items-center justify-center rounded-full bg-transparent text-contrast transition-colors duration-base;
+		@apply hover:bg-base-2;
+		@apply active:bg-border;
+		@apply focus-visible:outline-none focus-visible:shadow-focus;
+		@apply disabled:pointer-events-none disabled:opacity-50;
+	}
+
+	/* Текстовые поля — на базе нормализации @tailwindcss/forms (strategy: class,
+	   так что она не трогает элементы без form-input/form-select — это осознанный
+	   выбор конкретных полей, а не глобальный сброс). */
+	.field {
+
+		@apply form-input w-full rounded-md border-border bg-surface px-4 py-2.5 text-medium text-contrast placeholder:text-muted;
+		@apply transition-colors duration-base;
+		@apply hover:border-muted;
+		@apply focus:border-primary focus:shadow-focus focus:ring-0;
+		@apply disabled:cursor-not-allowed disabled:bg-base-2 disabled:text-muted;
+		@apply aria-[invalid=true]:border-primary-dark;
+	}
+
+	/* Обёртка для select — держит абсолютно спозиционированную иконку-шеврон
+	   (см. maderamas_icon('chevron-down', ...) в разметке), а не фоновую
+	   картинку плагина: одна иконка на весь сайт из assets/icons/, без исключений. */
+	.select-wrapper {
+
+		@apply relative;
+	}
+
+	.select {
+
+		@apply form-select w-full appearance-none rounded-md border-border bg-surface bg-none py-2.5 pl-4 pr-10 text-medium text-contrast;
+		@apply transition-colors duration-base;
+		@apply hover:border-muted;
+		@apply focus:border-primary focus:shadow-focus focus:ring-0;
+		@apply disabled:cursor-not-allowed disabled:bg-base-2 disabled:text-muted;
+	}
+
+	.select-wrapper .maderamas-icon {
+
+		@apply pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted;
+	}
+
+	/* Карточка товара/категории. */
+	.card {
+
+		@apply flex flex-col overflow-hidden rounded-lg border border-border bg-surface transition-shadow duration-base;
+		@apply hover:shadow-lifted;
+	}
+
+	/* Бейдж (акции, статусы вариаций и т.п.). */
+	.badge {
+
+		@apply inline-flex items-center gap-1.5 rounded-pill px-3 py-1 text-small font-semibold;
+	}
+
+	.badge-accent {
+
+		@apply bg-accent text-accent-2;
+	}
+
+	.badge-success {
+
+		@apply bg-status-success-bg text-status-success;
+	}
+}
+
 /* Плавная прокрутка, но с уважением к системной настройке. */
 @media (prefers-reduced-motion: no-preference) {
 

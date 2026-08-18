@@ -186,3 +186,64 @@ function maderamas_register_patterns() {
 	}
 }
 add_action( 'init', 'maderamas_register_patterns', 5 );
+
+/**
+ * Инлайнит SVG-иконку из assets/icons/ с нужными классами.
+ *
+ * Источник — статичные файлы пакета lucide-static (assets/icons/*.svg),
+ * скопированные один раз при сборке дизайн-системы: никаких сгенерированных
+ * "на глаз" SVG в теме быть не должно. Иконки используют
+ * `stroke="currentColor"`, поэтому цвет управляется через CSS (`text-*`
+ * классы), а не хардкодится в самом файле.
+ *
+ * Вывод уже является доверенным содержимым локального файла темы (не
+ * пользовательский ввод), поэтому дополнительное экранирование не требуется —
+ * но атрибуты class/aria добавляются через безопасную замену, не через
+ * конкатенацию произвольной строки.
+ *
+ * @param string $name        Имя файла без расширения, например 'chevron-down'.
+ * @param string $classes     Дополнительные классы Tailwind, например 'size-4 text-primary'.
+ * @param array  $attributes  Доп. HTML-атрибуты вида 'attr' => 'value' (например aria-hidden).
+ * @return string HTML разметки SVG или пустая строка, если иконки нет.
+ */
+function maderamas_icon( $name, $classes = '', $attributes = array() ) {
+	static $cache = array();
+
+	$name = sanitize_key( $name );
+
+	if ( ! isset( $cache[ $name ] ) ) {
+		$path = get_theme_file_path( 'assets/icons/' . $name . '.svg' );
+
+		if ( ! file_exists( $path ) ) {
+			$cache[ $name ] = '';
+		} else {
+			// Локальный файл темы, не удалённый URL — wp_remote_get() тут неуместен.
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+			$cache[ $name ] = (string) file_get_contents( $path );
+		}
+	}
+
+	$svg = $cache[ $name ];
+
+	if ( '' === $svg ) {
+		return '';
+	}
+
+	// Базовый класс lucide убираем — размер и позиционирование задаём сами
+	// через Tailwind, иначе иконки конфликтуют с line-height окружающего текста.
+	$svg = preg_replace( '/\sclass="[^"]*"/', '', $svg, 1 );
+
+	$attributes['class'] = trim( 'maderamas-icon shrink-0 ' . $classes );
+
+	if ( ! isset( $attributes['aria-hidden'] ) ) {
+		$attributes['aria-hidden'] = 'true';
+	}
+
+	$attr_html = '';
+
+	foreach ( $attributes as $attr => $value ) {
+		$attr_html .= sprintf( ' %s="%s"', esc_attr( $attr ), esc_attr( $value ) );
+	}
+
+	return preg_replace( '/^<svg/', '<svg' . $attr_html, $svg, 1 );
+}
