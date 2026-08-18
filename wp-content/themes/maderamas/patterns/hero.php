@@ -53,7 +53,7 @@ $maderamas_shop_url = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_p
 			<!-- wp:buttons {"layout":{"type":"flex","flexWrap":"wrap"}} -->
 			<div class="wp-block-buttons">
 				<!-- wp:button {"className":"!rounded-pill"} -->
-				<div class="wp-block-button !rounded-pill"><a class="wp-block-button__link wp-element-button" href="<?php echo esc_url( $maderamas_shop_url ); ?>"<?php echo esc_html_x( 'Ver sillas', 'Hero CTA', 'maderamas' ); ?></a></div>
+				<div class="wp-block-button !rounded-pill"><a class="wp-block-button__link wp-element-button" href="<?php echo esc_url( $maderamas_shop_url ); ?>"><?php echo esc_html_x( 'Ver sillas', 'Hero CTA', 'maderamas' ); ?></a></div>
 				<!-- /wp:button -->
 
 				<!-- wp:button {"className":"is-style-outline !rounded-pill"} -->
