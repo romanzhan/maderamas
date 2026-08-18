@@ -1,42 +1,67 @@
-<!-- wp:group {"style":{"spacing":{"padding":{"top":"var:preset|spacing|50","bottom":"var:preset|spacing|40"},"margin":{"top":"var:preset|spacing|60"}}},"backgroundColor":"base-2","layout":{"type":"constrained","wideSize":"1240px"}} -->
-<div class="wp-block-group has-base-2-background-color has-background" style="margin-top:var(--wp--preset--spacing--60);padding-top:var(--wp--preset--spacing--50);padding-bottom:var(--wp--preset--spacing--40)">
-	<!-- wp:columns {"style":{"spacing":{"blockGap":{"top":"var:preset|spacing|40","left":"var:preset|spacing|40"}}}} -->
-	<div class="wp-block-columns">
-		<!-- wp:column -->
-		<div class="wp-block-column">
-			<!-- wp:site-title {"level":0,"style":{"typography":{"textDecoration":"none","fontWeight":"600"}},"fontSize":"large","fontFamily":"display"} /-->
+<!-- wp:group {"className":"mt-16 bg-base-2","layout":{"type":"constrained","wideSize":"1240px"}} -->
+<div class="wp-block-group mt-16 bg-base-2">
+	<!-- wp:group {"className":"px-4 py-12 md:px-8","layout":{"type":"constrained","wideSize":"1240px"}} -->
+	<div class="wp-block-group px-4 py-12 md:px-8">
 
-			<!-- wp:site-tagline {"fontSize":"small","textColor":"contrast-2"} /-->
-		</div>
-		<!-- /wp:column -->
+		<!-- wp:group {"className":"grid gap-8 sm:grid-cols-2 md:grid-cols-4 md:gap-6","layout":{"type":"default"}} -->
+		<div class="wp-block-group grid gap-8 sm:grid-cols-2 md:grid-cols-4 md:gap-6">
 
-		<!-- wp:column -->
-		<div class="wp-block-column">
-			<!-- wp:paragraph {"fontSize":"small","textColor":"contrast-2"} -->
-			<p class="has-contrast-2-color has-text-color has-small-font-size">Contacto</p>
-			<!-- /wp:paragraph -->
-		</div>
-		<!-- /wp:column -->
+			<!-- wp:group {"layout":{"type":"constrained"}} -->
+			<div class="wp-block-group">
+				<!-- wp:paragraph {"className":"!m-0","fontSize":"large","fontFamily":"display"} -->
+				<p class="!m-0 has-display-font-family has-large-font-size"><a class="font-extrabold tracking-tight text-contrast no-underline" href="/" style="text-decoration:none">madera<span class="text-primary">más</span></a></p>
+				<!-- /wp:paragraph -->
+				<!-- wp:paragraph {"className":"!mt-2 text-sm text-contrast-2"} -->
+				<p class="!mt-2 text-sm text-contrast-2">Muebles que crecen con tus hijos. Sillas evolutivas de madera maciza, hechas en Argentina.</p>
+				<!-- /wp:paragraph -->
+			</div>
+			<!-- /wp:group -->
 
-		<!-- wp:column -->
-		<div class="wp-block-column">
-			<!-- wp:paragraph {"fontSize":"small","textColor":"contrast-2"} -->
-			<p class="has-contrast-2-color has-text-color has-small-font-size">Información legal</p>
-			<!-- /wp:paragraph -->
-			<!-- wp:paragraph {"fontSize":"small"} -->
-			<p class="has-small-font-size">Los enlaces obligatorios (Botón de arrepentimiento, Defensa de las y los Consumidores) se agregan en la Fase 4.</p>
-			<!-- /wp:paragraph -->
+			<!-- wp:group {"layout":{"type":"constrained"}} -->
+			<div class="wp-block-group">
+				<!-- wp:paragraph {"className":"!mb-3 text-sm font-semibold uppercase tracking-wide text-muted"} -->
+				<p class="!mb-3 text-sm font-semibold uppercase tracking-wide text-muted">Tienda</p>
+				<!-- /wp:paragraph -->
+				<!-- wp:paragraph {"className":"!m-0 flex flex-col gap-2 text-sm"} -->
+				<p class="!m-0 flex flex-col gap-2 text-sm"><a class="text-contrast no-underline" href="/" style="text-decoration:none">Inicio</a> <a class="text-contrast no-underline" href="/shop/" style="text-decoration:none">Sillas</a> <a class="text-contrast no-underline" href="/shop/" style="text-decoration:none">Ofertas</a> <a class="text-contrast no-underline" href="/cart/" style="text-decoration:none">Carrito</a></p>
+				<!-- /wp:paragraph -->
+			</div>
+			<!-- /wp:group -->
+
+			<!-- wp:group {"layout":{"type":"constrained"}} -->
+			<div class="wp-block-group">
+				<!-- wp:paragraph {"className":"!mb-3 text-sm font-semibold uppercase tracking-wide text-muted"} -->
+				<p class="!mb-3 text-sm font-semibold uppercase tracking-wide text-muted">Contacto</p>
+				<!-- /wp:paragraph -->
+				<!-- wp:paragraph {"className":"!m-0 flex flex-col gap-2 text-sm"} -->
+				<p class="!m-0 flex flex-col gap-2 text-sm"><a class="text-contrast no-underline" href="https://wa.me/5491127915729" style="text-decoration:none">WhatsApp: +54 9 11 2791-5729</a> <a class="text-contrast no-underline" href="mailto:madera.mas.arg@gmail.com" style="text-decoration:none">madera.mas.arg@gmail.com</a></p>
+				<!-- /wp:paragraph -->
+			</div>
+			<!-- /wp:group -->
+
+			<!-- wp:group {"layout":{"type":"constrained"}} -->
+			<div class="wp-block-group">
+				<!-- wp:paragraph {"className":"!mb-3 text-sm font-semibold uppercase tracking-wide text-muted"} -->
+				<p class="!mb-3 text-sm font-semibold uppercase tracking-wide text-muted">Información legal</p>
+				<!-- /wp:paragraph -->
+				<!-- wp:paragraph {"className":"!m-0 text-sm text-contrast-2"} -->
+				<p class="!m-0 text-sm text-contrast-2">Botón de arrepentimiento y enlaces de Defensa de las y los Consumidores se agregan en la Fase 4.</p>
+				<!-- /wp:paragraph -->
+			</div>
+			<!-- /wp:group -->
+
 		</div>
-		<!-- /wp:column -->
+		<!-- /wp:group -->
+
+		<!-- wp:separator {"className":"!mt-10 !mb-6 border-border","backgroundColor":"border"} -->
+		<hr class="wp-block-separator has-text-color has-border-color has-alpha-channel-opacity has-border-background-color has-background !mt-10 !mb-6 border-border"/>
+		<!-- /wp:separator -->
+
+		<!-- wp:paragraph {"className":"!m-0 text-center text-sm text-muted"} -->
+		<p class="!m-0 text-center text-sm text-muted">© Madera Más — Muebles que crecen</p>
+		<!-- /wp:paragraph -->
+
 	</div>
-	<!-- /wp:columns -->
-
-	<!-- wp:separator {"style":{"spacing":{"margin":{"top":"var:preset|spacing|40","bottom":"var:preset|spacing|30"}}},"backgroundColor":"contrast-2","className":"is-style-wide"} -->
-	<hr class="wp-block-separator has-text-color has-contrast-2-color has-alpha-channel-opacity has-contrast-2-background-color has-background is-style-wide" style="margin-top:var(--wp--preset--spacing--40);margin-bottom:var(--wp--preset--spacing--30)"/>
-	<!-- /wp:separator -->
-
-	<!-- wp:paragraph {"align":"center","fontSize":"small","textColor":"contrast-2"} -->
-	<p class="has-text-align-center has-contrast-2-color has-text-color has-small-font-size">© Maderamas</p>
-	<!-- /wp:paragraph -->
+	<!-- /wp:group -->
 </div>
 <!-- /wp:group -->
