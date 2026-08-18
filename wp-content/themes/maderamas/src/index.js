@@ -6,3 +6,6 @@
  */
 
 import './style.css';
+import { initCarousels } from './carousels';
+
+document.addEventListener( 'DOMContentLoaded', initCarousels );

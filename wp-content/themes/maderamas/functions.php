@@ -68,6 +68,21 @@ function maderamas_enqueue_assets() {
 		);
 	}
 
+	// @wordpress/scripts выделяет CSS, импортированный из style.css/scss, в
+	// отдельный style-index.css (см. выше) — а CSS сторонних библиотек,
+	// импортированный прямо из JS (тут — стили Swiper из src/carousels.js),
+	// уходит в обычный build/index.css. Оба нужны на фронте.
+	$vendor_style_path = get_theme_file_path( 'build/index.css' );
+
+	if ( file_exists( $vendor_style_path ) ) {
+		wp_enqueue_style(
+			'maderamas-vendor-styles',
+			get_theme_file_uri( 'build/index.css' ),
+			array(),
+			(string) filemtime( $vendor_style_path )
+		);
+	}
+
 	$asset_path = get_theme_file_path( 'build/index.asset.php' );
 
 	if ( file_exists( $asset_path ) ) {
