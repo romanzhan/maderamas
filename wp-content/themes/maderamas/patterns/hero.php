@@ -88,7 +88,7 @@ if ( empty( $maderamas_hero_slides ) ) {
 	return;
 }
 ?>
-<!-- wp:group {"align":"full","className":"js-swiper swiper relative maderamas-hero","layout":{"type":"constrained"}} -->
+<!-- wp:group {"align":"full","className":"js-swiper swiper relative maderamas-hero","layout":{"type":"flow"}} -->
 <div class="wp-block-group alignfull js-swiper swiper relative maderamas-hero" data-autoplay="7000" data-loop="<?php echo esc_attr( count( $maderamas_hero_slides ) > 1 ? 'true' : 'false' ); ?>">
 	<div class="swiper-wrapper">
 		<?php foreach ( $maderamas_hero_slides as $maderamas_index => $maderamas_slide ) : ?>

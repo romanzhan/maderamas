@@ -589,53 +589,75 @@ video {
 /* stylelint-enable selector-class-pattern */
 
 /**
- * Hero-карусель (patterns/hero.php). Стрелки/точки Swiper по умолчанию —
- * маленький глиф на прозрачном фоне и серые точки-по-умолчанию, выглядит
- * дёшево на большом полноэкранном блоке. Полностью переопределяем: свой
- * глиф-стрелка убирает штатный ::after, кнопки — круглые с фоном/тенью,
- * точки — крупнее, активная вытягивается в пилюлю (частый паттерн у
- * качественных hero-каруселей, в т.ч. у референса заказчика roststul.ru).
+ * Hero-карусель (patterns/hero.php).
+ *
+ * 1) Раньше блок нёс классы has-global-padding + alignfull ОДНОВРЕМЕННО
+ *    (layout:"constrained" в блоке даёт has-global-padding, а не только
+ *    родителю) — WordPress компенсирует паддинг отрицательным margin
+ *    только когда alignfull — потомок has-global-padding, не тот же
+ *    элемент, поэтому карусель была не по-настоящему edge-to-edge (24px
+ *    паддинг с обеих сторон никуда не девался) — от этого «смещение».
+ *    Фикс — в самом hero.php (layout:"flow" вместо "constrained"); тут
+ *    просто ещё раз гарантируем 0 на случай других источников паддинга.
+ * 2) У swiper/css/navigation в собственном CSS те же классы
+ *    (.swiper-button-prev/-next) уже занимают left/right — наши правила
+ *    того же уровня специфичности проигрывали порядку импорта. Скоупим
+ *    через родителя .maderamas-hero (специфичность выше) + !important
+ *    для верности.
+ * 3) Стрелки/точки Swiper по умолчанию — маленький глиф на прозрачном
+ *    фоне и серые точки, выглядит дёшево на полноэкранном блоке.
+ *    Полупрозрачный круг (color-mix, не рисуем новый хардкод-цвет —
+ *    берём существующий токен surface и смешиваем с прозрачностью).
  */
+.maderamas-hero {
+	padding-left: 0 !important;
+	padding-right: 0 !important;
+}
+
 .maderamas-hero .swiper-button-prev::after,
 .maderamas-hero .swiper-button-next::after {
 	content: none;
 }
 
-.maderamas-hero-nav {
+.maderamas-hero .maderamas-hero-nav {
+	position: absolute;
 	top: 50%;
+	z-index: 10;
 	display: flex;
-	width: 2.75rem;
-	height: 2.75rem;
+	width: 3.5rem;
+	height: 3.5rem;
 	align-items: center;
 	justify-content: center;
-	margin-top: -1.375rem;
+	margin-top: -1.75rem;
 	border-radius: 999px;
-	background-color: var(--wp--preset--color--surface);
+	background-color: color-mix(in srgb, var(--wp--preset--color--surface) 55%, transparent);
 	color: var(--wp--preset--color--contrast);
 	box-shadow: var(--wp--preset--shadow--soft);
-	transition: background-color 220ms, transform 220ms;
+	backdrop-filter: blur(6px);
+	-webkit-backdrop-filter: blur(6px);
+	transition: background-color 220ms, opacity 220ms;
 }
 
-.maderamas-hero-nav-prev {
-	left: 1rem;
+.maderamas-hero .maderamas-hero-nav-prev {
+	left: 1.25rem !important;
+	right: auto !important;
 }
 
-.maderamas-hero-nav-next {
-	right: 1rem;
+.maderamas-hero .maderamas-hero-nav-next {
+	right: 1.25rem !important;
+	left: auto !important;
 }
 
-.maderamas-hero-nav:hover {
-	background-color: var(--wp--preset--color--primary);
-	color: var(--wp--preset--color--base);
-	transform: scale(1.05);
+.maderamas-hero .maderamas-hero-nav:hover {
+	background-color: color-mix(in srgb, var(--wp--preset--color--surface) 85%, transparent);
 }
 
-.maderamas-hero-nav:focus-visible {
+.maderamas-hero .maderamas-hero-nav:focus-visible {
 	outline: 2px solid var(--wp--preset--color--primary-dark);
 	outline-offset: 2px;
 }
 
-.maderamas-hero-nav.swiper-button-disabled {
+.maderamas-hero .maderamas-hero-nav.swiper-button-disabled {
 	display: none;
 }
 
@@ -659,10 +681,12 @@ video {
 }
 
 /* Стрелки — только на md+: на мобильном без фото листать удобнее свайпом,
-   а пара кнопок 44px над коротким текстовым блоком смотрится тесно. */
+   а заметная полупрозрачная кнопка над коротким текстовым блоком лишняя.
+   !important — тот же повод, что и в п.2 выше (порядок каскада с CSS
+   самого Swiper непредсказуем). */
 @media (max-width: 767px) {
 
-	.maderamas-hero-nav {
-		display: none;
+	.maderamas-hero .maderamas-hero-nav {
+		display: none !important;
 	}
 }
