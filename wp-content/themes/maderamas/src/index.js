@@ -5,4 +5,7 @@
  * в build/style-index.css.
  */
 
-import './style.scss';
+import './style.css';
+import { initCarousels } from './carousels';
+
+document.addEventListener( 'DOMContentLoaded', initCarousels );

@@ -1,12 +1,26 @@
-<!-- wp:group {"style":{"spacing":{"padding":{"top":"var:preset|spacing|30","bottom":"var:preset|spacing|30"}}},"backgroundColor":"base","layout":{"type":"constrained","wideSize":"1240px"}} -->
-<div class="wp-block-group has-base-background-color has-background" style="padding-top:var(--wp--preset--spacing--30);padding-bottom:var(--wp--preset--spacing--30)">
-	<!-- wp:group {"layout":{"type":"flex","flexWrap":"wrap","justifyContent":"space-between","verticalAlignment":"center"}} -->
-	<div class="wp-block-group">
-		<!-- wp:site-title {"level":0,"style":{"typography":{"textDecoration":"none","fontStyle":"normal","fontWeight":"600"}},"fontSize":"x-large","fontFamily":"display"} /-->
+<!-- wp:group {"className":"bg-promo-electric text-white","style":{"spacing":{"padding":{"top":"10px","bottom":"10px"}}},"layout":{"type":"flex","justifyContent":"center","flexWrap":"wrap"}} -->
+<div class="wp-block-group bg-promo-electric text-white" style="padding-top:10px;padding-bottom:10px">
+	<!-- wp:paragraph {"className":"!my-0 flex flex-wrap items-center justify-center gap-3 text-sm","fontSize":"small"} -->
+	<p class="!my-0 flex flex-wrap items-center justify-center gap-3 text-sm has-small-font-size"><span class="inline-flex items-center rounded-pill bg-promo-yellow px-3 py-1 text-xs font-extrabold tracking-wide text-contrast font-display">ENVÍO GRATIS</span> <span>en tu primera compra</span> <span class="hidden rounded-pill bg-white/20 px-3 py-1 text-xs font-semibold sm:inline-block">6 cuotas sin interés</span></p>
+	<!-- /wp:paragraph -->
+</div>
+<!-- /wp:group -->
 
-		<!-- wp:group {"layout":{"type":"flex","flexWrap":"wrap","verticalAlignment":"center"}} -->
-		<div class="wp-block-group">
-			<!-- wp:navigation {"overlayMenu":"mobile","layout":{"type":"flex","justifyContent":"right"},"style":{"typography":{"textDecoration":"none"}},"fontSize":"medium"} /-->
+<!-- wp:group {"className":"bg-surface border-b border-border","style":{"spacing":{"padding":{"top":"16px","bottom":"16px"}}},"layout":{"type":"constrained","wideSize":"1240px"}} -->
+<div class="wp-block-group bg-surface border-b border-border" style="padding-top:16px;padding-bottom:16px">
+	<!-- wp:group {"className":"flex items-center justify-between gap-6","layout":{"type":"flex","justifyContent":"space-between","flexWrap":"nowrap"}} -->
+	<div class="wp-block-group flex items-center justify-between gap-6">
+		<!-- wp:paragraph {"className":"!m-0 shrink-0","fontSize":"large","fontFamily":"display"} -->
+		<p class="!m-0 shrink-0 has-display-font-family has-large-font-size"><a class="font-extrabold tracking-tight text-contrast no-underline" href="/" style="text-decoration:none">madera<span class="text-primary">más</span></a></p>
+		<!-- /wp:paragraph -->
+
+		<!-- wp:navigation {"className":"hidden lg:flex grow justify-center","overlayMenu":"mobile","layout":{"type":"flex","justifyContent":"center"},"style":{"typography":{"textDecoration":"none","fontWeight":"500"}},"fontSize":"medium"} /-->
+
+		<!-- wp:group {"className":"flex items-center gap-3 shrink-0","layout":{"type":"flex","flexWrap":"nowrap"}} -->
+		<div class="wp-block-group flex items-center gap-3 shrink-0">
+			<!-- wp:search {"label":"","showLabel":false,"placeholder":"Buscar productos…","buttonText":"Buscar","buttonPosition":"button-inside","buttonUseIcon":true,"className":"!m-0 hidden md:block","style":{"border":{"radius":"999px"}}} /-->
+
+			<!-- wp:woocommerce/mini-cart /-->
 		</div>
 		<!-- /wp:group -->
 	</div>

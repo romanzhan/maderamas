@@ -65,11 +65,15 @@ Hostinger — см. следующий раздел.
 
 ## Staging сейчас: Hostinger (шаредхостинг)
 
-Пока `dev.maderamas.com.ar` никуда не смотрит, staging временно живёт на
-Hostinger Premium (шаредхостинг), на технический домен вида
-`https://<случайное-имя>.hostingersite.com/`. Когда понадобится постоянный
-адрес — направить DNS `dev.maderamas.com.ar` на этот аккаунт и сменить
-`SITE_URL` через `wp option update siteurl/home`.
+Staging живёт на Hostinger Premium (шаредхостинг), адрес —
+`https://dev.maderamas.com.ar/`, DNS уже настроен (NS домена делегированы
+на Hostinger, подробности и грабли — в `CONTEXT.md`, раздел «Инциденты
+2026-07-31»). В hPanel WordPress-сайт числится под именем
+**`dev.maderamas.com.ar`** — путь на сервере и `DEPLOY_PATH` идут через
+`dev.maderamas.com.ar`. Апекс `maderamas.com.ar` подключён к тому же
+сайту как *parked domain* (нужно только чтобы у него была DNS-зона в
+Hostinger), но в самой зоне apex/`www` вручную прописаны на Tiendanube —
+Hostinger их не обслуживает.
 
 Отличия от сценария с VPS:
 

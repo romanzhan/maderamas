@@ -16,18 +16,24 @@
     "start": "wp-scripts start --webpack-src-dir=wp-content/themes/maderamas/src --output-path=wp-content/themes/maderamas/build",
     "build": "wp-scripts build --webpack-src-dir=wp-content/themes/maderamas/src --output-path=wp-content/themes/maderamas/build",
     "lint:js": "wp-scripts lint-js \"wp-content/themes/maderamas/src/**/*.js\"",
-    "lint:css": "wp-scripts lint-style \"wp-content/themes/maderamas/src/**/*.scss\"",
+    "lint:css": "wp-scripts lint-style \"wp-content/themes/maderamas/src/**/*.css\"",
     "lint:pkg": "wp-scripts lint-pkg-json",
     "lint:php": "composer run lint",
     "lint": "npm run lint:js && npm run lint:css && npm run lint:php",
-    "format": "wp-scripts format \"wp-content/themes/maderamas/src/**/*.{js,scss}\"",
+    "format": "wp-scripts format \"wp-content/themes/maderamas/src/**/*.{js,css}\"",
     "makepot": "wp-env run cli wp i18n make-pot wp-content/themes/maderamas wp-content/themes/maderamas/languages/maderamas.pot --domain=maderamas",
     "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "swiper": "^11.1.15"
   },
   "devDependencies": {
     "@playwright/test": "^1.50.0",
     "@wordpress/env": "^10.0.0",
-    "@wordpress/scripts": "^30.0.0"
+    "@wordpress/scripts": "^30.0.0",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17"
   },
   "overrides": {
     "typescript": "^5.3.3"

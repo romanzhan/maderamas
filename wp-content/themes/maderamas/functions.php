@@ -46,6 +46,17 @@ add_action( 'after_setup_theme', 'maderamas_setup' );
  * @return void
  */
 function maderamas_enqueue_assets() {
+	$fonts_path = get_theme_file_path( 'assets/fonts/fonts.css' );
+
+	if ( file_exists( $fonts_path ) ) {
+		wp_enqueue_style(
+			'maderamas-fonts',
+			get_theme_file_uri( 'assets/fonts/fonts.css' ),
+			array(),
+			(string) filemtime( $fonts_path )
+		);
+	}
+
 	$style_path = get_theme_file_path( 'build/style-index.css' );
 
 	if ( file_exists( $style_path ) ) {
@@ -54,6 +65,21 @@ function maderamas_enqueue_assets() {
 			get_theme_file_uri( 'build/style-index.css' ),
 			array(),
 			(string) filemtime( $style_path )
+		);
+	}
+
+	// @wordpress/scripts выделяет CSS, импортированный из style.css/scss, в
+	// отдельный style-index.css (см. выше) — а CSS сторонних библиотек,
+	// импортированный прямо из JS (тут — стили Swiper из src/carousels.js),
+	// уходит в обычный build/index.css. Оба нужны на фронте.
+	$vendor_style_path = get_theme_file_path( 'build/index.css' );
+
+	if ( file_exists( $vendor_style_path ) ) {
+		wp_enqueue_style(
+			'maderamas-vendor-styles',
+			get_theme_file_uri( 'build/index.css' ),
+			array(),
+			(string) filemtime( $vendor_style_path )
 		);
 	}
 

@@ -1,13 +1,16 @@
 /**
  * Стили темы Maderamas.
  *
- * Правило проекта: цвета, размеры шрифтов и отступы берём ТОЛЬКО
- * из CSS-переменных, которые WordPress генерирует из theme.json.
- * Хардкод-значения запрещены — иначе дизайн-система разъезжается
- * и правки в theme.json перестают работать.
- *
- * Пример: color: var(--wp--preset--color--primary);
+ * Utility-first через Tailwind (tailwind.config.js в корне репозитория,
+ * цвета оттуда читаются из theme.json — не хардкодятся). Хардкод-значения
+ * цвета/шрифта/отступа в этом файле запрещены — используем классы Tailwind
+ * или var(--wp--preset--*) для мест, куда Tailwind не дотягивается (стили
+ * блоков редактора и т.п.).
  */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 /* Плавная прокрутка, но с уважением к системной настройке. */
 @media (prefers-reduced-motion: no-preference) {
