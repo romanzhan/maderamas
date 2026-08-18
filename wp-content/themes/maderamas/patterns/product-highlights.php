@@ -22,7 +22,7 @@ $maderamas_shop_url = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_p
 		<!-- /wp:heading -->
 
 		<!-- wp:paragraph {"className":"!m-0"} -->
-		<p class="!m-0"><a class="text-sm font-semibold text-primary no-underline" href="<?php echo esc_url( $maderamas_shop_url ); ?>" style="text-decoration:none"><?php echo esc_html_x( 'Ver todas →', 'Product grid link', 'maderamas' ); ?></a></p>
+		<p class="!m-0"><a class="text-sm font-semibold text-primary no-underline transition-colors duration-base hover:text-primary-dark" href="<?php echo esc_url( $maderamas_shop_url ); ?>" style="text-decoration:none"><?php echo esc_html_x( 'Ver todas →', 'Product grid link', 'maderamas' ); ?></a></p>
 		<!-- /wp:paragraph -->
 	</div>
 	<!-- /wp:group -->
