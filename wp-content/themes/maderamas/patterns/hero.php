@@ -13,16 +13,16 @@
 
 $maderamas_hero_slides = array(
 	array(
-		'label'   => _x( 'Silla Evolutiva Infantil', 'Hero slide placeholder', 'maderamas' ),
-		'badge'   => '-20%',
+		'label' => _x( 'Silla Evolutiva Infantil', 'Hero slide placeholder', 'maderamas' ),
+		'badge' => '-20%',
 	),
 	array(
-		'label'   => _x( 'Silla Alta de Comer Evolutiva', 'Hero slide placeholder', 'maderamas' ),
-		'badge'   => '',
+		'label' => _x( 'Silla Alta de Comer Evolutiva', 'Hero slide placeholder', 'maderamas' ),
+		'badge' => '',
 	),
 	array(
-		'label'   => _x( 'Línea Montessori', 'Hero slide placeholder', 'maderamas' ),
-		'badge'   => '',
+		'label' => _x( 'Línea Montessori', 'Hero slide placeholder', 'maderamas' ),
+		'badge' => '',
 	),
 );
 
