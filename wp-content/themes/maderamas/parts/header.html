@@ -10,19 +10,36 @@
 <div class="wp-block-group bg-surface border-b border-border" style="padding-top:16px;padding-bottom:16px">
 	<!-- wp:group {"className":"flex items-center justify-between gap-6","layout":{"type":"flex","justifyContent":"space-between","flexWrap":"nowrap"}} -->
 	<div class="wp-block-group flex items-center justify-between gap-6">
-		<!-- wp:paragraph {"className":"!m-0 shrink-0","fontSize":"large","fontFamily":"display"} -->
-		<p class="!m-0 shrink-0 has-display-font-family has-large-font-size"><a class="font-extrabold tracking-tight text-contrast no-underline" href="/" style="text-decoration:none">madera<span class="text-primary">más</span></a></p>
-		<!-- /wp:paragraph -->
+		<!-- wp:group {"className":"flex items-center gap-1 shrink-0","layout":{"type":"flex","flexWrap":"nowrap"}} -->
+		<div class="wp-block-group flex items-center gap-1 shrink-0">
+			<!-- wp:html -->
+			<button
+				type="button"
+				class="icon-btn -ml-2 lg:hidden"
+				data-mobile-menu-open
+				aria-controls="mobile-menu"
+				aria-expanded="false"
+				aria-label="Abrir menú"
+			>
+				<svg class="maderamas-icon size-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16" /><path d="M4 12h16" /><path d="M4 19h16" /></svg>
+			</button>
+			<!-- /wp:html -->
 
-		<!-- wp:navigation {"className":"hidden lg:flex grow justify-center","overlayMenu":"mobile","layout":{"type":"flex","justifyContent":"center"},"style":{"typography":{"textDecoration":"none","fontWeight":"500"}},"fontSize":"medium"} -->
+			<!-- wp:paragraph {"className":"!m-0 shrink-0","fontSize":"large","fontFamily":"display"} -->
+			<p class="!m-0 shrink-0 has-display-font-family has-large-font-size"><a class="font-extrabold tracking-tight text-contrast no-underline" href="/" style="text-decoration:none">madera<span class="text-primary">más</span></a></p>
+			<!-- /wp:paragraph -->
+		</div>
+		<!-- /wp:group -->
+
+		<!-- wp:navigation {"className":"hidden lg:flex grow justify-center","overlayMenu":"never","layout":{"type":"flex","justifyContent":"center"},"style":{"typography":{"textDecoration":"none","fontWeight":"500"}},"fontSize":"medium"} -->
 		<!-- wp:navigation-link {"label":"Inicio","url":"/","kind":"custom"} /-->
 		<!-- wp:navigation-link {"label":"Sillas","url":"/shop/","kind":"custom"} /-->
 		<!-- wp:navigation-link {"label":"Ofertas","url":"/shop/","kind":"custom"} /-->
 		<!-- wp:navigation-link {"label":"Nosotros","url":"/","kind":"custom"} /-->
 		<!-- /wp:navigation -->
 
-		<!-- wp:group {"className":"flex items-center gap-3 shrink-0","layout":{"type":"flex","flexWrap":"nowrap"}} -->
-		<div class="wp-block-group flex items-center gap-3 shrink-0">
+		<!-- wp:group {"className":"flex items-center gap-1 shrink-0","layout":{"type":"flex","flexWrap":"nowrap"}} -->
+		<div class="wp-block-group flex items-center gap-1 shrink-0">
 			<!-- wp:search {"label":"","showLabel":false,"placeholder":"Buscar productos…","buttonText":"Buscar","buttonPosition":"button-inside","buttonUseIcon":true,"className":"!m-0 hidden md:block","style":{"border":{"radius":"999px"}}} /-->
 
 			<!-- wp:woocommerce/mini-cart /-->
@@ -32,3 +49,38 @@
 	<!-- /wp:group -->
 </div>
 <!-- /wp:group -->
+
+<!-- wp:html -->
+<div id="mobile-menu" data-mobile-menu inert class="fixed inset-0 z-50 hidden lg:!hidden">
+	<div
+		data-mobile-menu-backdrop
+		class="absolute inset-0 bg-contrast/40 opacity-0 transition-opacity duration-base"
+	></div>
+	<div
+		data-mobile-menu-panel
+		tabindex="-1"
+		role="dialog"
+		aria-modal="true"
+		aria-label="Menú"
+		class="absolute inset-y-0 left-0 flex w-[85vw] max-w-xs -translate-x-full flex-col bg-surface shadow-lifted transition-transform duration-base"
+	>
+		<div class="flex items-center justify-between border-b border-border px-4 py-4">
+			<span class="font-display text-lg font-extrabold tracking-tight text-contrast">madera<span class="text-primary">más</span></span>
+			<button type="button" class="icon-btn" data-mobile-menu-close aria-label="Cerrar menú">
+				<svg class="maderamas-icon size-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+			</button>
+		</div>
+
+		<nav class="flex flex-col gap-1 overflow-y-auto px-2 py-4" aria-label="Menú principal">
+			<a href="/" class="flex min-h-11 items-center rounded-md px-3 text-medium font-medium text-contrast transition-colors duration-base hover:bg-base-2 active:bg-border">Inicio</a>
+			<a href="/shop/" class="flex min-h-11 items-center rounded-md px-3 text-medium font-medium text-contrast transition-colors duration-base hover:bg-base-2 active:bg-border">Sillas</a>
+			<a href="/shop/" class="flex min-h-11 items-center rounded-md px-3 text-medium font-medium text-contrast transition-colors duration-base hover:bg-base-2 active:bg-border">Ofertas</a>
+			<a href="/" class="flex min-h-11 items-center rounded-md px-3 text-medium font-medium text-contrast transition-colors duration-base hover:bg-base-2 active:bg-border">Nosotros</a>
+		</nav>
+
+		<div class="mt-auto border-t border-border p-4">
+			<a href="/shop/" class="btn-primary w-full">Ver catálogo</a>
+		</div>
+	</div>
+</div>
+<!-- /wp:html -->

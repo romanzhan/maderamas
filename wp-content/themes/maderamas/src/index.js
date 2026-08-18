@@ -7,5 +7,9 @@
 
 import './style.css';
 import { initCarousels } from './carousels';
+import { initMobileMenu } from './mobile-menu';
 
-document.addEventListener( 'DOMContentLoaded', initCarousels );
+document.addEventListener( 'DOMContentLoaded', () => {
+	initCarousels();
+	initMobileMenu();
+} );

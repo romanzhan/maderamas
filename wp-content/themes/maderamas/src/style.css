@@ -149,3 +149,92 @@ video {
 	outline: 2px solid var(--wp--preset--color--primary-dark);
 	outline-offset: 2px;
 }
+
+/**
+ * Мобильное меню (parts/header.html + src/mobile-menu.js).
+ *
+ * Разметка задаёт закрытое состояние прямо в HTML через утилиты Tailwind
+ * (hidden, opacity-0, -translate-x-full) — так меню корректно выглядит
+ * и без JS (например, пока скрипт ещё не догрузился). Классы is-open/
+ * is-visible добавляет только JS, поэтому именно здесь — не в @layer
+ * components — описываем, во что превращаются исходные утилиты.
+ */
+[data-mobile-menu].is-open {
+	display: block;
+}
+
+[data-mobile-menu].is-visible [data-mobile-menu-backdrop] {
+	opacity: 1;
+}
+
+[data-mobile-menu].is-visible [data-mobile-menu-panel] {
+	transform: translateX(0);
+}
+
+/* Названия классов ниже — чужие (BEM ядра WordPress/WooCommerce, стиль
+   с двойным подчёркиванием), мы их не придумываем и переименовать не можем —
+   поэтому для этого блока отключаем правило именования селекторов. */
+/* stylelint-disable selector-class-pattern */
+
+/* core/navigation: overlayMenu:"never" убирает модалку, но подстраховываемся
+   на случай, если сторонний код/дефолтные стили блока попробуют её показать —
+   свою панель мы уже строим сами (см. выше), встроенная нам не нужна нигде. */
+.wp-block-navigation__responsive-container-open,
+.wp-block-navigation__responsive-container {
+	display: none;
+}
+
+/**
+ * Иконки-кнопки шапки из блоков ядра/WooCommerce (мини-корзина, вход в
+ * аккаунт, поиск) — их внутреннюю разметку мы не пишем сами (рендерит
+ * PHP блока), поэтому стилизуем по их реальным CSS-классам напрямую, а
+ * не через @layer components (там классы попадают под content-скан
+ * Tailwind и требуют, чтобы имя класса буквально встречалось в PHP/HTML
+ * теме — эти классы там не встретятся никогда, генерятся сторонним кодом).
+ * Токены — те же переменные, что и в остальной теме (var(--wp--preset--*)),
+ * это штатный путь «где Tailwind не дотягивается» (см. CLAUDE.md).
+ */
+.wc-block-mini-cart__button,
+.wc-block-customer-account__link {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 2.75rem;
+	height: 2.75rem;
+	border-radius: 999px;
+	color: var(--wp--preset--color--contrast);
+	transition: background-color 220ms;
+}
+
+.wc-block-mini-cart__button:hover,
+.wc-block-customer-account__link:hover {
+	background-color: var(--wp--preset--color--base-2);
+}
+
+.wc-block-mini-cart__button:active,
+.wc-block-customer-account__link:active {
+	background-color: var(--wp--preset--color--border);
+}
+
+.wc-block-mini-cart__button:focus-visible,
+.wc-block-customer-account__link:focus-visible {
+	outline: 2px solid var(--wp--preset--color--primary-dark);
+	outline-offset: 2px;
+}
+
+.wc-block-mini-cart__icon,
+.wc-block-customer-account__account-icon {
+	width: 1.375rem;
+	height: 1.375rem;
+}
+
+.wc-block-mini-cart__badge {
+	background-color: var(--wp--preset--color--primary) !important;
+}
+
+.wp-block-search__input:focus {
+	outline: 2px solid var(--wp--preset--color--primary-dark);
+	outline-offset: 2px;
+}
+
+/* stylelint-enable selector-class-pattern */
