@@ -46,6 +46,17 @@ add_action( 'after_setup_theme', 'maderamas_setup' );
  * @return void
  */
 function maderamas_enqueue_assets() {
+	$fonts_path = get_theme_file_path( 'assets/fonts/fonts.css' );
+
+	if ( file_exists( $fonts_path ) ) {
+		wp_enqueue_style(
+			'maderamas-fonts',
+			get_theme_file_uri( 'assets/fonts/fonts.css' ),
+			array(),
+			(string) filemtime( $fonts_path )
+		);
+	}
+
 	$style_path = get_theme_file_path( 'build/style-index.css' );
 
 	if ( file_exists( $style_path ) ) {
