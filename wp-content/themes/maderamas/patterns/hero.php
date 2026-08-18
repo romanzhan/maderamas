@@ -119,7 +119,7 @@ if ( empty( $maderamas_hero_slides ) ) {
 
 						<div class="hidden justify-center md:flex">
 							<img
-								class="aspect-square w-full max-w-sm rounded-2xl bg-surface object-contain p-6 shadow-lifted sm:max-w-md"
+								class="aspect-square w-full max-w-sm rounded-2xl object-cover shadow-lifted sm:max-w-md"
 								src="<?php echo esc_url( $maderamas_slide['image_url'] ); ?>"
 								alt="<?php echo esc_attr( $maderamas_slide['image_alt'] ); ?>"
 								<?php echo 0 === $maderamas_index ? 'fetchpriority="high"' : 'loading="lazy"'; ?>

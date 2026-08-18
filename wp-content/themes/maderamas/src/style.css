@@ -589,6 +589,20 @@ video {
 /* stylelint-enable selector-class-pattern */
 
 /**
+ * Зазор между шапкой и первым блоком контента (hero) — это НЕ blockGap
+ * внутри <main> (тот уже занулён в front-page.html), а margin-block-start
+ * от WordPress на корневом .wp-site-blocks: он даёт каждому ребёнку,
+ * кроме первого, отступ var(--wp--preset--spacing--30). <header> —
+ * первый ребёнок (margin 0 по правилу :first-child), <main> — второй,
+ * получает полные 24px. Правило WP обёрнуто в :where() (нулевая
+ * специфичность) — простого элементного селектора достаточно, чтобы
+ * выиграть, без !important.
+ */
+.wp-site-blocks > main {
+	margin-block-start: 0;
+}
+
+/**
  * Hero-карусель (patterns/hero.php).
  *
  * 1) Раньше блок нёс классы has-global-padding + alignfull ОДНОВРЕМЕННО
@@ -605,9 +619,13 @@ video {
  *    через родителя .maderamas-hero (специфичность выше) + !important
  *    для верности.
  * 3) Стрелки/точки Swiper по умолчанию — маленький глиф на прозрачном
- *    фоне и серые точки, выглядит дёшево на полноэкранном блоке.
- *    Полупрозрачный круг (color-mix, не рисуем новый хардкод-цвет —
- *    берём существующий токен surface и смешиваем с прозрачностью).
+ *    фоне и серые точки, выглядит дёшево на полноэкранном блоке. Свой
+ *    вид — крупный круг, но ненавязчивый: полупрозрачность через
+ *    отдельный слой-подложку (::before) с обычным `opacity` — не
+ *    `color-mix()`/rgba с досчитанным hex, чтобы не зависеть от
+ *    поддержки функции и не гадать, как это реально выглядит без
+ *    браузера под рукой. Сам глиф — не «чёрный», а contrast-2 (мягкий
+ *    серо-коричневый, не основной тёмный текстовый цвет).
  */
 .maderamas-hero {
 	padding-left: 0 !important;
@@ -629,13 +647,25 @@ video {
 	align-items: center;
 	justify-content: center;
 	margin-top: -1.75rem;
+	background: none;
+	color: var(--wp--preset--color--contrast-2);
+	transition: color 220ms;
+}
+
+.maderamas-hero .maderamas-hero-nav::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: -1;
 	border-radius: 999px;
-	background-color: color-mix(in srgb, var(--wp--preset--color--surface) 55%, transparent);
-	color: var(--wp--preset--color--contrast);
+	background-color: var(--wp--preset--color--surface);
+	opacity: 0.5;
 	box-shadow: var(--wp--preset--shadow--soft);
-	backdrop-filter: blur(6px);
-	-webkit-backdrop-filter: blur(6px);
-	transition: background-color 220ms, opacity 220ms;
+	transition: opacity 220ms;
+}
+
+.maderamas-hero .maderamas-hero-nav .maderamas-icon {
+	stroke-width: 1.5px;
 }
 
 .maderamas-hero .maderamas-hero-nav-prev {
@@ -649,7 +679,11 @@ video {
 }
 
 .maderamas-hero .maderamas-hero-nav:hover {
-	background-color: color-mix(in srgb, var(--wp--preset--color--surface) 85%, transparent);
+	color: var(--wp--preset--color--contrast);
+}
+
+.maderamas-hero .maderamas-hero-nav:hover::before {
+	opacity: 0.8;
 }
 
 .maderamas-hero .maderamas-hero-nav:focus-visible {
