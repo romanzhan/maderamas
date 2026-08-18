@@ -257,7 +257,10 @@ function maderamas_icon( $name, $classes = '', $attributes = array() ) {
 
 	// Базовый класс lucide убираем — размер и позиционирование задаём сами
 	// через Tailwind, иначе иконки конфликтуют с line-height окружающего текста.
-	$svg = preg_replace( '/\sclass="[^"]*"/', '', $svg, 1 );
+	// \s+ (не \s) — у lucide-static класс на отдельной строке с отступом,
+	// одиночный \s съедал только один из пробельных символов и оставлял
+	// пустую строку внутри тега.
+	$svg = preg_replace( '/\s+class="[^"]*"/', '', $svg, 1 );
 
 	$attributes['class'] = trim( 'maderamas-icon shrink-0 ' . $classes );
 
@@ -271,5 +274,9 @@ function maderamas_icon( $name, $classes = '', $attributes = array() ) {
 		$attr_html .= sprintf( ' %s="%s"', esc_attr( $attr ), esc_attr( $value ) );
 	}
 
-	return preg_replace( '/^<svg/', '<svg' . $attr_html, $svg, 1 );
+	// Файлы lucide-static начинаются с `<!-- @license ... -->` перед самим
+	// `<svg`, поэтому якорь ^ (начало строки) тут не подходит — искали
+	// первое вхождение `<svg` где угодно в строке (limit 1 всё равно
+	// гарантирует замену только этого одного тега).
+	return preg_replace( '/<svg/', '<svg' . $attr_html, $svg, 1 );
 }

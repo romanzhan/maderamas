@@ -29,21 +29,21 @@ $maderamas_hero_slides = array(
 		'badge'      => _x( '1 a 14 años', 'Hero badge — rango de edad', 'maderamas' ),
 		'heading'    => _x( 'La silla que crece con tu hijo', 'Hero heading', 'maderamas' ),
 		'cta'        => _x( 'Ver silla evolutiva', 'Hero CTA', 'maderamas' ),
-		'bg'         => 'bg-gradient-to-br from-accent/25 via-base to-base',
+		'bg'         => 'bg-gradient-to-br from-accent/40 via-base-2 to-accent/10',
 	),
 	array(
 		'product_id' => 18,
 		'badge'      => _x( '5 niveles de altura', 'Hero badge — feature', 'maderamas' ),
 		'heading'    => _x( 'Una silla alta que dura toda la infancia', 'Hero heading', 'maderamas' ),
 		'cta'        => _x( 'Ver silla alta', 'Hero CTA', 'maderamas' ),
-		'bg'         => 'bg-gradient-to-br from-promo-orange/15 via-base to-base',
+		'bg'         => 'bg-gradient-to-br from-promo-orange/30 via-base-2 to-promo-orange/10',
 	),
 	array(
 		'product_id' => 26,
 		'badge'      => _x( 'Línea nueva', 'Hero badge — novedad', 'maderamas' ),
 		'heading'    => _x( 'Línea Montessori para jugar y aprender', 'Hero heading', 'maderamas' ),
 		'cta'        => _x( 'Ver línea Montessori', 'Hero CTA', 'maderamas' ),
-		'bg'         => 'bg-gradient-to-br from-promo-green/15 via-base to-base',
+		'bg'         => 'bg-gradient-to-br from-promo-green/30 via-base-2 to-promo-green/10',
 	),
 );
 
@@ -88,23 +88,23 @@ if ( empty( $maderamas_hero_slides ) ) {
 	return;
 }
 ?>
-<!-- wp:group {"align":"full","className":"js-swiper swiper relative","layout":{"type":"constrained"}} -->
-<div class="wp-block-group alignfull js-swiper swiper relative" data-autoplay="7000" data-loop="<?php echo esc_attr( count( $maderamas_hero_slides ) > 1 ? 'true' : 'false' ); ?>">
+<!-- wp:group {"align":"full","className":"js-swiper swiper relative maderamas-hero","layout":{"type":"constrained"}} -->
+<div class="wp-block-group alignfull js-swiper swiper relative maderamas-hero" data-autoplay="7000" data-loop="<?php echo esc_attr( count( $maderamas_hero_slides ) > 1 ? 'true' : 'false' ); ?>">
 	<div class="swiper-wrapper">
 		<?php foreach ( $maderamas_hero_slides as $maderamas_index => $maderamas_slide ) : ?>
 			<div class="swiper-slide">
-				<div class="<?php echo esc_attr( $maderamas_slide['bg'] ); ?>">
-					<div class="mx-auto grid max-w-[1240px] gap-8 px-4 py-12 sm:px-8 md:grid-cols-2 md:items-center md:gap-12 md:py-20">
+				<div class="flex min-h-[420px] items-center md:min-h-[520px] <?php echo esc_attr( $maderamas_slide['bg'] ); ?>">
+					<div class="mx-auto grid w-full max-w-[1240px] gap-6 px-4 py-10 sm:px-8 md:grid-cols-2 md:items-center md:gap-12 md:py-16">
 
-						<div class="order-2 flex flex-col items-start md:order-1">
+						<div class="flex flex-col items-start justify-center">
 							<span class="!mb-4 inline-flex items-center rounded-pill bg-surface px-4 py-1.5 text-xs font-semibold tracking-wide text-contrast-2 shadow-soft">
 								<?php echo esc_html( $maderamas_slide['badge'] ); ?>
 							</span>
 
 							<?php if ( 0 === $maderamas_index ) : ?>
-								<h1 class="wp-block-heading !mb-4 !leading-[1.15] tracking-tight has-xxx-large-font-size"><?php echo esc_html( $maderamas_slide['heading'] ); ?></h1>
+								<h1 class="wp-block-heading !mb-3 !leading-[1.15] tracking-tight has-xxx-large-font-size"><?php echo esc_html( $maderamas_slide['heading'] ); ?></h1>
 							<?php else : ?>
-								<p class="wp-block-heading !mb-4 !leading-[1.15] tracking-tight has-xxx-large-font-size font-display font-semibold" role="heading" aria-level="1"><?php echo esc_html( $maderamas_slide['heading'] ); ?></p>
+								<p class="wp-block-heading !mb-3 !leading-[1.15] tracking-tight has-xxx-large-font-size font-display font-semibold" role="heading" aria-level="1"><?php echo esc_html( $maderamas_slide['heading'] ); ?></p>
 							<?php endif; ?>
 
 							<p class="!mb-2 max-w-md has-contrast-2-color has-text-color has-large-font-size"><?php echo esc_html( $maderamas_slide['excerpt'] ); ?></p>
@@ -117,7 +117,7 @@ if ( empty( $maderamas_hero_slides ) ) {
 							</div>
 						</div>
 
-						<div class="order-1 flex justify-center md:order-2">
+						<div class="hidden justify-center md:flex">
 							<img
 								class="aspect-square w-full max-w-sm rounded-2xl bg-surface object-contain p-6 shadow-lifted sm:max-w-md"
 								src="<?php echo esc_url( $maderamas_slide['image_url'] ); ?>"
@@ -135,9 +135,14 @@ if ( empty( $maderamas_hero_slides ) ) {
 	</div>
 
 	<?php if ( count( $maderamas_hero_slides ) > 1 ) : ?>
-		<div class="swiper-pagination !bottom-4"></div>
-		<button type="button" class="swiper-button-prev !left-4 !text-contrast" aria-label="<?php echo esc_attr_x( 'Anterior', 'Carrusel', 'maderamas' ); ?>"></button>
-		<button type="button" class="swiper-button-next !right-4 !text-contrast" aria-label="<?php echo esc_attr_x( 'Siguiente', 'Carrusel', 'maderamas' ); ?>"></button>
+		<div class="swiper-pagination maderamas-hero-pagination"></div>
+
+		<button type="button" class="swiper-button-prev maderamas-hero-nav maderamas-hero-nav-prev" aria-label="<?php echo esc_attr_x( 'Anterior', 'Carrusel', 'maderamas' ); ?>">
+			<?php echo maderamas_icon( 'chevron-left', 'size-5' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- локальный доверенный SVG-хелпер, не пользовательский ввод, см. его докблок в functions.php. ?>
+		</button>
+		<button type="button" class="swiper-button-next maderamas-hero-nav maderamas-hero-nav-next" aria-label="<?php echo esc_attr_x( 'Siguiente', 'Carrusel', 'maderamas' ); ?>">
+			<?php echo maderamas_icon( 'chevron-right', 'size-5' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- локальный доверенный SVG-хелпер, не пользовательский ввод, см. его докблок в functions.php. ?>
+		</button>
 	<?php endif; ?>
 </div>
 <!-- /wp:group -->

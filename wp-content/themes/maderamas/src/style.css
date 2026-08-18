@@ -587,3 +587,82 @@ video {
 }
 
 /* stylelint-enable selector-class-pattern */
+
+/**
+ * Hero-карусель (patterns/hero.php). Стрелки/точки Swiper по умолчанию —
+ * маленький глиф на прозрачном фоне и серые точки-по-умолчанию, выглядит
+ * дёшево на большом полноэкранном блоке. Полностью переопределяем: свой
+ * глиф-стрелка убирает штатный ::after, кнопки — круглые с фоном/тенью,
+ * точки — крупнее, активная вытягивается в пилюлю (частый паттерн у
+ * качественных hero-каруселей, в т.ч. у референса заказчика roststul.ru).
+ */
+.maderamas-hero .swiper-button-prev::after,
+.maderamas-hero .swiper-button-next::after {
+	content: none;
+}
+
+.maderamas-hero-nav {
+	top: 50%;
+	display: flex;
+	width: 2.75rem;
+	height: 2.75rem;
+	align-items: center;
+	justify-content: center;
+	margin-top: -1.375rem;
+	border-radius: 999px;
+	background-color: var(--wp--preset--color--surface);
+	color: var(--wp--preset--color--contrast);
+	box-shadow: var(--wp--preset--shadow--soft);
+	transition: background-color 220ms, transform 220ms;
+}
+
+.maderamas-hero-nav-prev {
+	left: 1rem;
+}
+
+.maderamas-hero-nav-next {
+	right: 1rem;
+}
+
+.maderamas-hero-nav:hover {
+	background-color: var(--wp--preset--color--primary);
+	color: var(--wp--preset--color--base);
+	transform: scale(1.05);
+}
+
+.maderamas-hero-nav:focus-visible {
+	outline: 2px solid var(--wp--preset--color--primary-dark);
+	outline-offset: 2px;
+}
+
+.maderamas-hero-nav.swiper-button-disabled {
+	display: none;
+}
+
+.maderamas-hero-pagination {
+	bottom: 1.25rem !important;
+}
+
+.maderamas-hero .swiper-pagination-bullet {
+	width: 0.5rem;
+	height: 0.5rem;
+	background-color: var(--wp--preset--color--contrast-2);
+	opacity: 0.4;
+	transition: all 220ms;
+}
+
+.maderamas-hero .swiper-pagination-bullet-active {
+	width: 1.5rem;
+	border-radius: 999px;
+	background-color: var(--wp--preset--color--primary);
+	opacity: 1;
+}
+
+/* Стрелки — только на md+: на мобильном без фото листать удобнее свайпом,
+   а пара кнопок 44px над коротким текстовым блоком смотрится тесно. */
+@media (max-width: 767px) {
+
+	.maderamas-hero-nav {
+		display: none;
+	}
+}

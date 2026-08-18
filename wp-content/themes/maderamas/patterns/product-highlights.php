@@ -27,7 +27,7 @@ $maderamas_shop_url = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_p
 	</div>
 	<!-- /wp:group -->
 
-	<!-- wp:woocommerce/product-collection {"query":{"perPage":4,"pages":0,"offset":0,"postType":"product","order":"desc","orderBy":"date","search":"","exclude":[],"inherit":false,"taxQuery":{},"isProductCollectionBlock":true,"woocommerceOnSale":false,"woocommerceStockStatus":["instock","onbackorder"],"woocommerceAttributes":[],"woocommerceHandPickedProducts":[]},"tagName":"div","displayLayout":{"type":"flex","columns":4,"shrinkColumns":true},"className":"maderamas-product-grid"} -->
+	<!-- wp:woocommerce/product-collection {"queryId":1,"query":{"perPage":4,"pages":0,"offset":0,"postType":"product","order":"desc","orderBy":"date","search":"","exclude":[],"inherit":false,"taxQuery":{},"isProductCollectionBlock":true,"woocommerceOnSale":false,"woocommerceStockStatus":["instock","onbackorder"],"woocommerceAttributes":[],"woocommerceHandPickedProducts":[]},"tagName":"div","displayLayout":{"type":"flex","columns":4,"shrinkColumns":true},"className":"maderamas-product-grid"} -->
 	<div class="wp-block-woocommerce-product-collection maderamas-product-grid">
 		<!-- wp:woocommerce/product-template -->
 			<!-- wp:group {"className":"card overflow-hidden","layout":{"type":"constrained"}} -->
