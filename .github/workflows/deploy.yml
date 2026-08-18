@@ -121,6 +121,21 @@ jobs:
             "wp-content/mu-plugins/" \
             "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/mu-plugins/"
 
+      # WordPress кэширует список паттернов темы (и другие файлы темы) в
+      # site transient на 12 часов (WP_Theme::get_block_patterns(), с 6.4)
+      # — новые/изменённые файлы в patterns/ иначе не подхватятся до
+      # истечения кэша. wp-cli на сервере уже стоит (см. docs/deploy.md).
+      - name: Сбросить кэш файлов темы
+        env:
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+          DEPLOY_PORT: ${{ vars.DEPLOY_PORT || 22 }}
+        run: |
+          SSH="ssh -i ~/.ssh/id_deploy -p $DEPLOY_PORT -o StrictHostKeyChecking=yes"
+          WP_ROOT=$(dirname "$DEPLOY_PATH")
+          $SSH "$DEPLOY_USER@$DEPLOY_HOST" "wp --path='$WP_ROOT' transient delete --all" || true
+
       - name: Убрать ключ
         if: always()
         run: rm -f ~/.ssh/id_deploy
