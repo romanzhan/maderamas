@@ -31,10 +31,36 @@ function maderamas_setup() {
 	// WooCommerce: подтверждаем поддержку, чтобы Woo не показывал предупреждение
 	// и отдавал свои блочные шаблоны вместо legacy-разметки.
 	add_theme_support( 'woocommerce' );
-	add_theme_support( 'wc-product-gallery-zoom' );
-	add_theme_support( 'wc-product-gallery-lightbox' );
-	add_theme_support( 'wc-product-gallery-slider' );
+
+	// Галерею товара (zoom/lightbox/flexslider) НЕ подключаем — заменена
+	// своей на Swiper (src/product-gallery.js, задача 015): один и тот же
+	// jQuery-плагин на каждую фичу против одной библиотеки на весь сайт,
+	// плюс это чинит жалобу «то сужается, то расширяется» (свои слайды
+	// с фиксированной пропорцией вместо реальных размеров каждого фото).
+	// Разметку `woocommerce/product-image-gallery` не трогаем — те же
+	// data-thumb/href/alt атрибуты, что и раньше, наш JS их просто читает.
+	//
+	// Просто не объявлять эти supports недостаточно: WC_Template_Loader::init()
+	// сама включает их для любой FSE/блочной темы (`if ( wp_is_block_theme() )
+	// { self::add_support_for_product_page_gallery(); }` — независимо от
+	// того, что заявляет тема) и делает это на action init, позже
+	// after_setup_theme, где мы сами. Поэтому явно снимаем на wp_loaded —
+	// это гарантированно позже init.
 }
+
+/**
+ * Снимает поддержку встроенной JS-галереи WooCommerce.
+ *
+ * @see maderamas_setup() — почему просто не объявлять supports недостаточно.
+ *
+ * @return void
+ */
+function maderamas_disable_default_product_gallery() {
+	remove_theme_support( 'wc-product-gallery-zoom' );
+	remove_theme_support( 'wc-product-gallery-lightbox' );
+	remove_theme_support( 'wc-product-gallery-slider' );
+}
+add_action( 'wp_loaded', 'maderamas_disable_default_product_gallery' );
 add_action( 'after_setup_theme', 'maderamas_setup' );
 
 /**

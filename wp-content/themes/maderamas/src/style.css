@@ -322,3 +322,206 @@ video {
 }
 
 /* stylelint-enable selector-class-pattern */
+
+/**
+ * Галерея товара (src/product-gallery.js, задача 015).
+ *
+ * Причина всей переделки — жалоба заказчика: раньше слайд занимал
+ * реальные пропорции конкретного фото, высота «прыгала» между снимками.
+ * Фикс — единая квадратная область (aspect-ratio) с object-fit:contain
+ * на каждом слайде: фото разных пропорций вписываются без обрезки и
+ * без скачков высоты. Классы maderamas-gallery-* — наши (задаются в
+ * product-gallery.js), не сторонние, но CSS всё равно вне @layer
+ * components: тут нужны aspect-ratio/object-fit, которых у @apply нет
+ * готовыми классами без огромного списка arbitrary-значений.
+ */
+.maderamas-gallery-main {
+	aspect-ratio: 1 / 1;
+	overflow: hidden;
+	border-radius: 1rem;
+	background-color: var(--wp--preset--color--surface);
+}
+
+.maderamas-gallery-main .swiper-slide {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.maderamas-gallery-main .swiper-slide img {
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+}
+
+.maderamas-gallery-main .swiper-zoom-container {
+	display: flex;
+	width: 100%;
+	height: 100%;
+	align-items: center;
+	justify-content: center;
+	cursor: zoom-in;
+}
+
+.maderamas-gallery-thumbs {
+	margin-top: 0.75rem;
+}
+
+.maderamas-gallery-thumbs .swiper-slide {
+	aspect-ratio: 1 / 1;
+	overflow: hidden;
+	border-radius: 0.5rem;
+	cursor: pointer;
+	opacity: 0.6;
+	border: 2px solid transparent;
+	transition: opacity 220ms, border-color 220ms;
+}
+
+.maderamas-gallery-thumbs .swiper-slide img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.maderamas-gallery-thumbs .swiper-slide:hover {
+	opacity: 1;
+}
+
+.maderamas-gallery-thumbs .swiper-slide-thumb-active {
+	opacity: 1;
+	border-color: var(--wp--preset--color--primary);
+}
+
+/**
+ * Степпер количества (src/quantity-stepper.js) — наши классы, но CSS
+ * плоский (без @apply): три состояния кнопки (hover/active/disabled)
+ * и общая рамка на группе проще держать в одном месте, чем размазывать
+ * по @layer components ради пары строк.
+ */
+.quantity-stepper {
+	display: inline-flex;
+	align-items: stretch;
+	height: 2.75rem;
+	border: 1px solid var(--wp--preset--color--border);
+	border-radius: 999px;
+	overflow: hidden;
+}
+
+.quantity-stepper-button {
+	display: inline-flex;
+	width: 2.75rem;
+	flex-shrink: 0;
+	align-items: center;
+	justify-content: center;
+	background-color: transparent;
+	color: var(--wp--preset--color--contrast);
+	transition: background-color 220ms;
+}
+
+.quantity-stepper-button:hover {
+	background-color: var(--wp--preset--color--base-2);
+}
+
+.quantity-stepper-button:active {
+	background-color: var(--wp--preset--color--border);
+}
+
+.quantity-stepper-button:focus-visible {
+	outline: 2px solid var(--wp--preset--color--primary-dark);
+	outline-offset: -2px;
+}
+
+.quantity-stepper input.qty {
+	width: 3.5rem;
+	border: 0;
+	border-left: 1px solid var(--wp--preset--color--border);
+	border-right: 1px solid var(--wp--preset--color--border);
+	text-align: center;
+	background-color: transparent;
+	color: var(--wp--preset--color--contrast);
+
+	/* Нативный спиннер браузера больше не нужен — кнопки уже есть. */
+	appearance: textfield;
+}
+
+.quantity-stepper input.qty::-webkit-outer-spin-button,
+.quantity-stepper input.qty::-webkit-inner-spin-button {
+	appearance: none;
+	margin: 0;
+}
+
+/* Названия ниже — легаси-разметка WooCommerce (`.variations`/`.qty`/
+   `.single_add_to_cart_button` — не BEM даже, старый CSS-стиль плагина
+   с подчёркиваниями), не наши, переименовать нельзя. */
+/* stylelint-disable selector-class-pattern */
+
+.variations select {
+	width: 100%;
+	appearance: none;
+	min-height: 2.75rem;
+	border: 1px solid var(--wp--preset--color--border);
+	border-radius: 0.375rem;
+	background-color: var(--wp--preset--color--surface);
+	padding: 0.5rem 2.25rem 0.5rem 0.875rem;
+	color: var(--wp--preset--color--contrast);
+	transition: border-color 220ms;
+}
+
+.variations select:hover {
+	border-color: var(--wp--preset--color--muted);
+}
+
+.variations select:focus-visible {
+	outline: 2px solid var(--wp--preset--color--primary-dark);
+	outline-offset: 2px;
+}
+
+.variations td.value {
+	position: relative;
+}
+
+.variations td.value::after {
+	content: "";
+	position: absolute;
+	top: 50%;
+	right: 0.75rem;
+	width: 1rem;
+	height: 1rem;
+	transform: translateY(-50%);
+	background-color: var(--wp--preset--color--muted);
+	-webkit-mask: url(../assets/icons/chevron-down.svg) center / contain no-repeat;
+	mask: url(../assets/icons/chevron-down.svg) center / contain no-repeat;
+	pointer-events: none;
+}
+
+.single_add_to_cart_button {
+	display: inline-flex;
+	min-height: 2.75rem;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5rem;
+	border-radius: 999px;
+	background-color: var(--wp--preset--color--primary);
+	padding: 0.75rem 1.75rem;
+	color: var(--wp--preset--color--base);
+	font-weight: 600;
+	transition: background-color 220ms;
+}
+
+.single_add_to_cart_button:hover {
+	background-color: var(--wp--preset--color--primary-dark);
+	color: var(--wp--preset--color--base);
+}
+
+.single_add_to_cart_button:focus-visible {
+	outline: 2px solid var(--wp--preset--color--primary-dark);
+	outline-offset: 2px;
+}
+
+.single_add_to_cart_button.disabled,
+.single_add_to_cart_button:disabled {
+	pointer-events: none;
+	opacity: 0.5;
+}
+
+/* stylelint-enable selector-class-pattern */
