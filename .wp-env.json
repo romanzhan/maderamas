@@ -16,7 +16,8 @@
 		"WP_DEBUG_DISPLAY": true,
 		"SCRIPT_DEBUG": true,
 		"WP_ENVIRONMENT_TYPE": "local",
-		"WP_DEFAULT_THEME": "maderamas"
+		"WP_DEFAULT_THEME": "maderamas",
+		"WP_DEVELOPMENT_MODE": "theme"
 	},
 	"env": {
 		"tests": {
