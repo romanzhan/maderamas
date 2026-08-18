@@ -22,25 +22,25 @@ $maderamas_shop_url = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_p
 		<!-- /wp:heading -->
 
 		<!-- wp:paragraph {"className":"!m-0"} -->
-		<p class="!m-0"><a class="text-sm font-semibold text-primary no-underline" href="<?php echo esc_url( $maderamas_shop_url ); ?>" style="text-decoration:none"><?php echo esc_html_x( 'Ver todas →', 'Product grid link', 'maderamas' ); ?></a></p>
+		<p class="!m-0"><a class="text-sm font-semibold text-primary no-underline transition-colors duration-base hover:text-primary-dark" href="<?php echo esc_url( $maderamas_shop_url ); ?>" style="text-decoration:none"><?php echo esc_html_x( 'Ver todas →', 'Product grid link', 'maderamas' ); ?></a></p>
 		<!-- /wp:paragraph -->
 	</div>
 	<!-- /wp:group -->
 
-	<!-- wp:woocommerce/product-collection {"query":{"perPage":3,"pages":0,"offset":0,"postType":"product","order":"desc","orderBy":"date","search":"","exclude":[],"inherit":false,"taxQuery":{},"isProductCollectionBlock":true,"woocommerceOnSale":false,"woocommerceStockStatus":["instock","onbackorder"],"woocommerceAttributes":[],"woocommerceHandPickedProducts":[]},"tagName":"div","displayLayout":{"type":"flex","columns":3},"className":"maderamas-product-grid"} -->
+	<!-- wp:woocommerce/product-collection {"queryId":1,"query":{"perPage":4,"pages":0,"offset":0,"postType":"product","order":"desc","orderBy":"date","search":"","exclude":[],"inherit":false,"taxQuery":{},"isProductCollectionBlock":true,"woocommerceOnSale":false,"woocommerceStockStatus":["instock","onbackorder"],"woocommerceAttributes":[],"woocommerceHandPickedProducts":[]},"tagName":"div","displayLayout":{"type":"flex","columns":4,"shrinkColumns":true},"className":"maderamas-product-grid"} -->
 	<div class="wp-block-woocommerce-product-collection maderamas-product-grid">
 		<!-- wp:woocommerce/product-template -->
-			<!-- wp:group {"className":"overflow-hidden rounded-2xl border border-border bg-surface","layout":{"type":"constrained"}} -->
-			<div class="wp-block-group overflow-hidden rounded-2xl border border-border bg-surface">
+			<!-- wp:group {"className":"card overflow-hidden","layout":{"type":"constrained"}} -->
+			<div class="wp-block-group card overflow-hidden">
 				<!-- wp:woocommerce/product-image {"showSaleBadge":true,"imageSizing":"thumbnail","isDescendentOfQueryLoop":true} -->
 					<!-- wp:woocommerce/product-sale-badge {"isDescendentOfQueryLoop":true,"align":"left","className":"!bg-promo-raspberry"} /-->
 				<!-- /wp:woocommerce/product-image -->
 
-				<!-- wp:group {"className":"px-4 pb-4 pt-3","layout":{"type":"constrained"}} -->
-				<div class="wp-block-group px-4 pb-4 pt-3">
-					<!-- wp:post-title {"level":4,"isLink":true,"className":"!m-0 !mb-1 !no-underline","fontSize":"medium","style":{"typography":{"lineHeight":"1.3"}}} /-->
+				<!-- wp:group {"className":"px-3 pb-3 pt-2.5","layout":{"type":"constrained"}} -->
+				<div class="wp-block-group px-3 pb-3 pt-2.5">
+					<!-- wp:post-title {"level":4,"isLink":true,"className":"!m-0 !mb-1 !no-underline","fontSize":"small","style":{"typography":{"lineHeight":"1.3"}}} /-->
 
-					<!-- wp:woocommerce/product-price {"isDescendentOfQueryLoop":true,"fontSize":"medium","className":"!mb-3"} /-->
+					<!-- wp:woocommerce/product-price {"isDescendentOfQueryLoop":true,"fontSize":"medium","className":"!mb-2"} /-->
 
 					<!-- wp:woocommerce/product-button {"isDescendentOfQueryLoop":true,"textAlign":"center","className":"is-style-outline !rounded-pill !w-full"} /-->
 				</div>

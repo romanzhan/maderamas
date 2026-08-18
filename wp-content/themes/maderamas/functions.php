@@ -31,10 +31,36 @@ function maderamas_setup() {
 	// WooCommerce: подтверждаем поддержку, чтобы Woo не показывал предупреждение
 	// и отдавал свои блочные шаблоны вместо legacy-разметки.
 	add_theme_support( 'woocommerce' );
-	add_theme_support( 'wc-product-gallery-zoom' );
-	add_theme_support( 'wc-product-gallery-lightbox' );
-	add_theme_support( 'wc-product-gallery-slider' );
+
+	// Галерею товара (zoom/lightbox/flexslider) НЕ подключаем — заменена
+	// своей на Swiper (src/product-gallery.js, задача 015): один и тот же
+	// jQuery-плагин на каждую фичу против одной библиотеки на весь сайт,
+	// плюс это чинит жалобу «то сужается, то расширяется» (свои слайды
+	// с фиксированной пропорцией вместо реальных размеров каждого фото).
+	// Разметку `woocommerce/product-image-gallery` не трогаем — те же
+	// data-thumb/href/alt атрибуты, что и раньше, наш JS их просто читает.
+	//
+	// Просто не объявлять эти supports недостаточно: WC_Template_Loader::init()
+	// сама включает их для любой FSE/блочной темы (`if ( wp_is_block_theme() )
+	// { self::add_support_for_product_page_gallery(); }` — независимо от
+	// того, что заявляет тема) и делает это на action init, позже
+	// after_setup_theme, где мы сами. Поэтому явно снимаем на wp_loaded —
+	// это гарантированно позже init.
 }
+
+/**
+ * Снимает поддержку встроенной JS-галереи WooCommerce.
+ *
+ * @see maderamas_setup() — почему просто не объявлять supports недостаточно.
+ *
+ * @return void
+ */
+function maderamas_disable_default_product_gallery() {
+	remove_theme_support( 'wc-product-gallery-zoom' );
+	remove_theme_support( 'wc-product-gallery-lightbox' );
+	remove_theme_support( 'wc-product-gallery-slider' );
+}
+add_action( 'wp_loaded', 'maderamas_disable_default_product_gallery' );
 add_action( 'after_setup_theme', 'maderamas_setup' );
 
 /**
@@ -186,3 +212,71 @@ function maderamas_register_patterns() {
 	}
 }
 add_action( 'init', 'maderamas_register_patterns', 5 );
+
+/**
+ * Инлайнит SVG-иконку из assets/icons/ с нужными классами.
+ *
+ * Источник — статичные файлы пакета lucide-static (assets/icons/*.svg),
+ * скопированные один раз при сборке дизайн-системы: никаких сгенерированных
+ * "на глаз" SVG в теме быть не должно. Иконки используют
+ * `stroke="currentColor"`, поэтому цвет управляется через CSS (`text-*`
+ * классы), а не хардкодится в самом файле.
+ *
+ * Вывод уже является доверенным содержимым локального файла темы (не
+ * пользовательский ввод), поэтому дополнительное экранирование не требуется —
+ * но атрибуты class/aria добавляются через безопасную замену, не через
+ * конкатенацию произвольной строки.
+ *
+ * @param string $name        Имя файла без расширения, например 'chevron-down'.
+ * @param string $classes     Дополнительные классы Tailwind, например 'size-4 text-primary'.
+ * @param array  $attributes  Доп. HTML-атрибуты вида 'attr' => 'value' (например aria-hidden).
+ * @return string HTML разметки SVG или пустая строка, если иконки нет.
+ */
+function maderamas_icon( $name, $classes = '', $attributes = array() ) {
+	static $cache = array();
+
+	$name = sanitize_key( $name );
+
+	if ( ! isset( $cache[ $name ] ) ) {
+		$path = get_theme_file_path( 'assets/icons/' . $name . '.svg' );
+
+		if ( ! file_exists( $path ) ) {
+			$cache[ $name ] = '';
+		} else {
+			// Локальный файл темы, не удалённый URL — wp_remote_get() тут неуместен.
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+			$cache[ $name ] = (string) file_get_contents( $path );
+		}
+	}
+
+	$svg = $cache[ $name ];
+
+	if ( '' === $svg ) {
+		return '';
+	}
+
+	// Базовый класс lucide убираем — размер и позиционирование задаём сами
+	// через Tailwind, иначе иконки конфликтуют с line-height окружающего текста.
+	// \s+ (не \s) — у lucide-static класс на отдельной строке с отступом,
+	// одиночный \s съедал только один из пробельных символов и оставлял
+	// пустую строку внутри тега.
+	$svg = preg_replace( '/\s+class="[^"]*"/', '', $svg, 1 );
+
+	$attributes['class'] = trim( 'maderamas-icon shrink-0 ' . $classes );
+
+	if ( ! isset( $attributes['aria-hidden'] ) ) {
+		$attributes['aria-hidden'] = 'true';
+	}
+
+	$attr_html = '';
+
+	foreach ( $attributes as $attr => $value ) {
+		$attr_html .= sprintf( ' %s="%s"', esc_attr( $attr ), esc_attr( $value ) );
+	}
+
+	// Файлы lucide-static начинаются с `<!-- @license ... -->` перед самим
+	// `<svg`, поэтому якорь ^ (начало строки) тут не подходит — искали
+	// первое вхождение `<svg` где угодно в строке (limit 1 всё равно
+	// гарантирует замену только этого одного тега).
+	return preg_replace( '/<svg/', '<svg' . $attr_html, $svg, 1 );
+}

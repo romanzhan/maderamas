@@ -7,5 +7,13 @@
 
 import './style.css';
 import { initCarousels } from './carousels';
+import { initMobileMenu } from './mobile-menu';
+import { initProductGallery } from './product-gallery';
+import { initQuantitySteppers } from './quantity-stepper';
 
-document.addEventListener( 'DOMContentLoaded', initCarousels );
+document.addEventListener( 'DOMContentLoaded', () => {
+	initCarousels();
+	initMobileMenu();
+	initProductGallery();
+	initQuantitySteppers();
+} );
