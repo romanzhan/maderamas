@@ -113,4 +113,76 @@ function maderamas_register_pattern_categories() {
 		array( 'label' => __( 'Maderamas', 'maderamas' ) )
 	);
 }
-add_action( 'init', 'maderamas_register_pattern_categories' );
+add_action( 'init', 'maderamas_register_pattern_categories', 4 );
+
+/**
+ * Регистрирует паттерны темы по явному списку файлов — не полагаясь на
+ * автосканирование WordPress (`_register_theme_block_patterns()` →
+ * `WP_Theme::get_block_patterns()` → `scandir()`).
+ *
+ * На это есть причина, не оптимизация ради оптимизации: и локальный
+ * `wp-env` на Windows (bind-mount через Docker Desktop), и часть
+ * shared-хостингов кэшируют ЛИСТИНГ директории на уровне файловой
+ * системы дольше, чем в неё физически попадает новый файл — так что
+ * `scandir('patterns/')` какое-то время не видит новый файл, хотя
+ * `file_exists()` на точный путь уже отвечает true. Плюс сам
+ * `get_block_patterns()` кэширует результат в site transient на часы
+ * (см. `docs/tasks/004-homepage-catalog-section.md`). Прямой `require`
+ * по известному пути обеим проблемам не подвержен.
+ *
+ * Новый паттерн — обязательно добавить сюда в список.
+ *
+ * @return void
+ */
+function maderamas_register_patterns() {
+	$patterns_dir = get_theme_file_path( 'patterns' );
+	$registry     = WP_Block_Patterns_Registry::get_instance();
+
+	$files = array(
+		'hero.php',
+		'category-tiles.php',
+		'product-highlights.php',
+		'promo-banner.php',
+	);
+
+	foreach ( $files as $file ) {
+		$path = $patterns_dir . '/' . $file;
+
+		if ( ! file_exists( $path ) ) {
+			continue;
+		}
+
+		$headers = get_file_data(
+			$path,
+			array(
+				'title'       => 'Title',
+				'slug'        => 'Slug',
+				'description' => 'Description',
+				'categories'  => 'Categories',
+			)
+		);
+
+		if ( empty( $headers['slug'] ) || empty( $headers['title'] ) ) {
+			continue;
+		}
+
+		if ( $registry->is_registered( $headers['slug'] ) ) {
+			continue;
+		}
+
+		ob_start();
+		require $path;
+		$content = ob_get_clean();
+
+		register_block_pattern(
+			$headers['slug'],
+			array(
+				'title'       => $headers['title'],
+				'description' => $headers['description'],
+				'categories'  => array_filter( wp_parse_list( (string) $headers['categories'] ) ),
+				'content'     => $content,
+			)
+		);
+	}
+}
+add_action( 'init', 'maderamas_register_patterns', 5 );
