@@ -46,13 +46,13 @@ $maderamas_tiles = array(
 		<?php foreach ( $maderamas_tiles as $maderamas_tile ) : ?>
 			<a
 				href="<?php echo esc_url( $maderamas_tile['url'] ); ?>"
-				class="relative flex min-h-[120px] flex-col justify-between overflow-hidden rounded-2xl p-5 no-underline <?php echo esc_attr( $maderamas_tile['bg'] ); ?> <?php echo esc_attr( $maderamas_tile['text'] ?? 'text-white' ); ?>"
+				class="relative flex min-h-[120px] flex-col justify-between overflow-hidden rounded-2xl p-5 no-underline transition-transform duration-base hover:-translate-y-0.5 active:translate-y-0 <?php echo esc_attr( $maderamas_tile['bg'] ); ?> <?php echo esc_attr( $maderamas_tile['text'] ?? 'text-white' ); ?>"
 				style="text-decoration:none"
 			>
-				<span class="max-w-[80%] font-display text-[17px] font-extrabold leading-tight tracking-tight">
+				<span class="max-w-[80%] font-display text-medium font-extrabold leading-tight tracking-tight">
 					<?php echo esc_html( $maderamas_tile['title'] ); ?>
 				</span>
-				<span class="text-[13px] opacity-90"><?php echo esc_html( $maderamas_tile['sub'] ); ?></span>
+				<span class="text-small opacity-90"><?php echo esc_html( $maderamas_tile['sub'] ); ?></span>
 				<span class="absolute -bottom-3.5 -right-3.5 h-[70px] w-[70px] rounded-2xl bg-white/20"></span>
 			</a>
 		<?php endforeach; ?>
