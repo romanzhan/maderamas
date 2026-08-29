@@ -1255,6 +1255,24 @@
       "800": "torre-3-800-1849a46f.webp"
     }
   },
+  "blog-altura": {
+    "type": "content",
+    "width": 1920,
+    "height": 1920,
+    "sizes": [
+      480,
+      960,
+      1600,
+      1920
+    ],
+    "format": "webp",
+    "files": {
+      "480": "blog-altura-480-68f3758f.webp",
+      "960": "blog-altura-960-68f3758f.webp",
+      "1600": "blog-altura-1600-68f3758f.webp",
+      "1920": "blog-altura-1920-68f3758f.webp"
+    }
+  },
   "blog-como-elegir": {
     "type": "content",
     "width": 1920,
@@ -1271,6 +1289,24 @@
       "960": "blog-como-elegir-960-8ef2d90d.webp",
       "1600": "blog-como-elegir-1600-8ef2d90d.webp",
       "1920": "blog-como-elegir-1920-8ef2d90d.webp"
+    }
+  },
+  "blog-postura": {
+    "type": "content",
+    "width": 1920,
+    "height": 1920,
+    "sizes": [
+      480,
+      960,
+      1600,
+      1920
+    ],
+    "format": "webp",
+    "files": {
+      "480": "blog-postura-480-e7ca9a68.webp",
+      "960": "blog-postura-960-e7ca9a68.webp",
+      "1600": "blog-postura-1600-e7ca9a68.webp",
+      "1920": "blog-postura-1920-e7ca9a68.webp"
     }
   },
   "home-hero-mid": {

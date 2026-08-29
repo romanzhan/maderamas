@@ -381,6 +381,7 @@ function articlePage(article, byDate, products, withCard) {
   return {
     ...article,
     body: paragraphs(article.body),
+    readingMinutes: readingMinutes(`${article.excerpt} ${article.body}`),
     related: (article.relatedProducts ?? [])
       .map((id) => products.find((item) => item.id === id))
       .filter(Boolean)
@@ -388,6 +389,18 @@ function articlePage(article, byDate, products, withCard) {
     // Соседние статьи: ближайшие по списку, а не «похожие» — похожесть нам считать нечем
     more: others.slice(0, 3),
   }
+}
+
+// Скорость обычного чтения про себя — около 200 слов в минуту. Меньше минуты не бывает:
+// «0 min de lectura» читается ошибкой, а не короткой заметкой
+const WORDS_PER_MINUTE = 200
+
+/** Время чтения статьи в минутах — считается по тексту, отдельным полем в данных его нет */
+function readingMinutes(text) {
+  const words = String(text ?? '')
+    .split(/\s+/)
+    .filter(Boolean).length
+  return Math.max(1, Math.round(words / WORDS_PER_MINUTE))
 }
 
 /**
