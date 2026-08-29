@@ -2,7 +2,9 @@
       Вид:     primary | secondary | tertiary | iconOnly | promo (жёлтая, только
                вместе с onDark — она бывает лишь на промо-поверхности)
       Размер:  sizeSm | sizeMd | sizeLg   (у iconOnly размер один)
-      Опции:   icon, iconRight (имя из спрайта), fullWidth, onDark, disabled, loading,
+      Опции:   icon, iconRight (имя из спрайта), iconFilled — брендовый значок
+               (Simple Icons): он рисуется заливкой, а не контуром, и без флага остался бы
+               пустым местом; fullWidth, onDark, disabled, loading,
                href — тогда это переход, и элемент становится ссылкой (компоненты.md 1.1:
                «Кнопка = <button>, переход = <a> — не путать»),
                onClick — выражение Alpine для нажатия (у ссылки его не бывает).
@@ -16,7 +18,7 @@
 {{#if href}}
   <a href="{{href}}" class="{{> button-class this}}" {{#if aria}}aria-label="{{t aria}}"{{/if}}>
     <span class="inline-flex items-center gap-2">
-      {{#if icon}}{{> icon empty name=icon class="size-5"}}{{/if}}
+      {{#if icon}}{{> icon empty name=icon class="size-5" filled=iconFilled}}{{/if}}
       <span {{#if bindLabel}}x-text="{{bindLabel}}"{{/if}}
         >{{#if text}}{{text}}{{else}}{{t label}}{{/if}}</span>
       {{#if iconRight}}{{> icon empty name=iconRight class="size-5"}}{{/if}}
@@ -36,14 +38,14 @@
     class="{{> button-class this}}"
   >
     {{#if iconOnly}}
-      {{> icon empty name=icon class="size-5"}}
+      {{> icon empty name=icon class="size-5" filled=iconFilled}}
     {{else}}
       {{!-- При загрузке текст остаётся на месте, но невидим: ширина кнопки не прыгает --}}
       <span
         class="inline-flex items-center gap-2 {{#if loading}}invisible{{/if}}"
         {{#if bindLoading}}x-bind:class="{{bindLoading}} && 'invisible'"{{/if}}
       >
-        {{#if icon}}{{> icon empty name=icon class="size-5"}}{{/if}}
+        {{#if icon}}{{> icon empty name=icon class="size-5" filled=iconFilled}}{{/if}}
         <span {{#if bindLabel}}x-text="{{bindLabel}}"{{/if}}
           >{{#if text}}{{text}}{{else}}{{t label}}{{/if}}</span>
         {{#if iconRight}}{{> icon empty name=iconRight class="size-5"}}{{/if}}
