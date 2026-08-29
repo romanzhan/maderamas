@@ -8,7 +8,7 @@
   <section id="descripcion" x-data="{ open: false }">
     <h2 class="font-display text-h3 lg:text-h3-lg">{{t "product.tabDescription"}}</h2>
 
-    <div class="mt-4 flex max-w-prose flex-col gap-3 text-charcoal/70">
+    <div id="descripcion-texto" class="mt-4 flex max-w-prose flex-col gap-3 text-charcoal/70">
       {{#each product.description}}
         {{#if (or (eq @index 0) (eq @index 1))}}
           <p>{{this}}</p>
@@ -22,6 +22,8 @@
       <button
         type="button"
         x-on:click="open = !open"
+        x-bind:aria-expanded="open"
+        aria-controls="descripcion-texto"
         x-text="open ? '{{t "common.readLess"}}' : '{{t "common.readMore"}}'"
         class="mt-3 text-small font-medium text-clay transition-colors duration-150
           hover:text-clay-hover"

@@ -57,18 +57,26 @@
     <div class="swiper mt-3" data-gallery-thumbs {{#unless product.slides.[1]}}hidden{{/unless}}>
       <div class="swiper-wrapper">
         {{#each product.slides}}
-          <div class="swiper-slide cursor-pointer">
-            <img
-              src="{{src}}"
-              srcset="{{srcset}}"
-              sizes="120px"
-              width="{{width}}"
-              height="{{height}}"
-              alt="{{thumbAlt}}"
-              class="aspect-square w-full rounded-lg bg-sand object-cover"
-              loading="lazy"
-              decoding="async"
-            />
+          {{!-- Кадр — кнопка, а не картинка в блоке: до простого блока не добраться
+                клавиатурой, а листалка слушает обычный клик, который Enter и даёт --}}
+          <div class="swiper-slide">
+            <button
+              type="button"
+              class="block w-full cursor-pointer rounded-lg focus-visible:outline-2
+                focus-visible:outline-offset-2 focus-visible:outline-clay"
+            >
+              <img
+                src="{{src}}"
+                srcset="{{srcset}}"
+                sizes="120px"
+                width="{{width}}"
+                height="{{height}}"
+                alt="{{thumbAlt}}"
+                class="aspect-square w-full rounded-lg bg-sand object-cover"
+                loading="lazy"
+                decoding="async"
+              />
+            </button>
           </div>
         {{/each}}
       </div>

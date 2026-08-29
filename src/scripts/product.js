@@ -14,6 +14,8 @@ export function productPage() {
     // Аксессуар живёт своим состоянием — он уходит в корзину отдельной строкой
     accessory: null,
     accessoryOn: false,
+    // Поле счётчика количества: находим один раз при подъёме страницы
+    qtyField: null,
     accessorySelected: {},
 
     init() {
@@ -37,6 +39,11 @@ export function productPage() {
         this.accessory = JSON.parse(extra.textContent)
         this.accessorySelected = { ...this.accessory.defaults }
       }
+
+      // Поле счётчика запоминаем здесь, а не ищем в момент нажатия: во время
+      // обработчика `$el` указывает на нажатую кнопку, поля внутри неё нет, и в корзину
+      // молча уходила одна штука вместо выбранных (поймано ревью 29.08.2026)
+      this.qtyField = this.$el.querySelector('#cantidad')
 
       this.syncSwatches()
       this.showGallery()
@@ -171,8 +178,7 @@ export function productPage() {
 
     add() {
       if (!this.inStock || !this.data) return
-      const field = this.$el.querySelector('#cantidad')
-      const qty = Math.max(1, Number(field?.value) || 1)
+      const qty = Math.max(1, Number(this.qtyField?.value) || 1)
       this.$store.cart.add(this.data.id, this.variantId, qty)
       // Отмеченный аксессуар уходит вместе со стулом, но отдельной строкой: у него
       // своя цена и свой цвет (компоненты.md 3.11)

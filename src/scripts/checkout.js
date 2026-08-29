@@ -46,6 +46,13 @@ export function checkoutView(maxQty, shippingCost) {
       // Ждём именно загрузки: до неё «нет строк» значит «ещё не знаем»
       this.$watch('ready', () => this.guard())
       this.guard()
+
+      // Возврат «назад» со страницы «спасибо»: браузер достаёт чекаут из своего кеша
+      // целиком, init() второй раз не бывает, а корзина к этому моменту уже пуста —
+      // и покупатель видел рабочую форму с итогом в ноль (поймано ревью 29.08.2026)
+      window.addEventListener('pageshow', (event) => {
+        if (event.persisted) this.guard()
+      })
     },
 
     guard() {
