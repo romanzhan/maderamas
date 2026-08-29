@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url'
 import {
   articleUrl,
   image,
+  imageAt,
   imageIds,
   inline,
   inlineJson,
@@ -13,6 +14,7 @@ import {
   paragraphs,
   productUrl,
   t,
+  video,
 } from './data.js'
 import { navigation } from './navigation.js'
 import { AXIS_PARAM, CONTENT_PAGES, SERVICE_PAGES, SHOWCASE } from './page-types.js'
@@ -36,7 +38,8 @@ const spritePath = resolve(srcDir, 'icons/sprite.svg')
 const iconsDir = resolve(srcDir, 'icons/source')
 
 export function pageContext(pagePath) {
-  const { site, dictionary, provinces, products, categories, articles, faq, pages } = loadData()
+  const { site, dictionary, provinces, products, categories, articles, faq, pages, instagram } =
+    loadData()
 
   // Флаг reviews выключает отзывы целиком, а не только секцию на странице товара:
   // звёзды не выводятся нигде (состояния-экранов.md п. 3). Гасим у источника — иначе
@@ -169,16 +172,11 @@ export function pageContext(pagePath) {
     articles: [...articles].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 6),
     faq: [...faq].sort((a, b) => a.order - b.order),
     picker,
-    // Живые кадры из собственной съёмки бренда: официальную ленту Instagram не
-    // встраиваем (страницы.md §1, блок 9)
-    instagram: [
-      'evolutiva-roble-2',
-      'evolutiva-roble-5',
-      'evolutiva-nogal-3',
-      'evolutiva-blanco-2',
-      'bebe-roble-1',
-      'torre-2',
-    ],
+    // Посты Instagram из данных: официальную ленту не встраиваем (страницы.md §1,
+    // блок 9). Вид плитки — производное от кадров, а не отдельное поле: пост с одним
+    // кадром это фото, с несколькими — карусель, с роликом — рилс, и хранить это
+    // третьим полем значило бы позволить ему разойтись с содержимым
+    instagram: instagram.map(instagramPost),
   }
 
   // Страница категории собирается здесь по адресу: файл страницы тонкий и знать
@@ -373,6 +371,28 @@ function contentPage(entry) {
 }
 
 /**
+ * Пост Instagram (страницы.md §1, блок 9). Кадры приходят готовыми: адрес ролика
+ * и обложка берутся из манифеста здесь, а не в разметке — вёрстка путей не знает
+ * (картинки.md §3).
+ */
+function instagramPost(post) {
+  const frames = (post.frames ?? []).map((frame) => ({
+    image: frame.image,
+    video: video(frame.video),
+    // Постер ролика — та же обложка, но одним адресом: атрибут poster шкалы ширин
+    // не понимает, а плитка в ленте не шире 400 CSS-пикселей
+    poster: imageAt(frame.image, 800),
+  }))
+
+  return {
+    ...post,
+    frames,
+    multiple: frames.length > 1,
+    hasVideo: frames.some((frame) => frame.video),
+  }
+}
+
+/**
  * Статья блога (страницы.md §14): лид абзацами, разделы, товары из подборки автора
  * и соседние статьи. Соседи берутся из общего списка по дате — второго порядка статей
  * в проекте нет. Разделы устроены так же, как у инфостраницы (данные.md §4): один
@@ -418,11 +438,7 @@ function readingMinutes(article) {
     parts.push(section.note?.text, section.quote)
   }
 
-  const words = parts
-    .filter(Boolean)
-    .join(' ')
-    .split(/\s+/)
-    .filter(Boolean).length
+  const words = parts.filter(Boolean).join(' ').split(/\s+/).filter(Boolean).length
   return Math.max(1, Math.round(words / WORDS_PER_MINUTE))
 }
 

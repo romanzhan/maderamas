@@ -1,0 +1,41 @@
+{{!-- Один кадр поста Instagram (компоненты.md 7.9): фотография или ролик.
+      Фотография ведёт на пост, ролик запускается на месте — два разных действия,
+      поэтому и два разных элемента, а не кнопка внутри ссылки.
+      Обязательные: frame (кадр из page-context), post; index — номер кадра для alt. --}}
+{{#if frame.video}}
+  <div class="relative" x-data="{ playing: false }">
+    {{!-- Пока ролик не запущен, его место держит обложка: она же postER у плеера,
+          поэтому кадр не прыгает при запуске --}}
+    <video
+      x-ref="video"
+      poster="{{frame.poster}}"
+      preload="none"
+      muted
+      loop
+      playsinline
+      x-bind:controls="playing"
+      class="aspect-portrait w-full bg-sand object-cover"
+    >
+      <source src="{{frame.video.src}}" type="video/mp4" />
+    </video>
+
+    <button
+      type="button"
+      x-show="!playing"
+      x-on:click="playing = true; $refs.video.play()"
+      class="absolute inset-0 flex items-center justify-center"
+    >
+      <span class="sr-only">{{t "home.instagramPlay"}}</span>
+      <span
+        class="flex size-14 items-center justify-center rounded-full bg-charcoal/45 text-cream
+          transition-colors duration-150 hover:bg-charcoal/70"
+      >{{> icon empty name="play" class="size-6" filled=true}}</span>
+    </button>
+  </div>
+{{else}}
+  <a href="{{post.url}}" target="_blank" rel="noopener" class="block">
+    {{> picture empty id=frame.image alt=post.alt ratio="aspect-portrait"
+        sizes="(min-width: 1024px) 25vw, 60vw"
+        class="aspect-portrait w-full object-cover"}}
+  </a>
+{{/if}}

@@ -40,6 +40,28 @@ const FLOWS = {
   content: { dir: 'content', sizes: [480, 960, 1600, 1920], ownWidth: true, budgetsKb: {} },
   // Превью для соцсетей: один JPEG, ограничение парсеров WhatsApp
   og: { dir: 'og', sizes: [1200], ratio: [1200, 630], format: 'jpeg', budgetsKb: { 1200: 300 } },
+  // Кадры-обложки постов Instagram: вертикальные 3:4 — так лента и выглядит у самой
+  // Instagram, а у нас это уже существующая пропорция шкалы (стандарты-размеров.md).
+  // Режем по центру, как товары: у рилса обложка бывает 9:16, и низ с подписями
+  // отрезать не жалко. Плитка в ленте не шире 400 CSS-пикселей, поэтому шкала короткая
+  social: {
+    dir: 'instagram',
+    sizes: [400, 800],
+    ratio: [3, 4],
+    crop: true,
+    budgetsKb: { 400: 60, 800: 150 },
+  },
+}
+
+// Видео постов Instagram. Через sharp оно не проходит и перекодировать его нечем:
+// ffmpeg — это новая зависимость ради шести файлов (принцип 7). Поэтому файл только
+// копируется под именем с хешем — вёрстка по-прежнему не знает путей, а замена
+// исходника сама сбрасывает кеш браузера
+const VIDEO = {
+  dir: 'video',
+  out: 'public/video',
+  extensions: new Set(['.mp4']),
+  budgetKb: 3000,
 }
 
 const SOURCE_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.webp'])
@@ -171,16 +193,66 @@ function ratioFits(flow, width, height, file) {
   return false
 }
 
+/**
+ * Видео: копия с хешем в имени, без обработки. Требования к исходнику владелец
+ * выполняет сам (картинки.md §6) — здесь только проверяется вес, чтобы страница
+ * не потяжелела молча.
+ */
+function processVideo() {
+  const dir = join(sourceRoot, VIDEO.dir)
+  if (!existsSync(dir)) return
+
+  const outDir = resolve(projectRoot, VIDEO.out)
+  mkdirSync(outDir, { recursive: true })
+
+  for (const file of readdirSync(dir)) {
+    const extension = extname(file).toLowerCase()
+    if (!VIDEO.extensions.has(extension)) continue
+
+    const id = file.slice(0, -extension.length)
+    if (!ID.test(id)) {
+      errors.push(`${file}: в имени только строчные латинские буквы, цифры и дефисы`)
+      continue
+    }
+    if (id in manifest) {
+      errors.push(`${file}: имя "${id}" уже занято картинкой — переименуйте`)
+      continue
+    }
+
+    const source = readFileSync(join(dir, file))
+    const hash = createHash('sha256').update(source).digest('hex').slice(0, 8)
+    const name = `${id}-${hash}.mp4`
+    const target = join(outDir, name)
+
+    if (!existsSync(target)) writeFileSync(target, source)
+
+    const weightKb = Math.round(source.length / 1024)
+    if (weightKb > VIDEO.budgetKb) {
+      warnings.push(`${name}: ${weightKb} КБ при бюджете ${VIDEO.budgetKb} КБ — сожмите ролик`)
+    }
+
+    manifest[id] = { type: 'video', format: 'mp4', files: { original: name } }
+  }
+}
+
 function removeStaleFiles() {
   const keep = new Set(Object.values(manifest).flatMap((entry) => Object.values(entry.files)))
+
   for (const file of readdirSync(outputRoot)) {
     if (!keep.has(file)) rmSync(join(outputRoot, file))
+  }
+
+  // Ролики лежат отдельно от картинок, и мусор в их папке копится по тем же правилам
+  const videoDir = resolve(projectRoot, VIDEO.out)
+  if (!existsSync(videoDir)) return
+  for (const file of readdirSync(videoDir)) {
+    if (!keep.has(file)) rmSync(join(videoDir, file))
   }
 }
 
 // Нет ни одной папки с исходниками — значит, их просто ещё не прислали. Молча выходим:
 // иначе пустой манифест снёс бы и файлы, и запись о них (у владельца исходников нет в git)
-if (!Object.values(FLOWS).some((flow) => existsSync(join(sourceRoot, flow.dir)))) {
+if (![...Object.values(FLOWS), VIDEO].some((flow) => existsSync(join(sourceRoot, flow.dir)))) {
   console.log('Исходников нет — конвейер пропущен, манифест не тронут.')
   process.exit(0)
 }
@@ -190,6 +262,8 @@ mkdirSync(outputRoot, { recursive: true })
 for (const [type, flow] of Object.entries(FLOWS)) {
   await processFlow(type, flow)
 }
+
+processVideo()
 
 for (const warning of warnings) console.warn(`Предупреждение: ${warning}`)
 

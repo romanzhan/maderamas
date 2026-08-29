@@ -342,6 +342,60 @@ function checkImages(ids, where, manifest) {
   }
 }
 
+/**
+ * Посты Instagram (данные.md §4а). Кадр обязателен всегда, ролик необязателен;
+ * вид плитки нигде не хранится — он выводится из кадров, поэтому и проверять его нечего.
+ */
+function checkInstagram(posts, images) {
+  const seen = new Set()
+
+  for (const post of posts) {
+    const where = `Пост Instagram "${post.id}"`
+    if (!SLUG.test(post.id ?? '')) fail(`${where}: неверный или пропущенный id`)
+    if (seen.has(post.id)) fail(`${where}: id повторяется`)
+    seen.add(post.id)
+
+    if (typeof post.alt !== 'string' || !post.alt.trim()) {
+      fail(`${where}: нет подписи alt — её читают вслух и видят при отключённых картинках`)
+    }
+
+    // Ссылка ведёт на сам пост: плитка без выхода в Instagram — тупик
+    if (!String(post.url ?? '').startsWith('https://instagram.com/')) {
+      fail(`${where}: url должен начинаться с https://instagram.com/`)
+    }
+
+    const frames = post.frames ?? []
+    if (!Array.isArray(frames) || !frames.length) {
+      fail(`${where}: нужен хотя бы один кадр в frames`)
+      continue
+    }
+
+    for (const [index, frame] of frames.entries()) {
+      const frameWhere = `${where}, кадр ${index + 1}`
+      const cover = images[frame.image]
+      if (!cover) {
+        fail(`${frameWhere}: обложки "${frame.image}" нет в манифесте — запустите npm run images`)
+      } else if (cover.type !== 'social') {
+        // Не ошибка: пока настоящих постов нет, в ленте стоят кадры товарной съёмки.
+        // Но такой кадр обрежется по центру под вертикаль, и знать об этом надо
+        warnings.push(
+          `${frameWhere}: обложка "${frame.image}" не из папки images-source/instagram — ` +
+            `её обрежет по центру под вертикальный кадр`,
+        )
+      }
+
+      if (frame.video) {
+        const clip = images[frame.video]
+        if (!clip) {
+          fail(`${frameWhere}: ролика "${frame.video}" нет в манифесте — запустите npm run images`)
+        } else if (clip.type !== 'video') {
+          fail(`${frameWhere}: "${frame.video}" — это картинка, а не ролик`)
+        }
+      }
+    }
+  }
+}
+
 /** То же для картинок блоков: отсутствие — предупреждение, на их месте живёт заглушка */
 function checkContentImages(ids, manifest) {
   for (const id of ids) {
@@ -362,6 +416,7 @@ function validate() {
     faq,
     pages,
     provinces,
+    instagram,
     images,
   } = loadData()
 
@@ -395,6 +450,7 @@ function validate() {
   checkRequiredText(articles, 'Статья', ['title', 'excerpt', 'body'])
   checkRequiredText(pages, 'Инфостраница', ['title', 'body'])
   checkRequiredText(faq, 'FAQ', ['topic', 'question', 'answer'])
+  checkInstagram(instagram, images)
   checkSections(pages, 'Инфостраница')
   checkSections(articles, 'Статья')
   checkTextLinks(articles, 'Статья')
