@@ -555,6 +555,20 @@
     background-color: var(--color-cream);
     opacity: 1;
   }
+
+  /* Точки на плитке поста Instagram. Плитка втрое меньше большого кадра, и те же точки
+     на ней читались элементом управления, а не подсказкой (замечание владельца
+     29.08.2026). Нажимать их нельзя (`clickable: false` в carousel.js), поэтому область
+     нажатия 24 им не нужна и рамка-распорка снята */
+  [data-carousel-compact] .swiper-pagination-bullet {
+    width: 4px;
+    height: 4px;
+    border-width: 2px;
+  }
+
+  [data-carousel-compact] .swiper-pagination-bullet-active {
+    width: 10px;
+  }
 }
 
 /* Подсветка совпадения в подсказках поиска (сложные-узлы.md п. 11). Браузерный жёлтый

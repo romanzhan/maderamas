@@ -14,7 +14,7 @@
     {{!-- Карусель внутри карусели: внешняя лента отдаёт жест внутренней, пока та
           не дойдёт до края (nested у Swiper). Точки лежат на кадре, стрелок нет —
           тот же вид, что у одиночного кадра (сложные-узлы.md п. 13а) --}}
-    <div data-carousel-root data-carousel-single data-carousel-nested
+    <div data-carousel-root data-carousel-single data-carousel-nested data-carousel-compact
       {{> carousel-labels empty photos=true}}>
       <div class="swiper">
         <div class="swiper-wrapper">
@@ -25,9 +25,13 @@
           {{/each}}
         </div>
 
-        <div class="pointer-events-none absolute inset-x-0 bottom-3 z-10 flex justify-center">
+        {{!-- Точки здесь только показывают, что кадров несколько: листают пальцем,
+              и нажимать в них никто не целится. Поэтому и подложка, и сами точки мельче,
+              чем у большого кадра, — на плитке в 300 пикселей крупные читались бы
+              элементом управления (замечание владельца 29.08.2026) --}}
+        <div class="pointer-events-none absolute inset-x-0 bottom-4 z-10 flex justify-center">
           <div
-            class="pointer-events-auto flex items-center rounded-full bg-charcoal/40 px-2 py-1"
+            class="flex items-center rounded-full bg-charcoal/30 px-1.5 py-1"
             data-carousel-dots
           ></div>
         </div>

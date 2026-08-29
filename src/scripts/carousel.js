@@ -71,7 +71,11 @@ export async function initCarousels() {
           },
       pagination: {
         el: own('[data-carousel-dots]'),
-        clickable: true,
+        // Компактные точки (карусель-пост в ленте Instagram) — индикатор «кадров
+        // несколько», а не кнопки: на плитке в 300 пикселей область нажатия 24 сделала бы
+        // их крупнее самого кадра. Не кнопка — значит, и правило области нажатия
+        // (стандарты-размеров.md п. 4) к ней не относится; листают пальцем
+        clickable: !root.hasAttribute('data-carousel-compact'),
       },
       a11y: {
         enabled: true,
