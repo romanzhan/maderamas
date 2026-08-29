@@ -1291,6 +1291,24 @@
       "1920": "blog-como-elegir-1920-8ef2d90d.webp"
     }
   },
+  "blog-cuidado": {
+    "type": "content",
+    "width": 1920,
+    "height": 1920,
+    "sizes": [
+      480,
+      960,
+      1600,
+      1920
+    ],
+    "format": "webp",
+    "files": {
+      "480": "blog-cuidado-480-2c251667.webp",
+      "960": "blog-cuidado-960-2c251667.webp",
+      "1600": "blog-cuidado-1600-2c251667.webp",
+      "1920": "blog-cuidado-1920-2c251667.webp"
+    }
+  },
   "blog-montessori": {
     "type": "content",
     "width": 1920,
