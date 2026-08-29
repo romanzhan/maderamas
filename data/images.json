@@ -1,4 +1,36 @@
 {
+  "almohadon-rayas-beige": {
+    "type": "product",
+    "width": 1200,
+    "height": 1200,
+    "sizes": [
+      400,
+      800,
+      1200
+    ],
+    "format": "webp",
+    "files": {
+      "400": "almohadon-rayas-beige-400-09664332.webp",
+      "800": "almohadon-rayas-beige-800-09664332.webp",
+      "1200": "almohadon-rayas-beige-1200-09664332.webp"
+    }
+  },
+  "almohadon-rayas-gris": {
+    "type": "product",
+    "width": 1200,
+    "height": 1200,
+    "sizes": [
+      400,
+      800,
+      1200
+    ],
+    "format": "webp",
+    "files": {
+      "400": "almohadon-rayas-gris-400-924a5428.webp",
+      "800": "almohadon-rayas-gris-800-924a5428.webp",
+      "1200": "almohadon-rayas-gris-1200-924a5428.webp"
+    }
+  },
   "alta-2-1": {
     "type": "product",
     "width": 1200,
