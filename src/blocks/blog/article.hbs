@@ -1,5 +1,8 @@
-{{!-- Статья блога (страницы.md §14): обложка → заголовок → дата → текст в узкой колонке →
+{{!-- Статья блога (страницы.md §14): заголовок → дата и время чтения → обложка → текст →
       блок в каталог → товары из подборки автора → соседние статьи.
+      Обложка квадратная, как все фотографии проекта. На широком экране она уходит
+      вправо от текста: колонка текста узкая по правилу длины строки
+      (стандарты-размеров.md п. 6), и место справа от неё иначе пустует.
       Блок в каталог стоит всегда, даже когда товаров у статьи нет: иначе статья
       становится тупиком. Обложки нет — кадра нет вовсе, а не заглушка: у статьи
       картинка не смысловая, и пустой прямоугольник читался бы браком
@@ -9,29 +12,37 @@
     {{> breadcrumbs empty items=breadcrumbs.items plain=breadcrumbs.plain}}
   </div>
 
-  {{!-- Обложка квадратная, как все фотографии проекта, и потому стоит в колонке текста,
-        а не во всю ширину: квадрат во весь экран занял бы его целиком --}}
-  {{#if article.cover}}
-    <div class="page-container mt-6 lg:mt-8">
-      <div class="max-w-prose overflow-hidden rounded-2xl">
-        {{> picture empty id=article.cover alt=article.title
-            sizes="(min-width: 40rem) 640px, 100vw"
-            class="aspect-square w-full object-cover"}}
+  <article class="page-container mt-6 lg:mt-10">
+    <div class="grid gap-6 lg:grid-cols-3 lg:gap-12">
+      <header class="lg:col-span-2">
+        <h1 class="max-w-prose font-display text-h1 lg:text-h1-lg">{{article.title}}</h1>
+
+        <p class="mt-3 flex flex-wrap items-center gap-x-2 text-small text-charcoal/70">
+          <time datetime="{{article.date}}">{{dateLong article.date}}</time>
+          {{!-- Точка разделяет две подписи, но читать её вслух незачем --}}
+          <span aria-hidden="true">·</span>
+          <span>{{t "blog.readingTime" min=article.readingMinutes}}</span>
+        </p>
+      </header>
+
+      {{!-- Обложка — самый крупный кадр первого экрана, поэтому грузится не лениво
+            (картинки.md §3). Строка задана явно: на широком экране кадр встаёт справа
+            от всей статьи, а на телефоне — между подписями и текстом --}}
+      {{#if article.cover}}
+        <div class="overflow-hidden rounded-2xl lg:col-start-3 lg:row-span-2 lg:row-start-1 lg:self-start">
+          {{> picture empty id=article.cover alt=article.title priority=true
+              sizes="(min-width: 1024px) 30vw, 100vw"
+              class="aspect-square w-full object-cover"}}
+        </div>
+      {{/if}}
+
+      <div class="lg:col-span-2 lg:col-start-1">
+        <p class="max-w-prose text-lead text-charcoal/70">{{article.excerpt}}</p>
+
+        <div class="mt-6">
+          {{> prose empty paragraphs=article.body}}
+        </div>
       </div>
-    </div>
-  {{/if}}
-
-  <article class="page-container mt-8 lg:mt-12">
-    <h1 class="max-w-prose font-display text-h1 lg:text-h1-lg">{{article.title}}</h1>
-
-    <p class="mt-3 text-small text-charcoal/70">
-      <time datetime="{{article.date}}">{{dateLong article.date}}</time>
-    </p>
-
-    <p class="mt-6 max-w-prose text-lead text-charcoal/70">{{article.excerpt}}</p>
-
-    <div class="mt-6">
-      {{> prose empty paragraphs=article.body}}
     </div>
   </article>
 

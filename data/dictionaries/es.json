@@ -423,7 +423,8 @@
     "backToList": "Volver a las notas",
     "moreTitle": "Seguí leyendo",
     "ctaText": "Fabricamos en nuestro taller de Buenos Aires y enviamos a todo el país.",
-    "gridTitle": "Notas"
+    "gridTitle": "Notas",
+    "readingTime": "{min} min de lectura"
   },
   "seo": {
     "siteName": "Madera Más",
