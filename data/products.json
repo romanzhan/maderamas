@@ -13,7 +13,19 @@
     "createdAt": "2026-08-20",
     "order": 10,
     "featured": true,
-    "images": ["evolutiva-roble-1", "evolutiva-roble-2", "evolutiva-roble-3", "evolutiva-roble-5"],
+    "images": [
+      "evolutiva-roble-1",
+      "evolutiva-roble-2",
+      "evolutiva-roble-3",
+      "evolutiva-roble-4",
+      "evolutiva-roble-5",
+      "evolutiva-roble-6",
+      "evolutiva-roble-7",
+      "evolutiva-roble-8",
+      "evolutiva-roble-uso-1",
+      "evolutiva-roble-uso-2",
+      "evolutiva-roble-uso-3"
+    ],
     "dimensionsImage": "medidas-silla-evolutiva",
     "ogImage": null,
     "attributes": {
@@ -40,7 +52,14 @@
             "evolutiva-roble-1",
             "evolutiva-roble-2",
             "evolutiva-roble-3",
-            "evolutiva-roble-5"
+            "evolutiva-roble-4",
+            "evolutiva-roble-5",
+            "evolutiva-roble-6",
+            "evolutiva-roble-7",
+            "evolutiva-roble-8",
+            "evolutiva-roble-uso-1",
+            "evolutiva-roble-uso-2",
+            "evolutiva-roble-uso-3"
           ]
         },
         {
@@ -51,9 +70,16 @@
           "inStock": true,
           "images": [
             "evolutiva-nogal-1",
+            "evolutiva-nogal-2",
             "evolutiva-nogal-3",
             "evolutiva-nogal-4",
-            "evolutiva-nogal-5"
+            "evolutiva-nogal-5",
+            "evolutiva-nogal-6",
+            "evolutiva-nogal-7",
+            "evolutiva-nogal-8",
+            "evolutiva-nogal-uso-1",
+            "evolutiva-nogal-uso-2",
+            "evolutiva-nogal-uso-3"
           ]
         },
         {
@@ -153,7 +179,16 @@
     "createdAt": "2026-06-01",
     "order": 30,
     "featured": true,
-    "images": ["alta-escalones-1", "alta-escalones-5", "alta-escalones-6"],
+    "images": [
+      "alta-escalones-roble-1",
+      "alta-escalones-roble-2",
+      "alta-escalones-roble-3",
+      "alta-escalones-roble-4",
+      "alta-escalones-roble-5",
+      "alta-escalones-roble-6",
+      "alta-escalones-roble-7",
+      "alta-escalones-roble-8"
+    ],
     "dimensionsImage": "medidas-silla-alta-dos-escalones",
     "ogImage": null,
     "attributes": {
@@ -168,7 +203,46 @@
       "ageRange": "1 – 15 años",
       "maxLoad": 90
     },
-    "options": {},
+    "options": {
+      "woodColor": [
+        {
+          "id": "roble",
+          "name": "Roble americano",
+          "swatch": "#C69C6D",
+          "priceDelta": 0,
+          "inStock": true,
+          "images": [
+            "alta-escalones-roble-1",
+            "alta-escalones-roble-2",
+            "alta-escalones-roble-3",
+            "alta-escalones-roble-4",
+            "alta-escalones-roble-5",
+            "alta-escalones-roble-6",
+            "alta-escalones-roble-7",
+            "alta-escalones-roble-8"
+          ]
+        },
+        {
+          "id": "nogal",
+          "name": "Nogal",
+          "swatch": "#5E3D28",
+          "priceDelta": 0,
+          "inStock": true,
+          "images": [
+            "alta-escalones-nogal-1",
+            "alta-escalones-nogal-2",
+            "alta-escalones-nogal-3",
+            "alta-escalones-nogal-4",
+            "alta-escalones-nogal-5",
+            "alta-escalones-nogal-6",
+            "alta-escalones-nogal-7",
+            "alta-escalones-nogal-8",
+            "alta-escalones-nogal-detalle-1",
+            "alta-escalones-nogal-detalle-2"
+          ]
+        }
+      ]
+    },
     "accessories": ["almohadon"],
     "related": ["silla-alta", "silla-evolutiva"],
     "sku": null,
@@ -197,7 +271,13 @@
       "bebe-roble-3",
       "bebe-roble-4",
       "bebe-roble-5",
-      "bebe-roble-6"
+      "bebe-roble-6",
+      "bebe-roble-7",
+      "bebe-roble-8",
+      "bebe-roble-uso-1",
+      "bebe-roble-uso-2",
+      "bebe-roble-uso-3",
+      "bebe-roble-uso-4"
     ],
     "dimensionsImage": null,
     "ogImage": null,
@@ -213,7 +293,47 @@
       "ageRange": "6 meses – 4 años",
       "maxLoad": 40
     },
-    "options": {},
+    "options": {
+      "woodColor": [
+        {
+          "id": "roble",
+          "name": "Roble americano",
+          "swatch": "#C69C6D",
+          "priceDelta": 0,
+          "inStock": true,
+          "images": [
+            "bebe-roble-1",
+            "bebe-roble-2",
+            "bebe-roble-3",
+            "bebe-roble-4",
+            "bebe-roble-5",
+            "bebe-roble-6",
+            "bebe-roble-7",
+            "bebe-roble-8",
+            "bebe-roble-uso-1",
+            "bebe-roble-uso-2",
+            "bebe-roble-uso-3",
+            "bebe-roble-uso-4"
+          ]
+        },
+        {
+          "id": "pino",
+          "name": "Pino",
+          "swatch": "#DAC5A5",
+          "priceDelta": 0,
+          "inStock": true,
+          "images": [
+            "bebe-pino-1",
+            "bebe-pino-3",
+            "bebe-pino-4",
+            "bebe-pino-5",
+            "bebe-pino-6",
+            "bebe-pino-7",
+            "bebe-pino-8"
+          ]
+        }
+      ]
+    },
     "accessories": [],
     "related": ["silla-evolutiva", "torre-aprendizaje"],
     "sku": null,
