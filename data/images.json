@@ -1395,6 +1395,60 @@
       "1920": "blog-postura-1920-e7ca9a68.webp"
     }
   },
+  "home-ajuste-1": {
+    "type": "content",
+    "width": 1920,
+    "height": 1920,
+    "sizes": [
+      480,
+      960,
+      1600,
+      1920
+    ],
+    "format": "webp",
+    "files": {
+      "480": "home-ajuste-1-480-8280ff7e.webp",
+      "960": "home-ajuste-1-960-8280ff7e.webp",
+      "1600": "home-ajuste-1-1600-8280ff7e.webp",
+      "1920": "home-ajuste-1-1920-8280ff7e.webp"
+    }
+  },
+  "home-ajuste-2": {
+    "type": "content",
+    "width": 1920,
+    "height": 1920,
+    "sizes": [
+      480,
+      960,
+      1600,
+      1920
+    ],
+    "format": "webp",
+    "files": {
+      "480": "home-ajuste-2-480-b658cf8b.webp",
+      "960": "home-ajuste-2-960-b658cf8b.webp",
+      "1600": "home-ajuste-2-1600-b658cf8b.webp",
+      "1920": "home-ajuste-2-1920-b658cf8b.webp"
+    }
+  },
+  "home-ajuste-3": {
+    "type": "content",
+    "width": 1920,
+    "height": 1920,
+    "sizes": [
+      480,
+      960,
+      1600,
+      1920
+    ],
+    "format": "webp",
+    "files": {
+      "480": "home-ajuste-3-480-431c2024.webp",
+      "960": "home-ajuste-3-960-431c2024.webp",
+      "1600": "home-ajuste-3-1600-431c2024.webp",
+      "1920": "home-ajuste-3-1920-431c2024.webp"
+    }
+  },
   "home-atmosfera": {
     "type": "content",
     "width": 2752,
