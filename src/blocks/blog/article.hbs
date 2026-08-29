@@ -9,10 +9,15 @@
     {{> breadcrumbs empty items=breadcrumbs.items plain=breadcrumbs.plain}}
   </div>
 
+  {{!-- Обложка квадратная, как все фотографии проекта, и потому стоит в колонке текста,
+        а не во всю ширину: квадрат во весь экран занял бы его целиком --}}
   {{#if article.cover}}
-    <div class="mt-6 lg:mt-8">
-      {{> picture empty id=article.cover alt=article.title sizes="100vw"
-          class="aspect-video w-full object-cover sm:aspect-panorama"}}
+    <div class="page-container mt-6 lg:mt-8">
+      <div class="max-w-prose overflow-hidden rounded-2xl">
+        {{> picture empty id=article.cover alt=article.title
+            sizes="(min-width: 40rem) 640px, 100vw"
+            class="aspect-square w-full object-cover"}}
+      </div>
     </div>
   {{/if}}
 

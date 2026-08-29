@@ -1255,6 +1255,24 @@
       "800": "torre-3-800-1849a46f.webp"
     }
   },
+  "blog-como-elegir": {
+    "type": "content",
+    "width": 1920,
+    "height": 1920,
+    "sizes": [
+      480,
+      960,
+      1600,
+      1920
+    ],
+    "format": "webp",
+    "files": {
+      "480": "blog-como-elegir-480-8ef2d90d.webp",
+      "960": "blog-como-elegir-960-8ef2d90d.webp",
+      "1600": "blog-como-elegir-1600-8ef2d90d.webp",
+      "1920": "blog-como-elegir-1920-8ef2d90d.webp"
+    }
+  },
   "home-hero-mid": {
     "type": "content",
     "width": 2752,
