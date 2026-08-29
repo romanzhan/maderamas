@@ -2,37 +2,128 @@
   {
     "id": "ig-1",
     "url": "https://instagram.com/madera.mas.arg",
-    "alt": "Silla evolutiva de roble en el comedor de una casa",
-    "frames": [{ "image": "evolutiva-roble-2", "video": null }]
+    "alt": "Chico de pie junto a su silla evolutiva de nogal, en el comedor de casa",
+    "frames": [
+      {
+        "image": "ig-1-1",
+        "video": "ig-1"
+      }
+    ]
   },
   {
     "id": "ig-2",
     "url": "https://instagram.com/madera.mas.arg",
-    "alt": "Detalle del asiento y el apoyapiés de la silla evolutiva",
-    "frames": [{ "image": "evolutiva-roble-5", "video": null }]
+    "alt": "Silla evolutiva blanca con un osito sentado, en el rincón de juegos",
+    "frames": [
+      {
+        "image": "ig-2-1",
+        "video": null
+      },
+      {
+        "image": "ig-2-2",
+        "video": null
+      }
+    ]
   },
   {
     "id": "ig-3",
     "url": "https://instagram.com/madera.mas.arg",
-    "alt": "Silla evolutiva en nogal",
-    "frames": [{ "image": "evolutiva-nogal-3", "video": null }]
+    "alt": "Nena dibujando en la mesa, sentada en una silla evolutiva de roble",
+    "frames": [
+      {
+        "image": "ig-3-1",
+        "video": null
+      },
+      {
+        "image": "ig-3-2",
+        "video": null
+      },
+      {
+        "image": "ig-3-3",
+        "video": null
+      }
+    ]
   },
   {
     "id": "ig-4",
     "url": "https://instagram.com/madera.mas.arg",
-    "alt": "Silla evolutiva blanca en una habitación",
-    "frames": [{ "image": "evolutiva-blanco-2", "video": null }]
+    "alt": "Nena sentada a la mesa en su silla evolutiva, con los pies apoyados en el apoyapiés",
+    "frames": [
+      {
+        "image": "ig-4-1",
+        "video": "ig-4"
+      }
+    ]
   },
   {
     "id": "ig-5",
     "url": "https://instagram.com/madera.mas.arg",
-    "alt": "Silla infantil para comer con arnés y bandeja",
-    "frames": [{ "image": "bebe-roble-1", "video": null }]
+    "alt": "Nene comiendo en la mesa familiar, sentado en una silla evolutiva de nogal",
+    "frames": [
+      {
+        "image": "ig-5-1",
+        "video": null
+      },
+      {
+        "image": "ig-5-2",
+        "video": null
+      },
+      {
+        "image": "ig-5-3",
+        "video": null
+      }
+    ]
   },
   {
     "id": "ig-6",
     "url": "https://instagram.com/madera.mas.arg",
-    "alt": "Torre de aprendizaje plegable en la cocina",
-    "frames": [{ "image": "torre-2", "video": null }]
+    "alt": "Nena con la merienda en la mano, sentada en su silla evolutiva de roble",
+    "frames": [
+      {
+        "image": "ig-6-1",
+        "video": null
+      },
+      {
+        "image": "ig-6-2",
+        "video": null
+      },
+      {
+        "image": "ig-6-3",
+        "video": null
+      }
+    ]
+  },
+  {
+    "id": "ig-7",
+    "url": "https://instagram.com/madera.mas.arg",
+    "alt": "Nena alcanzando la fruta de la mesa desde su silla evolutiva blanca",
+    "frames": [
+      {
+        "image": "ig-7-1",
+        "video": "ig-7"
+      }
+    ]
+  },
+  {
+    "id": "ig-8",
+    "url": "https://instagram.com/madera.mas.arg",
+    "alt": "Infografía de la Silla Evolutiva: ajustable en altura y profundidad, segura y estable",
+    "frames": [
+      {
+        "image": "ig-8-1",
+        "video": null
+      }
+    ]
+  },
+  {
+    "id": "ig-9",
+    "url": "https://instagram.com/madera.mas.arg",
+    "alt": "Nena leyendo una revista sentada en su silla evolutiva de roble",
+    "frames": [
+      {
+        "image": "ig-9-1",
+        "video": "ig-9"
+      }
+    ]
   }
 ]

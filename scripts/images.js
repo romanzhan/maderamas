@@ -99,8 +99,11 @@ async function processFlow(type, flow) {
 
     const hash = createHash('sha256').update(source).digest('hex').slice(0, 8)
     const extension = flow.format === 'jpeg' ? 'jpg' : 'webp'
-    // При кадрировании годится только меньшая сторона: из неё и получится квадрат
-    const usable = flow.crop ? Math.min(width, height) : width
+    // При кадрировании ширина ограничена тем, что останется после обрезки под пропорцию
+    // потока: у квадрата это меньшая сторона, у вертикального кадра 3:4 — высота × 3/4
+    const usable = flow.crop
+      ? Math.min(width, Math.round((height * flow.ratio[0]) / flow.ratio[1]))
+      : width
     const sizes = flow.sizes.filter((size) => size <= usable)
 
     // Контентный кадр шире самого крупного шага (816 при шкале 480/960/1600): добавляем
@@ -183,12 +186,16 @@ function ratioFits(flow, width, height, file) {
   const [ratioW, ratioH] = flow.ratio
   if (width * ratioH === height * ratioW) return true
 
+  // Поток называет свою пропорцию сам: потоков с кадрированием стало два, и «квадрат»
+  // в тексте предупреждения врал бы про обложки постов
+  const shape = ratioW === ratioH ? 'квадрата (1:1)' : `${ratioW}:${ratioH}`
+
   if (flow.crop) {
-    warnings.push(`${file}: ${width}×${height} обрезано по центру до квадрата`)
+    warnings.push(`${file}: ${width}×${height} обрезано по центру до ${shape}`)
     return true
   }
 
-  const expected = ratioW === ratioH ? 'квадратный (1:1)' : '1200×630'
+  const expected = ratioW === 1200 ? '1200×630' : shape
   errors.push(`${file}: пропорции ${width}×${height} не подходят — нужен исходник ${expected}`)
   return false
 }
