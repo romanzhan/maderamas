@@ -1,0 +1,58 @@
+{{!-- Блок отзыва (компоненты.md 7.2). Отзыв не с нашего сайта обязан нести пометку
+      источника и ссылку на оригинал — требование Google (seo.md п. 5); поэтому
+      микроразметку такие отзывы не получают.
+      Длинный текст сложен в четыре строки с раскрытием: в ленте карточки разной высоты
+      выглядят неаккуратно, а резать отзыв совсем — терять доверие. Число строк и
+      движение высоты — в утилите `review-text`; нужна ли кнопка раскрытия, решает
+      замер в `reviewCard`.
+      Обязательные: review (запись из reviews.json). --}}
+<figure
+  x-data="reviewCard"
+  x-on:carousel:ready.window="measure()"
+  class="flex h-full flex-col gap-3 rounded-xl border border-line bg-cream p-6"
+>
+  {{> rating empty value=review.rating starClass="size-4"}}
+
+  <blockquote>
+    {{!-- Класс обрезки стоит и статически: до старта Alpine текст обязан быть сложен --}}
+    <p x-ref="text" class="review-text is-clipped"
+      x-bind:style="height && ('max-height: ' + height)"
+      >{{review.text}}</p>
+  </blockquote>
+
+  {{!-- Кнопка держится текста, а не низа карточки: с просветом карточки она читалась
+        самостоятельным элементом (замечание владельца 28.08.2026). Показывается только
+        когда текст правда обрезан — это решает замер, а не длина строки --}}
+  <button
+    type="button"
+    x-show="overflows"
+    x-cloak
+    x-on:click="toggle()"
+    class="-mx-2 -mt-2 self-start rounded-lg px-2 py-1 text-small font-medium text-clay
+      hover:text-clay-hover"
+    x-text="open ? '{{t "common.readLess"}}' : '{{t "common.readMore"}}'"
+  >{{t "common.readMore"}}</button>
+
+  {{!-- Подпись прижата к низу: карточки в ленте одной высоты, и источник должен
+        стоять на одной линии у соседей --}}
+  <div class="mt-auto flex flex-col gap-3">
+    {{!-- Вознаграждённый отзыв обязан нести видимую пометку (seo.md п. 5) --}}
+    {{#if review.incentivized}}
+      <p class="text-caption text-charcoal/70">{{t "reviews.incentivized"}}</p>
+    {{/if}}
+
+  {{!-- Ссылка на оригинал живёт прямо в имени автора: отдельной строкой источник
+        повторял «Mercado Libre» второй раз (замечание владельца 28.08.2026).
+        Требование Google (seo.md п. 5) при этом выполнено — источник виден и кликается --}}
+    <figcaption class="flex flex-wrap items-center gap-x-2 text-small text-charcoal/70">
+      {{#if review.sourceUrl}}
+        <a href="{{review.sourceUrl}}" target="_blank" rel="noopener nofollow"
+          class="underline underline-offset-2 hover:text-charcoal">{{review.author}}</a>
+      {{else}}
+        <span>{{review.author}}</span>
+      {{/if}}
+      <span aria-hidden="true">·</span>
+      <time datetime="{{review.date}}">{{date review.date}}</time>
+    </figcaption>
+  </div>
+</figure>

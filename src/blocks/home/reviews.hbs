@@ -1,0 +1,12 @@
+{{!-- Отзывы (страницы.md §1). Отзывы с Mercado Libre: у каждого пометка источника
+      и ссылка на оригинал — требование Google (seo.md п. 5). Микроразметку они
+      не получают, средний рейтинг из них не считается.
+      Нет отзывов — раздела нет (состояния-экранов.md п. 1). --}}
+{{#if home.reviews.length}}
+  {{#> carousel sectionClass="py-12 lg:py-20" title=(t "home.reviewsTitle")
+      subtitle=(t "home.reviewsFromMl")}}
+    {{#each home.reviews}}
+      <div class="swiper-slide">{{> review-card ../empty review=this}}</div>
+    {{/each}}
+  {{/carousel}}
+{{/if}}

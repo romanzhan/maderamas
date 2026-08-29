@@ -1,0 +1,188 @@
+{{!-- Карточка товара (компоненты.md 3.6) — главный переиспользуемый блок: каталог,
+      поиск, «похожие», избранное, врезки блога.
+      Пересмотрено 27.08.2026: карточка снова получила поверхность — кремовую подложку,
+      внутренние отступы и тонкую линию. В июле подложку убирали, но тогда у карточек
+      не было фотографий; с фото карточка без поверхности распадается на два куска —
+      плотный блок снимка и текст, висящий на пустом фоне.
+      Обязательные: id, name, price, href. Опции: imageId (первое фото товара из манифеста;
+      нет — встаёт заглушка бренда той же геометрии), imageIdHover (второе фото: под
+      курсором карточка показывает его), old (старая цена), discount (текст бейджа),
+      isNew, inStock=false, inCart, wishlisted, rating + reviewsCount, variant (подпись
+      материала), freeShipping, priceFrom (цена «от» — у товара есть варианты дороже).
+      Вся карточка — ссылка: её растягивает псевдоэлемент у названия, поэтому кнопки
+      внутри остаются отдельными целями и фокус-кольцо одно на карточку. --}}
+{{!-- Кольцо фокуса рисуется по всей карточке, а не по тексту названия: у растянутой
+      ссылки собственное кольцо снято --}}
+{{!-- isolate — свой слой карточки: без него её внутренние z-10 (сердце, кнопка) спорят
+      с липкой шапкой того же уровня и при прокрутке лезут поверх неё --}}
+<article
+  class="group/card relative isolate flex h-full flex-col gap-2 rounded-xl border border-line
+    bg-cream p-3
+    transition-colors duration-150 hover:border-border
+    has-[h3_a:focus-visible]:outline-2 has-[h3_a:focus-visible]:outline-offset-2
+    has-[h3_a:focus-visible]:outline-clay"
+>
+  <div class="relative">
+    {{!-- Фото товара без наличия приглушено: цена и название рядом остаются читаемыми,
+          а карточка сразу видна как недоступная (визуальная-система §2.1). Приглушение
+          лежит на самом снимке, а не на коробке: заглушка бренда и без того почти
+          не видна, и второе приглушение стирало бы её совсем --}}
+    <div class="relative overflow-hidden rounded-lg bg-sand">
+      {{!-- Два вызова, а не один с условием внутри класса: внутри значения параметра
+            шаблонизатор подстановок не считает, и условие уехало бы в разметку
+            дословно (поймано ревью 29.08.2026). Заглушку бренда приглушение не задевает
+            в любом случае: класс достаётся снимку, а у заглушки своя разметка --}}
+      {{#if inStock}}
+        {{> picture empty id=imageId alt=name sizes="(min-width: 1024px) 25vw, 50vw"
+            class="aspect-square w-full object-cover"}}
+      {{else}}
+        {{> picture empty id=imageId alt=name sizes="(min-width: 1024px) 25vw, 50vw"
+            class="aspect-square w-full object-cover opacity-45"}}
+      {{/if}}
+
+      {{!-- Второе фото по наведению (компоненты.md 3.6, состояние 2). Только там, где
+            указатель есть: на телефоне наведения не бывает, и вариант hover Tailwind
+            сам это учитывает --}}
+      {{#if imageIdHover}}
+        {{#if inStock}}
+          <span
+            class="pointer-events-none absolute inset-0 opacity-0 transition-opacity
+              duration-200 group-hover/card:opacity-100"
+            aria-hidden="true"
+          >
+            {{> picture empty id=imageIdHover alt="" sizes="(min-width: 1024px) 25vw, 50vw"
+                class="aspect-square w-full object-cover"}}
+          </span>
+        {{/if}}
+      {{/if}}
+    </div>
+
+    {{!-- Больше двух бейджей не вешаем: скидка → статус → инфо --}}
+    <div class="absolute top-2 left-2 z-10 flex flex-wrap gap-2">
+      {{#if discount}}{{> badge empty discount=true text=discount}}{{/if}}
+      {{#unless inStock}}{{> badge empty status=true label="badge.noStock"}}{{/unless}}
+      {{#if isNew}}{{#if inStock}}{{> badge empty isNew=true label="badge.new"}}{{/if}}{{/if}}
+    </div>
+
+    {{!-- Кружок-подложка отодвинут от края кадра: вплотную к углу он читался заплаткой
+          (замечание владельца 27.08.2026). Отвечает на наведение сам кружок, а не знак:
+          заливка знака цветом, отличным от контура, выглядела браком.
+          Зона нажатия остаётся 44px, видимый кружок внутри неё --}}
+    {{!-- Сердце слушает то же состояние, что счётчик в шапке (сложные-узлы.md п. 10):
+          собственного «выбрано» у карточки нет. preview — витрина, где состояние
+          показывается статикой --}}
+    {{!-- Список отложенного выключен флагом — сердца нет: складывать было бы некуда,
+          страницы /favoritos/ при выключенном флаге не существует (принцип 29) --}}
+    {{#if @root.site.features.wishlist}}
+    <button
+      type="button"
+      {{#unless preview}}
+        {{!-- Удаление из избранного предлагает вернуть его обратно — то же правило,
+              что у строки корзины (состояния-экранов.md п. 5) --}}
+        x-data="wishlistButton('{{id}}')"
+        data-t-added="{{t "wishlist.added"}}"
+        data-t-removed="{{t "wishlist.removed"}}"
+        data-t-undo="{{t "cart.undo"}}"
+        x-on:click="toggle()"
+        x-bind:aria-pressed="$store.wishlist.has('{{id}}')"
+        x-bind:aria-label="$store.wishlist.has('{{id}}')
+          ? '{{t "wishlist.remove"}}' : '{{t "wishlist.add"}}'"
+      {{/unless}}
+      class="group/heart absolute top-1 right-1 z-10 flex size-11 items-center justify-center"
+      aria-label="{{#if wishlisted}}{{t "wishlist.remove"}}{{else}}{{t "wishlist.add"}}{{/if}}"
+      aria-pressed="{{#if wishlisted}}true{{else}}false{{/if}}"
+    >
+      <span
+        class="flex size-9 items-center justify-center rounded-full bg-cream
+          transition-colors duration-150 group-hover/heart:bg-sand
+          {{#if preview}}{{#if wishlisted}}text-clay{{else}}text-charcoal{{/if}}{{/if}}"
+        {{#unless preview}}
+          x-bind:class="$store.wishlist.has('{{id}}') ? 'text-clay' : 'text-charcoal'"
+        {{/unless}}
+      >
+        {{#if preview}}
+          {{> icon empty name="heart" class="size-5" filled=wishlisted}}
+        {{else}}
+          <span x-show="!$store.wishlist.has('{{id}}')">
+            {{> icon empty name="heart" class="size-5"}}
+          </span>
+          <span x-show="$store.wishlist.has('{{id}}')" x-cloak>
+            {{> icon empty name="heart" class="size-5" filled=true}}
+          </span>
+        {{/if}}
+      </span>
+    </button>
+    {{/if}}
+  </div>
+
+  {{!-- Название, материал, звёзды, цена и бейдж — одна группа с шагом 4: это описание
+        одного товара, и одинаковые просветы между всеми строками расплывались
+        (замечание владельца 28.08.2026). Воздух остаётся между группами --}}
+  <div class="flex flex-col gap-1">
+    <h3 class="line-clamp-2 text-body" title="{{name}}">
+      <a href="{{href}}" class="after:absolute after:inset-0 focus-visible:outline-none">{{name}}</a>
+    </h3>
+
+    {{#if variant}}<p class="text-small text-charcoal/70">{{variant}}</p>{{/if}}
+
+    {{#if rating}}{{> rating empty value=rating count=reviewsCount starClass="size-4"}}{{/if}}
+
+    {{#if inStock}}
+      {{> price empty value=price old=old compact=true from=priceFrom}}
+    {{else}}
+      {{> price empty value=price old=old compact=true from=priceFrom muted=true}}
+    {{/if}}
+
+    {{#if freeShipping}}
+      <div class="mt-1">{{> badge empty info=true label="badge.freeShipping"}}</div>
+    {{/if}}
+  </div>
+
+  {{!-- Кнопка видна всегда, в том числе на компьютере: реестр предлагает показывать её
+        по наведению, но тогда состояние «в корзине» перестаёт быть видимым сигналом.
+        Развилка вынесена владельцу (журнал, открытый вопрос) --}}
+  <div class="relative z-10 mt-auto">
+    {{#unless inStock}}
+      {{!-- Название лежит в атрибуте: его читает store, см. notify.ask --}}
+      <span data-notify="{{name}}">
+        {{> button empty secondary=true sizeMd=true fullWidth=true label="stock.notifyCta"
+            onClick="$store.notify.ask($el)"}}
+      </span>
+    {{/unless}}
+
+    {{#if inStock}}
+      {{#if preview}}
+        {{#if inCart}}
+          {{> button empty secondary=true sizeMd=true fullWidth=true icon="check"
+              label="product.inCart" href=cartHref}}
+        {{else}}
+          {{> button empty primary=true sizeMd=true fullWidth=true
+              label="product.addToCartShort"}}
+        {{/if}}
+      {{else}}
+        {{#if hasOptions}}
+          {{!-- Есть из чего выбирать — кладём не мы, а сам покупатель на странице
+                товара: цена на карточке показана «от», и положить наугад дорогой
+                вариант значило бы обмануть (решение 27.08.2026) --}}
+          {{> button empty primary=true sizeMd=true fullWidth=true label="product.choose"
+              href=href}}
+        {{else}}
+          {{!-- Короткая подпись: в карточке на 360 px полная занимала три строки.
+                Полная живёт на странице товара, где места достаточно.
+                Выражение собирается concat: внутри значения параметра шаблонизатор
+                подстановки не считает, и `{{id}}` уехал бы в корзину буквально
+                (поймано в браузере 28.08.2026) --}}
+          <span x-show="!$store.cart.has('{{id}}', '')">
+            {{> button empty primary=true sizeMd=true fullWidth=true
+                label="product.addToCartShort"
+                onClick=(concat "$store.cart.add('" id "', '', 1); $store.overlay.open('cart')")}}
+          </span>
+          <span x-show="$store.cart.has('{{id}}', '')" x-cloak>
+            {{> button empty secondary=true sizeMd=true fullWidth=true icon="check"
+                label="product.inCart" href="/carrito/"}}
+          </span>
+        {{/if}}
+      {{/if}}
+    {{/if}}
+  </div>
+</article>

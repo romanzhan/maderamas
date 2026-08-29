@@ -1,0 +1,756 @@
+{
+  "alta-2-1": {
+    "type": "product",
+    "width": 1200,
+    "height": 1200,
+    "sizes": [
+      400,
+      800,
+      1200
+    ],
+    "format": "webp",
+    "files": {
+      "400": "alta-2-1-400-576bb4cf.webp",
+      "800": "alta-2-1-800-576bb4cf.webp",
+      "1200": "alta-2-1-1200-576bb4cf.webp"
+    }
+  },
+  "alta-2-3": {
+    "type": "product",
+    "width": 800,
+    "height": 800,
+    "sizes": [
+      400,
+      800
+    ],
+    "format": "webp",
+    "files": {
+      "400": "alta-2-3-400-05eaa656.webp",
+      "800": "alta-2-3-800-05eaa656.webp"
+    }
+  },
+  "alta-2-5": {
+    "type": "product",
+    "width": 1200,
+    "height": 1200,
+    "sizes": [
+      400,
+      800,
+      1200
+    ],
+    "format": "webp",
+    "files": {
+      "400": "alta-2-5-400-a4b8ce6f.webp",
+      "800": "alta-2-5-800-a4b8ce6f.webp",
+      "1200": "alta-2-5-1200-a4b8ce6f.webp"
+    }
+  },
+  "alta-escalones-1": {
+    "type": "product",
+    "width": 1200,
+    "height": 1200,
+    "sizes": [
+      400,
+      800,
+      1200
+    ],
+    "format": "webp",
+    "files": {
+      "400": "alta-escalones-1-400-38b40465.webp",
+      "800": "alta-escalones-1-800-38b40465.webp",
+      "1200": "alta-escalones-1-1200-38b40465.webp"
+    }
+  },
+  "alta-escalones-5": {
+    "type": "product",
+    "width": 800,
+    "height": 800,
+    "sizes": [
+      400,
+      800
+    ],
+    "format": "webp",
+    "files": {
+      "400": "alta-escalones-5-400-547cd43c.webp",
+      "800": "alta-escalones-5-800-547cd43c.webp"
+    }
+  },
+  "alta-escalones-6": {
+    "type": "product",
+    "width": 800,
+    "height": 800,
+    "sizes": [
+      400,
+      800
+    ],
+    "format": "webp",
+    "files": {
+      "400": "alta-escalones-6-400-0626087b.webp",
+      "800": "alta-escalones-6-800-0626087b.webp"
+    }
+  },
+  "alta-roble-1": {
+    "type": "product",
+    "width": 1200,
+    "height": 1200,
+    "sizes": [
+      400,
+      800,
+      1200
+    ],
+    "format": "webp",
+    "files": {
+      "400": "alta-roble-1-400-2b34a249.webp",
+      "800": "alta-roble-1-800-2b34a249.webp",
+      "1200": "alta-roble-1-1200-2b34a249.webp"
+    }
+  },
+  "alta-roble-3": {
+    "type": "product",
+    "width": 800,
+    "height": 800,
+    "sizes": [
+      400,
+      800
+    ],
+    "format": "webp",
+    "files": {
+      "400": "alta-roble-3-400-8395521d.webp",
+      "800": "alta-roble-3-800-8395521d.webp"
+    }
+  },
+  "alta-roble-5": {
+    "type": "product",
+    "width": 800,
+    "height": 800,
+    "sizes": [
+      400,
+      800
+    ],
+    "format": "webp",
+    "files": {
+      "400": "alta-roble-5-400-524f9641.webp",
+      "800": "alta-roble-5-800-524f9641.webp"
+    }
+  },
+  "banquito-1": {
+    "type": "product",
+    "width": 1200,
+    "height": 1200,
+    "sizes": [
+      400,
+      800,
+      1200
+    ],
+    "format": "webp",
+    "files": {
+      "400": "banquito-1-400-a66d93f3.webp",
+      "800": "banquito-1-800-a66d93f3.webp",
+      "1200": "banquito-1-1200-a66d93f3.webp"
+    }
+  },
+  "banquito-3": {
+    "type": "product",
+    "width": 512,
+    "height": 512,
+    "sizes": [
+      400,
+      512
+    ],
+    "format": "webp",
+    "files": {
+      "400": "banquito-3-400-17ef27d7.webp",
+      "512": "banquito-3-512-17ef27d7.webp"
+    }
+  },
+  "bebe-roble-1": {
+    "type": "product",
+    "width": 800,
+    "height": 800,
+    "sizes": [
+      400,
+      800
+    ],
+    "format": "webp",
+    "files": {
+      "400": "bebe-roble-1-400-f9a5c48f.webp",
+      "800": "bebe-roble-1-800-f9a5c48f.webp"
+    }
+  },
+  "bebe-roble-2": {
+    "type": "product",
+    "width": 1200,
+    "height": 1200,
+    "sizes": [
+      400,
+      800,
+      1200
+    ],
+    "format": "webp",
+    "files": {
+      "400": "bebe-roble-2-400-4e29cdf2.webp",
+      "800": "bebe-roble-2-800-4e29cdf2.webp",
+      "1200": "bebe-roble-2-1200-4e29cdf2.webp"
+    }
+  },
+  "bebe-roble-3": {
+    "type": "product",
+    "width": 1064,
+    "height": 1064,
+    "sizes": [
+      400,
+      800,
+      1064
+    ],
+    "format": "webp",
+    "files": {
+      "400": "bebe-roble-3-400-49751afa.webp",
+      "800": "bebe-roble-3-800-49751afa.webp",
+      "1064": "bebe-roble-3-1064-49751afa.webp"
+    }
+  },
+  "bebe-roble-4": {
+    "type": "product",
+    "width": 889,
+    "height": 889,
+    "sizes": [
+      400,
+      800,
+      889
+    ],
+    "format": "webp",
+    "files": {
+      "400": "bebe-roble-4-400-98a96c77.webp",
+      "800": "bebe-roble-4-800-98a96c77.webp",
+      "889": "bebe-roble-4-889-98a96c77.webp"
+    }
+  },
+  "bebe-roble-5": {
+    "type": "product",
+    "width": 800,
+    "height": 800,
+    "sizes": [
+      400,
+      800
+    ],
+    "format": "webp",
+    "files": {
+      "400": "bebe-roble-5-400-101a9ee1.webp",
+      "800": "bebe-roble-5-800-101a9ee1.webp"
+    }
+  },
+  "bebe-roble-6": {
+    "type": "product",
+    "width": 800,
+    "height": 800,
+    "sizes": [
+      400,
+      800
+    ],
+    "format": "webp",
+    "files": {
+      "400": "bebe-roble-6-400-4fead465.webp",
+      "800": "bebe-roble-6-800-4fead465.webp"
+    }
+  },
+  "equilibristas-1": {
+    "type": "product",
+    "width": 900,
+    "height": 900,
+    "sizes": [
+      400,
+      800,
+      900
+    ],
+    "format": "webp",
+    "files": {
+      "400": "equilibristas-1-400-de339d96.webp",
+      "800": "equilibristas-1-800-de339d96.webp",
+      "900": "equilibristas-1-900-de339d96.webp"
+    }
+  },
+  "equilibristas-2": {
+    "type": "product",
+    "width": 900,
+    "height": 900,
+    "sizes": [
+      400,
+      800,
+      900
+    ],
+    "format": "webp",
+    "files": {
+      "400": "equilibristas-2-400-9db29400.webp",
+      "800": "equilibristas-2-800-9db29400.webp",
+      "900": "equilibristas-2-900-9db29400.webp"
+    }
+  },
+  "equilibristas-3": {
+    "type": "product",
+    "width": 800,
+    "height": 800,
+    "sizes": [
+      400,
+      800
+    ],
+    "format": "webp",
+    "files": {
+      "400": "equilibristas-3-400-3b978070.webp",
+      "800": "equilibristas-3-800-3b978070.webp"
+    }
+  },
+  "equilibristas-4": {
+    "type": "product",
+    "width": 920,
+    "height": 920,
+    "sizes": [
+      400,
+      800,
+      920
+    ],
+    "format": "webp",
+    "files": {
+      "400": "equilibristas-4-400-774b8c12.webp",
+      "800": "equilibristas-4-800-774b8c12.webp",
+      "920": "equilibristas-4-920-774b8c12.webp"
+    }
+  },
+  "evolutiva-blanco-1": {
+    "type": "product",
+    "width": 800,
+    "height": 800,
+    "sizes": [
+      400,
+      800
+    ],
+    "format": "webp",
+    "files": {
+      "400": "evolutiva-blanco-1-400-714c2809.webp",
+      "800": "evolutiva-blanco-1-800-714c2809.webp"
+    }
+  },
+  "evolutiva-blanco-2": {
+    "type": "product",
+    "width": 800,
+    "height": 800,
+    "sizes": [
+      400,
+      800
+    ],
+    "format": "webp",
+    "files": {
+      "400": "evolutiva-blanco-2-400-797d6377.webp",
+      "800": "evolutiva-blanco-2-800-797d6377.webp"
+    }
+  },
+  "evolutiva-blanco-3": {
+    "type": "product",
+    "width": 787,
+    "height": 787,
+    "sizes": [
+      400,
+      787
+    ],
+    "format": "webp",
+    "files": {
+      "400": "evolutiva-blanco-3-400-a8c3a746.webp",
+      "787": "evolutiva-blanco-3-787-a8c3a746.webp"
+    }
+  },
+  "evolutiva-crudo-1": {
+    "type": "product",
+    "width": 960,
+    "height": 960,
+    "sizes": [
+      400,
+      800,
+      960
+    ],
+    "format": "webp",
+    "files": {
+      "400": "evolutiva-crudo-1-400-b0944362.webp",
+      "800": "evolutiva-crudo-1-800-b0944362.webp",
+      "960": "evolutiva-crudo-1-960-b0944362.webp"
+    }
+  },
+  "evolutiva-crudo-5": {
+    "type": "product",
+    "width": 800,
+    "height": 800,
+    "sizes": [
+      400,
+      800
+    ],
+    "format": "webp",
+    "files": {
+      "400": "evolutiva-crudo-5-400-bce4327a.webp",
+      "800": "evolutiva-crudo-5-800-bce4327a.webp"
+    }
+  },
+  "evolutiva-nogal-1": {
+    "type": "product",
+    "width": 1200,
+    "height": 1200,
+    "sizes": [
+      400,
+      800,
+      1200
+    ],
+    "format": "webp",
+    "files": {
+      "400": "evolutiva-nogal-1-400-ac100c28.webp",
+      "800": "evolutiva-nogal-1-800-ac100c28.webp",
+      "1200": "evolutiva-nogal-1-1200-ac100c28.webp"
+    }
+  },
+  "evolutiva-nogal-3": {
+    "type": "product",
+    "width": 800,
+    "height": 800,
+    "sizes": [
+      400,
+      800
+    ],
+    "format": "webp",
+    "files": {
+      "400": "evolutiva-nogal-3-400-49758247.webp",
+      "800": "evolutiva-nogal-3-800-49758247.webp"
+    }
+  },
+  "evolutiva-nogal-4": {
+    "type": "product",
+    "width": 800,
+    "height": 800,
+    "sizes": [
+      400,
+      800
+    ],
+    "format": "webp",
+    "files": {
+      "400": "evolutiva-nogal-4-400-3c2c92dc.webp",
+      "800": "evolutiva-nogal-4-800-3c2c92dc.webp"
+    }
+  },
+  "evolutiva-nogal-5": {
+    "type": "product",
+    "width": 800,
+    "height": 800,
+    "sizes": [
+      400,
+      800
+    ],
+    "format": "webp",
+    "files": {
+      "400": "evolutiva-nogal-5-400-1b902cd1.webp",
+      "800": "evolutiva-nogal-5-800-1b902cd1.webp"
+    }
+  },
+  "evolutiva-roble-1": {
+    "type": "product",
+    "width": 1200,
+    "height": 1200,
+    "sizes": [
+      400,
+      800,
+      1200
+    ],
+    "format": "webp",
+    "files": {
+      "400": "evolutiva-roble-1-400-cb774d8e.webp",
+      "800": "evolutiva-roble-1-800-cb774d8e.webp",
+      "1200": "evolutiva-roble-1-1200-cb774d8e.webp"
+    }
+  },
+  "evolutiva-roble-2": {
+    "type": "product",
+    "width": 1200,
+    "height": 1200,
+    "sizes": [
+      400,
+      800,
+      1200
+    ],
+    "format": "webp",
+    "files": {
+      "400": "evolutiva-roble-2-400-e0973edf.webp",
+      "800": "evolutiva-roble-2-800-e0973edf.webp",
+      "1200": "evolutiva-roble-2-1200-e0973edf.webp"
+    }
+  },
+  "evolutiva-roble-3": {
+    "type": "product",
+    "width": 800,
+    "height": 800,
+    "sizes": [
+      400,
+      800
+    ],
+    "format": "webp",
+    "files": {
+      "400": "evolutiva-roble-3-400-eeb8a4d4.webp",
+      "800": "evolutiva-roble-3-800-eeb8a4d4.webp"
+    }
+  },
+  "evolutiva-roble-5": {
+    "type": "product",
+    "width": 800,
+    "height": 800,
+    "sizes": [
+      400,
+      800
+    ],
+    "format": "webp",
+    "files": {
+      "400": "evolutiva-roble-5-400-939f8d8c.webp",
+      "800": "evolutiva-roble-5-800-939f8d8c.webp"
+    }
+  },
+  "pata-pata-1": {
+    "type": "product",
+    "width": 800,
+    "height": 800,
+    "sizes": [
+      400,
+      800
+    ],
+    "format": "webp",
+    "files": {
+      "400": "pata-pata-1-400-0db49adc.webp",
+      "800": "pata-pata-1-800-0db49adc.webp"
+    }
+  },
+  "set-mesa-1": {
+    "type": "product",
+    "width": 800,
+    "height": 800,
+    "sizes": [
+      400,
+      800
+    ],
+    "format": "webp",
+    "files": {
+      "400": "set-mesa-1-400-5e5e6705.webp",
+      "800": "set-mesa-1-800-5e5e6705.webp"
+    }
+  },
+  "set-mesa-3": {
+    "type": "product",
+    "width": 794,
+    "height": 794,
+    "sizes": [
+      400,
+      794
+    ],
+    "format": "webp",
+    "files": {
+      "400": "set-mesa-3-400-cf9c7654.webp",
+      "794": "set-mesa-3-794-cf9c7654.webp"
+    }
+  },
+  "set-mesa-4": {
+    "type": "product",
+    "width": 794,
+    "height": 794,
+    "sizes": [
+      400,
+      794
+    ],
+    "format": "webp",
+    "files": {
+      "400": "set-mesa-4-400-b4ffd2e9.webp",
+      "794": "set-mesa-4-794-b4ffd2e9.webp"
+    }
+  },
+  "torre-1": {
+    "type": "product",
+    "width": 768,
+    "height": 768,
+    "sizes": [
+      400,
+      768
+    ],
+    "format": "webp",
+    "files": {
+      "400": "torre-1-400-cf51ba58.webp",
+      "768": "torre-1-768-cf51ba58.webp"
+    }
+  },
+  "torre-2": {
+    "type": "product",
+    "width": 800,
+    "height": 800,
+    "sizes": [
+      400,
+      800
+    ],
+    "format": "webp",
+    "files": {
+      "400": "torre-2-400-5f5a072f.webp",
+      "800": "torre-2-800-5f5a072f.webp"
+    }
+  },
+  "torre-3": {
+    "type": "product",
+    "width": 800,
+    "height": 800,
+    "sizes": [
+      400,
+      800
+    ],
+    "format": "webp",
+    "files": {
+      "400": "torre-3-400-1849a46f.webp",
+      "800": "torre-3-800-1849a46f.webp"
+    }
+  },
+  "home-hero-mid": {
+    "type": "content",
+    "width": 2752,
+    "height": 1536,
+    "sizes": [
+      480,
+      960,
+      1600,
+      1920,
+      2752
+    ],
+    "format": "webp",
+    "files": {
+      "480": "home-hero-mid-480-e4423487.webp",
+      "960": "home-hero-mid-960-e4423487.webp",
+      "1600": "home-hero-mid-1600-e4423487.webp",
+      "1920": "home-hero-mid-1920-e4423487.webp",
+      "2752": "home-hero-mid-2752-e4423487.webp"
+    }
+  },
+  "home-hero-narrow": {
+    "type": "content",
+    "width": 1152,
+    "height": 1536,
+    "sizes": [
+      480,
+      960,
+      1152
+    ],
+    "format": "webp",
+    "files": {
+      "480": "home-hero-narrow-480-1bb92f03.webp",
+      "960": "home-hero-narrow-960-1bb92f03.webp",
+      "1152": "home-hero-narrow-1152-1bb92f03.webp"
+    }
+  },
+  "home-hero-wide": {
+    "type": "content",
+    "width": 2752,
+    "height": 1179,
+    "sizes": [
+      480,
+      960,
+      1600,
+      1920,
+      2752
+    ],
+    "format": "webp",
+    "files": {
+      "480": "home-hero-wide-480-237f63f3.webp",
+      "960": "home-hero-wide-960-237f63f3.webp",
+      "1600": "home-hero-wide-1600-237f63f3.webp",
+      "1920": "home-hero-wide-1920-237f63f3.webp",
+      "2752": "home-hero-wide-2752-237f63f3.webp"
+    }
+  },
+  "medidas-banquito": {
+    "type": "content",
+    "width": 480,
+    "height": 600,
+    "sizes": [
+      480
+    ],
+    "format": "webp",
+    "files": {
+      "480": "medidas-banquito-480-a3068867.webp"
+    }
+  },
+  "medidas-pata-pata": {
+    "type": "content",
+    "width": 794,
+    "height": 1123,
+    "sizes": [
+      480,
+      794
+    ],
+    "format": "webp",
+    "files": {
+      "480": "medidas-pata-pata-480-c7cc31a8.webp",
+      "794": "medidas-pata-pata-794-c7cc31a8.webp"
+    }
+  },
+  "medidas-set-mesa": {
+    "type": "content",
+    "width": 774,
+    "height": 1157,
+    "sizes": [
+      480,
+      774
+    ],
+    "format": "webp",
+    "files": {
+      "480": "medidas-set-mesa-480-5f6f3452.webp",
+      "774": "medidas-set-mesa-774-5f6f3452.webp"
+    }
+  },
+  "medidas-silla-alta-dos-escalones": {
+    "type": "content",
+    "width": 822,
+    "height": 1200,
+    "sizes": [
+      480,
+      822
+    ],
+    "format": "webp",
+    "files": {
+      "480": "medidas-silla-alta-dos-escalones-480-b6e2f246.webp",
+      "822": "medidas-silla-alta-dos-escalones-822-b6e2f246.webp"
+    }
+  },
+  "medidas-silla-alta": {
+    "type": "content",
+    "width": 818,
+    "height": 1200,
+    "sizes": [
+      480,
+      818
+    ],
+    "format": "webp",
+    "files": {
+      "480": "medidas-silla-alta-480-138e6ea8.webp",
+      "818": "medidas-silla-alta-818-138e6ea8.webp"
+    }
+  },
+  "medidas-silla-evolutiva": {
+    "type": "content",
+    "width": 818,
+    "height": 1200,
+    "sizes": [
+      480,
+      818
+    ],
+    "format": "webp",
+    "files": {
+      "480": "medidas-silla-evolutiva-480-b6923d32.webp",
+      "818": "medidas-silla-evolutiva-818-b6923d32.webp"
+    }
+  },
+  "og-brand": {
+    "type": "og",
+    "width": 1200,
+    "height": 630,
+    "sizes": [
+      1200
+    ],
+    "format": "jpeg",
+    "files": {
+      "1200": "og-brand-1200-480b409c.jpg"
+    }
+  }
+}

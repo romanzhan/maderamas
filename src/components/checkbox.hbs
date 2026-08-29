@@ -1,0 +1,33 @@
+{{!-- Чекбокс (компоненты.md ч. 2): своя отрисовка поверх нативного input,
+      область нажатия — вся строка, не меньше 44. Промежуточное состояние не используется.
+      Опции для фильтров каталога: value + xModel (значение живёт в store, а не в форме),
+      onChange, text — готовая подпись вместо ключа словаря, swatch — кружок цвета
+      перед подписью. Второй разметки чекбокса в проекте быть не должно (принцип 16). --}}
+<label class="flex min-h-11 items-start gap-3
+  {{#if disabled}}cursor-default opacity-45{{else}}cursor-pointer{{/if}}">
+  <span class="relative mt-1 flex size-6 shrink-0 items-center justify-center lg:size-5">
+    <input
+      type="checkbox"
+      {{#if name}}name="{{name}}"{{/if}}
+      {{#if value}}value="{{value}}"{{/if}}
+      {{#if xModel}}x-model="{{xModel}}"{{/if}}
+      {{#if onChange}}x-on:change="{{onChange}}"{{/if}}
+      {{#if checked}}checked{{/if}}
+      {{#if disabled}}disabled{{/if}}
+      class="peer size-full appearance-none rounded-sm border border-border bg-sand
+        checked:border-clay checked:bg-clay disabled:cursor-default"
+    />
+    <span class="pointer-events-none absolute text-cream opacity-0 peer-checked:opacity-100">
+      {{> icon empty name="check" class="size-4"}}
+    </span>
+  </span>
+  {{#if swatch}}
+    <span
+      class="mt-1 size-5 shrink-0 rounded-full border border-border"
+      style="background-color: {{swatch}}"
+      aria-hidden="true"
+    ></span>
+  {{/if}}
+
+  <span class="text-body">{{#if text}}{{text}}{{else}}{{t label}}{{/if}}</span>
+</label>

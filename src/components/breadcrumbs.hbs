@@ -1,0 +1,44 @@
+{{!-- Хлебные крошки (компоненты.md 4.3). Видимые крошки и разметка — одно и то же
+      (seo.md п. 4), поэтому микроразметка живёт прямо на списке, а не отдельным JSON.
+      На телефоне видна только строка родителя со стрелкой назад: полная цепочка там
+      переносится по строкам и съедает первый экран.
+      Обязательные: items — { plain, items: [{ label, href, current, parent }] }
+      из page-context. plain — служебная страница: цепочка видна человеку, но
+      микроразметки не несёт (seo.md п. 4). --}}
+<nav aria-label="{{t "nav.breadcrumbs"}}">
+  <ol
+    class="flex flex-wrap items-center gap-x-2 gap-y-1 text-small text-charcoal/70"
+    {{#unless plain}}itemscope itemtype="https://schema.org/BreadcrumbList"{{/unless}}
+  >
+    {{#each items}}
+      <li
+        class="flex items-center gap-2 {{#unless parent}}hidden sm:flex{{/unless}}"
+        {{#unless ../plain}}
+          itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"
+        {{/unless}}
+      >
+        {{#if parent}}
+          {{> icon empty name="chevron-left" class="size-4 sm:hidden"}}
+        {{/if}}
+
+        {{#if href}}
+          <a href="{{href}}" {{#unless ../plain}}itemprop="item"{{/unless}}
+            class="rounded-sm hover:text-charcoal"
+          >
+            <span {{#unless ../plain}}itemprop="name"{{/unless}}>{{label}}</span>
+          </a>
+        {{else}}
+          {{!-- Текущая страница — текст, а не ссылка (компоненты.md 4.3) --}}
+          <span {{#unless ../plain}}itemprop="name"{{/unless}} aria-current="page"
+            >{{label}}</span>
+        {{/if}}
+
+        {{#unless ../plain}}<meta itemprop="position" content="{{position}}" />{{/unless}}
+
+        {{#unless current}}
+          <span class="hidden sm:inline" aria-hidden="true">/</span>
+        {{/unless}}
+      </li>
+    {{/each}}
+  </ol>
+</nav>

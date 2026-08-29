@@ -1,0 +1,22 @@
+{{!-- Карточка статьи (компоненты.md 7.1): фото → заголовок в две строки → короткий
+      анонс → дата. Фото ещё нет — встаёт заглушка бренда той же геометрии, поэтому
+      сетка не поедет.
+      Адрес статьи строится хелпером, а не строкой по месту: правило «/blog/{slug}/»
+      живёт в одном месте (принцип 16).
+      Обязательные: article (запись из articles.json). --}}
+<article class="group flex h-full flex-col gap-3">
+  <a href="{{articleUrl article}}" class="overflow-hidden rounded-xl">
+    {{> picture empty id=article.cover alt=article.title
+        class="aspect-square w-full object-cover"
+        sizes="(min-width: 1024px) 30vw, 100vw"}}
+  </a>
+  <h3 class="line-clamp-2 text-h4 lg:text-h4-lg">
+    <a href="{{articleUrl article}}" class="hover:text-clay-hover">{{article.title}}</a>
+  </h3>
+  <p class="line-clamp-3 text-small text-charcoal/70">{{article.excerpt}}</p>
+  {{!-- Дата прижата к низу: карточки в ряду разной высоты, и даты должны стоять
+        на одной линии --}}
+  <p class="mt-auto text-caption text-charcoal/70">
+    <time datetime="{{article.date}}">{{date article.date}}</time>
+  </p>
+</article>

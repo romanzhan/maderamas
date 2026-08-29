@@ -1,0 +1,50 @@
+{{!-- Многострочное поле (компоненты.md ч. 2): старт 3 строки, авторост до предела,
+      дальше прокрутка внутри; счётчик символов. Сообщение под полем — как у field:
+      ошибка → предупреждение → подсказка, место под него зарезервировано.
+      live — поле живой формы: рамку и текст ошибки ведёт слой валидации
+      (src/scripts/form.js), как у обычного поля.
+      woo — обёртка получает класс `form-row` классического чекаута WooCommerce
+      (сложные-узлы.md п. 5). --}}
+<div class="flex flex-col gap-2 {{#if woo}}form-row{{/if}}" x-data="{ value: '' }">
+  <label for="{{id}}" class="text-small font-medium {{#if disabled}}text-charcoal/70{{/if}}">
+    {{t label}}{{#if required}} <span class="text-error" aria-hidden="true">*</span>{{/if}}{{#if optional}}
+      <span class="text-charcoal/70">{{t "fields.optional"}}</span>{{/if}}
+  </label>
+
+  <textarea
+    id="{{id}}"
+    {{#if name}}name="{{name}}"{{/if}}
+    rows="3"
+    {{#if required}}required{{/if}}
+    {{#if disabled}}disabled{{/if}}
+    {{#if minlength}}minlength="{{minlength}}"{{/if}}
+    maxlength="{{max}}"
+    {{!-- Значение живёт в самом поле, а не в состоянии Alpine. x-model при старте
+          затирает то, что уже стоит в поле, — а на чекауте туда только что вернули
+          сохранённый черновик (поймано ревью 28.08.2026). Состояние поле лишь
+          отражает: им живут счётчик символов и авторост --}}
+    x-init="value = $el.value; $el.style.height = $el.scrollHeight + 'px'"
+    @input="value = $el.value; $el.style.height = 'auto'; $el.style.height = $el.scrollHeight + 'px'"
+    {{#if error}}aria-invalid="true"{{/if}}
+    {{#if live}}
+      x-bind:class="{
+        'border-error focus:border-error focus:ring-error': errors['{{name}}'],
+        'border-border focus:border-clay focus:ring-clay': !errors['{{name}}'],
+      }"
+    {{/if}}
+    aria-describedby="{{id}}-message"
+    class="textarea-autogrow scrollbar-soft field-autofill w-full rounded-md border bg-sand px-4
+      py-3 text-body ring-inset placeholder:text-charcoal/70 focus:ring-1 focus:outline-none
+      disabled:cursor-not-allowed disabled:bg-sand-hover disabled:text-charcoal/70
+      {{#if error}}border-error focus:border-error focus:ring-error{{/if}}
+      {{#unless error}}border-border focus:border-clay focus:ring-clay{{/unless}}"
+  ></textarea>
+
+  <p id="{{id}}-message" class="flex min-h-6 items-start justify-between gap-4 text-small">
+    {{> field-message empty live=live name=name error=error warning=warning hint=hint}}
+    {{!-- Счётчик отрисован и на сервере: до старта Alpine он не пустует --}}
+    <span class="shrink-0 text-charcoal/70 tabular-nums" x-text="value.length + '/' + {{max}}"
+      >0/{{max}}</span
+    >
+  </p>
+</div>

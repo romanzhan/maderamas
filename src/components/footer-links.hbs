@@ -1,0 +1,21 @@
+{{!-- Список ссылок подвала. Строки 44 на телефоне и планшете — минимум нормы тача
+      при зазоре 8 (стандарты-размеров.md п. 3; уплотнено 28.08.2026, раньше было 48)
+      и 40 с 1024: раскладка колонок меняется на 768, а высота строк — на 1024.
+      Отклик наведения — подсветка строки `cream` 20% и яркий текст (решение владельца
+      27.08.2026; подчёркивания на наведении на сайте больше нет нигде).
+      Кольцо фокуса светлое — его даёт surface-dark у подвала. --}}
+<ul class="flex flex-col gap-2">
+  {{#each items}}
+    <li>
+      <a
+        href="{{href}}"
+        {{#if external}}target="_blank" rel="noopener"{{/if}}
+        class="-mx-3 inline-flex h-11 items-center rounded-lg px-3 whitespace-nowrap
+          hover:bg-cream/20 hover:text-cream lg:h-10
+          {{#if current}}text-cream{{else}}text-cream/75{{/if}}"
+        {{#if current}}aria-current="page"{{/if}}
+        >{{label}}</a
+      >
+    </li>
+  {{/each}}
+</ul>

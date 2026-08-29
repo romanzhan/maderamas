@@ -1,0 +1,33 @@
+{{!-- Сообщения над кнопкой отправки (формы-и-поля.md п. 3.5): введённое при этом
+      не теряется. Все три состояния настоящие: каталог мог не загрузиться, наличие
+      могло измениться, пока покупатель заполнял форму, а связь могла пропасть
+      в момент отправки.
+      Блок стоит на странице дважды — у липкого итога и над полосой на телефоне, —
+      потому что видно всегда только один из них. --}}
+{{!-- Каталог не загрузился: состав заказа и итог показать нечем, и оформлять нечего
+      (состояния-экранов.md п. 0). Пустой итог с рабочей кнопкой был бы обманом --}}
+<div x-show="failed" x-cloak class="flex flex-col items-start gap-3">
+  <p role="alert" class="flex items-start gap-2 rounded-md bg-error-bg px-3 py-2 text-small
+    text-error">
+    <span class="icon-line shrink-0">{{> icon empty name="circle-alert" class="size-4"}}</span>
+    {{t "errors.network"}}
+  </p>
+  {{> button empty secondary=true sizeMd=true label="common.retry" onClick="load()"}}
+</div>
+
+{{!-- Сообщение без выхода — тупик (компоненты.md 6.3): пересобрать заказ можно
+      только в корзине, и ссылка туда стоит рядом с сообщением, а не в шапке --}}
+<div x-show="stockChanged" x-cloak class="flex flex-col items-start gap-3">
+  <p role="alert" class="flex items-start gap-2 rounded-md bg-warning-bg px-3 py-2 text-small
+    text-warning">
+    <span class="icon-line shrink-0">{{> icon empty name="circle-alert" class="size-4"}}</span>
+    {{t "checkout.stockChanged"}}
+  </p>
+  {{> button empty secondary=true sizeMd=true label="cart.viewCart" href="/carrito/"}}
+</div>
+
+<p x-show="sendFailed" x-cloak role="alert"
+  class="flex items-start gap-2 rounded-md bg-error-bg px-3 py-2 text-small text-error">
+  <span class="icon-line shrink-0">{{> icon empty name="circle-alert" class="size-4"}}</span>
+  {{t "errors.submit"}}
+</p>

@@ -1,0 +1,80 @@
+{{!-- Панель покупки (страницы.md §3). Порядок строк закреплён; выключенный флаг или
+      пустое поле удаляют свою строку целиком, дыры не остаётся.
+      Состояние комбинации одно на страницу (сложные-узлы.md п. 12) — оно живёт
+      в компоненте productPage и питает цену, наличие, кнопку и полосу внизу. --}}
+<div class="flex min-w-0 flex-col gap-5">
+  {{!-- Всё, что скрипту нужно знать о комбинациях: он не разбирает разметку
+        и не знает про данные проекта --}}
+  <script type="application/json" data-product-data>{{{product.clientJson}}}</script>
+
+  <div class="flex flex-col gap-3">
+    <h1 class="font-display text-h1 lg:text-h1-lg">{{product.name}}</h1>
+
+    {{#if product.rating}}
+      <a href="#opiniones" class="w-fit rounded-sm hover:text-clay">
+        {{> rating empty value=product.rating count=product.reviewsCount starClass="size-5"}}
+      </a>
+    {{/if}}
+  </div>
+
+  {{!-- Цена комбинации считает скрипт (у цвета дерева своя доплата, данные.md §2),
+        но рисует её общий компонент: начертание, табличные цифры и юридический
+        спутник обязаны быть теми же, что везде (компоненты.md 3.1) --}}
+  {{> price empty large=true legal=true value=product.selectedPrice
+      old=product.selectedOldPrice bind="priceLabel" bindOld="oldPriceLabel"
+      bindLegal="netLabel"}}
+
+  {{!-- Свотчи отдают выбор обычным change: своего обработчика по месту у них нет,
+        состояние комбинации одно на страницу (сложные-узлы.md п. 12) --}}
+  <div
+    class="flex flex-col gap-5"
+    x-on:change="select($event.target.name, $event.target.value)"
+  >
+    {{#each product.axes}}
+      {{> swatch-group ../empty name=key label=label options=options selected=selected}}
+    {{/each}}
+  </div>
+
+  {{!-- Наличие строкой, а не бейджем: на странице товара это ответ на вопрос,
+        а не пометка на карточке --}}
+  <p class="text-small" x-bind:class="inStock ? 'text-success' : 'text-charcoal/70'">
+    <span x-show="inStock">{{t "product.inStock"}}</span>
+    <span x-show="!inStock" x-cloak>{{t "product.noStock"}}</span>
+  </p>
+
+  <div class="flex flex-col gap-4" x-show="inStock">
+    {{> quantity empty id="cantidad" max=site.cart.maxQtyPerItem}}
+
+    {{> product/accessory}}
+
+    <div class="flex flex-col gap-3">
+      {{!-- Две кнопки, а не одна с меняющейся подписью: вид у них разный, и обе —
+            общий компонент (компоненты.md 1.1) --}}
+      <span x-show="!inCart">
+        {{> button empty primary=true sizeLg=true fullWidth=true label="product.addToCart"
+            onClick="add()"}}
+      </span>
+      <span x-show="inCart" x-cloak>
+        {{> button empty secondary=true sizeLg=true fullWidth=true icon="check"
+            label="product.inCart" href="/carrito/"}}
+      </span>
+    </div>
+  </div>
+
+  {{!-- Нет в наличии — не тупик: и распроданный товар, и недоступная комбинация
+        предлагают сообщить о возврате (состояния-экранов.md п. 3) --}}
+  <div x-show="!inStock" x-cloak data-notify="{{product.name}}">
+    {{> button empty secondary=true sizeLg=true fullWidth=true label="stock.notifyCta"
+        onClick="$store.notify.ask($el)"}}
+  </div>
+
+  {{!-- Метка для полосы внизу: она появляется, когда кнопка уехала выше кадра --}}
+  <div data-buy-anchor aria-hidden="true"></div>
+
+  <ul class="flex flex-wrap gap-2">
+    {{#if product.freeShipping}}
+      <li>{{> badge empty info=true label="badge.freeShipping"}}</li>
+    {{/if}}
+    <li>{{> badge empty status=true label="legal.devolucion"}}</li>
+  </ul>
+</div>

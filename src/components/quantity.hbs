@@ -1,0 +1,81 @@
+{{!-- Счётчик количества (компоненты.md ч. 2): «− число +», минимум 1, максимум из
+      настроек. На пределе «+» отключается и появляется пояснение — молча упираться
+      в потолок нельзя. Поведение — src/scripts/quantity.js.
+      Опции для строки корзины: bindValue / onDec / onInc / atMin / atMax — там значение
+      живёт в состоянии корзины, а не в собственном, и поле ввода не нужно (менять
+      количество десятками в корзине незачем); подпись при этом слышит только
+      скринридер. Второй разметки счётчика в проекте быть не должно (принцип 16). --}}
+<div class="flex flex-col gap-2"
+  {{#unless bindValue}}x-data="quantity({ max: {{max}} })"{{/unless}}
+>
+  {{!-- Со связанным значением поля ввода нет, значит и подписи «для» не к чему
+        привязывать: остаётся текст для скринридера --}}
+  {{#if bindValue}}
+    <span class="sr-only">{{t "qty.label"}}</span>
+  {{else}}
+    <label for="{{id}}" class="text-small font-medium">{{t "qty.label"}}</label>
+  {{/if}}
+
+  <div class="flex w-fit items-center rounded-md border border-border bg-sand">
+    <button
+      type="button"
+      class="flex shrink-0 items-center justify-center rounded-l-md text-charcoal
+        hover:bg-sand-hover disabled:pointer-events-none disabled:opacity-45
+        {{#if bindValue}}size-11{{else}}size-12 lg:size-11{{/if}}"
+      aria-label="{{t "qty.decrease"}}"
+      :disabled="{{#if atMin}}{{atMin}}{{else}}atMin{{/if}}"
+      @click="{{#if onDec}}{{onDec}}{{else}}step(-1){{/if}}"
+    >
+      {{> icon empty name="minus" class="size-5"}}
+    </button>
+
+    {{#if bindValue}}
+      <span
+        class="flex size-11 items-center justify-center border-x border-border bg-sand
+          text-center text-body tabular-nums"
+        x-text="{{bindValue}}"
+      ></span>
+    {{else}}
+      <input
+        id="{{id}}"
+        type="text"
+        inputmode="numeric"
+        aria-describedby="{{id}}-message"
+        class="h-12 w-12 border-x border-border bg-sand text-center text-body ring-inset
+          tabular-nums focus:border-clay focus:ring-1 focus:ring-clay focus:outline-none
+          lg:h-11"
+        value="1"
+        x-model="value"
+        {{!-- Буквы отсекаем сразу, а границы 1…max — по уходу из поля: иначе стирание
+              последней цифры мгновенно подставляло бы единицу и мешало набирать --}}
+        @input="value = String(value).replace(/\D/g, '')"
+        @blur="normalize()"
+      />
+    {{/if}}
+
+    <button
+      type="button"
+      class="flex shrink-0 items-center justify-center rounded-r-md text-charcoal
+        hover:bg-sand-hover disabled:pointer-events-none disabled:opacity-45
+        {{#if bindValue}}size-11{{else}}size-12 lg:size-11{{/if}}"
+      aria-label="{{t "qty.increase"}}"
+      :disabled="{{#if atMax}}{{atMax}}{{else}}atMax{{/if}}"
+      @click="{{#if onInc}}{{onInc}}{{else}}step(1){{/if}}"
+    >
+      {{> icon empty name="plus" class="size-5"}}
+    </button>
+  </div>
+
+  {{!-- Место под пояснение зарезервировано всегда: на пределе счётчик не должен
+        сдвигать соседей. В строке корзины сообщение своё, без общего id: строк в списке
+        много, и один id на всех был бы неверен --}}
+  {{#if bindValue}}
+    <p x-cloak x-show="{{atMax}}" class="text-caption text-charcoal/70">
+      {{t "qty.max" n=max}}
+    </p>
+  {{else}}
+    <p id="{{id}}-message" class="min-h-6 text-small text-charcoal/70">
+      <span x-cloak x-show="atMax">{{t "qty.max" n=max}}</span>
+    </p>
+  {{/if}}
+</div>

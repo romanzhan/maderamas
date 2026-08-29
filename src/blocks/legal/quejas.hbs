@@ -1,0 +1,37 @@
+{{!-- Libro de Quejas Online (страницы.md §16, норма — seo.md п. 8: Ley 2.247 CABA).
+      Норма требует именно этих полей: имя, DNI, email, телефон и текст жалобы, —
+      плюс дословную копию письмом и ответ в 15 días hábiles. Поэтому здесь, в отличие
+      от формы контакта, обязательны все поля: неполная жалоба не регистрируется.
+      Обвязка формы — общая, в form-shell. --}}
+<main id="contenido" class="page-container py-6 lg:py-10">
+  {{> breadcrumbs empty items=breadcrumbs.items plain=breadcrumbs.plain}}
+
+  <div class="mt-4 flex flex-col gap-4">
+    <h1 class="max-w-prose font-display text-h1 lg:text-h1-lg">{{t "footer.quejas"}}</h1>
+    <p class="max-w-prose text-lead text-charcoal/70">{{t "quejas.lead"}}</p>
+  </div>
+
+  <div class="mt-8 lg:mt-12">
+    {{#> form-shell code=true submitLabel="quejas.submit" successTitle="quejas.successTitle"
+        successText="quejas.successText" againLabel="common.goHome" href="/"}}
+      {{> field empty live=true id="quejas-nombre" name="nombre" label="fields.name"
+          required=true autocomplete="name" pattern=(formPattern "nombre")
+          errorPattern="errors.nameFormat"}}
+
+      {{!-- DNI приходит уже с точками: шаблон считает их вместе с цифрами --}}
+      {{> field empty live=true id="quejas-dni" name="dni" label="fields.dni"
+          inputmode="numeric" required=true format="dni" pattern=(formPattern "dni")
+          errorPattern="errors.dniFormat"}}
+
+      {{> field empty live=true id="quejas-email" name="email" label="fields.email"
+          type="email" inputmode="email" required=true autocomplete="email" checkValid=true}}
+
+      {{> field empty live=true id="quejas-telefono" name="telefono" label="fields.phone"
+          type="tel" inputmode="tel" required=true autocomplete="tel" format="phone"
+          pattern=(formPattern "telefono") errorPattern="errors.phoneFormat" hint="fields.phoneHint" checkValid=true}}
+
+      {{> textarea empty live=true id="quejas-reclamo" name="reclamo" label="fields.complaint"
+          required=true minlength=20 max=1000 hint="quejas.complaintHint"}}
+    {{/form-shell}}
+  </div>
+</main>

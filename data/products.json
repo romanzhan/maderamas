@@ -1,0 +1,466 @@
+[
+  {
+    "id": "silla-evolutiva",
+    "slug": "silla-evolutiva",
+    "name": "Silla Evolutiva",
+    "shortDescription": "La silla que crece con tu hijo: se adapta a cada etapa, de 1 a 15 años.",
+    "description": "Silla evolutiva infantil que acompaña el crecimiento de tu hijo. Se adapta fácilmente a cada etapa y sostiene una postura correcta, cómoda y segura.\n\nMide 85 cm de alto, 49 cm de largo y 47 cm de ancho, así que entra sin problema en cualquier espacio de la casa: la habitación, el escritorio, el rincón de juegos o la mesa a la hora de comer.\n\nFabricada en MDF de 18 mm: resistente, durable y pensada para el uso diario.\n\nSe entrega desarmada.",
+    "categoryId": "sillas",
+    "price": 154950,
+    "oldPrice": null,
+    "currency": "ARS",
+    "inStock": true,
+    "createdAt": "2026-08-20",
+    "order": 10,
+    "featured": true,
+    "images": ["evolutiva-roble-1", "evolutiva-roble-2", "evolutiva-roble-3", "evolutiva-roble-5"],
+    "dimensionsImage": "medidas-silla-evolutiva",
+    "ogImage": null,
+    "attributes": {
+      "material": "MDF 18 mm",
+      "dimensions": {
+        "width": 47,
+        "depth": 49,
+        "height": 85,
+        "unit": "cm"
+      },
+      "weight": null,
+      "ageRange": "1 – 15 años",
+      "maxLoad": 80
+    },
+    "options": {
+      "woodColor": [
+        {
+          "id": "roble",
+          "name": "Roble americano",
+          "swatch": "#C69C6D",
+          "priceDelta": 0,
+          "inStock": true,
+          "images": [
+            "evolutiva-roble-1",
+            "evolutiva-roble-2",
+            "evolutiva-roble-3",
+            "evolutiva-roble-5"
+          ]
+        },
+        {
+          "id": "nogal",
+          "name": "Nogal",
+          "swatch": "#5E3D28",
+          "priceDelta": 0,
+          "inStock": true,
+          "images": [
+            "evolutiva-nogal-1",
+            "evolutiva-nogal-3",
+            "evolutiva-nogal-4",
+            "evolutiva-nogal-5"
+          ]
+        },
+        {
+          "id": "blanco",
+          "name": "Blanco",
+          "swatch": "#F2EFE9",
+          "priceDelta": 0,
+          "inStock": true,
+          "images": ["evolutiva-blanco-1", "evolutiva-blanco-2", "evolutiva-blanco-3"]
+        },
+        {
+          "id": "crudo",
+          "name": "Crudo",
+          "swatch": "#DCC9A8",
+          "priceDelta": 0,
+          "inStock": true,
+          "images": ["evolutiva-crudo-1", "evolutiva-crudo-5"]
+        }
+      ]
+    },
+    "accessories": ["almohadon"],
+    "related": ["silla-alta", "torre-aprendizaje"],
+    "sku": null,
+    "seo": {
+      "title": null,
+      "description": null
+    }
+  },
+  {
+    "id": "silla-alta",
+    "slug": "silla-alta",
+    "name": "Silla Alta de Comer Evolutiva",
+    "shortDescription": "Silla alta que acompaña el crecimiento: para la mesa de casa, el bar o el restaurante.",
+    "description": "La Silla Alta de Comer Evolutiva acompaña el crecimiento de tus pequeños. Diseñada para chicos desde 1 año, se adapta a las distintas etapas y mantiene la comodidad y la seguridad en cada uso.\n\nSu estructura de MDF da estabilidad y resistencia: soporta hasta 80 kg. Con 75 cm de altura máxima y medidas de 49 cm de ancho por 47 cm de profundidad, queda cómoda con distintos tipos de mesa, tanto en casa como en un bar o un restaurante.\n\nSe entrega desarmada.",
+    "categoryId": "sillas",
+    "price": 174850,
+    "oldPrice": 199850,
+    "currency": "ARS",
+    "inStock": true,
+    "createdAt": "2026-06-01",
+    "order": 20,
+    "featured": true,
+    "images": ["alta-roble-1", "alta-roble-3", "alta-roble-5"],
+    "dimensionsImage": "medidas-silla-alta",
+    "ogImage": null,
+    "attributes": {
+      "material": "MDF laminado 18 mm",
+      "dimensions": {
+        "width": 49,
+        "depth": 47,
+        "height": 75,
+        "unit": "cm"
+      },
+      "weight": 7,
+      "ageRange": "1 – 15 años",
+      "maxLoad": 80
+    },
+    "options": {
+      "woodColor": [
+        {
+          "id": "roble",
+          "name": "Roble americano",
+          "swatch": "#C69C6D",
+          "priceDelta": 0,
+          "inStock": true,
+          "images": ["alta-roble-1", "alta-roble-3", "alta-roble-5"]
+        },
+        {
+          "id": "nogal",
+          "name": "Nogal",
+          "swatch": "#5E3D28",
+          "priceDelta": 0,
+          "inStock": true,
+          "images": ["alta-2-1", "alta-2-3", "alta-2-5"]
+        }
+      ]
+    },
+    "accessories": ["almohadon"],
+    "related": ["silla-alta-dos-escalones", "silla-evolutiva"],
+    "sku": null,
+    "seo": {
+      "title": null,
+      "description": null
+    }
+  },
+  {
+    "id": "silla-alta-dos-escalones",
+    "slug": "silla-alta-dos-escalones",
+    "name": "Silla Alta de Comer con dos escalones",
+    "shortDescription": "La versión con dos escalones: el chico sube y baja solo, sin ayuda.",
+    "description": "Silla alta de comer con dos escalones: el chico sube y baja por sus propios medios, gana autonomía y vos ganás tranquilidad.\n\nEstructura de MDF laminado de 18 mm, altura máxima de 75 cm y medidas de 49 cm de ancho por 47 cm de profundidad. Soporta hasta 90 kg.\n\nSe entrega desarmada.",
+    "categoryId": "sillas",
+    "price": 199850,
+    "oldPrice": null,
+    "currency": "ARS",
+    "inStock": true,
+    "createdAt": "2026-06-01",
+    "order": 30,
+    "featured": true,
+    "images": ["alta-escalones-1", "alta-escalones-5", "alta-escalones-6"],
+    "dimensionsImage": "medidas-silla-alta-dos-escalones",
+    "ogImage": null,
+    "attributes": {
+      "material": "MDF laminado 18 mm",
+      "dimensions": {
+        "width": 49,
+        "depth": 47,
+        "height": 75,
+        "unit": "cm"
+      },
+      "weight": 7,
+      "ageRange": "1 – 15 años",
+      "maxLoad": 90
+    },
+    "options": {},
+    "accessories": ["almohadon"],
+    "related": ["silla-alta", "silla-evolutiva"],
+    "sku": null,
+    "seo": {
+      "title": null,
+      "description": null
+    }
+  },
+  {
+    "id": "silla-para-bebe",
+    "slug": "silla-para-bebe",
+    "name": "Silla Infantil para Comer",
+    "shortDescription": "Para los más chiquitos: arnés de tres puntos, respaldo alto y apoyapiés.",
+    "description": "Silla infantil pensada para la seguridad del bebé y la comodidad del uso diario.\n\nTiene arnés de seguridad de tres puntos, respaldo alto y apoyabrazos que dan contención y ayudan a prevenir caídas. Las patas llevan una inclinación especial que da estabilidad y reduce el riesgo de vuelco, incluso si el chico se mueve o se hamaca.\n\nEl asiento tiene recortes ergonómicos para una mejor postura y suma apoyapiés. Incluye bandeja extraíble.\n\nSe entrega desarmada.",
+    "categoryId": "sillas",
+    "price": 129000,
+    "oldPrice": 149000,
+    "currency": "ARS",
+    "inStock": true,
+    "createdAt": "2026-08-10",
+    "order": 40,
+    "featured": true,
+    "images": [
+      "bebe-roble-1",
+      "bebe-roble-2",
+      "bebe-roble-3",
+      "bebe-roble-4",
+      "bebe-roble-5",
+      "bebe-roble-6"
+    ],
+    "dimensionsImage": null,
+    "ogImage": null,
+    "attributes": {
+      "material": "MDF",
+      "dimensions": {
+        "width": 38,
+        "depth": 50,
+        "height": 85,
+        "unit": "cm"
+      },
+      "weight": 6,
+      "ageRange": "6 meses – 4 años",
+      "maxLoad": 40
+    },
+    "options": {},
+    "accessories": [],
+    "related": ["silla-evolutiva", "torre-aprendizaje"],
+    "sku": null,
+    "seo": {
+      "title": null,
+      "description": null
+    }
+  },
+  {
+    "id": "torre-aprendizaje",
+    "slug": "torre-de-aprendizaje",
+    "name": "Torre de Aprendizaje plegable",
+    "shortDescription": "Para cocinar y participar a tu altura. Plegable, ocupa poco cuando no se usa.",
+    "description": "Torre de aprendizaje plegable: el chico llega a la mesada y participa de lo que pasa en casa con seguridad.\n\nFabricada en MDF de 15 mm. Se pliega cuando no se usa, así que ocupa poco lugar. Requiere ensamblado.",
+    "categoryId": "accesorios",
+    "price": 199900,
+    "oldPrice": null,
+    "currency": "ARS",
+    "inStock": false,
+    "createdAt": "2026-06-01",
+    "order": 10,
+    "featured": false,
+    "images": ["torre-1", "torre-2", "torre-3"],
+    "dimensionsImage": null,
+    "ogImage": null,
+    "attributes": {
+      "material": "MDF 15 mm",
+      "dimensions": null,
+      "weight": null,
+      "ageRange": "2 – 4 años",
+      "maxLoad": 60
+    },
+    "options": {},
+    "accessories": [],
+    "related": ["silla-evolutiva", "banquito-estrella"],
+    "sku": null,
+    "seo": {
+      "title": null,
+      "description": null
+    }
+  },
+  {
+    "id": "set-mesa-sillas",
+    "slug": "set-mesa-y-sillas",
+    "name": "Set de mesa y dos sillas",
+    "shortDescription": "Mesa y dos sillas a la medida de los chicos, para dibujar, jugar y merendar.",
+    "description": "Set de mesa y dos sillas a la altura de los chicos, para dibujar, jugar y merendar.\n\nMesa de 60 cm de ancho por 40 cm de profundidad y 40 cm de alto; sillas de 26 cm de ancho por 22 cm de profundidad y 44 cm de alto. La mesa soporta hasta 50 kg y cada silla hasta 35 kg. Es plegable.",
+    "categoryId": "accesorios",
+    "price": 164850,
+    "oldPrice": null,
+    "currency": "ARS",
+    "inStock": true,
+    "createdAt": "2026-06-01",
+    "order": 20,
+    "featured": false,
+    "images": ["set-mesa-1", "set-mesa-3", "set-mesa-4"],
+    "dimensionsImage": "medidas-set-mesa",
+    "ogImage": null,
+    "attributes": {
+      "material": "MDF",
+      "dimensions": {
+        "width": 60,
+        "depth": 40,
+        "height": 40,
+        "unit": "cm"
+      },
+      "weight": null,
+      "ageRange": "1 – 4 años",
+      "maxLoad": 50
+    },
+    "options": {},
+    "accessories": [],
+    "related": ["banquito-estrella", "equilibristas"],
+    "sku": null,
+    "seo": {
+      "title": null,
+      "description": null
+    }
+  },
+  {
+    "id": "banquito-estrella",
+    "slug": "banquito-la-estrella",
+    "name": "Banquito La Estrella",
+    "shortDescription": "Banquito infantil de madera, liviano y estable.",
+    "description": "Banquito infantil de madera: liviano, estable y fácil de mover por el chico.",
+    "categoryId": "accesorios",
+    "price": 79950,
+    "oldPrice": 89950,
+    "currency": "ARS",
+    "inStock": true,
+    "createdAt": "2026-06-01",
+    "order": 30,
+    "featured": false,
+    "images": ["banquito-1", "banquito-3"],
+    "dimensionsImage": "medidas-banquito",
+    "ogImage": null,
+    "attributes": {
+      "material": "MDF",
+      "dimensions": null,
+      "weight": null,
+      "ageRange": null,
+      "maxLoad": null
+    },
+    "options": {},
+    "accessories": [],
+    "related": ["set-mesa-sillas", "torre-aprendizaje"],
+    "sku": null,
+    "seo": {
+      "title": null,
+      "description": null
+    }
+  },
+  {
+    "id": "pata-pata",
+    "slug": "pata-pata",
+    "name": "Pata Pata andador de madera",
+    "shortDescription": "Andador de madera con barra de empuje, para los primeros pasos.",
+    "description": "Andador de madera con barra de empuje que acompaña los primeros pasos.\n\nSoporta hasta 45 kg. Recomendado de 6 meses a 3 años.",
+    "categoryId": "accesorios",
+    "price": 59900,
+    "oldPrice": null,
+    "currency": "ARS",
+    "inStock": true,
+    "createdAt": "2026-06-01",
+    "order": 40,
+    "featured": false,
+    "images": ["pata-pata-1"],
+    "dimensionsImage": "medidas-pata-pata",
+    "ogImage": null,
+    "attributes": {
+      "material": "MDF",
+      "dimensions": null,
+      "weight": null,
+      "ageRange": "6 meses – 3 años",
+      "maxLoad": 45
+    },
+    "options": {},
+    "accessories": [],
+    "related": ["banquito-estrella", "equilibristas"],
+    "sku": null,
+    "seo": {
+      "title": null,
+      "description": null
+    }
+  },
+  {
+    "id": "equilibristas",
+    "slug": "equilibristas",
+    "name": "Equilibristas apilables x20",
+    "shortDescription": "Veinte piezas de madera para apilar: concentración, equilibrio y motricidad fina.",
+    "description": "Juego Montessori de veinte piezas apilables de 6 × 6 cm en MDF.\n\nEstimula la concentración, la coordinación, el equilibrio y la motricidad fina. Desde 1 año y medio.",
+    "categoryId": "accesorios",
+    "price": 20000,
+    "oldPrice": null,
+    "currency": "ARS",
+    "inStock": true,
+    "createdAt": "2026-08-25",
+    "order": 50,
+    "featured": false,
+    "images": ["equilibristas-1", "equilibristas-2", "equilibristas-3", "equilibristas-4"],
+    "dimensionsImage": null,
+    "ogImage": null,
+    "attributes": {
+      "material": "MDF",
+      "dimensions": null,
+      "weight": null,
+      "ageRange": "Desde 1,5 años",
+      "maxLoad": null
+    },
+    "options": {},
+    "accessories": [],
+    "related": ["set-mesa-sillas", "pata-pata"],
+    "sku": null,
+    "seo": {
+      "title": null,
+      "description": null
+    }
+  },
+  {
+    "id": "almohadon",
+    "slug": "almohadon",
+    "name": "Almohadón para silla",
+    "shortDescription": "Almohadón de asiento y respaldo para las sillas Madera Más. Se lava a máquina y tiene forro suave.",
+    "description": "Almohadón de asiento y respaldo para la Silla Evolutiva y la Silla Alta. Suma comodidad en las comidas largas y en la tarea del colegio.\n\nSe lava a máquina a 30° y cuenta con un forro suave. Elegí el color liso o estampado que más le guste al chico.",
+    "categoryId": "accesorios",
+    "price": 19900,
+    "oldPrice": null,
+    "currency": "ARS",
+    "inStock": true,
+    "createdAt": "2026-06-01",
+    "order": 60,
+    "featured": false,
+    "images": [],
+    "dimensionsImage": null,
+    "ogImage": null,
+    "attributes": {
+      "material": "Tela con forro suave",
+      "dimensions": null,
+      "weight": null,
+      "ageRange": null,
+      "maxLoad": null
+    },
+    "options": {
+      "cushionColor": [
+        {
+          "id": "celeste",
+          "name": "Celeste",
+          "swatch": "#CAE7FB",
+          "priceDelta": 0,
+          "inStock": true
+        },
+        {
+          "id": "verde",
+          "name": "Verde menta",
+          "swatch": "#BDE2C7",
+          "priceDelta": 0,
+          "inStock": true
+        },
+        {
+          "id": "rayas",
+          "name": "Rayas grises",
+          "swatch": "#B7B6BC",
+          "priceDelta": 5000,
+          "inStock": true
+        },
+        {
+          "id": "rojo",
+          "name": "Rojo estampado",
+          "swatch": "#D65839",
+          "priceDelta": 5000,
+          "inStock": true
+        },
+        {
+          "id": "azul",
+          "name": "Azul estampado",
+          "swatch": "#32448F",
+          "priceDelta": 5000,
+          "inStock": true
+        }
+      ]
+    },
+    "accessories": [],
+    "related": ["silla-evolutiva", "silla-alta"],
+    "sku": null,
+    "seo": {
+      "title": null,
+      "description": null
+    }
+  }
+]

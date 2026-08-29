@@ -1,0 +1,30 @@
+{{!-- Рейтинг (компоненты.md 3.5): пять звёзд с дробным заполнением, оценка и число
+      отзывов. Без отзывов компонент не выводится вовсе — это решает вызывающий блок.
+      starClass — размер звезды из шкалы: size-4 (карточка) / size-5 (страница товара).
+      count не передан (одиночный отзыв) — числа в скобках нет вовсе. --}}
+<div class="flex flex-wrap items-center gap-x-2 gap-y-1">
+  {{!-- Звёзды не перехватывают клик: внутри карточки они позиционированы и накрыли бы
+        растянутую ссылку — получалась мёртвая зона --}}
+  <span class="pointer-events-none relative inline-flex" role="img" aria-label="{{t "reviews.ratingAria" rating=(decimal value)}}">
+    <span class="pointer-events-none flex text-border" aria-hidden="true">
+      {{> icon empty name="star" class=starClass}}{{> icon empty name="star" class=starClass}}
+      {{> icon empty name="star" class=starClass}}{{> icon empty name="star" class=starClass}}
+      {{> icon empty name="star" class=starClass}}
+    </span>
+    {{!-- Верхний ряд обрезан по доле оценки: половинки видны без второго набора иконок.
+          Ширину считает CSS от самой оценки — числа-процента в разметке нет --}}
+    <span
+      class="rating-fill pointer-events-none absolute inset-y-0 left-0 flex overflow-hidden text-warning"
+      style="--rating: {{value}}"
+      aria-hidden="true"
+    >
+      {{> icon empty name="star" class=starClass filled=true}}{{> icon empty name="star" class=starClass filled=true}}
+      {{> icon empty name="star" class=starClass filled=true}}{{> icon empty name="star" class=starClass filled=true}}
+      {{> icon empty name="star" class=starClass filled=true}}
+    </span>
+  </span>
+  <span class="text-small tabular-nums {{#if large}}text-body{{/if}}">{{decimal value}}</span>
+  {{#if count}}
+    <span class="text-small text-charcoal/70 tabular-nums">({{count}})</span>
+  {{/if}}
+</div>

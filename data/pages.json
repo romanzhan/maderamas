@@ -1,0 +1,218 @@
+[
+  {
+    "id": "nosotros",
+    "slug": "nosotros",
+    "title": "Somos un taller, no una fábrica",
+    "lead": "Madera Más nació en Buenos Aires con una idea simple: que una sola silla acompañe al chico durante años, en vez de tres muebles que se usan una temporada y se guardan.",
+    "body": "Empezamos haciendo una silla para un hijo propio. No encontrábamos ninguna que sirviera a los dos años y también a los seis: las de bebé quedaban chicas enseguida y en las de adulto las piernas quedaban colgando. Así que la hicimos, y después la hicieron los vecinos, y después dejó de ser un favor y pasó a ser el trabajo.\n\nHoy fabricamos en nuestro propio taller y vendemos directo, sin intermediarios. Eso es lo que nos permite cuidar cada pieza y sostener el precio: el mismo mueble en una cadena cuesta el doble y viene de otro lado.\n\nNo tenemos catálogo infinito ni temporadas. Tenemos pocos modelos, pensados de verdad, que se regulan y duran.",
+    "sections": [
+      {
+        "id": "diseno",
+        "title": "Diseño y corte",
+        "body": "Cada modelo se dibuja a medida real y se corta en MDF de 18 mm. Las medidas no salen de un catálogo: salen de probar la silla con chicos de distintas edades hasta que el apoyapiés queda donde tiene que quedar."
+      },
+      {
+        "id": "lijado",
+        "title": "Lijado y cantos",
+        "body": "Todas las aristas se redondean a mano. Es la etapa más lenta y la que más se nota después: no queda ni un canto vivo donde el chico apoya las manos."
+      },
+      {
+        "id": "terminacion",
+        "title": "Terminación",
+        "body": "La terminación se aplica en capas finas, con secado entre una y otra. La superficie queda pareja, se limpia con un paño apenas húmedo y aguanta la comida, los marcadores y el uso de todos los días."
+      },
+      {
+        "id": "control",
+        "title": "Control y embalaje",
+        "body": "Antes de salir, cada silla se arma completa en el taller para revisar que todo calce. Después se desarma, se embala con los herrajes y las instrucciones, y recién ahí se despacha."
+      }
+    ],
+    "seo": {
+      "title": null,
+      "description": "Fabricamos sillas evolutivas de madera en Buenos Aires: una sola silla que acompaña al chico durante años, en vez de tres muebles de una temporada."
+    }
+  },
+  {
+    "id": "envios",
+    "slug": "envios-y-pagos",
+    "title": "Envíos y pagos",
+    "lead": "Enviamos a todo el país sin cargo y sin mínimo de compra. Acá está cómo llega el pedido y cómo se paga.",
+    "body": "El envío es gratis en todas las sillas y accesorios, a cualquier provincia. No hay monto mínimo ni recargo por zona: el precio que ves en el producto es el que pagás.",
+    "sections": [
+      {
+        "id": "envio",
+        "title": "Cómo enviamos",
+        "body": "Preparamos el pedido en el taller y lo despachamos por correo. La silla viaja desarmada, en caja, con todos los herrajes y las instrucciones adentro.",
+        "items": [
+          "Envío gratis a todo el país, sin mínimo de compra.",
+          "Preparamos el pedido en 2 días hábiles.",
+          "El plazo de entrega depende de tu provincia.",
+          "Te avisamos cuando el pedido sale del taller."
+        ]
+      },
+      {
+        "id": "pagos",
+        "title": "Formas de pago",
+        "body": "Cobramos con Mercado Pago. El pago se completa dentro de su plataforma: no guardamos ningún dato de tu tarjeta.",
+        "items": [
+          "Tarjetas de crédito y de débito.",
+          "Dinero disponible en tu cuenta de Mercado Pago.",
+          "Efectivo en los puntos de pago habilitados."
+        ]
+      },
+      {
+        "id": "precios",
+        "title": "Precios",
+        "body": "Todos los precios están en pesos argentinos, con IVA incluido, y son los precios finales de venta al público."
+      }
+    ],
+    "seo": {
+      "title": null,
+      "description": null
+    }
+  },
+  {
+    "id": "devoluciones",
+    "slug": "cambios-y-devoluciones",
+    "title": "Cambios y devoluciones",
+    "lead": "Si la silla no era lo que esperabas, la devolvés y listo. Tenés 10 días corridos desde que la recibís y la devolución no te cuesta nada.",
+    "body": "Preferimos que nos lo digas a que te quedes con un mueble que no usás. Escribinos y lo arreglamos: no hace falta explicar por qué.",
+    "sections": [
+      {
+        "id": "arrepentimiento",
+        "title": "Derecho de arrepentimiento",
+        "body": "Por la Ley 24.240 tenés 10 días corridos desde que recibís el producto para arrepentirte de la compra, sin dar explicaciones. El costo de la devolución corre por nuestra cuenta. Podés iniciarlo desde el Botón de Arrepentimiento o escribiéndonos por WhatsApp.",
+        "items": [
+          "El producto tiene que estar sin uso y en condiciones de volver a venderse.",
+          "Retiramos el paquete por donde te lo entregamos, sin costo para vos.",
+          "Te devolvemos el dinero por el mismo medio con el que pagaste."
+        ]
+      },
+      {
+        "id": "falla",
+        "title": "Producto con falla",
+        "body": "Si la silla llegó dañada o aparece una falla de fabricación, escribinos con una foto. Reparamos o reemplazamos la pieza sin cargo. Esto no depende del plazo de arrepentimiento: la garantía legal por vicios o defectos es de 6 meses."
+      },
+      {
+        "id": "cambios",
+        "title": "Cambios por otro modelo o color",
+        "body": "Si querés cambiar el modelo o el color, escribinos dentro de los mismos 10 días. Coordinamos el retiro y el envío del nuevo, y si hay diferencia de precio la ajustamos."
+      },
+      {
+        "id": "como",
+        "title": "Cómo pedirlo",
+        "body": "Escribinos por WhatsApp o completá el Botón de Arrepentimiento. Te respondemos dentro de las 24 horas con los pasos y con tu número de gestión."
+      }
+    ],
+    "seo": {
+      "title": null,
+      "description": null
+    }
+  },
+  {
+    "id": "terminos",
+    "slug": "terminos",
+    "title": "Términos y condiciones",
+    "lead": "Estas condiciones rigen la compra de productos en este sitio. Al comprar, aceptás lo que está escrito acá.",
+    "body": "Madera Más fabrica y vende sillas evolutivas y accesorios de madera para chicos. La venta se realiza a consumidores finales dentro de la República Argentina.",
+    "sections": [
+      {
+        "id": "compra",
+        "title": "La compra",
+        "body": "El pedido se considera aceptado cuando confirmamos la operación y el pago se acredita. Si un producto queda sin stock después de tu compra, te avisamos y te devolvemos el importe completo."
+      },
+      {
+        "id": "precios",
+        "title": "Precios y pagos",
+        "body": "Los precios están expresados en pesos argentinos, con IVA incluido, y son los precios finales de venta al público. Pueden modificarse sin aviso previo, pero vale el precio que figuraba al momento de tu compra. Los pagos se procesan a través de Mercado Pago; no almacenamos datos de tarjetas."
+      },
+      {
+        "id": "envios",
+        "title": "Envíos",
+        "body": "Las condiciones y los plazos de envío están detallados en la página de Envíos y pagos. Los plazos de entrega son estimados y dependen del servicio de correo."
+      },
+      {
+        "id": "arrepentimiento",
+        "title": "Derecho de arrepentimiento",
+        "body": "Conforme al artículo 34 de la Ley 24.240, podés revocar la compra dentro de los 10 días corridos contados desde la entrega del producto, sin responsabilidad alguna y sin costo. Los detalles están en Cambios y devoluciones."
+      },
+      {
+        "id": "garantia",
+        "title": "Garantía legal",
+        "body": "Los productos cuentan con la garantía legal prevista en los artículos 11 y siguientes de la Ley 24.240 por vicios o defectos de fabricación. La garantía no cubre el desgaste por uso normal ni los daños por armado incorrecto, golpes o humedad."
+      },
+      {
+        "id": "propiedad",
+        "title": "Propiedad intelectual",
+        "body": "Las fotografías, los textos, el logotipo y los diseños de este sitio pertenecen a Madera Más y no pueden reproducirse sin autorización escrita."
+      },
+      {
+        "id": "ley",
+        "title": "Ley aplicable y jurisdicción",
+        "body": "Estas condiciones se rigen por las leyes de la República Argentina. Ante cualquier conflicto son competentes los tribunales ordinarios que correspondan al domicilio del consumidor."
+      },
+      {
+        "id": "contacto",
+        "title": "Contacto",
+        "body": "Para cualquier consulta sobre estas condiciones, escribinos por los canales que figuran en la página de Contacto."
+      }
+    ],
+    "seo": {
+      "title": null,
+      "description": null
+    }
+  },
+  {
+    "id": "privacidad",
+    "slug": "privacidad",
+    "title": "Política de privacidad",
+    "lead": "Te pedimos los datos mínimos para poder venderte y entregarte el producto. Nada más que eso.",
+    "body": "Esta política explica qué datos personales recolectamos, para qué los usamos y qué derechos tenés sobre ellos, conforme a la Ley 25.326 de Protección de los Datos Personales.",
+    "sections": [
+      {
+        "id": "datos",
+        "title": "Qué datos pedimos",
+        "body": "Solo los necesarios para procesar el pedido y entregarlo.",
+        "items": [
+          "Nombre y apellido, email y teléfono, para contactarte por la compra.",
+          "Domicilio de entrega y DNI, porque el correo los pide para entregar el paquete.",
+          "El contenido del mensaje, si nos escribís por el formulario de contacto."
+        ]
+      },
+      {
+        "id": "uso",
+        "title": "Para qué los usamos",
+        "body": "Para procesar tu pedido, coordinar la entrega, responder tus consultas y cumplir con las obligaciones legales, fiscales y de defensa del consumidor. No los usamos para publicidad de terceros ni los vendemos."
+      },
+      {
+        "id": "comparte",
+        "title": "Con quién los compartimos",
+        "body": "Solo con quienes hacen falta para que el pedido llegue: el servicio de correo que entrega el paquete y Mercado Pago, que procesa el cobro. No almacenamos los datos de tu tarjeta: el pago se completa dentro de la plataforma de Mercado Pago."
+      },
+      {
+        "id": "plazo",
+        "title": "Cuánto tiempo los guardamos",
+        "body": "Conservamos los datos de la operación mientras duren las obligaciones legales, fiscales y de garantía. Después los eliminamos."
+      },
+      {
+        "id": "derechos",
+        "title": "Tus derechos",
+        "body": "Podés acceder a tus datos, rectificarlos, actualizarlos o pedir que los suprimamos escribiéndonos por cualquiera de nuestros canales.\n\nEl titular de los datos personales tiene la facultad de ejercer el derecho de acceso al mismo en forma gratuita a intervalos no inferiores a seis meses, salvo que se acredite un interés legítimo al efecto, conforme al artículo 14, inciso 3 de la Ley 25.326.\n\nLa Agencia de Acceso a la Información Pública, en su carácter de Órgano de Control de la Ley 25.326, tiene la atribución de atender las denuncias y reclamos que interpongan quienes resulten afectados en sus derechos por incumplimiento de las normas vigentes en materia de protección de datos personales."
+      },
+      {
+        "id": "cookies",
+        "title": "Cookies",
+        "body": "Este sitio guarda en tu navegador solo lo necesario para funcionar: el contenido del carrito, los favoritos y si cerraste el aviso de arriba. Esa información queda en tu dispositivo y no se envía a ningún lado."
+      },
+      {
+        "id": "cambios",
+        "title": "Cambios en esta política",
+        "body": "Si cambiamos algo, publicamos la versión nueva en esta misma página."
+      }
+    ],
+    "seo": {
+      "title": null,
+      "description": null
+    }
+  }
+]

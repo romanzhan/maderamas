@@ -1,0 +1,82 @@
+{{!-- Галерея товара (сложные-узлы.md п. 1). Листалка — Swiper с лентой превью,
+      полноэкранный просмотр — PhotoSwipe: своего зума и свайпа мы не пишем.
+      Смена цвета дерева перестраивает слайды из данных ниже — второго описания
+      картинок на странице нет.
+      Одно фото — лента превью не выводится, листание выключает сам Swiper
+      (watchOverflow). Нет фото — заглушка той же геометрии. --}}
+{{!-- min-w-0 обязателен: без него колонка сетки растягивается по всей длине ленты
+      кадров, и страница уезжает вбок на тысячи точек. Safari считает это иначе, чем
+      Chrome, — на компьютере поломка не видна вовсе (замер на телефоне владельца
+      27.08.2026: ширина страницы 6176 при окне 390) --}}
+{{!-- Подписи управления приезжают из словаря: скрипт испанских строк не содержит
+      (тексты.md, преамбула). Общие с лентами — куском carousel-labels, свои
+      (просмотрщик) — рядом --}}
+<div
+  class="min-w-0 lg:sticky lg:top-below-header"
+  data-gallery
+  {{> carousel-labels empty photos=true}}
+  data-t-zoom="{{t "gallery.zoom"}}"
+  data-t-close="{{t "gallery.close"}}"
+  data-t-error="{{t "gallery.error"}}"
+  data-t-open="{{t "product.galleryOpen"}}"
+>
+  {{#if product.slides.length}}
+    <div class="swiper overflow-hidden rounded-xl bg-sand" data-gallery-main>
+      <div class="swiper-wrapper">
+        {{#each product.slides}}
+          <div class="swiper-slide">
+            {{!-- Ссылка на файл: без скрипта она просто откроет фото, с ним —
+                  полноэкранный просмотр --}}
+            <a
+              href="{{src}}"
+              data-pswp-width="{{width}}"
+              data-pswp-height="{{height}}"
+              target="_blank"
+              rel="noopener"
+              aria-label="{{t "product.galleryOpen"}}"
+            >
+              <img
+                src="{{src}}"
+                srcset="{{srcset}}"
+                sizes="(min-width: 1024px) 50vw, 100vw"
+                width="{{width}}"
+                height="{{height}}"
+                alt="{{alt}}"
+                class="aspect-square w-full object-cover"
+                {{#if @first}}fetchpriority="high"{{else}}loading="lazy"{{/if}}
+                decoding="async"
+              />
+            </a>
+          </div>
+        {{/each}}
+      </div>
+    </div>
+
+    {{!-- Одно фото — ленту прячем, но из разметки не убираем: другой цвет дерева
+          может прийти с четырьмя кадрами, и лента понадобится (сложные-узлы.md п. 1) --}}
+    <div class="swiper mt-3" data-gallery-thumbs {{#unless product.slides.[1]}}hidden{{/unless}}>
+      <div class="swiper-wrapper">
+        {{#each product.slides}}
+          <div class="swiper-slide cursor-pointer">
+            <img
+              src="{{src}}"
+              srcset="{{srcset}}"
+              sizes="120px"
+              width="{{width}}"
+              height="{{height}}"
+              alt="{{thumbAlt}}"
+              class="aspect-square w-full rounded-lg bg-sand object-cover"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+        {{/each}}
+      </div>
+    </div>
+
+    {{!-- Фото каждого цвета дерева: скрипт берёт их отсюда и не знает про манифест --}}
+    <script type="application/json" data-gallery-data>{{{product.galleryJson}}}</script>
+  {{else}}
+    {{> image-placeholder empty ratio="aspect-square"}}
+  {{/if}}
+</div>

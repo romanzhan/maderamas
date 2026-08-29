@@ -1,0 +1,56 @@
+{{!-- Каналы связи списком: номер, почта, имя аккаунта Instagram, адрес и часы —
+      каждый со своим значком (компоненты.md 4.8). Один список на подвал и на страницу
+      контактов: второй такой же набор строк разошёлся бы с первым (принцип 16).
+      Адрес и часы показываются только когда они заданы в настройках — выдумывать
+      их нельзя (принцип 8).
+      Пустой контекст сюда не передаётся намеренно (как и в social-links): блоку нужны
+      адреса каналов и настройки из контекста страницы, а перехватывать чужой флаг
+      ему нечем — своих ветвлений, кроме onDark, здесь нет.
+      Опции: onDark — тёмная поверхность подвала.
+      Высота строки 44 на телефоне и планшете, 40 с 1024 (стандарты-размеров.md п. 3–4);
+      просвет между целями даёт gap-2 — минимум 8 по тем же стандартам. --}}
+<ul class="flex flex-col gap-2 {{#if onDark}}text-cream/75{{else}}text-charcoal{{/if}}">
+  <li>
+    <a
+      href="{{links.whatsapp}}"
+      target="_blank"
+      rel="noopener"
+      class="-mx-3 inline-flex min-h-11 items-center gap-2 rounded-lg px-3 transition-colors
+        duration-150 lg:min-h-10
+        {{#if onDark}}hover:bg-cream/20 hover:text-cream{{else}}hover:bg-sand-hover{{/if}}"
+    >
+      {{> icon empty name="whatsapp" class="size-5" filled=true}}
+      {{site.contacts.phone}}
+    </a>
+  </li>
+  <li>
+    <a
+      href="{{links.email}}"
+      class="-mx-3 inline-flex min-h-11 items-center gap-2 rounded-lg px-3 transition-colors
+        duration-150 lg:min-h-10
+        {{#if onDark}}hover:bg-cream/20 hover:text-cream{{else}}hover:bg-sand-hover{{/if}}"
+    >
+      {{> icon empty name="mail" class="size-5"}}
+      <span class="min-w-0 break-all">{{site.contacts.email}}</span>
+    </a>
+  </li>
+  <li>
+    <a
+      href="{{links.instagram}}"
+      target="_blank"
+      rel="noopener"
+      class="-mx-3 inline-flex min-h-11 items-center gap-2 rounded-lg px-3 transition-colors
+        duration-150 lg:min-h-10
+        {{#if onDark}}hover:bg-cream/20 hover:text-cream{{else}}hover:bg-sand-hover{{/if}}"
+    >
+      {{> icon empty name="instagram" class="size-5" filled=true}}
+      {{links.instagramHandle}}
+    </a>
+  </li>
+  {{#if site.contacts.address}}
+    <li class="py-2 {{#unless onDark}}text-charcoal/70{{/unless}}">{{site.contacts.address}}</li>
+  {{/if}}
+  {{#if site.contacts.hours}}
+    <li class="py-2 {{#unless onDark}}text-charcoal/70{{/unless}}">{{site.contacts.hours}}</li>
+  {{/if}}
+</ul>

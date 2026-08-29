@@ -1,0 +1,40 @@
+{{!-- Блок успеха отдельно стоящей формы (формы-и-поля.md п. 5): форма заменяется этим
+      блоком — что произошло → что дальше → выход. Фокус уводится на заголовок, и
+      скринридер объявляет его: без этого человек с экранным диктором не узнает, что
+      отправка прошла.
+      Обязательные: title, text (ключи словаря). Опции: code — печатать номер обращения
+      (норма для Botón de Arrepentimiento и Libro de Quejas, seo.md п. 8); actionLabel +
+      onAction — кнопка «отправить ещё» (повторная отправка только явным действием);
+      href — если выход это переход, а не действие. --}}
+<div
+  x-show="sent"
+  x-cloak
+  x-ref="success"
+  tabindex="-1"
+  role="status"
+  class="flex max-w-prose flex-col items-start gap-4 rounded-xl border border-line
+    bg-cream p-6 focus:outline-none"
+>
+  <span class="flex size-12 items-center justify-center rounded-full bg-success-bg text-success">
+    {{> icon empty name="check" class="size-6"}}
+  </span>
+
+  <h2 class="font-display text-h3 lg:text-h3-lg">{{t title}}</h2>
+  <p class="text-charcoal/70">{{t text}}</p>
+
+  {{#if code}}
+    {{!-- Номер обращения приходит из браузера, поэтому строка словаря отдаётся
+          в data-атрибуте и подстановка делается на месте: испанских строк в скриптах
+          не бывает (принцип 27) --}}
+    <p
+      class="w-full rounded-md bg-sand px-4 py-3 font-medium tabular-nums"
+      data-code="{{t "legal.requestCode" code="{code}"}}"
+      x-text="$el.dataset.code.replace('{code}', () => code)"
+    ></p>
+    <p class="text-small text-charcoal/70">{{t "legal.requestCodeNote"}}</p>
+  {{/if}}
+
+  {{#if actionLabel}}
+    {{> button empty secondary=true sizeMd=true label=actionLabel onClick=onAction href=href}}
+  {{/if}}
+</div>

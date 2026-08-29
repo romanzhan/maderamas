@@ -1,60 +1,14 @@
-# В репозитории живёт ТОЛЬКО наш код.
-# Ядро WordPress, сторонние плагины, загрузки и база данных сюда не попадают никогда.
-
-# --- Зависимости ---
 node_modules/
-/vendor/
-
-# --- Артефакты сборки (собираются в CI перед деплоем) ---
-wp-content/themes/maderamas/build/
-
-# --- Ядро WordPress ---
-/wp-admin/
-/wp-includes/
-/wp-*.php
-/index.php
-/license.txt
-/readme.html
-wp-config.php
-
-# --- wp-content: пускаем только свою тему и mu-plugins ---
-/wp-content/plugins/
-/wp-content/uploads/
-/wp-content/upgrade/
-/wp-content/cache/
-/wp-content/languages/
-/wp-content/index.php
-/wp-content/themes/*
-!/wp-content/themes/maderamas/
-
-# --- Секреты ---
+dist/
 .env
 .env.*
-!.env.example
-*.pem
-*.key
-*.key.pub
-*.ppk
-*.local.md
 
-# --- Локальные оверрайды среды ---
-.wp-env.override.json
+# Исходники съёмки — только на машине (картинки.md п. 5). Готовые картинки конвейера
+# лежат в git: без них ни GitHub, ни второй человек сайт не соберут
+/images-source/
 
-# --- Дампы базы ---
-*.sql
-*.sql.gz
-*.sql.zip
-
-# --- Тесты ---
-/test-results/
-/playwright-report/
-/.phpunit.result.cache
-
-# --- ОС и редакторы ---
-.DS_Store
-Thumbs.db
-desktop.ini
-.idea/
-.vscode/*
-!.vscode/extensions.json
-*.swp
+# Производные файлы сборки (данные.md §8, стек-и-библиотеки.md п. 3)
+/public/catalog.json
+# Страницы-сущности: генерируются скриптом из данных, вручную не правятся.
+# Свои страницы лежат первым уровнем (/carrito/), сгенерированные — вторым
+/src/pages/*/*/

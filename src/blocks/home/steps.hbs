@@ -1,0 +1,57 @@
+{{!-- Как регулируется стул (страницы.md §1, блок 6). Разворот зеркалит секцию флагмана
+      выше: там фото слева и текст справа, здесь наоборот — два одинаковых разворота
+      подряд читались бы одним блоком (решение владельца 27.08.2026).
+      Секция говорит про одну модель, а не про всю линейку: регулировка есть у трёх
+      стульев из четырёх, но показать механизм можно только на одном стуле — иначе
+      кадры читаются как три разных товара.
+      Справа одно место, в котором листаются кадры регулировки: инфографику для них
+      готовит владелец, поэтому пока стоят заглушки той же геометрии.
+      Якорь — цель вторичной кнопки героя. --}}
+<section id="como-crece" class="page-container py-12 lg:py-20">
+  {{!-- На телефоне порядок такой: заголовок → кадры → тексты (решение владельца
+        28.08.2026). Поэтому заголовок вынут из текстовой колонки отдельным элементом,
+        а на компьютере кадры занимают правый столбец в обе строки, и колонка слева
+        снова читается сплошняком: заголовок, лид, пункты, кнопка --}}
+  {{!-- На компьютере колонка слева поделена на две равные половины: заголовок прижат
+        к низу верхней, тексты — к верху нижней, и пара стоит по центру рядом с кадром.
+        Без этого каждый из них вставал по центру своей половины, и между ними
+        зияла дыра --}}
+  <div class="flex flex-col gap-6 lg:grid lg:grid-cols-2 lg:grid-rows-2 lg:gap-x-16 lg:gap-y-6">
+    <h2 class="font-display text-h2 lg:col-start-1 lg:row-start-1 lg:self-end lg:text-h2-lg">
+      {{t "home.stepsTitle"}}
+    </h2>
+
+    <div class="min-w-0 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-center">
+      {{> frame-carousel empty frames=home.adjustFrames alt=(t "home.stepsFrameAlt")
+          sizes="(min-width: 1024px) 50vw, 100vw"}}
+    </div>
+
+    <div class="flex flex-col items-start gap-6 lg:col-start-1 lg:row-start-2 lg:self-start">
+      <p class="max-w-prose text-lead text-charcoal/70">{{t "home.stepsText"}}</p>
+
+      <ul class="flex w-full flex-col gap-6">
+        <li>
+          {{> feature-item empty inline=true icon="move-vertical" title="home.step1Title"
+              text="home.step1Text"}}
+        </li>
+        <li>
+          {{> feature-item empty inline=true icon="utensils" title="home.step2Title"
+              text="home.step2Text"}}
+        </li>
+        <li>
+          {{> feature-item empty inline=true icon="backpack" title="home.step3Title"
+              text="home.step3Text"}}
+        </li>
+      </ul>
+
+      {{!-- На телефоне кнопка во всю ширину (решение владельца 28.08.2026), на широком
+            экране — по своей подписи: колонка там половина сетки --}}
+      <div class="w-full lg:w-auto">
+        {{#with home.flagship}}
+          {{> button ../empty secondary=true sizeLg=true fullWidth=true label="home.stepsCta"
+              href=(productUrl this)}}
+        {{/with}}
+      </div>
+    </div>
+  </div>
+</section>

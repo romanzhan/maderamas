@@ -1,0 +1,51 @@
+{{!-- Ряд свотчей одной оси варианта (компоненты.md 3.4). Над рядом — подпись оси
+      с именем выбранного, оно меняется при выборе. Недоступный вариант перечёркнут,
+      но остаётся кликабельным: покупатель должен видеть, что цвет существует.
+      Синхронизация с ценой, галереей и адресом — этап страницы товара. --}}
+<div
+  class="flex flex-col gap-2"
+  x-data="{ selected: '' }"
+  x-init="selected = $el.querySelector('input:checked')?.dataset.name ?? ''"
+>
+  <p class="text-small">
+    <span class="font-medium">{{t label}}:</span>
+    {{!-- Имя выбранного отрисовано и на сервере: до старта Alpine подпись не пустует --}}
+    <span class="text-charcoal/70" x-text="selected">{{options.[0].name}}</span>
+  </p>
+
+  <div class="flex flex-wrap gap-3" role="radiogroup" aria-label="{{t label}}">
+    {{#each options}}
+      <label
+        class="relative flex size-11 cursor-pointer items-center justify-center"
+        title="{{name}}{{#unless inStock}} — {{t "badge.noStock"}}{{/unless}}"
+      >
+        {{!-- Отмечен тот вариант, который страница считает выбранным (первый доступный,
+              данные.md §2). Отмечать первый подряд нельзя: как только он окажется
+              распродан, покупатель увидит отметку на перечёркнутом цвете, а цена и
+              корзина возьмут другой --}}
+        <input
+          type="radio"
+          name="{{../name}}"
+          value="{{id}}"
+          aria-label="{{name}}{{#unless inStock}} — {{t "badge.noStock"}}{{/unless}}"
+          data-name="{{name}}"
+          class="peer sr-only"
+          {{#if ../selected}}
+            {{#if (eq id ../selected)}}checked{{/if}}
+          {{else}}
+            {{#if @first}}checked{{/if}}
+          {{/if}}
+          @change="selected = $event.target.dataset.name"
+        />
+        <span
+          class="size-8 rounded-full border border-border peer-checked:outline-2
+            peer-checked:outline-offset-2 peer-checked:outline-clay
+            peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2
+            peer-focus-visible:outline-clay
+            {{#unless inStock}}swatch-crossed{{/unless}}"
+          style="background-color: {{swatch}}"
+        ></span>
+      </label>
+    {{/each}}
+  </div>
+</div>

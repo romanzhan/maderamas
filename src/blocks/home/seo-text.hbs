@@ -1,0 +1,22 @@
+{{!-- Предподвал (страницы.md §1). Не основной контент и не подвал: это зона, куда
+      уходит текст для поиска и внутренние ссылки. Показано это цветом — тёмная
+      поверхность как у подвала, но отделённая от него светлой полосой и своим
+      скруглением сверху (решение владельца 27.08.2026).
+      Текст осмысленный, а не набивка ключевыми словами (seo.md). --}}
+<section class="surface-dark rounded-t-2xl bg-walnut text-cream">
+  <div class="page-container py-12 lg:py-16">
+    <h2 class="max-w-prose font-display text-h2 lg:text-h2-lg">{{t "home.seoTitle"}}</h2>
+    <p class="mt-4 max-w-prose text-lead text-cream/75">{{t "home.seoLead"}}</p>
+
+    <div class="mt-8 grid gap-8 md:grid-cols-2 lg:mt-10 lg:gap-12">
+      <div>
+        <h3 class="text-h4 lg:text-h4-lg">{{t "home.seoColOneTitle"}}</h3>
+        <p class="mt-3 text-cream/75">{{t "home.seoColOneText"}}</p>
+      </div>
+      <div>
+        <h3 class="text-h4 lg:text-h4-lg">{{t "home.seoColTwoTitle"}}</h3>
+        <p class="mt-3 text-cream/75">{{t "home.seoColTwoText"}}</p>
+      </div>
+    </div>
+  </div>
+</section>

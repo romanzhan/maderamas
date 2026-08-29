@@ -1,0 +1,32 @@
+{{~!-- Классы кнопки одной строкой: их делят <button> и ссылка-кнопка, поэтому список
+       живёт здесь, а не в двух местах (принцип 16). Отдельным компонентом не является. --~}}
+relative inline-flex items-center justify-center gap-2 rounded-lg py-2 text-center font-medium
+transition-colors duration-150 disabled:pointer-events-none disabled:opacity-45
+{{#if sizeSm}}min-h-10 min-w-24 px-4 text-small lg:min-h-9{{/if}}
+{{#if sizeMd}}min-h-12 min-w-24 px-6 text-body lg:min-h-11{{/if}}
+{{#if sizeLg}}min-h-14 min-w-24 px-8 text-body lg:min-h-13{{/if}}
+{{#if iconOnly}}size-12 lg:size-11{{/if}}
+{{#if fullWidth}}w-full{{/if}}
+{{#unless onDark}}
+  {{!-- Кольцо не переопределяем: с отступом 2 px оно ложится на светлую страницу,
+       а там по визуальной системе кольцо глиняное --}}
+  {{#if primary}}bg-clay text-cream hover:bg-clay-hover active:bg-clay-active{{/if}}
+  {{!-- Нажатие глубже наведения, а не светлее: иначе второй шаг читается как откат --}}
+  {{#if secondary}}border border-charcoal text-charcoal hover:bg-sand-hover active:bg-sand-active{{/if}}
+  {{#if tertiary}}text-clay hover:text-clay-hover active:text-clay-active{{/if}}
+  {{#if iconOnly}}border border-charcoal text-charcoal hover:bg-sand-hover active:bg-sand-active{{/if}}
+{{/unless}}
+{{#if onDark}}
+  focus-visible:outline-cream
+  {{!-- Светлая кнопка на тёмном: шаг наведения берётся глубже, чем sand, — на walnut
+       разница между cream и sand почти не видна (решение владельца 27.08.2026) --}}
+  {{#if primary}}bg-cream text-walnut hover:bg-sand-hover active:bg-sand-active{{/if}}
+  {{#if secondary}}border border-cream text-cream hover:bg-cream hover:text-walnut active:bg-sand-active{{/if}}
+  {{#if tertiary}}text-cream hover:bg-cream/20 active:bg-cream active:text-walnut{{/if}}
+  {{!-- Жёлтая кнопка живёт только на промо-поверхности, поэтому она в этой ветке:
+       кольцо фокуса там уже кремовое. Текст на жёлтом тёмный — правило тона
+       закреплено в визуальная-система.md §2.2 --}}
+  {{#if promo}}bg-promo-yellow text-charcoal hover:bg-promo-yellow-hover
+    active:bg-promo-yellow-active{{/if}}
+  {{#if iconOnly}}border border-cream text-cream hover:bg-cream hover:text-walnut active:bg-sand-active{{/if}}
+{{/if}}

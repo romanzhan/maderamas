@@ -1,0 +1,50 @@
+{{!-- Пункт с иконкой (компоненты.md 7.3): иконка → заголовок → текст. Один компонент
+      на блоки «как работает», «доверие», «безопасность».
+      Обязательные: icon, title (ключ словаря). Опции: text (ключ), compact —
+      строка полосы доверия: иконка и заголовок в одну строку, текст мельче;
+      inline — кружок слева, заголовок и текст справа на любой ширине: так пункты
+      живут в колонке рядом с большим кадром, где ширины хватает, а высоты нет.
+      Без флага пункт ведёт себя по ширине: на телефоне тоже кружок слева (в один
+      столбец вид с кружком сверху рвёт колонку пустотами — замечание владельца
+      28.08.2026), а с sm, где такие пункты становятся сеткой по 2–4 в ряд, кружок
+      встаёт над текстом;
+      iconFilled — брендовый значок (Simple Icons): он рисуется заливкой, а не контуром,
+      и без этого флага остался бы пустым местом;
+      onDark — на тёмной секции (глина там не читается, иконка становится кремовой);
+      один из флагов blue | pink | yellow | green — иконка в кружке этого тона. --}}
+{{#if compact}}
+  <div class="flex items-start gap-3">
+    <span class="icon-line shrink-0 {{#if onDark}}text-cream{{else}}text-clay{{/if}}">
+      {{> icon empty name=icon class="size-5" filled=iconFilled}}
+    </span>
+    <span class="min-w-0">
+      <span class="block text-small font-medium">{{t title}}</span>
+      {{#if text}}
+        <span class="block text-caption {{#if onDark}}text-cream/75{{else}}text-charcoal/70{{/if}}"
+          >{{t text}}</span>
+      {{/if}}
+    </span>
+  </div>
+{{else}}
+  <div class="flex items-start gap-4
+    {{#unless inline}}sm:flex-col sm:items-stretch sm:gap-2{{/unless}}">
+    <span
+      class="flex size-12 shrink-0 items-center justify-center rounded-full
+        {{#if blue}}bg-promo-blue text-cream{{/if}}
+        {{#if pink}}bg-promo-pink text-cream{{/if}}
+        {{#if yellow}}bg-promo-yellow text-charcoal{{/if}}
+        {{#if green}}bg-promo-green text-cream{{/if}}
+        {{#unless blue}}{{#unless pink}}{{#unless yellow}}{{#unless green}}
+          {{#if onDark}}bg-cream/20 text-cream{{else}}bg-sand text-clay{{/if}}
+        {{/unless}}{{/unless}}{{/unless}}{{/unless}}"
+    >{{> icon empty name=icon class="size-6" filled=iconFilled}}</span>
+
+    <div class="min-w-0">
+      <h3 class="text-h4 lg:text-h4-lg">{{t title}}</h3>
+      {{#if text}}
+        <p class="mt-1 {{#if onDark}}text-cream/75{{else}}text-charcoal/70{{/if}}"
+          >{{t text}}</p>
+      {{/if}}
+    </div>
+  </div>
+{{/if}}

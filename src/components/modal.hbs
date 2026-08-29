@@ -1,0 +1,73 @@
+{{!-- Модальное окно (компоненты.md 5.1). Механика та же, что у выдвижных панелей
+      (сложные-узлы.md п. 6): Esc, подложка, «назад», фокус-ловушка и возврат фокуса —
+      всё из общего `overlayPanel`, второго механизма оверлеев в проекте нет.
+      Отличий от панели два: слой 40 (окно обязано закрывать собой всё, включая
+      промо-полосу — стандарты-размеров.md п. 13) и положение: на телефоне это лист
+      снизу во всю ширину, с 640 — окно по центру шириной 560 с полями по 16
+      (п. 4 там же). Длинный текст прокручивается внутри, заголовок остаётся на месте.
+
+      Лежит прямым потомком body — иначе фокус-ловушка не работает: она делает соседей
+      окна `inert`, а соседи считаются от body.
+      Обязательные: name (имя оверлея), title (ключ словаря). Содержимое — блоком вызова.
+      Опция openOn — событие окна, по которому окно открывает себя само: кнопок, зовущих
+      его, может быть несколько, и повторять выражение открытия в каждой не нужно. --}}
+<div
+  x-data="overlayPanel('{{name}}')"
+  x-cloak
+  {{#if openOn}}x-on:{{openOn}}.window="$store.overlay.open('{{name}}')"{{/if}}
+>
+  <div
+    x-show="open"
+    x-on:click="close()"
+    x-transition.opacity.duration.200ms
+    class="fixed inset-0 z-40 bg-charcoal/40"
+    aria-hidden="true"
+  ></div>
+
+  {{!-- Обёртка только центрирует и держит поля; нажатия она не ловит, иначе подложка
+        под ней перестала бы закрывать окно --}}
+  <div
+    class="pointer-events-none fixed inset-0 z-40 flex items-end justify-center sm:items-center
+      sm:p-4"
+  >
+    <div
+      x-show="open"
+      x-on:keydown.escape.window="open && close()"
+      {{!-- Классы перехода без адаптивных вариантов: с ними Alpine не снимает стартовое
+            положение, и окно остаётся сдвинутым (та же оговорка, что у панели корзины) --}}
+      x-transition:enter="transition duration-200 ease-out"
+      x-transition:enter-start="translate-y-4 opacity-0"
+      x-transition:enter-end="translate-y-0 opacity-100"
+      x-transition:leave="transition duration-200 ease-in"
+      x-transition:leave-start="translate-y-0 opacity-100"
+      x-transition:leave-end="translate-y-4 opacity-0"
+      id="{{name}}-modal"
+      x-ref="first"
+      tabindex="-1"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="{{name}}-titulo"
+      class="max-h-modal pointer-events-auto flex w-full flex-col rounded-t-2xl bg-cream
+        shadow-lg sm:w-140 sm:max-w-full sm:rounded-2xl"
+    >
+      <div class="flex shrink-0 items-center justify-between gap-4 px-4 pt-4 sm:px-6 sm:pt-6">
+        <h2 id="{{name}}-titulo" class="font-display text-h3 lg:text-h3-lg">{{t title}}</h2>
+        <button
+          type="button"
+          x-on:click="close()"
+          class="-mr-3 flex size-12 shrink-0 items-center justify-center rounded-lg
+            hover:bg-sand-hover"
+        >
+          <span class="sr-only">{{t "common.close"}}</span>
+          {{> icon empty name="x" class="size-6"}}
+        </button>
+      </div>
+
+      <div
+        class="scrollbar-soft pb-safe min-h-0 flex-1 overflow-y-auto px-4 pt-4 sm:px-6 sm:pb-6"
+      >
+        {{> @partial-block}}
+      </div>
+    </div>
+  </div>
+</div>

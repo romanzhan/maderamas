@@ -1,0 +1,12 @@
+{{!-- Товары (страницы.md §1, блок 4). Девять карточек в один ряд не помещаются —
+      значит карусель (общее правило лент там же). --}}
+{{#> carousel sectionClass="pt-6 pb-12 lg:pt-8 lg:pb-20" title=(t "home.productsTitle")
+    linkHref=nav.catalogHref linkLabel="home.viewAllFem"}}
+  {{#each home.all}}
+    <div class="swiper-slide">
+      {{> product-card ../empty id=id name=name price=price old=old discount=discount priceFrom=priceFrom
+          hasOptions=hasOptions href=href inStock=inStock isNew=isNew rating=rating
+          reviewsCount=reviewsCount imageId=imageId imageIdHover=imageIdHover freeShipping=freeShipping}}
+    </div>
+  {{/each}}
+{{/carousel}}

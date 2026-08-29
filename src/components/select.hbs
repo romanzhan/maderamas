@@ -1,0 +1,129 @@
+{{!-- Выпадающий список (компоненты.md ч. 2). Список свой, не браузерный — решение
+      владельца 26.08.2026. Значение живёт в спрятанном нативном <select>: он уходит
+      в отправку формы и питает Constraint API. Поведение — src/scripts/select.js.
+      compact — список вне формы (сортировка каталога): подпись слышит только
+      скринридер, строки сообщения нет. value — выбранное значение; с ним пустого
+      пункта-заглушки не бывает, потому что «не выбрано» у такого списка не бывает.
+      live — список живой формы: рамку и текст ошибки ведёт слой валидации
+      (src/scripts/form.js); значение по-прежнему хранит спрятанный нативный select,
+      поэтому «не выбрано» ловится штатным Constraint API.
+      woo — обёртки получают классы классического чекаута WooCommerce
+      (сложные-узлы.md п. 5). --}}
+<div
+  class="flex flex-col {{#unless compact}}gap-2{{/unless}} {{#if woo}}form-row{{/if}}"
+  id="{{id}}-field"
+  x-data="selectField()"
+  @click.outside="open && hide({ focusTrigger: false })"
+>
+  <label
+    id="{{id}}-label"
+    for="{{id}}-trigger"
+    class="{{#if compact}}sr-only{{else}}text-small font-medium{{/if}}
+      {{#if disabled}}text-charcoal/70{{/if}}"
+  >
+    {{t label}}{{#if required}} <span class="text-error" aria-hidden="true">*</span>{{/if}}
+  </label>
+
+  <select
+    id="{{id}}"
+    {{#if name}}name="{{name}}"{{/if}}
+    {{#if autocomplete}}autocomplete="{{autocomplete}}"{{/if}}
+    x-ref="native"
+    {{!-- sr-only, а не display:none: невидимое поле браузер не автозаполняет.
+         Из порядка обхода и из дерева доступности убрано — озвучивает наш список --}}
+    class="sr-only"
+    tabindex="-1"
+    aria-hidden="true"
+    {{#if required}}required{{/if}}
+    {{#if disabled}}disabled{{/if}}
+  >
+    {{#unless value}}<option value="">{{t placeholder}}</option>{{/unless}}
+    {{#each options}}
+      <option value="{{code}}" {{#if (eq code ../value)}}selected{{/if}}>{{name}}</option>
+    {{/each}}
+  </select>
+
+  <div class="relative {{#if woo}}woocommerce-input-wrapper{{/if}}">
+    <button
+      type="button"
+      id="{{id}}-trigger"
+      x-ref="trigger"
+      role="combobox"
+      aria-controls="{{id}}-list"
+      aria-labelledby="{{id}}-label {{id}}-trigger"
+      :aria-expanded="open"
+      {{#if required}}aria-required="true"{{/if}}
+      {{#if error}}aria-invalid="true"{{/if}}
+      :aria-activedescendant="open && highlighted >= 0 ? optionId(highlighted) : null"
+      {{#if disabled}}disabled{{/if}}
+      @click="open ? hide() : show()"
+      @keydown="onKey($event)"
+      {{#if live}}
+        {{!-- Невалидность объявляет видимая кнопка-комбобокс: спрятанный select
+              скринридеру не слышен, а aria-invalid на нём слушать некому --}}
+        x-bind:aria-invalid="errors['{{name}}'] ? 'true' : 'false'"
+        x-bind:class="{
+          'border-error focus:border-error focus:ring-error': errors['{{name}}'],
+          'border-border focus:border-clay focus:ring-clay': !errors['{{name}}'],
+        }"
+      {{/if}}
+      {{#unless compact}}aria-describedby="{{id}}-message"{{/unless}}
+      class="flex h-12 w-full items-center justify-between gap-2 rounded-md border bg-sand px-4
+        text-left text-body ring-inset focus:ring-1 focus:outline-none lg:h-11
+        disabled:cursor-not-allowed disabled:border-border disabled:bg-sand-hover
+        disabled:text-charcoal/70
+        {{#if error}}border-error focus:border-error focus:ring-error{{/if}}
+        {{#unless error}}border-border focus:border-clay focus:ring-clay{{/unless}}"
+    >
+      {{!-- Подпись отрисована и на сервере: до старта Alpine поле не выглядит пустым.
+            С готовым значением это имя выбранного пункта, без него — заглушка --}}
+      <span class="truncate" :class="value ? '' : 'text-charcoal/70'" x-text="label"
+        >{{~#if value~}}
+          {{~#each options~}}{{~#if (eq code ../value)}}{{name}}{{/if~}}{{~/each~}}
+        {{~else~}}
+          {{~t placeholder~}}
+        {{~/if~}}</span
+      >
+      {{> icon empty name="chevron-down" class="size-5"}}
+    </button>
+
+    {{!-- Список прижат к полю по ширине, поэтому позиционирование тривиально и
+          Floating UI здесь не нужен (в отличие от меню и подсказок поиска).
+          Скругление и прокрутка разнесены по двум элементам: иначе полоса прокрутки
+          рисуется поверх скруглённого угла --}}
+    <div
+      x-show="open"
+      x-cloak
+      class="absolute top-full right-0 left-0 z-20 mt-1 overflow-hidden rounded-md border
+        border-border bg-cream shadow-md"
+    >
+      <ul
+        id="{{id}}-list"
+        x-ref="list"
+        role="listbox"
+        aria-labelledby="{{id}}-label"
+        class="scrollbar-soft max-h-64 overflow-y-auto py-2"
+      >
+        <template x-for="(option, index) in options" :key="option.code">
+          <li
+            :id="optionId(index)"
+            role="option"
+            :aria-selected="option.code === value"
+            @click="choose(index)"
+            @mousemove="moveTo(index)"
+            class="flex min-h-12 cursor-pointer items-center px-4 text-body lg:min-h-10"
+            :class="index === highlighted ? 'bg-sand-hover' : ''"
+          >
+            <span x-text="option.name"></span>
+          </li>
+        </template>
+      </ul>
+    </div>
+  </div>
+
+  {{#unless compact}}
+    <p id="{{id}}-message" class="flex min-h-6 text-small">
+      {{> field-message empty live=live name=name error=error warning=warning hint=hint}}
+    </p>
+  {{/unless}}
+</div>

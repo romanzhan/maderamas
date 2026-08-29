@@ -1,40 +1,4 @@
-# Нормализация переводов строк.
-# Разработка идёт на Windows, прод — Linux. Без этого файла CRLF попадёт
-# в репозиторий и на сервер, что ломает PHP-шебанги и shell-скрипты.
-* text=auto eol=lf
-
-# Явно текстовые форматы.
-*.php    text eol=lf
-*.js     text eol=lf
-*.json   text eol=lf
-*.css    text eol=lf
-*.scss   text eol=lf
-*.html   text eol=lf
-*.md     text eol=lf
-*.yml    text eol=lf
-*.yaml   text eol=lf
-*.xml    text eol=lf
-*.dist   text eol=lf
-*.po     text eol=lf
-*.pot    text eol=lf
-*.mjs    text eol=lf
-
-# Бинарные — не трогать.
-*.png    binary
-*.jpg    binary
-*.jpeg   binary
-*.webp   binary
-*.gif    binary
-*.ico    binary
-*.woff   binary
-*.woff2  binary
-*.mo     binary
-*.zip    binary
-*.pdf    binary
-
-# Не выгружать в архивы релиза.
-/.github        export-ignore
-/docs           export-ignore
-/tests          export-ignore
-.gitattributes  export-ignore
-.gitignore      export-ignore
+# Окончания строк не переписываются автоматически: файлы промта пришли смешанными,
+# и перегенерация целого файла ради них прячет настоящую правку в тысяче фантомных
+# строк — а диф перед коммитом читается глазами (принцип 40).
+* -text

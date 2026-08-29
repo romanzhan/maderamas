@@ -1,0 +1,46 @@
+{{!-- Цена (компоненты.md 3.1). Один компонент на весь сайт: карточка, каталог, корзина,
+      чекаут, поиск. Формат числа — единственная функция money.
+      Опции: old (старая цена), from («desde» у товаров с разбросом по вариантам),
+             large (страница товара) | compact (списки), muted (нет в наличии),
+             onDark (на тёмной секции: спутники «desde» и старая цена светлеют,
+             иначе вторичный charcoal на walnut не читается),
+             legal — печатать юридический спутник (Res. 4/2025). Сумма без национальных
+             налогов считается из цены по ставке IVA из настроек: это отдельное число,
+             а не та же цена;
+             bind / bindOld / bindLegal — выражение Alpine вместо готового числа: цена
+             комбинации и суммы корзины считаются в браузере, а начертание, табличные
+             цифры и размеры обязаны остаться теми же (компоненты.md 3.1). value при
+             этом всё равно передаётся — он отрисован на сервере и виден до старта
+             Alpine. --}}
+<div class="flex flex-col gap-1 {{#if muted}}text-charcoal/70{{/if}}">
+  <p class="flex flex-wrap items-baseline gap-2">
+    {{#if from}}
+      <span class="text-small {{#if onDark}}text-cream/75{{else}}text-charcoal/70{{/if}}"
+        >{{t "price.from"}}</span>
+    {{/if}}
+
+    {{!-- Шрифт всегда Golos: Onest у цены бывает только у display-надписи героя
+          (визуальная-система.md §3) --}}
+    <span
+      class="font-semibold tabular-nums
+        {{#if large}}text-h2 lg:text-h2-lg{{/if}}
+        {{#if compact}}text-body{{/if}}
+        {{#unless large}}{{#unless compact}}text-h4 lg:text-h4-lg{{/unless}}{{/unless}}"
+      {{#if bind}}x-text="{{bind}}"{{/if}}
+    >{{money value}}</span>
+
+    {{#if (or old bindOld)}}
+      {{!-- С живым значением строка сама прячется, когда старой цены нет: у одного
+            товара она есть, у соседнего в том же списке — нет --}}
+      <s class="text-small tabular-nums {{#if onDark}}text-cream/75{{else}}text-charcoal/70{{/if}}"
+        {{#if bindOld}}x-text="{{bindOld}}" x-show="{{bindOld}}" x-cloak{{/if}}
+        >{{#if old}}{{money old}}{{/if}}</s>
+    {{/if}}
+  </p>
+
+  {{#if legal}}
+    <p class="text-caption tabular-nums {{#if onDark}}text-cream/75{{else}}text-charcoal/70{{/if}}"
+      {{#if bindLegal}}x-text="{{bindLegal}}"{{/if}}
+    >{{t "legal.priceNoTaxes" amount=(moneyNet value)}}</p>
+  {{/if}}
+</div>

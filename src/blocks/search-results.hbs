@@ -1,0 +1,208 @@
+{{!-- Тело панели поиска: все состояния из состояния-экранов.md п. 4 в одном месте.
+      id — приставка к идентификаторам групп: витрина показывает эти же состояния
+      на той же странице, что и живая панель, а одинаковых id в документе не бывает.
+      Отдельным блоком — чтобы витрина показывала те же состояния тем же кодом, подсунув
+      им готовое состояние вместо живого поиска (как это делает плашка «нет сети»).
+      Формулировки — только из словаря; строки с подстановкой приходят в data-атрибуте
+      и подставляются на месте, потому что заранее не известно, что наберут. --}}
+<div
+  class="page-container scrollbar-soft pb-safe min-h-0 flex-1 overflow-y-auto
+    overscroll-contain pt-4"
+>
+  {{!-- До ввода — категории магазина. Они пришли со сборки, поэтому видны сразу,
+        не дожидаясь индекса --}}
+  <div x-show="!term" x-cloak>
+    <p class="px-2 text-caption text-charcoal/70 uppercase">{{t "search.groupCategories"}}</p>
+    <ul class="mt-2 flex flex-col">
+      {{#each nav.categories}}
+        <li>
+          <a
+            href="{{href}}"
+            class="flex min-h-12 items-center gap-2 rounded-lg px-2 hover:bg-sand-hover lg:min-h-10"
+          >
+            {{> icon empty name="arrow-right" class="size-4"}}
+            {{label}}
+          </a>
+        </li>
+      {{/each}}
+    </ul>
+  </div>
+
+  {{!-- Одна буква: поиск не выполняется, но покупатель знает почему --}}
+  <p
+    x-show="term.length === 1"
+    x-cloak
+    class="px-2 text-small text-charcoal/70"
+  >{{t "search.minChars"}}</p>
+
+  <div x-show="term.length > 1" x-cloak>
+    {{!-- Индекс грузится: заготовки повторяют геометрию будущих строк (компоненты.md 6.1) --}}
+    <div x-show="status === 'loading'">
+      <div class="flex flex-col gap-2" aria-hidden="true">
+        <div class="mx-2 h-3 w-24 rounded-sm bg-sand"></div>
+        <div class="h-16 rounded-lg bg-sand"></div>
+        <div class="h-16 rounded-lg bg-sand"></div>
+        <div class="h-16 rounded-lg bg-sand"></div>
+      </div>
+      <p x-show="slow" class="mt-3 px-2 text-small text-charcoal/70">{{t "common.stillLoading"}}</p>
+    </div>
+
+    {{!-- Индекс не загрузился: сообщение по сквозному шаблону, строка ввода не заперта --}}
+    <div x-show="status === 'error'" class="flex flex-col items-start gap-3 px-2">
+      <p class="flex items-start gap-2 text-small text-error">
+        <span class="icon-line shrink-0">{{> icon empty name="circle-alert" class="size-4"}}</span>
+        {{t "errors.network"}}
+      </p>
+      {{> button empty secondary=true sizeMd=true label="common.retry" onClick="load()"}}
+    </div>
+
+    {{!-- Ничего не найдено --}}
+    <div
+      x-show="status === 'ready' && !searching && count === 0"
+      class="flex flex-col items-start gap-3 px-2"
+    >
+      {{!-- Подстановка функцией, а не строкой: в строке-замене «$&» и соседи считаются
+            шаблоном, и запрос с долларом показался бы искажённым --}}
+      <p
+        role="status"
+        data-empty="{{t "search.empty" query="{query}"}}"
+        x-text="$el.dataset.empty.replace('{query}', () => term)"
+      ></p>
+      {{> button empty secondary=true sizeMd=true label="search.emptyCta" href=nav.catalogHref}}
+    </div>
+
+    {{!-- Найдено --}}
+    <div x-show="status === 'ready' && count > 0">
+      <p
+        class="sr-only"
+        role="status"
+        data-one="{{t "search.resultsOne"}}"
+        data-many="{{t "search.resultsMany" count="{count}"}}"
+        x-text="count === 1 ? $el.dataset.one : $el.dataset.many.replace('{count}', () => count)"
+      ></p>
+
+      {{!-- Список и его строки — без ролей списка: между listbox и option их быть
+            не должно, иначе подсказки перестают ему принадлежать --}}
+      <div id="{{id}}-resultados" role="listbox" aria-label="{{t "nav.openSearch"}}">
+        <div x-show="results.products.length" role="group" aria-labelledby="{{id}}-productos">
+          <p
+            id="{{id}}-productos"
+            class="px-2 text-caption text-charcoal/70 uppercase"
+          >{{t "search.groupProducts"}}</p>
+          <ul role="presentation" class="mt-2 flex flex-col">
+            <template x-for="option in results.products" x-bind:key="option.key">
+              <li role="presentation">
+                <a
+                  x-bind:id="option.domId"
+                  x-bind:href="option.href"
+                  x-bind:aria-selected="activeId === option.domId"
+                  x-bind:class="activeId === option.domId && 'bg-sand-hover'"
+                  role="option"
+                  class="flex items-center gap-3 rounded-lg p-2 pr-4 hover:bg-sand-hover"
+                >
+                  <span
+                    class="flex size-12 shrink-0 items-center justify-center overflow-hidden
+                      rounded-md bg-sand text-border"
+                  >
+                    <template x-if="option.photo">
+                      <img
+                        x-bind:src="option.photo.src"
+                        x-bind:srcset="option.photo.srcset"
+                        sizes="48px"
+                        alt=""
+                        width="48"
+                        height="48"
+                        class="size-full object-cover"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </template>
+                    <template x-if="!option.photo">
+                      {{> icon empty name="image" class="size-6"}}
+                    </template>
+                  </span>
+                  <span
+                    x-html="option.html"
+                    x-bind:class="!option.inStock && 'text-charcoal/70'"
+                    class="search-hit line-clamp-2 min-w-0 flex-1 text-body"
+                  ></span>
+                  {{!-- Цену рисует общий компонент: значение приходит живым выражением
+                        (компоненты.md 3.1 — один компонент на весь сайт) --}}
+                  <span class="flex shrink-0 items-baseline gap-2">
+                    {{> price empty compact=true value=0 bind="option.price"
+                        bindOld="option.oldPrice"}}
+                  </span>
+                </a>
+              </li>
+            </template>
+          </ul>
+        </div>
+
+        <div
+          x-show="results.categories.length"
+          role="group"
+          aria-labelledby="{{id}}-categorias"
+          class="mt-4"
+        >
+          <p
+            id="{{id}}-categorias"
+            class="px-2 text-caption text-charcoal/70 uppercase"
+          >{{t "search.groupCategories"}}</p>
+          <ul role="presentation" class="mt-2 flex flex-col">
+            <template x-for="option in results.categories" x-bind:key="option.key">
+              <li role="presentation">
+                <a
+                  x-bind:id="option.domId"
+                  x-bind:href="option.href"
+                  x-bind:aria-selected="activeId === option.domId"
+                  x-bind:class="activeId === option.domId && 'bg-sand-hover'"
+                  x-html="option.html"
+                  role="option"
+                  class="search-hit flex min-h-12 items-center rounded-lg px-2 text-body
+                    hover:bg-sand-hover lg:min-h-10"
+                ></a>
+              </li>
+            </template>
+          </ul>
+        </div>
+
+        <div
+          x-show="results.articles.length"
+          role="group"
+          aria-labelledby="{{id}}-articulos"
+          class="mt-4"
+        >
+          <p
+            id="{{id}}-articulos"
+            class="px-2 text-caption text-charcoal/70 uppercase"
+          >{{t "search.groupArticles"}}</p>
+          <ul role="presentation" class="mt-2 flex flex-col">
+            <template x-for="option in results.articles" x-bind:key="option.key">
+              <li role="presentation">
+                <a
+                  x-bind:id="option.domId"
+                  x-bind:href="option.href"
+                  x-bind:aria-selected="activeId === option.domId"
+                  x-bind:class="activeId === option.domId && 'bg-sand-hover'"
+                  x-html="option.html"
+                  role="option"
+                  class="search-hit flex min-h-12 items-center rounded-lg px-2 text-body
+                    hover:bg-sand-hover lg:min-h-10"
+                ></a>
+              </li>
+            </template>
+          </ul>
+        </div>
+      </div>
+
+      <a
+        x-bind:href="allResultsHref"
+        class="mt-4 flex min-h-12 items-center justify-between gap-2 rounded-lg px-2 text-body
+          font-medium hover:bg-sand-hover lg:min-h-10"
+      >
+        {{t "search.viewAllResults"}}
+        {{> icon empty name="arrow-right" class="size-5"}}
+      </a>
+    </div>
+  </div>
+</div>

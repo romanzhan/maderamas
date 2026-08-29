@@ -1,0 +1,33 @@
+{{!-- Ссылка (компоненты.md 1.2).
+      Вид:    inline (в тексте) | nav (одиночная навигационная: крошки, ссылка в блоке)
+              | viewAll («смотреть все →»)
+      Строки меню и списки ссылок подвала собираются не здесь: у них своя высота и своя
+      подсветка — nav-row (шапка, бургер) и footer-links (подвал).
+      Отклик на наведение — подсветка строки, а не подчёркивание (решение владельца
+      27.08.2026); подчёркивание осталось только у ссылок внутри абзацев, где оно
+      постоянное и служит признаком ссылки, а не откликом.
+      Опции:  active (текущий пункт навигации), onDark, iconRight
+      label — ключ словаря; text — готовая подпись (её отдаёт навигация, собранная
+      из данных, и второй раз переводить её нечем). Стрелка у viewAll — иконка,
+      а не символ в тексте. --}}
+<a
+  href="{{href}}"
+  {{#if active}}aria-current="page"{{/if}}
+  class="inline-flex items-center gap-2 transition-colors duration-150
+    {{#unless onDark}}
+      {{#if inline}}text-clay underline underline-offset-2 visited:text-clay-active hover:text-clay-hover{{/if}}
+      {{#if nav}}-mx-2 rounded-lg px-2 text-charcoal hover:bg-sand-hover{{/if}}
+      {{#if active}}text-clay hover:text-charcoal{{/if}}
+      {{#if viewAll}}text-clay hover:text-clay-hover{{/if}}
+    {{/unless}}
+    {{#if onDark}}
+      focus-visible:outline-cream
+      {{#if inline}}text-cream underline underline-offset-2 hover:text-cream/75{{/if}}
+      {{#if nav}}-mx-2 rounded-lg px-2 text-cream/75 hover:bg-cream/20 hover:text-cream{{/if}}
+      {{#if active}}text-cream{{/if}}
+      {{#if viewAll}}-mx-2 rounded-lg px-2 text-cream hover:bg-cream/20{{/if}}
+    {{/if}}"
+  >{{#if text}}{{text}}{{else}}{{t label}}{{/if}}{{#if iconRight}}
+    {{> icon empty name=iconRight class="size-4"}}
+  {{/if}}</a
+>

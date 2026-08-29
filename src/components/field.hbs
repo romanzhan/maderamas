@@ -1,0 +1,84 @@
+{{!-- Поле ввода (компоненты.md ч. 2, состояния — формы-и-поля.md п. 2).
+      Обязательные: id, label (ключ словаря); labelAlt + labelAltWhen — вторая подпись
+      и условие, когда она вместо первой («Barrio» вместо «Localidad» для CABA).
+      Опции: type, inputmode, autocomplete, placeholder, value, required, disabled,
+             readonly, valid (галочка проверенного значения), pattern, minlength,
+             maxlength, hint | warning | error — ключи словаря; domain — подстановка;
+             format — приведение значения на лету (phone | dni | zip), делает его
+             слой валидации; checkValid — поле с нетривиальной проверкой (почта,
+             телефон): при верном значении в нём загорается галочка (сост. 4);
+             woo — обёртки получают классы классического чекаута WooCommerce
+             (`form-row`, `woocommerce-input-wrapper`): перенос в тему должен быть
+             переносом классов, а не переверсткой (сложные-узлы.md п. 5);
+             live — поле живой формы: рамку и текст ошибки ведёт слой валидации
+             (src/scripts/form.js), а errorPattern даёт свой текст на нарушение
+             шаблона («El DNI tiene 7 u 8 números» вместо общего «revisá»).
+      Под полем всегда одна строка сообщения: ошибка → предупреждение → подсказка.
+      Место под неё зарезервировано, поэтому форма не прыгает. --}}
+<div class="flex flex-col gap-2 {{#if woo}}form-row{{/if}}">
+  <label for="{{id}}" class="text-small font-medium {{#if disabled}}text-charcoal/70{{/if}}">
+    {{#if labelAlt}}
+      <span x-show="!({{labelAltWhen}})">{{t label}}</span>
+      <span x-show="{{labelAltWhen}}" x-cloak>{{t labelAlt}}</span>
+    {{else}}{{t label}}{{/if}}{{#if required}} <span class="text-error" aria-hidden="true">*</span>{{/if}}{{#if optional}}
+      <span class="text-charcoal/70">{{t "fields.optional"}}</span>{{/if}}
+  </label>
+
+  <div class="relative {{#if woo}}woocommerce-input-wrapper{{/if}}">
+    <input
+      id="{{id}}"
+      {{#if name}}name="{{name}}"{{/if}}
+      type="{{#if type}}{{type}}{{else}}text{{/if}}"
+      {{#if inputmode}}inputmode="{{inputmode}}"{{/if}}
+      {{#if autocomplete}}autocomplete="{{autocomplete}}"{{/if}}
+      {{#if placeholder}}placeholder="{{t placeholder}}"{{/if}}
+      {{#if value}}value="{{value}}"{{/if}}
+      {{#if pattern}}pattern="{{pattern}}"{{/if}}
+      {{#if minlength}}minlength="{{minlength}}"{{/if}}
+      {{#if maxlength}}maxlength="{{maxlength}}"{{/if}}
+      {{#if required}}required{{/if}}
+      {{#if disabled}}disabled{{/if}}
+      {{#if readonly}}readonly{{/if}}
+      {{#if error}}aria-invalid="true"{{/if}}
+      {{#if errorPattern}}data-msg-pattern="{{t errorPattern}}"{{/if}}
+      {{#if format}}data-format="{{format}}"{{/if}}
+      {{#if checkValid}}data-check-valid="true"{{/if}}
+      {{#if live}}
+        {{!-- Объектная форма, а не строка: она снимает классы спокойного состояния,
+              напечатанные статически, — а строковая только добавляла бы к ним свои,
+              и спор решался бы порядком правил в таблице стилей --}}
+        x-bind:class="{
+          'border-error focus:border-error focus:ring-error': errors['{{name}}'],
+          'border-border focus:border-clay focus:ring-clay': !errors['{{name}}'],
+        }"
+      {{/if}}
+      aria-describedby="{{id}}-message"
+      class="{{> field-box this}} px-4
+        {{!-- Отключённое приглушено фоном, а не прозрачностью: значение должно
+              оставаться читаемым (формы-и-поля.md п. 2, сост. 6) --}}
+        disabled:cursor-not-allowed disabled:bg-sand-hover disabled:text-charcoal/70
+        [&[readonly]]:bg-cream
+        {{!-- Место под галочку резервируется сразу: иначе текст дёргался бы
+              в момент, когда значение стало верным --}}
+        {{#if (or valid checkValid)}}pr-11{{/if}}"
+    />
+    {{!-- Галочка одна: valid — статичный образец витрины, checkValid — живое поле
+          формы. Оба вместе поставили бы в поле две галочки друг на друга --}}
+    {{#if valid}}
+      <span class="absolute inset-y-0 right-4 flex items-center text-success">
+        {{> icon empty name="check" class="size-5"}}
+      </span>
+    {{else if checkValid}}
+      <span
+        x-show="valids['{{name}}']"
+        x-cloak
+        class="absolute inset-y-0 right-4 flex items-center text-success"
+      >{{> icon empty name="check" class="size-5"}}</span>
+    {{/if}}
+  </div>
+
+  <p id="{{id}}-message" class="flex min-h-6 text-small">
+    {{> field-message empty live=live name=name error=error warning=warning hint=hint
+        domain=domain}}
+  </p>
+</div>

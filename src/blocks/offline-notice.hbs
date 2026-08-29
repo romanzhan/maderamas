@@ -1,0 +1,26 @@
+{{!-- Сквозное состояние «нет сети» (состояния-экранов.md п. 0): плашка сверху страницы,
+      не модалка; уходит сама, как только связь вернулась. Липкая под шапкой — связь
+      обрывается чаще всего посреди чтения, и плашка у самого верха документа осталась бы
+      незамеченной. Высота крепления постоянная: с 27.08.2026 шапка никуда не уезжает,
+      и подстраиваться под неё плашке больше не нужно.
+      Живёт в каркасе: состояние сквозное, на любой странице одно и то же.
+      preview — для витрины компонентов, где плашку нужно показать без обрыва связи. --}}
+{{#if preview}}
+  <div class="bg-warning-bg">
+{{else}}
+  <div
+    x-data="offlineNotice"
+    x-show="offline"
+    x-cloak
+    class="sticky top-(--header-h) z-10 bg-warning-bg"
+    role="status"
+  >
+{{/if}}
+  <div
+    class="page-container flex min-h-11 items-center justify-center gap-2 text-caption
+      text-warning"
+  >
+    {{> icon empty name="circle-alert" class="size-4"}}
+    {{t "errors.offline"}}
+  </div>
+</div>

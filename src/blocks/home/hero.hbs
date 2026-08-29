@@ -1,0 +1,52 @@
+{{!-- Герой главной (страницы.md §1, блок 1). Кадр во всю ширину, текст поверх —
+      решение владельца 27.08.2026: прежний двухколоночный блок в контейнере не давал
+      масштаба, а первый экран это лицо бренда.
+      Фото — LCP: не лениво, высокий приоритет. Кадра три, и это один и тот же снимок,
+      обрезанный по-разному (картинки.md §3): телефон — вертикаль 4:5 вокруг стула
+      (решение владельца 27.08.2026: квадрат делал первый экран слишком низким),
+      планшет — кадр целиком 16:9, компьютер — панорама. Одним файлом не обойтись:
+      в квадрате от широкого кадра остаётся середина комнаты, а стул стоит справа;
+      панорама же, вырезанная браузером по центру, срезала бы голову.
+      Панорамный кадр обрезан сверху — над головой оставлен воздух, остальное снято
+      снизу, где всё равно лежит текст с затемнением (27.08.2026: владелец сказал, что
+      первый экран на компьютере слишком высокий).
+      Текст читается поверх фотографии за счёт затемнения снизу — без него светлые
+      участки кадра съедают белые буквы (визуальная-система.md §5). --}}
+<section class="relative isolate" data-hero>
+  <div class="relative">
+    {{> picture empty id="home-hero-narrow" idMid="home-hero-mid" idWide="home-hero-wide"
+        alt=(t "home.heroImageAlt") priority=true
+        ratio="aspect-portrait sm:aspect-video lg:aspect-panorama" sizes="100vw"
+        class="aspect-portrait w-full object-cover sm:aspect-video lg:aspect-panorama"}}
+
+    {{!-- Затемнение снизу вверх: сверху кадр остаётся чистым, внизу набирает плотность
+          ровно там, где лежит текст --}}
+    <div
+      class="absolute inset-0 bg-gradient-to-t from-charcoal/70 to-transparent"
+      aria-hidden="true"
+    ></div>
+
+    <div class="absolute inset-x-0 bottom-0 surface-dark">
+      <div class="page-container flex flex-col items-start gap-3 pb-8 lg:gap-5 lg:pb-16">
+        {{> badge empty info=true label="home.heroBadge"}}
+
+        {{!-- text-balance выравнивает строки заголовка по длине; последние два слова
+              склеены неразрывным пробелом в словаре, чтобы последнее не висело
+              отдельной строкой (замечание владельца 27.08.2026) --}}
+        <h1 class="max-w-prose font-display text-h1 text-balance text-cream lg:text-display-lg">
+          {{t "home.heroTitle"}}
+        </h1>
+        <p class="hidden max-w-prose text-lead-lg text-cream/75 sm:block">{{t "home.heroText"}}</p>
+
+        <div class="mt-1 flex flex-wrap gap-3">
+          {{> button empty primary=true sizeLg=true onDark=true label="home.heroCta"
+              href=nav.catalogHref}}
+          {{!-- Ведёт на отдельную страницу, а не на секцию ниже (решение владельца
+                28.08.2026): вопрос «как это устроено» задают до выбора модели --}}
+          {{> button empty secondary=true sizeLg=true onDark=true
+              label="home.heroCtaSecondary" href="/como-funciona/"}}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

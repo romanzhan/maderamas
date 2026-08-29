@@ -1,0 +1,15 @@
+{{!-- Счётчик на иконке шапки (стандарты-размеров.md п. 4): единственное место с текстом
+      11 px. Живёт внутри ссылки, поэтому число читается скринридером как часть её
+      названия («Abrir carrito 3»), а при нуле пропадает вместе с ним.
+      Обычный вызов берёт число из состояния (store); витрине компонентов нужны
+      застывшие состояния, поэтому она передаёт value. --}}
+<span
+  {{#if store}}
+    x-cloak
+    x-show="$store.{{store}}.count > 0"
+    x-text="$store.{{store}}.label"
+  {{/if}}
+  class="absolute top-1 right-1 flex h-4.5 min-w-4.5 items-center justify-center
+    rounded-full bg-clay px-1 text-counter text-cream"
+  >{{value}}</span
+>

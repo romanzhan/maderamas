@@ -1,0 +1,82 @@
+{{!-- Промо-полоса (компоненты.md 4.1, сложные-узлы.md п. 13). Единственное место, где
+      промо-цвет заливает блок целиком (визуальная-система.md §4).
+      Строение (решение владельца 27.08.2026): синяя полоса, крупный текст предложения
+      и рядом аккуратная жёлтая кнопка. Раньше ссылкой был сам текст — кнопка честнее:
+      видно, что именно нажимать, и текст остаётся текстом.
+      На телефоне текст короткий (`announcement.textShort`) и строка одна: текст слева,
+      кнопка справа — полное предложение переносилось там на три строки и полоса
+      занимала пол-экрана. С 640 текст полный и строка снова по центру.
+      Текст и подпись кнопки светлые прямо на цвете, без подложек; кремовый на этом синем
+      даёт 4.52, тёмный на жёлтом — 9.39 (визуальная-система.md §2.2).
+      Полоса лежит слоем выше выдвижных панелей (стандарты-размеров.md п. 13): панель
+      съезжает сверху и на время перехода заходила бы на полосу.
+      Закрывается крестиком у самого края окна; закрытие помнится отпечатком текста.
+      В покое крестик приглушён — закрытие не должно спорить с самим объявлением, —
+      и проявляется под курсором.
+      Юридической ссылки здесь нет — решение владельца 27.08.2026 (seo.md п. 8).
+      Выключенное объявление (`enabled: false` или пустой текст) убирает полосу целиком.
+      preview — для витрины компонентов: там полоса не закрывается и не помнит закрытий. --}}
+{{#if site.announcement.enabled}}
+  {{#if site.announcement.text}}
+    <div
+      {{#unless preview}}
+        data-announcement x-data="announcementBar('{{announcementId}}')"
+      {{/unless}}
+      class="surface-dark relative z-35 bg-promo-blue text-cream"
+    >
+      {{!-- Общая обёртка нужна закрытию: при нём она уезжает вверх целиком,
+            вместе с крестиком, пока полоса схлопывается по высоте --}}
+      <div class="relative" data-announcement-inner>
+        <div class="page-container flex items-center py-2 sm:justify-center sm:py-3">
+          {{!-- Место под крестик зарезервировано: справа всегда, слева — только когда
+                строка стоит по центру, иначе на телефоне текст остался бы без места.
+                Резерв на телефоне — 28, а не 44: крестик прижат к краю окна, а строка
+                живёт внутри полей страницы, и её собственные 16 уже входят в эти 44.
+                Иначе между кнопкой и крестиком зияла бы дыра (замечание владельца) --}}
+          <div
+            class="flex w-full min-w-0 items-center justify-between gap-3
+              sm:w-auto sm:flex-wrap sm:justify-center sm:gap-x-4 sm:gap-y-2
+              {{#unless preview}}pr-7 sm:pr-12 sm:pl-12{{/unless}}"
+          >
+            <p
+              class="flex min-w-0 items-center gap-2 text-small font-medium
+                sm:text-center sm:text-body"
+            >
+              {{#if site.announcement.icon}}
+                {{> icon empty name=site.announcement.icon class="size-5"
+                    filled=announcementIconFilled}}
+              {{/if}}
+              {{#if site.announcement.textShort}}
+                <span class="sm:hidden">{{site.announcement.textShort}}</span>
+                <span class="hidden sm:inline">{{site.announcement.text}}</span>
+              {{else}}
+                {{site.announcement.text}}
+              {{/if}}
+            </p>
+
+            {{!-- url: null — объявление остаётся текстом без кнопки (данные.md §7) --}}
+            {{#if site.announcement.url}}
+              {{> button empty promo=true onDark=true sizeSm=true
+                  href=site.announcement.url text=site.announcement.cta}}
+            {{/if}}
+          </div>
+        </div>
+
+        {{!-- Крестик вынут из потока и прижат к самому краю окна, а не к краю содержимого
+              (решение владельца 27.08.2026) --}}
+        {{#unless preview}}
+          <button
+            type="button"
+            x-on:click="close()"
+            class="group absolute inset-y-0 right-0 flex w-11 items-center justify-center"
+          >
+            <span class="sr-only">{{t "common.close"}}</span>
+            {{> icon empty name="x"
+                class="size-5 text-cream/75 transition-colors duration-150
+                  group-hover:text-cream"}}
+          </button>
+        {{/unless}}
+      </div>
+    </div>
+  {{/if}}
+{{/if}}

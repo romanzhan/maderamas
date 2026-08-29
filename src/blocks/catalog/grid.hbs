@@ -1,0 +1,52 @@
+{{!-- Сетка каталога (стандарты-размеров.md п. 8). Карточки отрисованы все и сразу:
+      на десятке товаров фильтр прячет лишние, а не перерисовывает список — так
+      поисковик видит весь каталог, а «назад» возвращает страницу мгновенно.
+      Порядок задаётся не перестановкой узлов, а свойством order: браузер сам
+      переставляет карточки в сетке, фокус и картинки при этом не теряются. --}}
+{{#if catalog.products.length}}
+  {{!-- Заголовок сетки слышит только скринридер: название товара в карточке — H3
+        (seo.md п. 1), и без H2 между ним и H1 страницы иерархия прыгала бы через
+        уровень. Видимого заголовка у сетки нет — над ней и так стоит имя категории --}}
+  <h2 class="sr-only">{{t "catalog.gridTitle"}}</h2>
+  <div
+    class="mt-6 grid grid-cols-2 gap-3 sm:gap-4 lg:mt-8 lg:grid-cols-3 lg:gap-6 xl:grid-cols-4"
+    data-catalog-grid
+  >
+    {{#each catalog.products}}
+      <div
+        data-catalog-item
+        data-colors="{{colorIds}}"
+        data-stock="{{#if inStock}}1{{else}}0{{/if}}"
+        data-price="{{price}}"
+        data-created="{{createdAt}}"
+      >
+        {{> product-card ../empty id=id name=name price=price old=old discount=discount priceFrom=priceFrom
+            hasOptions=hasOptions href=href inStock=inStock isNew=isNew rating=rating
+            reviewsCount=reviewsCount imageId=imageId imageIdHover=imageIdHover freeShipping=freeShipping}}
+      </div>
+    {{/each}}
+  </div>
+
+  {{!-- Фильтры ничего не нашли (состояния-экранов.md п. 2): не тупик, а выход --}}
+  <div class="mt-10 text-center" data-catalog-empty hidden>
+    <span class="inline-flex text-charcoal/45">
+      {{> icon empty name="sliders-horizontal" class="size-10"}}
+    </span>
+    <p class="mt-3 text-lead">{{t "catalog.noFilterResults"}}</p>
+    <div class="mt-4 flex justify-center">
+      {{> button empty secondary=true sizeMd=true label="catalog.clearFilters"
+          onClick="$store.catalog.clear()"}}
+    </div>
+  </div>
+{{else}}
+  {{!-- Пустая категория (состояния-экранов.md п. 2) --}}
+  <div class="mt-10 text-center">
+    <span class="inline-flex text-charcoal/45">
+      {{> icon empty name="image" class="size-10"}}
+    </span>
+    <p class="mt-3 text-lead">{{t "catalog.empty"}}</p>
+    <div class="mt-4 flex justify-center">
+      {{> button empty primary=true sizeMd=true label="home.viewAllFem" href=nav.catalogHref}}
+    </div>
+  </div>
+{{/if}}

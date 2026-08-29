@@ -1,0 +1,73 @@
+{{!-- Строка товара в корзине (компоненты.md 3.8). Живёт внутри x-for, поэтому все
+      значения приходят из `line`, а счётчик количества привязан к состоянию корзины,
+      а не к собственному — в отличие от одиночного счётчика на странице товара.
+      Раскладка компактная (решение владельца 28.08.2026): фото слева во всю высоту
+      строки, справа три строки — название, цвет, «счётчик и сумма».
+      Кнопка удаления вынута из потока: как обычный элемент строки она задавала ей
+      высоту в 44 и оставляла провал между названием и цветом.
+      Удаление — корзиной, а не крестиком: крестик рядом с крестиком закрытия панели
+      читался как «закрыть». --}}
+<li class="relative flex gap-3 border-b border-line py-3 last:border-b-0">
+  <a
+    x-bind:href="line.href"
+    class="block w-20 shrink-0 self-stretch overflow-hidden rounded-lg bg-sand"
+  >
+    <template x-if="line.photo">
+      <img
+        x-bind:src="line.photo.src"
+        x-bind:srcset="line.photo.srcset"
+        sizes="80px"
+        x-bind:alt="line.name"
+        width="80"
+        height="80"
+        class="h-full w-full object-cover"
+        loading="lazy"
+        decoding="async"
+      />
+    </template>
+    <template x-if="!line.photo">
+      <span class="flex h-full w-full items-center justify-center text-charcoal/45">
+        {{> icon empty name="image" class="size-6"}}
+      </span>
+    </template>
+  </a>
+
+  <div class="flex min-w-0 flex-1 flex-col gap-1">
+    <a x-bind:href="line.href" class="min-w-0 pr-9 hover:text-clay">
+      <span class="line-clamp-2 text-small" x-text="line.name"></span>
+    </a>
+
+    <p x-show="line.variant" class="flex items-center gap-2 text-caption text-charcoal/70">
+      <span
+        x-show="line.swatch"
+        x-bind:style="line.swatch && ('background-color: ' + line.swatch)"
+        class="size-3 shrink-0 rounded-full border border-border"
+        aria-hidden="true"
+      ></span>
+      <span x-text="line.variant"></span>
+    </p>
+
+    {{!-- Товар кончился: строка остаётся видимой, но в итог не идёт --}}
+    <p x-show="!line.inStock" class="text-caption text-warning">{{t "cart.itemNoStock"}}</p>
+
+    <div class="mt-1 flex items-center justify-between gap-2">
+      {{> quantity empty max=site.cart.maxQtyPerItem bindValue="line.qty"
+          onDec="step(line, -1)" onInc="step(line, 1)" atMin="line.qty <= 1"
+          atMax="line.atMax"}}
+
+      {{> price empty compact=true value=0 bind="fmt(line.sum)"}}
+    </div>
+  </div>
+
+  {{!-- Вне потока: иначе кнопка в 44 задаёт высоту первой строке --}}
+  <button
+    type="button"
+    x-on:click="remove(line)"
+    class="absolute top-1 right-0 flex size-11 items-center justify-center rounded-lg
+      text-charcoal/70 transition-colors duration-150 hover:bg-sand-hover
+      hover:text-charcoal"
+  >
+    <span class="sr-only">{{t "cart.removeItem"}}</span>
+    {{> icon empty name="trash-2" class="size-5"}}
+  </button>
+</li>

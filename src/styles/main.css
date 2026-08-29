@@ -1,0 +1,597 @@
+@import 'tailwindcss';
+
+/* Разметка живёт в src: страницы, блоки, компоненты, скрипты */
+@source '../';
+
+@theme {
+  /* Штатная палитра Tailwind не используется: цвета только из визуальной системы */
+  --color-*: initial;
+
+  /* Натуральная база */
+  --color-cream: #fbf7f0;
+  --color-sand: #f0ebe1;
+  --color-oak: #c69c6d;
+  --color-walnut: #5e3d28;
+  --color-clay: #9b5839;
+  --color-charcoal: #2a2620;
+
+  /* Производные */
+  --color-clay-hover: #7f4c33;
+  --color-clay-active: #704530;
+  --color-sand-hover: #e4dfd5;
+  --color-sand-active: #d8d3ca;
+  --color-border: #8a857b;
+  --color-line: #dcd8d1;
+
+  /* Семантические */
+  --color-error: #a03d2e;
+  --color-success: #3c734a;
+  --color-warning: #80631e;
+  /* Плашки сообщений: тот же цвет 10% поверх cream */
+  --color-error-bg: #f2e4dd;
+  --color-success-bg: #e8eadf;
+  --color-warning-bg: #efe8db;
+
+  /* Промо — только реклама */
+  --color-promo-blue: #2f67f3;
+  --color-promo-pink: #cc3670;
+  --color-promo-yellow: #ffc336;
+  --color-promo-yellow-hover: #ebb332;
+  --color-promo-yellow-active: #d9a62e;
+  --color-promo-green: #30814a;
+  --color-promo-orange: #cf3d00;
+
+  --font-*: initial;
+  --font-sans: 'Golos Text', system-ui, sans-serif;
+  --font-display: 'Onest', system-ui, sans-serif;
+
+  /* Своя типографическая шкала взамен штатной: суффикс -lg = размер для десктопа (с lg:).
+     Начертание входит в токен — иначе разметка может его забыть, и заголовок поедет
+     на 400, которого нет ни в шкале, ни в подключённом наборе Onest */
+  --text-*: initial;
+  /* Счётчик на иконке — единственное исключение из минимума 12 px
+     (стандарты-размеров.md п. 4) */
+  --text-counter: 11px;
+  --text-counter--line-height: 1;
+  --text-counter--font-weight: 500;
+  --text-caption: 12px;
+  --text-caption--line-height: 1.4;
+  --text-caption--font-weight: 500;
+  --text-small: 14px;
+  --text-small--line-height: 1.5;
+  --text-small--font-weight: 400;
+  --text-body: 16px;
+  --text-body--line-height: 1.5;
+  --text-body--font-weight: 400;
+  --text-lead: 18px;
+  --text-lead--line-height: 1.5;
+  --text-lead--font-weight: 400;
+  --text-lead-lg: 20px;
+  --text-lead-lg--line-height: 1.5;
+  --text-lead-lg--font-weight: 400;
+  --text-h4: 18px;
+  --text-h4--line-height: 1.25;
+  --text-h4--font-weight: 600;
+  --text-h4-lg: 20px;
+  --text-h4-lg--line-height: 1.25;
+  --text-h4-lg--font-weight: 600;
+  --text-h3: 20px;
+  --text-h3--line-height: 1.25;
+  --text-h3--font-weight: 600;
+  --text-h3-lg: 24px;
+  --text-h3-lg--line-height: 1.25;
+  --text-h3-lg--font-weight: 600;
+  --text-h2: 24px;
+  --text-h2--line-height: 1.2;
+  --text-h2--font-weight: 700;
+  --text-h2-lg: 32px;
+  --text-h2-lg--line-height: 1.2;
+  --text-h2-lg--font-weight: 700;
+  --text-h1: 32px;
+  --text-h1--line-height: 1.15;
+  --text-h1--letter-spacing: -0.01em;
+  --text-h1--font-weight: 700;
+  --text-h1-lg: 44px;
+  --text-h1-lg--line-height: 1.15;
+  --text-h1-lg--letter-spacing: -0.01em;
+  --text-h1-lg--font-weight: 700;
+  --text-display: 40px;
+  --text-display--line-height: 1.1;
+  --text-display--letter-spacing: -0.02em;
+  --text-display--font-weight: 800;
+  --text-display-lg: 60px;
+  --text-display-lg--line-height: 1.1;
+  --text-display-lg--letter-spacing: -0.02em;
+  --text-display-lg--font-weight: 800;
+
+  /* Пропорции кадров: квадрат и видео даёт сам Tailwind, наши две — панорама
+     под широкие полосы-передышки и вертикаль под кадры на телефоне */
+  --aspect-panorama: 21 / 9;
+  --aspect-portrait: 3 / 4;
+
+  --radius-*: initial;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+  --radius-full: 9999px;
+
+  /* Тени тёплые: от charcoal малой прозрачности, не чёрные */
+  --shadow-*: initial;
+  --shadow-sm: 0 2px 8px color-mix(in srgb, var(--color-charcoal) 8%, transparent);
+  --shadow-md: 0 4px 16px color-mix(in srgb, var(--color-charcoal) 12%, transparent);
+  --shadow-lg: 0 12px 32px color-mix(in srgb, var(--color-charcoal) 16%, transparent);
+}
+
+@layer base {
+  :root {
+    --header-h: 56px;
+
+    @variant lg {
+      --header-h: 72px;
+    }
+
+    /* «Под шапкой»: высота шапки плюс шаг 16. Величина нужна в двух местах — якорному
+       переходу и липкому столбцу галереи, — и задана здесь одна на оба */
+    --below-header: calc(var(--header-h) + 16px);
+
+    /* Закреплённая CTA-полоса телефона: 64 по шкале (стандарты-размеров.md п. 4).
+       От неё зависят отступ последнего блока страницы и подъём плавающей кнопки */
+    --cta-h: 64px;
+  }
+
+  /* Место под полосу прокрутки зарезервировано всегда: при блокировке фона полоса
+     исчезает, и без резерва вбок дёргалась бы и страница, и фиксированная кнопка
+     (сложные-узлы.md п. 2) */
+  html {
+    scrollbar-gutter: stable;
+
+    /* За краями страницы (резинка прокрутки на iOS) виден фон холста, а не страницы.
+       Делим его пополам и закрепляем за окном: сверху цвет страницы, снизу — цвет
+       подвала. Иначе под подвалом выезжает белая полоса (замечание владельца
+       28.08.2026). В обычной прокрутке этот фон не виден: его закрывает body */
+    background-image: linear-gradient(var(--color-cream) 50%, var(--color-walnut) 50%);
+    background-attachment: fixed;
+  }
+
+  body {
+    background-color: var(--color-cream);
+    color: var(--color-charcoal);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+  }
+
+  /* Якорный переход не прячет цель под липкой шапкой */
+  [id] {
+    scroll-margin-top: var(--below-header);
+  }
+
+  /* Панель принимает фокус, чтобы объявиться скринридеру, но кольца не рисует: кольцо
+     принадлежит элементам управления, а панель — не кнопка. Иначе открытая корзина
+     выглядит обведённой, и снять обводку нечем (замечание владельца 28.08.2026) */
+  [role='dialog']:focus,
+  [role='dialog']:focus-visible {
+    outline: none;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-clay);
+    outline-offset: 2px;
+  }
+
+  /* Кому движение мешает — тому его нет (стандарты-размеров.md п. 12) */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      transition-duration: 0.01ms !important;
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+    }
+  }
+
+  /* Откуда раскрываются панели: значения ставит overlay.js в момент открытия,
+     здесь — запасные на случай, что панель показали до первого измерения */
+  :root {
+    --overlay-top: 0px;
+    --overlay-below: var(--header-h);
+  }
+
+  /* Плавающая кнопка поднимается над закреплённой CTA-полосой (компоненты.md 1.3):
+     на высоту полосы плюс зазор. Класс ставит страница товара, когда полоса
+     появляется, но живёт полоса только до 1024 — выше её нет, и поднимать нечего */
+  @media (width < 64rem) {
+    html.cta-bar {
+      --fab-lift: calc(var(--cta-h) + 16px);
+    }
+  }
+
+  /* Первый экран на телефоне не занимает окно целиком: следующая секция обязана
+     выглядывать снизу, иначе не видно, что страница продолжается
+     (стандарты-размеров.md п. 11). Пропорции кадра при этом не ломаются —
+     лишнее срезает object-cover */
+  @media (width < 40rem) {
+    [data-hero] img {
+      max-height: 72dvh;
+    }
+  }
+
+  /* Фон под открытой панелью не прокручивается (сложные-узлы.md п. 2) */
+  html.overlay-open {
+    overflow: hidden;
+  }
+
+  /* Полоса объявления, закрытая покупателем: класс ставит скрипт в <head> до первой
+     отрисовки — Alpine к тому моменту ещё не стартовал (сложные-узлы.md п. 13) */
+  html.announcement-closed [data-announcement] {
+    display: none;
+  }
+
+  /* Скрытое до старта Alpine не мигает (сложные-узлы.md п. 14) */
+  [x-cloak] {
+    display: none !important;
+  }
+
+  /* У поля поиска свой крестик очистки — браузерный был бы вторым рядом */
+  [type='search']::-webkit-search-cancel-button {
+    display: none;
+  }
+}
+
+/* Тёмная поверхность: кольцо фокуса на ней светлое (визуальная-система.md §4).
+   Вешается на саму поверхность, а не на каждую ссылку внутри: в подвале их полтора
+   десятка, и забыть кольцо на одной — вопрос времени */
+@utility surface-dark {
+  & :focus-visible {
+    outline-color: var(--color-cream);
+  }
+}
+
+/* Ссылка «к содержимому» для клавиатуры: живёт за верхним краем экрана и приезжает
+   на фокусе. Пара классов sr-only / not-sr-only тут не годится — вторая возвращает
+   position: static, и ссылка вылезает в поток страницы. Слой 50: пока ссылка в фокусе,
+   она выше всего остального */
+@utility skip-link {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 50;
+  translate: 0 -200%;
+
+  &:focus {
+    translate: 0 0;
+  }
+}
+
+/* Единственные два места, где разрешён env(): нижние фиксированные элементы.
+   pb-safe — для панелей (отступ внутри), bottom-safe — для того, что висит у края */
+@utility pb-safe {
+  /* Минимум ужат до 12 (решение владельца 28.08.2026): под кнопкой панели 16 читались
+     лишним воздухом. Ниже безопасной зоны опускаться нельзя — на телефонах с жестовой
+     полосой кнопка сядет прямо на неё */
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
+}
+
+/* Плавное раскрытие строки аккордеона. Высота считается сеткой: доля строки едет
+   от 0fr к 1fr, и мерить содержимое скриптом не нужно — своей механики раскрытия
+   мы не пишем. Ответ при этом всегда остаётся в разметке: поисковик читает его и без
+   нажатия (решение владельца 28.08.2026 — «сделать плавным»; тайминг 200 мс из
+   стандарты-размеров.md п. 12) */
+/* Текст отзыва: четыре строки с многоточием, раскрытие и сворачивание — движением
+   высоты (замечание владельца 28.08.2026). Обрезку снимает и возвращает reviewCard:
+   line-clamp не анимируется, а разница высот между обрезкой и max-height нулевая,
+   поэтому подмены не видно */
+@utility review-text {
+  --review-lines: 4;
+  max-height: calc(1lh * var(--review-lines));
+  overflow: hidden;
+  transition: max-height 200ms ease-out;
+
+  &.is-clipped {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: var(--review-lines);
+  }
+}
+
+@utility accordion-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 200ms ease-out;
+
+  & > * {
+    overflow: hidden;
+  }
+
+  &.is-open {
+    grid-template-rows: 1fr;
+  }
+}
+
+/* Нижняя панель не доезжает до шапки: между ними остаётся зазор, и по нему видно,
+   что это панель поверх сайта, а не новый экран (решение владельца 28.08.2026).
+   Низ шапки знает overlay.js — он же меряет его при открытии */
+@utility max-h-sheet {
+  max-height: calc(100dvh - var(--overlay-below, 0px) - 16px);
+}
+
+/* Отступ под закреплённой CTA-полосой: её высота плюс безопасная зона
+   (стандарты-размеров.md п. 11). Третья и последняя утилита с env() — по месту
+   его по-прежнему не пишут */
+@utility pb-cta {
+  padding-bottom: calc(var(--cta-h) + max(16px, env(safe-area-inset-bottom)));
+}
+
+@utility bottom-safe {
+  bottom: calc(max(16px, env(safe-area-inset-bottom)) + var(--fab-lift, 0px));
+}
+
+/* Автозаполненное браузером поле не жёлтое: свой фон подменить нельзя, поэтому
+   закрашиваем внутренней тенью заведомо большего размера — приём стандартный */
+@utility field-autofill {
+  &:autofill {
+    box-shadow: inset 0 0 0 1000px var(--color-sand);
+    -webkit-text-fill-color: var(--color-charcoal);
+  }
+}
+
+/* Контейнер страницы: поля и максимум содержимого по стандартам размеров п. 5.
+   До xl содержимое тянется за экраном — «труба с пустыми полями» запрещена (там же п. 2) */
+@utility page-container {
+  width: 100%;
+  margin-inline: auto;
+  padding-inline: 16px;
+
+  @variant sm {
+    padding-inline: 24px;
+  }
+
+  @variant lg {
+    padding-inline: 32px;
+  }
+
+  @variant xl {
+    max-width: 1280px;
+    padding-inline: 40px;
+  }
+
+  @variant 2xl {
+    max-width: 1536px;
+    padding-inline: 48px;
+  }
+}
+
+/* Многострочное поле растёт до предела и дальше прокручивается внутри
+   (стандарты-размеров.md п. 4) */
+@utility textarea-autogrow {
+  max-height: 40vh;
+  overflow-y: auto;
+}
+
+/* Полоса прокрутки внутри наших панелей: браузерная белая и спорит со скруглением.
+   Два синтаксиса намеренно: первый понимает Firefox, второй — Chrome и Safari */
+@utility scrollbar-soft {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--color-border);
+    background-clip: padding-box;
+    border: 2px solid transparent;
+    border-radius: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-charcoal);
+  }
+}
+
+/* Нумерация этапов кружками (страница «Nosotros»): номер даёт счётчик CSS, а не разметка.
+   Держать цифры в данных значило бы следить, чтобы они не разошлись с порядком этапов,
+   а считать их в шаблоне нечем — арифметики у шаблонизатора нет */
+@utility step-counter {
+  counter-reset: step;
+
+  & > li {
+    counter-increment: step;
+  }
+
+  & > li [data-step]::before {
+    content: counter(step);
+  }
+}
+
+/* Модальное окно не выше 90% высоты экрана (стандарты-размеров.md п. 4): длинное
+   содержимое прокручивается внутри, а край окна остаётся виден — по нему понятно,
+   что это окно поверх страницы. dvh, а не vh: адресная строка на телефоне меняет
+   высоту вьюпорта (п. 11 там же) */
+@utility max-h-modal {
+  max-height: 90dvh;
+}
+
+/* Липкий столбец начинается под шапкой — на той же высоте, где останавливается
+   якорный переход: величина задана переменной --below-header один раз на оба места */
+@utility top-below-header {
+  top: var(--below-header);
+}
+
+/* Иконка в одной строке с текстом: её коробка ростом ровно со строку, поэтому знак
+   стоит по центру первой строки, а не выше неё. Высота берётся у самой строки (1lh),
+   чтобы не зависеть от того, каким размером набран текст */
+@utility icon-line {
+  display: flex;
+  align-items: center;
+  height: 1lh;
+}
+
+/* Поля ленты и высота слайдов. Их нельзя задать классами в разметке: Swiper объявляет
+   `.swiper { margin: auto; padding: 0 }` и `.swiper-slide { height: 100% }`, а его стили
+   приходят динамическим импортом уже после наших — при равной силе побеждает он.
+   Здесь селектор длиннее, поэтому правило держится независимо от порядка подключения.
+   Проверено в браузере 27.08.2026: классы на разметке молча не действовали. */
+[data-carousel-root] .swiper {
+  /* Боковое поле равно полю page-container: на телефоне лента доходит до самого края
+     экрана, но первая карточка начинается ровно по линии заголовка, а соседняя
+     обрезается краем экрана, а не пустой полосой (замечание владельца 27.08.2026) */
+  margin-inline: -16px;
+  padding-inline: 16px;
+  /* Сверху и снизу — запас, чтобы кольцо фокуса карточки не срезалось краем ленты */
+  margin-block: -8px;
+  padding-block: 8px;
+}
+
+/* С 640px карточки целые, лента снова живёт внутри полей страницы, и запас
+   по бокам нужен только тому же кольцу фокуса */
+@media (width >= 40rem) {
+  [data-carousel-root] .swiper {
+    margin-inline: -8px;
+    padding-inline: 8px;
+  }
+}
+
+/* Одиночный кадр живёт внутри колонки секции: полей от края экрана ему не нужно */
+[data-carousel-single] .swiper {
+  margin-inline: 0;
+  padding-inline: 0;
+}
+
+/* height:100% у слайда отменяет растягивание по высоте, и карточки в ленте выходят
+   разной высоты; auto возвращает растягивание, а карточка внутри тянется своим h-full */
+[data-carousel-root] .swiper-slide {
+  height: auto;
+}
+
+/* Панель поиска на компьютере висит от шапки и вниз по содержимому. Потолок ей —
+   оставшаяся высота окна, а не всё окно: панель начинается не от нуля, и `max-h-dvh`
+   выпускал бы её за нижний край. Утилитой это не записать — в вычислении участвует
+   переменная, которую ставит overlay.js */
+@media (width >= 64rem) {
+  [data-search-panel] {
+    max-height: calc(100dvh - var(--overlay-top));
+  }
+}
+
+/* Оптическое центрирование знака бренда (компоненты.md 4.1). По центру строки должны
+   стоять строчные буквы; ударение над «á» и верхушка «d» в счёт не идут — иначе
+   надпись зрительно проваливается вниз (решение владельца 27.08.2026).
+   Число выведено из самих контуров: строчные занимают 6.19–20.94 из коробки 0–20.94,
+   их середина 13.57, середина коробки 10.47 — разница 3.10, то есть 14.8% высоты знака.
+   Доля, а не пиксели: знак стоит в шапке двух размеров и в подвале третьим. */
+@utility wordmark-optical {
+  transform: translateY(-14.8%);
+}
+
+/* До того как лента ожила, виден только первый слайд. Стили Swiper приходят
+   динамическим импортом, то есть не мгновенно, — без этого правила слайды на секунду
+   встают столбиком. Раскладку самой ленты здесь не повторяем: её задаёт библиотека,
+   второго описания быть не должно. */
+[data-gallery-main]:not(.swiper-initialized) .swiper-slide:not(:first-child),
+[data-gallery-thumbs]:not(.swiper-initialized) .swiper-slide:not(:first-child),
+[data-carousel-root] .swiper:not(.swiper-initialized) .swiper-slide:not(:first-child) {
+  display: none;
+}
+
+/* Точки карусели: Swiper рисует свою разметку, вид задаём мы (карточка Swiper
+   в стеке: «внешний вид стрелок/точек — наш; внутрь не лезем») */
+@layer components {
+  .swiper-pagination-bullet {
+    /* Видимая точка 8, область нажатия 24 — она набирается прозрачной рамкой
+       (стандарты-размеров.md п. 4: «точка 8, область нажатия каждой ≥24,
+       зазор центров 16»). Ширину активной точки анимируем ниже */
+    width: 8px;
+    height: 8px;
+    border: 8px solid transparent;
+    background-clip: content-box;
+    box-sizing: content-box;
+    margin-inline: 0;
+    border-radius: var(--radius-full);
+    background-color: var(--color-border);
+    opacity: 1;
+    /* Активная точка вытягивается в «таблетку» — понятнее, чем смена цвета:
+       видно и то, какая страница открыта, и что точек несколько */
+    transition:
+      width 200ms ease-out,
+      background-color 200ms ease-out;
+  }
+
+  .swiper-pagination-bullet-active {
+    width: 24px;
+    background-color: var(--color-clay);
+  }
+
+  /* Точки лежат прямо на кадре: светлые, с тёмной подложкой вокруг ряда, и мельче
+     обычных — здесь они подсказка «кадров несколько», а не элемент управления
+     (решение владельца 28.08.2026). Область нажатия остаётся 24 за счёт рамки */
+  [data-carousel-single] .swiper-pagination-bullet {
+    width: 6px;
+    height: 6px;
+    border-width: 9px;
+    background-color: var(--color-cream);
+    opacity: 0.75;
+  }
+
+  [data-carousel-single] .swiper-pagination-bullet-active {
+    width: 16px;
+    background-color: var(--color-cream);
+    opacity: 1;
+  }
+}
+
+/* Подсветка совпадения в подсказках поиска (сложные-узлы.md п. 11). Браузерный жёлтый
+   фон mark в палитру не входит, а свой цвет текста на подсвечиваемой строке пришлось бы
+   проверять на контраст дважды, — поэтому совпадение выделяется начертанием */
+@utility search-hit {
+  & mark {
+    background-color: transparent;
+    color: inherit;
+    font-weight: 600;
+  }
+}
+
+/* Заполнение звёзд рейтинга: долю считает CSS от самой оценки, чтобы в разметке
+   не появлялось посчитанных руками процентов (компоненты.md 3.5) */
+@utility rating-fill {
+  width: calc(var(--rating) / 5 * 100%);
+}
+
+/* Недоступный вариант перечёркнут линией 2 px и остаётся кликабельным
+   (компоненты.md 3.4) */
+@utility swatch-crossed {
+  background-image: linear-gradient(
+    to top right,
+    transparent calc(50% - 1px),
+    var(--color-charcoal) calc(50% - 1px),
+    var(--color-charcoal) calc(50% + 1px),
+    transparent calc(50% + 1px)
+  );
+}
+
+/* Иконки нарисованы в сетке 24, и штрих масштабируется вместе с коробкой: тот же
+   stroke-width даёт 2 px только при размере 24, у 16 — тоньше, у 48 — вдвое толще.
+   Поэтому каждый размер, кроме 24, получает свою компенсацию, чтобы видимая толщина
+   осталась 2 px (у размера 16 — 1.5, как разрешает стандарт) — стандарты-размеров.md п. 4 */
+@utility icon-stroke {
+  stroke-width: 2;
+
+  &.size-4 {
+    stroke-width: 2.25;
+  }
+
+  &.size-5 {
+    stroke-width: 2.4;
+  }
+
+  &.size-12 {
+    stroke-width: 1;
+  }
+}

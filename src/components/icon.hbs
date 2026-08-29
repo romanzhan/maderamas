@@ -1,0 +1,8 @@
+{{!-- Иконка из спрайта. class — размер из шкалы: size-4 (16) / size-5 (20) / size-6 (24).
+      filled=true — сплошная заливка: заполненная звезда, сердце в избранном, брендовые
+      значки Simple Icons. По умолчанию контур, как у всего набора Lucide.
+      Декоративна: имя действия несёт кнопка, а не иконка. --}}
+<svg
+  class="icon-stroke {{class}} shrink-0 {{#if filled}}fill-current{{else}}fill-none{{/if}}"
+  aria-hidden="true"
+><use href="#icon-{{name}}"></use></svg>

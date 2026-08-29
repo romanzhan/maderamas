@@ -1,0 +1,16 @@
+{{!-- Частые вопросы (страницы.md §1, блок 10). Один источник с разметкой FAQPage —
+      data/faq.json. Открытых строк может быть несколько сразу: человек читает про
+      доставку и сборку подряд, а не по одной. --}}
+{{#if home.faq.length}}
+  <section class="page-container py-12 lg:py-20">
+    <div class="grid gap-6 lg:grid-cols-3 lg:gap-12">
+      <h2 class="font-display text-h2 lg:text-h2-lg">{{t "home.faqTitle"}}</h2>
+
+      <div class="lg:col-span-2">
+        {{#each home.faq}}
+          {{> accordion-item ../empty id=id question=question answer=answer}}
+        {{/each}}
+      </div>
+    </div>
+  </section>
+{{/if}}

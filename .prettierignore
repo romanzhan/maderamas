@@ -1,0 +1,13 @@
+dist/
+node_modules/
+public/images/
+public/catalog.json
+data/images.json
+src/icons/sprite.svg
+
+# Файлы промта и журнала форматируются руками — переносы строк там осмысленные
+*.md
+
+# Prettier не умеет разбирать вызовы блоков Handlebars — ломает отступы шаблонов
+*.hbs
+src/pages/

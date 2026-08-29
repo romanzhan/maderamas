@@ -1,0 +1,39 @@
+{{!-- Подвал (компоненты.md 4.8): walnut со светлым текстом, четыре колонки.
+      На телефоне они идут одна под другой и всегда раскрыты (решение владельца
+      28.08.2026): аккордеон прятал контакты, а места экономил меньше, чем плотные
+      строки. --}}
+{{!-- Светлая линия сверху: над подвалом может стоять предподвал того же цвета,
+      и без неё две тёмные зоны сливаются в одну (27.08.2026) --}}
+<footer class="surface-dark mt-auto border-t border-cream/20 bg-walnut text-cream">
+  {{!-- Нижний отступ крупнее верхнего: в правом нижнем углу висит кнопка WhatsApp,
+        и последняя строка подвала не должна оказаться под ней (сложные-узлы.md п. 7) --}}
+  <div class="page-container pt-8 pb-20 lg:pt-12">
+    {{!-- Планшет получает свою раскладку, а не растянутую мобильную
+          (стандарты-размеров.md п. 2): с 768 колонки раскрыты в два столбца,
+          с 1024 — в четыре --}}
+    <div class="flex flex-col gap-6 md:grid md:grid-cols-2 md:gap-8 lg:grid-cols-4">
+      {{#> footer-column title=(t "footer.tienda")}}
+        {{> footer-links empty items=nav.shop}}
+      {{/footer-column}}
+
+      {{#> footer-column title=(t "nav.ayuda")}}
+        {{> footer-links empty items=nav.helpFooter}}
+      {{/footer-column}}
+
+      {{#> footer-column title=(t "footer.legal")}}
+        {{> footer-links empty items=nav.legal}}
+      {{/footer-column}}
+
+      {{#> footer-column title=(t "nav.contacto")}}
+        {{!-- Каждый канал связи — по одному разу (страницы.md, «Навигация сайта»):
+              иконка стоит подписью самого канала, отдельного ряда значков рядом нет.
+              Тот же список стоит на странице контактов, поэтому он вынесен в компонент --}}
+        {{> contact-list onDark=true}}
+      {{/footer-column}}
+    </div>
+
+    <div class="mt-8 border-t border-cream/20 pt-6 text-cream/75 text-small">
+      <p>{{t "footer.rights" year=year}}</p>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,28 @@
+[
+  {
+    "id": "sillas",
+    "slug": "sillas",
+    "name": "Sillas evolutivas",
+    "description": "Sillas de madera que se regulan en altura y en profundidad y acompañan al chico desde el primer año hasta la escuela.",
+    "longDescription": "Nuestras sillas evolutivas están pensadas para durar: una sola silla acompaña al chico durante años, en lugar de tres muebles que se usan una temporada y se guardan.\n\nEl asiento y el apoyapiés cambian de posición a medida que el chico crece, así que siempre llega a la mesa con los pies apoyados y la espalda sostenida.\n\nLas fabricamos nosotros en Buenos Aires, en MDF de 18 mm, y se entregan desarmadas.",
+    "image": null,
+    "order": 1,
+    "seo": {
+      "title": "Sillas evolutivas de madera para chicos | Madera Más",
+      "description": null
+    }
+  },
+  {
+    "id": "accesorios",
+    "slug": "accesorios",
+    "name": "Accesorios Montessori",
+    "description": "Torre de aprendizaje, mesas, banquitos y juguetes de madera para acompañar la autonomía de los chicos en casa.",
+    "longDescription": "Los accesorios siguen la misma idea que las sillas: muebles y juguetes de madera que acompañan al chico mientras aprende a hacer las cosas solo.\n\nLa torre de aprendizaje lo pone a la altura de la mesada para cocinar con vos. Las mesas y los banquitos le dan un lugar propio para dibujar y jugar.\n\nTodo se fabrica en Buenos Aires, con los mismos materiales y terminaciones que las sillas.",
+    "image": null,
+    "order": 2,
+    "seo": {
+      "title": "Accesorios Montessori de madera | Madera Más",
+      "description": null
+    }
+  }
+]
