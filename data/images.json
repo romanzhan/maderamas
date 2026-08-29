@@ -1291,6 +1291,24 @@
       "1920": "blog-como-elegir-1920-8ef2d90d.webp"
     }
   },
+  "blog-montessori": {
+    "type": "content",
+    "width": 1920,
+    "height": 1920,
+    "sizes": [
+      480,
+      960,
+      1600,
+      1920
+    ],
+    "format": "webp",
+    "files": {
+      "480": "blog-montessori-480-e8005cc2.webp",
+      "960": "blog-montessori-960-e8005cc2.webp",
+      "1600": "blog-montessori-1600-e8005cc2.webp",
+      "1920": "blog-montessori-1920-e8005cc2.webp"
+    }
+  },
   "blog-postura": {
     "type": "content",
     "width": 1920,
