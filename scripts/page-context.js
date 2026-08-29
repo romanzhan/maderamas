@@ -335,8 +335,11 @@ function listPrice(product, site) {
     // Есть из чего выбирать — карточка ведёт на страницу товара, а не кладёт в корзину
     hasOptions: axes.length > 0,
     // Плашка envío существует только при бесплатной доставке (компоненты.md 3.6):
-    // поставит владелец стоимость — плашка исчезнет сама, а не останется врать
-    freeShipping: site.shipping.cost === 0,
+    // поставит владелец стоимость — плашка исчезнет сама, а не останется врать.
+    // У распроданного товара её нет вовсе (замечание владельца 29.08.2026): бесплатная
+    // доставка — довод купить, а купить сейчас нельзя, и рядом с «Sin stock» плашка
+    // обещает то, чего не будет
+    freeShipping: site.shipping.cost === 0 && product.inStock,
   }
 }
 
@@ -709,7 +712,8 @@ function productPage(product, { categories, products, reviews, site, withCard })
     accessory,
     reviews: productReviews,
     ...ratingOf(product.id, reviews),
-    freeShipping: site.shipping.cost === 0,
+    // То же правило, что на карточке: у распроданного товара доставку не обещаем
+    freeShipping: site.shipping.cost === 0 && product.inStock,
     // Подборка владельца (поле related в данных) — главная; она может уводить и в другую
     // категорию, в этом и смысл. Пусто — показываем соседей по категории
     related: relatedFor(product, products).slice(0, 4).map(withCard),
