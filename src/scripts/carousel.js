@@ -29,11 +29,16 @@ export async function initCarousels() {
   const roots = [...document.querySelectorAll('[data-carousel-root]')]
   if (!roots.length) return
 
-  const [{ default: Swiper }, { A11y, Keyboard, Navigation, Pagination }] = await Promise.all([
-    import('swiper'),
-    import('swiper/modules'),
-    import('swiper/css'),
-  ])
+  const [{ default: Swiper }, { A11y, Autoplay, Keyboard, Navigation, Pagination }] =
+    await Promise.all([import('swiper'), import('swiper/modules'), import('swiper/css')])
+
+  // Просьба системы «поменьше движения» сильнее нашей автопрокрутки: она уводит кадр
+  // из-под глаз, а это ровно то, от чего человек и защищается этой настройкой
+  const calmer = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+  // Ленты, внутри которых стоят другие ленты: их нужно связать после того,
+  // как поднимутся обе
+  const instances = new Map()
 
   for (const root of roots) {
     // Стрелки живут в строке заголовка секции. Ленты вне секции у нас нет; появится —
@@ -57,17 +62,33 @@ export async function initCarousels() {
         (element) => element.closest('[data-carousel-root]') === root,
       ) ?? null
 
+    // Автопрокрутка есть ровно у одного вида ленты — кадров регулировки (решение
+    // владельца 29.08.2026): секция объясняет механизм, и первый кадр в одиночку его
+    // не объясняет. Останавливается под мышью и после первого касания пальцем: дальше
+    // листает человек, а не лента
+    const autoplay = root.hasAttribute('data-carousel-autoplay') && !calmer
+
+    // Ленте, внутри которой стоят другие ленты, нужен признак полной видимости слайда:
+    // по нему ниже решается, кому достаётся жест
+    const hasNested = Boolean(root.querySelector('[data-carousel-nested]'))
+
     const swiper = new Swiper(own('.swiper'), {
-      modules: [Navigation, Pagination, A11y, Keyboard],
+      modules: [Navigation, Pagination, A11y, Keyboard, Autoplay],
+      ...(autoplay
+        ? { autoplay: { delay: 3000, pauseOnMouseEnter: true, disableOnInteraction: true } }
+        : {}),
       ...(single ? { slidesPerView: 1 } : { breakpoints: BREAKPOINTS }),
       ...(nested ? { nested: true } : {}),
       watchOverflow: true,
+      ...(hasNested ? { watchSlidesProgress: true } : {}),
       keyboard: { enabled: true, onlyInViewport: true },
+      // Свои стрелки внутри ленты (кадры регулировки) важнее стрелок секции: у ленты
+      // внутри секции они лежат прямо на кадре, а у ряда карточек — в строке заголовка
       navigation: nested
         ? {}
         : {
-            prevEl: section?.querySelector('[data-carousel-prev]'),
-            nextEl: section?.querySelector('[data-carousel-next]'),
+            prevEl: own('[data-carousel-prev]') ?? section?.querySelector('[data-carousel-prev]'),
+            nextEl: own('[data-carousel-next]') ?? section?.querySelector('[data-carousel-next]'),
           },
       pagination: {
         el: own('[data-carousel-dots]'),
@@ -92,6 +113,31 @@ export async function initCarousels() {
     // ширину секции, и содержимое, которое считает свою высоту само (текст отзыва),
     // намерило бы не то. Наблюдатель размера здесь не спасает: в фоновой вкладке
     // отрисовки нет и сообщение придёт только когда вкладку откроют
+    instances.set(root, swiper)
     root.dispatchEvent(new CustomEvent('carousel:ready', { bubbles: true, detail: swiper }))
+  }
+
+  // Лента внутри ленты: жест забирает внутренняя, и на телефоне это ломало привычное
+  // листание — палец попадал на выглядывающую справа плитку, и вместо ряда постов
+  // листались её кадры (замечание владельца 29.08.2026). Поэтому внутренняя лента
+  // слушает палец только тогда, когда её плитка видна целиком: у выглядывающей
+  // и наполовину закрытой жест достаётся внешней ленте
+  for (const [root, swiper] of instances) {
+    const inner = [...root.querySelectorAll('[data-carousel-nested]')]
+    if (!inner.length) continue
+
+    const sync = () => {
+      for (const nestedRoot of inner) {
+        const nestedSwiper = instances.get(nestedRoot)
+        const slide = nestedRoot.closest('.swiper-slide')
+        if (!nestedSwiper || !slide) continue
+        nestedSwiper.allowTouchMove = slide.classList.contains('swiper-slide-fully-visible')
+      }
+    }
+
+    swiper.on('slideChange', sync)
+    swiper.on('transitionEnd', sync)
+    swiper.on('resize', sync)
+    sync()
   }
 }

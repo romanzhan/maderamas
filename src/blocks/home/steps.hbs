@@ -6,52 +6,56 @@
       кадры читаются как три разных товара.
       Справа одно место, в котором листаются кадры регулировки: инфографику для них
       готовит владелец, поэтому пока стоят заглушки той же геометрии.
-      Якорь — цель вторичной кнопки героя. --}}
-<section id="como-crece" class="page-container py-12 lg:py-20">
+      Якорь — цель вторичной кнопки героя.
+      `group` на секции нужен кадру: стрелки листания показываются, только когда мышь
+      где-то в этой секции (решение владельца 29.08.2026). --}}
+<section id="como-crece" class="group page-container py-12 lg:py-20">
   {{!-- На телефоне порядок такой: заголовок → кадры → тексты (решение владельца
-        28.08.2026). Поэтому заголовок вынут из текстовой колонки отдельным элементом,
-        а на компьютере кадры занимают правый столбец в обе строки, и колонка слева
-        снова читается сплошняком: заголовок, лид, пункты, кнопка --}}
-  {{!-- На компьютере колонка слева поделена на две равные половины: заголовок прижат
-        к низу верхней, тексты — к верху нижней, и пара стоит по центру рядом с кадром.
-        Без этого каждый из них вставал по центру своей половины, и между ними
-        зияла дыра --}}
-  <div class="flex flex-col gap-6 lg:grid lg:grid-cols-2 lg:grid-rows-2 lg:gap-x-16 lg:gap-y-6">
-    <h2 class="font-display text-h2 lg:col-start-1 lg:row-start-1 lg:self-end lg:text-h2-lg">
-      {{t "home.stepsTitle"}}
-    </h2>
+        28.08.2026), поэтому у элементов проставлен порядок.
+        На компьютере заголовок и тексты — одна колонка, и она центрируется относительно
+        кадра целиком (замечание владельца 29.08.2026): раньше половина сетки доставалась
+        заголовку, половина текстам, и пара выходила тяжёлой снизу.
+        Обёртка вокруг них на телефоне не создаёт коробки (`contents`) — иначе кадр
+        не смог бы встать между заголовком и текстами; на компьютере она становится
+        обычным блоком, и центрировать колонку есть чем. --}}
+  <div class="flex flex-col gap-6 lg:grid lg:grid-cols-2 lg:items-center lg:gap-x-16">
+    <div class="contents lg:block">
+      <h2 class="order-1 font-display text-h2 lg:text-h2-lg">{{t "home.stepsTitle"}}</h2>
 
-    <div class="min-w-0 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-center">
-      {{> frame-carousel empty frames=home.adjustFrames alt=(t "home.stepsFrameAlt")
-          sizes="(min-width: 1024px) 50vw, 100vw"}}
+      <div class="order-3 flex flex-col items-start gap-6 lg:mt-8">
+        <p class="max-w-prose text-lead text-charcoal/70">{{t "home.stepsText"}}</p>
+
+        <ul class="flex w-full flex-col gap-6">
+          <li>
+            {{> feature-item empty inline=true icon="move-vertical" title="home.step1Title"
+                text="home.step1Text"}}
+          </li>
+          <li>
+            {{> feature-item empty inline=true icon="utensils" title="home.step2Title"
+                text="home.step2Text"}}
+          </li>
+          <li>
+            {{> feature-item empty inline=true icon="backpack" title="home.step3Title"
+                text="home.step3Text"}}
+          </li>
+        </ul>
+
+        {{!-- На телефоне кнопка во всю ширину (решение владельца 28.08.2026), на широком
+              экране — по своей подписи: колонка там половина сетки.
+              Отступ сверху больше обычного: кнопка не пункт списка, и вплотную к нему
+              читалась бы четвёртым (замечание владельца 29.08.2026) --}}
+        <div class="mt-2 w-full lg:mt-4 lg:w-auto">
+          {{#with home.flagship}}
+            {{> button ../empty secondary=true sizeLg=true fullWidth=true label="home.stepsCta"
+                href=(productUrl this)}}
+          {{/with}}
+        </div>
+      </div>
     </div>
 
-    <div class="flex flex-col items-start gap-6 lg:col-start-1 lg:row-start-2 lg:self-start">
-      <p class="max-w-prose text-lead text-charcoal/70">{{t "home.stepsText"}}</p>
-
-      <ul class="flex w-full flex-col gap-6">
-        <li>
-          {{> feature-item empty inline=true icon="move-vertical" title="home.step1Title"
-              text="home.step1Text"}}
-        </li>
-        <li>
-          {{> feature-item empty inline=true icon="utensils" title="home.step2Title"
-              text="home.step2Text"}}
-        </li>
-        <li>
-          {{> feature-item empty inline=true icon="backpack" title="home.step3Title"
-              text="home.step3Text"}}
-        </li>
-      </ul>
-
-      {{!-- На телефоне кнопка во всю ширину (решение владельца 28.08.2026), на широком
-            экране — по своей подписи: колонка там половина сетки --}}
-      <div class="w-full lg:w-auto">
-        {{#with home.flagship}}
-          {{> button ../empty secondary=true sizeLg=true fullWidth=true label="home.stepsCta"
-              href=(productUrl this)}}
-        {{/with}}
-      </div>
+    <div class="order-2 min-w-0">
+      {{> frame-carousel empty frames=home.adjustFrames alt=(t "home.stepsFrameAlt")
+          sizes="(min-width: 1024px) 50vw, 100vw"}}
     </div>
   </div>
 </section>
