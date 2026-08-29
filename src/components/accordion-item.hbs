@@ -4,8 +4,10 @@
       Ответ всегда остаётся в разметке — Google читает его и без нажатия; закрытая
       строка при этом получает `inert`, чтобы скринридер и клавиатура не проваливались
       в свёрнутый текст.
-      Подсветка строки при наведении ровно по ширине разделителя: вынос за поля делал
-      её шире линии, и края не совпадали (замечание владельца 27.08.2026).
+      При наведении меняется только цвет строки — заливки нет (замечание владельца
+      29.08.2026). Подложка спорила с разделителями: у строки закруглённые углы, у линии
+      прямые, и на их стыке подсветка выглядела браком. Цветом отвечает вся строка сразу,
+      вместе с шевроном, поэтому «нажимается тут» видно не хуже подложки.
       Открыт по якорю из URL (компоненты.md 4.5): сначала раскрытие, потом прокрутка —
       иначе браузер целится в свёрнутую строку и промахивается. Отступ под липкую шапку
       даёт общее правило scroll-margin, своего числа тут нет (сложные-узлы.md п. 7). --}}
@@ -24,13 +26,14 @@
       x-on:click="open = !open"
       x-bind:aria-expanded="open"
       aria-controls="faq-{{id}}"
-      class="flex min-h-16 w-full items-center justify-between gap-4 rounded-lg py-2
-        text-left text-lead hover:bg-sand-hover"
+      class="group flex min-h-16 w-full items-center justify-between gap-4 py-2 text-left
+        text-lead transition-colors duration-150 hover:text-clay"
     >
       {{question}}
       <span
         x-bind:class="open && 'rotate-180'"
-        class="shrink-0 text-charcoal/70 transition-transform duration-200"
+        class="shrink-0 text-charcoal/70 transition-[transform,color] duration-200
+          group-hover:text-clay"
       >{{> icon empty name="chevron-down" class="size-5"}}</span>
     </button>
   </h3>
