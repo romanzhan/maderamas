@@ -104,7 +104,7 @@ export function pageContext(pagePath) {
   const picker = [
     { id: 'silla-para-bebe', image: 'bebe-roble-1', key: 'Baby', tone: 'blue' },
     { id: 'silla-evolutiva', image: 'evolutiva-roble-1', key: 'Kid', tone: 'green' },
-    { id: 'torre-aprendizaje', image: 'torre-1', key: 'Helper', tone: 'yellow' },
+    { id: 'torre-aprendizaje', image: 'home-picker-torre', key: 'Helper', tone: 'yellow' },
   ]
     .map(({ id, image, key, tone }) => {
       const product = byId(id)
@@ -160,6 +160,10 @@ export function pageContext(pagePath) {
     // заглушки той же геометрии
     adjustFrames: ['home-ajuste-1', 'home-ajuste-2', 'home-ajuste-3'],
     cheapestSilla: cheapestIn('sillas'),
+    // Кадр для разворота флагмана выбран отдельно от карточки (решение владельца
+    // 29.08.2026): в карточке нужен первый кадр съёмки, а на развороте — тот, где стул
+    // виден целиком и в интерьере. Так же выбраны кадры для плиток подбора выше
+    flagshipImage: 'evolutiva-roble-2',
     flagship: withCard(products.find((product) => product.id === 'silla-evolutiva') ?? products[0]),
     featured: (featured.length ? featured : products).map(withCard),
     // В ленте на главной показываем всё, что есть: карточки листаются вбок,

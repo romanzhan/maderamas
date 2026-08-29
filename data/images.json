@@ -1525,6 +1525,24 @@
       "2752": "home-hero-wide-2752-237f63f3.webp"
     }
   },
+  "home-picker-torre": {
+    "type": "content",
+    "width": 1920,
+    "height": 1920,
+    "sizes": [
+      480,
+      960,
+      1600,
+      1920
+    ],
+    "format": "webp",
+    "files": {
+      "480": "home-picker-torre-480-4c995482.webp",
+      "960": "home-picker-torre-960-4c995482.webp",
+      "1600": "home-picker-torre-1600-4c995482.webp",
+      "1920": "home-picker-torre-1920-4c995482.webp"
+    }
+  },
   "medidas-banquito": {
     "type": "content",
     "width": 480,

@@ -28,10 +28,10 @@ const CONTENT_IMAGE_IDS = [
   // (src/blocks/about/page.hbs)
   'nosotros-taller',
   'nosotros-proceso',
-  // Фото, зашитые в блоки главной: подбор по возрасту и живая лента
+  // Фото, зашитые в блоки главной: подбор по возрасту и разворот флагмана
   'bebe-roble-1',
   'evolutiva-roble-1',
-  'torre-1',
+  'home-picker-torre',
   'evolutiva-roble-2',
   'evolutiva-roble-5',
   'evolutiva-nogal-3',
