@@ -526,7 +526,7 @@
     "createdAt": "2026-06-01",
     "order": 60,
     "featured": false,
-    "images": [],
+    "images": ["almohadon-rayas-gris", "almohadon-rayas-beige"],
     "dimensionsImage": null,
     "ogImage": null,
     "attributes": {
