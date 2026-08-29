@@ -1,0 +1,82 @@
+# Сборка и заливка витрины на хостинг.
+# Собирает то же самое, что `npm run build` на машине: проверка данных → генерация
+# страниц товаров и статей → Vite → карта сайта и robots.
+#
+# PREVIEW=1 — это превью для приёмки: robots.txt закрывает его от поиска целиком,
+# чтобы копия магазина не конкурировала с настоящим сайтом за собственный бренд
+# (seo.md п. 9).
+name: Публикация сайта
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Одна заливка за раз: вторая дожидается первой, а не обгоняет её на полпути
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+      - run: npm run build
+        env:
+          PREVIEW: '1'
+
+      - name: Ключ и отпечаток сервера
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy
+          chmod 600 ~/.ssh/deploy
+          printf '%s\n' "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+
+      # --delete: на сервере остаётся ровно то, что в сборке. Без него от прошлых
+      # заливок копились бы файлы, которых в проекте уже нет
+      - name: Заливка на хостинг
+        run: |
+          rsync -az --delete --chmod=D755,F644 \
+            -e "ssh -i ~/.ssh/deploy -p ${{ secrets.SSH_PORT }} -o UserKnownHostsFile=~/.ssh/known_hosts" \
+            dist/ "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DEPLOY_PATH }}/"
+
+      # Сайт статический: сервер сам отдаёт index.html из папки, переписывать адреса
+      # не нужно. Своя страница 404 и заголовки кеша — единственное, что ему нужно знать
+      - name: Правила сервера
+        run: |
+          ssh -i ~/.ssh/deploy -p ${{ secrets.SSH_PORT }} \
+            -o UserKnownHostsFile=~/.ssh/known_hosts \
+            "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" \
+            "cat > ${{ secrets.DEPLOY_PATH }}/.htaccess" <<'HTACCESS'
+          ErrorDocument 404 /404.html
+
+          # Файлы сборки несут отпечаток содержимого в имени: меняется файл — меняется
+          # имя, поэтому их можно кешировать надолго. Страницы — нет: они меняются
+          # при той же ссылке
+          <IfModule mod_expires.c>
+            ExpiresActive On
+            ExpiresByType text/html "access plus 0 seconds"
+            ExpiresByType text/css "access plus 1 year"
+            ExpiresByType application/javascript "access plus 1 year"
+            ExpiresByType image/webp "access plus 1 year"
+            ExpiresByType image/jpeg "access plus 1 year"
+            ExpiresByType image/svg+xml "access plus 1 year"
+            ExpiresByType font/woff2 "access plus 1 year"
+          </IfModule>
+          HTACCESS
+
+      - name: Проверка
+        run: |
+          for path in / /sillas/ /sillas/silla-evolutiva/ /checkout/ /robots.txt; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 "https://dev.maderamas.com.ar$path")
+            echo "$code $path"
+            [ "$code" = "200" ] || exit 1
+          done
