@@ -94,6 +94,9 @@ AddType application/manifest+json .webmanifest
   ExpiresByType text/html "access plus 0 seconds"
   ExpiresByType text/css "access plus 1 year"
   ExpiresByType application/javascript "access plus 1 year"
+  # Хостинг отдаёт скрипты старым типом и AddType выше не перебивает его —
+  # называем оба, иначе правило до скриптов не доходит
+  ExpiresByType application/x-javascript "access plus 1 year"
   ExpiresByType image/webp "access plus 1 year"
   ExpiresByType image/jpeg "access plus 1 year"
   ExpiresByType image/svg+xml "access plus 1 year"
