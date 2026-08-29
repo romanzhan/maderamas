@@ -1544,5 +1544,249 @@
     "files": {
       "1200": "og-brand-1200-480b409c.jpg"
     }
+  },
+  "ig-1-1": {
+    "type": "social",
+    "width": 400,
+    "height": 533,
+    "sizes": [
+      400
+    ],
+    "format": "webp",
+    "files": {
+      "400": "ig-1-1-400-7cda5488.webp"
+    }
+  },
+  "ig-2-1": {
+    "type": "social",
+    "width": 800,
+    "height": 1067,
+    "sizes": [
+      400,
+      800
+    ],
+    "format": "webp",
+    "files": {
+      "400": "ig-2-1-400-775777ae.webp",
+      "800": "ig-2-1-800-775777ae.webp"
+    }
+  },
+  "ig-2-2": {
+    "type": "social",
+    "width": 800,
+    "height": 1067,
+    "sizes": [
+      400,
+      800
+    ],
+    "format": "webp",
+    "files": {
+      "400": "ig-2-2-400-edade65c.webp",
+      "800": "ig-2-2-800-edade65c.webp"
+    }
+  },
+  "ig-3-1": {
+    "type": "social",
+    "width": 800,
+    "height": 1067,
+    "sizes": [
+      400,
+      800
+    ],
+    "format": "webp",
+    "files": {
+      "400": "ig-3-1-400-2b638eb2.webp",
+      "800": "ig-3-1-800-2b638eb2.webp"
+    }
+  },
+  "ig-3-2": {
+    "type": "social",
+    "width": 800,
+    "height": 1067,
+    "sizes": [
+      400,
+      800
+    ],
+    "format": "webp",
+    "files": {
+      "400": "ig-3-2-400-cb774da6.webp",
+      "800": "ig-3-2-800-cb774da6.webp"
+    }
+  },
+  "ig-3-3": {
+    "type": "social",
+    "width": 800,
+    "height": 1067,
+    "sizes": [
+      400,
+      800
+    ],
+    "format": "webp",
+    "files": {
+      "400": "ig-3-3-400-94cebce8.webp",
+      "800": "ig-3-3-800-94cebce8.webp"
+    }
+  },
+  "ig-4-1": {
+    "type": "social",
+    "width": 400,
+    "height": 533,
+    "sizes": [
+      400
+    ],
+    "format": "webp",
+    "files": {
+      "400": "ig-4-1-400-02d66190.webp"
+    }
+  },
+  "ig-5-1": {
+    "type": "social",
+    "width": 800,
+    "height": 1067,
+    "sizes": [
+      400,
+      800
+    ],
+    "format": "webp",
+    "files": {
+      "400": "ig-5-1-400-0aed0e16.webp",
+      "800": "ig-5-1-800-0aed0e16.webp"
+    }
+  },
+  "ig-5-2": {
+    "type": "social",
+    "width": 800,
+    "height": 1067,
+    "sizes": [
+      400,
+      800
+    ],
+    "format": "webp",
+    "files": {
+      "400": "ig-5-2-400-e065591d.webp",
+      "800": "ig-5-2-800-e065591d.webp"
+    }
+  },
+  "ig-5-3": {
+    "type": "social",
+    "width": 800,
+    "height": 1067,
+    "sizes": [
+      400,
+      800
+    ],
+    "format": "webp",
+    "files": {
+      "400": "ig-5-3-400-9c2d1918.webp",
+      "800": "ig-5-3-800-9c2d1918.webp"
+    }
+  },
+  "ig-6-1": {
+    "type": "social",
+    "width": 800,
+    "height": 1067,
+    "sizes": [
+      400,
+      800
+    ],
+    "format": "webp",
+    "files": {
+      "400": "ig-6-1-400-367c241b.webp",
+      "800": "ig-6-1-800-367c241b.webp"
+    }
+  },
+  "ig-6-2": {
+    "type": "social",
+    "width": 800,
+    "height": 1067,
+    "sizes": [
+      400,
+      800
+    ],
+    "format": "webp",
+    "files": {
+      "400": "ig-6-2-400-14a78475.webp",
+      "800": "ig-6-2-800-14a78475.webp"
+    }
+  },
+  "ig-6-3": {
+    "type": "social",
+    "width": 800,
+    "height": 1067,
+    "sizes": [
+      400,
+      800
+    ],
+    "format": "webp",
+    "files": {
+      "400": "ig-6-3-400-f9a2cc81.webp",
+      "800": "ig-6-3-800-f9a2cc81.webp"
+    }
+  },
+  "ig-7-1": {
+    "type": "social",
+    "width": 400,
+    "height": 533,
+    "sizes": [
+      400
+    ],
+    "format": "webp",
+    "files": {
+      "400": "ig-7-1-400-a5cc2835.webp"
+    }
+  },
+  "ig-8-1": {
+    "type": "social",
+    "width": 800,
+    "height": 1067,
+    "sizes": [
+      400,
+      800
+    ],
+    "format": "webp",
+    "files": {
+      "400": "ig-8-1-400-b7d90541.webp",
+      "800": "ig-8-1-800-b7d90541.webp"
+    }
+  },
+  "ig-9-1": {
+    "type": "social",
+    "width": 400,
+    "height": 533,
+    "sizes": [
+      400
+    ],
+    "format": "webp",
+    "files": {
+      "400": "ig-9-1-400-0c1d3afd.webp"
+    }
+  },
+  "ig-1": {
+    "type": "video",
+    "format": "mp4",
+    "files": {
+      "original": "ig-1-6d5f1250.mp4"
+    }
+  },
+  "ig-4": {
+    "type": "video",
+    "format": "mp4",
+    "files": {
+      "original": "ig-4-021253df.mp4"
+    }
+  },
+  "ig-7": {
+    "type": "video",
+    "format": "mp4",
+    "files": {
+      "original": "ig-7-40095030.mp4"
+    }
+  },
+  "ig-9": {
+    "type": "video",
+    "format": "mp4",
+    "files": {
+      "original": "ig-9-a64611f3.mp4"
+    }
   }
 }
