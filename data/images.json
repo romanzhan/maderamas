@@ -1395,6 +1395,26 @@
       "1920": "blog-postura-1920-e7ca9a68.webp"
     }
   },
+  "home-atmosfera": {
+    "type": "content",
+    "width": 2752,
+    "height": 1536,
+    "sizes": [
+      480,
+      960,
+      1600,
+      1920,
+      2752
+    ],
+    "format": "webp",
+    "files": {
+      "480": "home-atmosfera-480-2db526d3.webp",
+      "960": "home-atmosfera-960-2db526d3.webp",
+      "1600": "home-atmosfera-1600-2db526d3.webp",
+      "1920": "home-atmosfera-1920-2db526d3.webp",
+      "2752": "home-atmosfera-2752-2db526d3.webp"
+    }
+  },
   "home-hero-mid": {
     "type": "content",
     "width": 2752,
