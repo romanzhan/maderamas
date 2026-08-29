@@ -1,0 +1,61 @@
+{{!-- Пост Instagram в ленте главной (компоненты.md 7.9). Три вида одной плитки:
+      фото, карусель из нескольких кадров и рилс (видео).
+      Кадр вертикальный 3:4 — так лента выглядит у самой Instagram, и это уже
+      существующая пропорция шкалы (стандарты-размеров.md).
+
+      Видео не играет само: автозапуск шести роликов съел бы трафик и превратил
+      спокойную секцию в мельтешение (принцип 12 — анимаций на этапе статики нет).
+      Ролик запускается нажатием, идёт без звука и по кругу; звук включается
+      обычными кнопками плеера — свой плеер не пишем (принцип 1).
+
+      Обязательные: post (запись instagram.json, подготовленная в page-context). --}}
+<div class="relative overflow-hidden rounded-xl bg-sand">
+  {{#if post.multiple}}
+    {{!-- Карусель внутри карусели: внешняя лента отдаёт жест внутренней, пока та
+          не дойдёт до края (nested у Swiper). Точки лежат на кадре, стрелок нет —
+          тот же вид, что у одиночного кадра (сложные-узлы.md п. 13а) --}}
+    <div data-carousel-root data-carousel-single data-carousel-nested
+      {{> carousel-labels empty photos=true}}>
+      <div class="swiper">
+        <div class="swiper-wrapper">
+          {{#each post.frames}}
+            <div class="swiper-slide">
+              {{> instagram-frame ../empty frame=this post=../post index=@index}}
+            </div>
+          {{/each}}
+        </div>
+
+        <div class="pointer-events-none absolute inset-x-0 bottom-3 z-10 flex justify-center">
+          <div
+            class="pointer-events-auto flex items-center rounded-full bg-charcoal/40 px-2 py-1"
+            data-carousel-dots
+          ></div>
+        </div>
+      </div>
+    </div>
+  {{else}}
+    {{> instagram-frame empty frame=post.frames.[0] post=post index=0}}
+  {{/if}}
+
+  {{!-- Значок в углу: он же ссылка на сам пост. У фото плитка и так ведёт туда,
+        но у рилса нажатие запускает ролик, и другого выхода в Instagram не осталось бы.
+        Вид значка говорит, что это за пост, — как в самой ленте Instagram --}}
+  <a
+    href="{{post.url}}"
+    target="_blank"
+    rel="noopener"
+    class="absolute top-2 right-2 z-20 flex size-8 items-center justify-center rounded-full
+      bg-charcoal/45 text-cream transition-colors duration-150 hover:bg-charcoal/70"
+  >
+    <span class="sr-only">{{t "home.instagramOpen"}}</span>
+    {{#if post.multiple}}
+      {{> icon empty name="images" class="size-4"}}
+    {{else}}
+      {{#if post.hasVideo}}
+        {{> icon empty name="play" class="size-4" filled=true}}
+      {{else}}
+        {{> icon empty name="instagram" class="size-4" filled=true}}
+      {{/if}}
+    {{/if}}
+  </a>
+</div>

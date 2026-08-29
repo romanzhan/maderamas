@@ -17,6 +17,7 @@ import {
   paragraphs,
   productUrl,
   t,
+  video,
 } from './scripts/data.js'
 import { decimal, money } from './src/scripts/format.js'
 
@@ -82,6 +83,7 @@ export default ({ command }) => {
           eq,
           or,
           paragraphs,
+          video,
         },
       }),
       // Блоки, компоненты и данные лежат выше корня Vite, поэтому в наблюдение

@@ -1,15 +1,12 @@
-{{!-- Живые фотографии (страницы.md §1). Своя лента, а не встроенная лента Instagram:
+{{!-- Живые кадры (страницы.md §1, блок 9). Своя лента, а не встроенная лента Instagram:
       чужой скрипт тянет согласие на куки, тормозит страницу и ломается при смене
-      правил Meta. Каждый кадр ведёт на аккаунт бренда. --}}
+      правил Meta. Посты приходят из data/instagram.json, плитка — компонент 7.9:
+      фото, карусель или рилс. --}}
 {{#> carousel sectionClass="bg-sand py-12 lg:py-20" title=(t "home.instagramTitle")
     linkHref=links.instagram linkLabel="home.instagramCta" linkExternal=true onSand=true}}
   {{#each home.instagram}}
     <div class="swiper-slide">
-      <a href="{{../links.instagram}}" target="_blank" rel="noopener"
-        class="block overflow-hidden rounded-xl">
-        {{> picture ../empty id=this alt=(t "home.instagramTitle")
-            sizes="(min-width: 1024px) 25vw, 60vw" class="aspect-square w-full object-cover"}}
-      </a>
+      {{> instagram-post ../empty post=this}}
     </div>
   {{/each}}
 {{/carousel}}

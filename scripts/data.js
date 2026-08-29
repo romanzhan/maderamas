@@ -49,6 +49,7 @@ export function loadData() {
     faq: read('faq.json', 'list'),
     pages: read('pages.json', 'list'),
     provinces: read('provinces.json', 'list'),
+    instagram: read('instagram.json', 'list'),
     images: read('images.json', 'object'),
   }
 }
@@ -75,11 +76,16 @@ export function t(key, options) {
  * узнаёт про файлы и размеры. Нет записи — вернёт null, и блок покажет заглушку бренда,
  * а не сломается.
  */
-export function image(id) {
+// Запись картинки из манифеста. Ролик картинкой не считается: у него нет шкалы ширин,
+// и место для него резервирует обложка
+function imageEntry(id) {
   if (!id) return null
+  const entry = loadData().images[id]
+  return !entry || entry.type === 'video' ? null : entry
+}
 
-  const { images } = loadData()
-  const entry = images[id]
+export function image(id) {
+  const entry = imageEntry(id)
   if (!entry) return null
 
   const sizes = [...entry.sizes].sort((a, b) => a - b)
@@ -133,6 +139,35 @@ export function formPattern(kind) {
  */
 export function inlineJson(value) {
   return JSON.stringify(value).replaceAll('</', '<\\/')
+}
+
+/**
+ * Один адрес картинки на заданную ширину. Нужен там, где srcset не поддержан:
+ * атрибут poster у плеера понимает ровно один файл, и без выбора ширины туда уезжал бы
+ * самый крупный — сотни лишних килобайт под плитку в 300 пикселей.
+ */
+export function imageAt(id, width) {
+  const file = imageEntry(id)
+  if (!file) return null
+
+  const sizes = [...file.sizes].sort((a, b) => a - b)
+  const size = sizes.find((step) => step >= width) ?? sizes[sizes.length - 1]
+  return `/images/${file.files[size]}`
+}
+
+/**
+ * Ролик из манифеста конвейера (картинки.md §6). Одна дорожка, без шкалы ширин:
+ * перекодировать видео нечем, поэтому файл один. Нет записи — вернёт null, и плитка
+ * останется обычной фотографией, а не сломается.
+ */
+export function video(id) {
+  if (!id) return null
+
+  const { images } = loadData()
+  const entry = images[id]
+  if (!entry || entry.type !== 'video') return null
+
+  return { src: `/video/${entry.files.original}` }
 }
 
 /**

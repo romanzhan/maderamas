@@ -39,21 +39,38 @@ export async function initCarousels() {
     // Стрелки живут в строке заголовка секции. Ленты вне секции у нас нет; появится —
     // обойдётся без стрелок, а не уронит остальные ленты страницы
     const section = root.closest('section')
-    // Одиночный кадр (секция регулировки): в кадре всегда одно место целиком,
-    // ряда карточек там нет, поэтому и шкала ширин ему не нужна
+    // Одиночный кадр (секция регулировки, кадры поста Instagram): в кадре всегда одно
+    // место целиком, ряда карточек там нет, поэтому и шкала ширин ему не нужна
     const single = root.hasAttribute('data-carousel-single')
+    // Лента внутри ленты (карусель-пост в ряду постов). Swiper отдаёт жест внутренней,
+    // пока та не дойдёт до своего края, — иначе на телефоне пришлось бы выбирать,
+    // какая из двух листается. Стрелки такой ленте не подключаются вовсе: в секции они
+    // одни, и внутренняя лента забрала бы их у внешней
+    const nested = root.hasAttribute('data-carousel-nested')
 
-    const swiper = new Swiper(root.querySelector('.swiper'), {
+    // Внутри ленты может стоять другая лента (карусель-пост), и её .swiper и точки
+    // лежат в разметке раньше собственных. Поэтому берём не «первое найденное»,
+    // а «ближайшая лента которого — эта»: без этого внешняя лента забирала бы
+    // точки внутренней
+    const own = (selector) =>
+      [...root.querySelectorAll(selector)].find(
+        (element) => element.closest('[data-carousel-root]') === root,
+      ) ?? null
+
+    const swiper = new Swiper(own('.swiper'), {
       modules: [Navigation, Pagination, A11y, Keyboard],
       ...(single ? { slidesPerView: 1 } : { breakpoints: BREAKPOINTS }),
+      ...(nested ? { nested: true } : {}),
       watchOverflow: true,
       keyboard: { enabled: true, onlyInViewport: true },
-      navigation: {
-        prevEl: section?.querySelector('[data-carousel-prev]'),
-        nextEl: section?.querySelector('[data-carousel-next]'),
-      },
+      navigation: nested
+        ? {}
+        : {
+            prevEl: section?.querySelector('[data-carousel-prev]'),
+            nextEl: section?.querySelector('[data-carousel-next]'),
+          },
       pagination: {
-        el: root.querySelector('[data-carousel-dots]'),
+        el: own('[data-carousel-dots]'),
         clickable: true,
       },
       a11y: {
