@@ -6,11 +6,67 @@
     "excerpt": "De los primeros bocados a la tarea del colegio: qué mirar en cada etapa y por qué la altura del apoyapiés importa más de lo que parece.",
     "cover": "blog-como-elegir",
     "date": "2026-08-10",
-    "body": "Borrador de demostración. El texto real lo escribe la marca.\n\nEn los primeros meses lo que importa es la contención: respaldo alto, arnés y una base que no se vuelque. Más adelante, cuando el chico ya se sienta solo a la mesa, el foco pasa a la postura: los pies tienen que apoyar en algún lado.\n\nUna silla evolutiva resuelve las dos etapas porque el asiento y el apoyapiés se mueven con el chico.",
-    "relatedProducts": ["silla-evolutiva", "silla-para-bebe"],
+    "body": "La primera silla se elige con el chico en brazos y sin saber muy bien qué mirar. La segunda se compra a los dos años, cuando la primera quedó chica. La tercera aparece con el colegio, cuando hay que sentarse a hacer la tarea.\n\nEse recorrido es el habitual y es caro. La alternativa no es comprar mejor: es comprar una sola vez algo que se regule. Acá está qué necesita el chico en cada etapa, para que decidas con la edad que tenés hoy en casa y no con la que va a tener el año que viene.",
+    "sections": [
+      {
+        "id": "contencion",
+        "title": "De 6 meses a 1 año: contención antes que postura",
+        "body": "Cuando el chico recién se sienta todavía no controla del todo el tronco. En esa etapa la silla no corrige la postura: la sostiene. Lo que importa es que no se caiga hacia adelante ni se escurra hacia abajo, y que quede a la altura de la mesa familiar sin que haya que alzarlo cada dos minutos.\n\nEs el momento de la [silla infantil para comer](/sillas/silla-para-bebe/): arnés de tres puntos, respaldo alto, apoyabrazos y bandeja extraíble, con las patas inclinadas para que no se vuelque cuando el chico se hamaca.",
+        "items": [
+          "**Arnés de tres puntos**, no un cinturón solo en la cintura.",
+          "**Respaldo alto**, que llegue por encima de los hombros.",
+          "**Base ancha o patas inclinadas**: es lo que evita el vuelco.",
+          "**Apoyapiés**, aunque todavía no lo use del todo. Los pies colgando cansan a cualquier edad."
+        ]
+      },
+      {
+        "id": "mesa-grande",
+        "title": "De 1 a 3 años: quiere estar en la mesa grande",
+        "body": "Cerca del año y medio pasa algo previsible: el chico deja de querer su silla aparte y quiere estar donde está todo el mundo. Ahí la bandeja empieza a estorbar y lo que hace falta es altura.\n\nUna [silla evolutiva](/sillas/silla-evolutiva/) resuelve esa etapa porque el asiento y el apoyapiés se mueven de a pasos: el chico queda a la altura de la mesa de siempre, con los pies apoyados y sin bandeja de por medio. Si en tu casa se come en una barra o en una isla, la versión que sirve es la [silla alta de comer](/sillas/silla-alta/).",
+        "quote": "A esta edad la silla deja de ser un lugar donde lo sentás y pasa a ser un lugar al que quiere subir."
+      },
+      {
+        "id": "sube-solo",
+        "title": "De 2 a 4 años: subir y bajar sin ayuda",
+        "body": "Es la etapa en la que quiere hacer todo solo y también aquella en la que se trepa a cualquier cosa. Una silla a la que puede subir por sus propios medios saca de la mesa una discusión diaria y evita que use la silla del comedor como escalera.\n\nLa [silla alta con dos escalones](/sillas/silla-alta-dos-escalones/) está pensada para eso: el chico sube y baja solo, y vos dejás de levantarlo en cada comida."
+      },
+      {
+        "id": "la-tarea",
+        "title": "De 5 años en adelante: el escritorio y la tarea",
+        "body": "Con el colegio la silla cambia de trabajo: ya no es para comer, es para estar quieto una hora. Ahí la postura deja de ser un detalle y se nota en la espalda y en la atención.\n\nLa misma silla evolutiva sirve, porque se sigue regulando: el asiento baja, el apoyapiés baja, y la silla que estaba en el comedor pasa al escritorio. Soporta hasta 80 kg y acompaña hasta los 15 años, así que no hay una tercera compra. Cómo se regula, paso a paso, está en [¿A qué altura tiene que estar la silla?](/blog/a-que-altura-tiene-que-estar-la-silla/)."
+      },
+      {
+        "id": "una-o-tres",
+        "title": "¿Una silla o tres muebles?",
+        "body": "La cuenta conviene hacerla antes de comprar la primera. Una silla de bebé se usa dos años. Un elevador de mesa, uno. Una silla de escritorio empieza a los seis. Son tres muebles, tres compras y dos viajes al altillo.\n\nUna silla que se regula ocupa el lugar de las tres. No es que sea barata: es que se compra una vez.",
+        "note": {
+          "title": "Antes de decidir",
+          "text": "El envío es gratis a todo el país y tenés 10 días para devolverla sin costo si no era lo que esperabas. Los plazos y las condiciones están en [Envíos y pagos](/envios-y-pagos/) y en [Cambios y devoluciones](/cambios-y-devoluciones/)."
+        }
+      },
+      {
+        "id": "como-decidir",
+        "title": "Cómo decidir hoy, en cinco minutos",
+        "body": "Si llegaste hasta acá y seguís dudando, este es el orden que usamos cuando alguien nos escribe por WhatsApp.",
+        "ordered": true,
+        "items": [
+          "**Mirá la edad y el control del tronco.** Si todavía se escurre al sentarse, necesitás arnés y respaldo alto.",
+          "**Medí la altura de tu mesa.** Mesa común: silla evolutiva. Barra o isla: silla alta.",
+          "**Pensá si querés que suba solo.** Si la respuesta es sí, la versión con dos escalones te saca trabajo todos los días.",
+          "**Fijate dónde va a vivir la silla.** Si va a pasar del comedor al escritorio, tiene que regularse en los dos sentidos.",
+          "**Elegí el color al final.** Es lo único que después no vas a poder cambiar."
+        ]
+      }
+    ],
+    "relatedProducts": [
+      "silla-para-bebe",
+      "silla-evolutiva",
+      "silla-alta",
+      "silla-alta-dos-escalones"
+    ],
     "seo": {
       "title": null,
-      "description": null
+      "description": "Qué silla necesita tu hijo a los 6 meses, a los 2 años y cuando empieza el colegio. Guía por etapas para comprar una vez y no tres."
     }
   },
   {
@@ -20,11 +76,61 @@
     "excerpt": "Los pies colgando cansan, y el chico se encorva para llegar al plato. Qué cambia cuando la silla se adapta a su altura.",
     "cover": "blog-postura",
     "date": "2026-07-22",
-    "body": "Borrador de demostración. El texto real lo escribe la marca.\n\nCuando los pies no apoyan, el cuerpo busca estabilidad de otra manera: el chico se recuesta sobre la mesa o se sienta de costado. Con el apoyapiés a la altura correcta, la espalda queda derecha sin esfuerzo.\n\nPor eso una silla que se regula no es un lujo: es lo que permite que la postura acompañe el crecimiento.",
-    "relatedProducts": ["silla-evolutiva"],
+    "body": "Mirá a un chico comer en una silla de adulto. Los primeros diez minutos está bien. Después se recuesta sobre la mesa, se sienta arriba de un pie, se pone de rodillas, se levanta. Le decimos «no se queda quieto», pero casi siempre es otra cosa: el cuerpo está buscando dónde apoyarse.\n\nCuando los pies no llegan al piso las piernas quedan colgando y el peso se reparte mal. La silla, que debería sostenerlo, se convierte en algo de lo que hay que defenderse.",
+    "sections": [
+      {
+        "id": "pies-que-cuelgan",
+        "title": "Qué pasa cuando los pies no apoyan",
+        "body": "Todo lo que hace el chico para acomodarse tiene una explicación mecánica, y ninguna es un problema de conducta.",
+        "items": [
+          "Se **desliza hacia adelante** para llegar al plato y termina sentado sobre el borde.",
+          "Se **apoya sobre la mesa** con los codos y el pecho: es su manera de descansar la espalda.",
+          "**Cruza o enrosca las piernas** en la silla para fabricarse un apoyo.",
+          "Se **para cada dos minutos**, que es la salida obvia cuando nada de lo anterior alcanza."
+        ]
+      },
+      {
+        "id": "tres-angulos",
+        "title": "La regla de los tres ángulos",
+        "body": "No hace falta medir con precisión de consultorio. Sentá al chico y mirá tres cosas.",
+        "ordered": true,
+        "items": [
+          "**Pies**: apoyados enteros sobre el apoyapiés o el piso, no en puntas de pie.",
+          "**Rodillas**: en ángulo recto, con los muslos horizontales.",
+          "**Codos**: a la altura de la mesa, sin levantar los hombros para llegar."
+        ],
+        "quote": "Si los tres se cumplen, no hay que pedirle que se siente derecho: se sienta derecho porque puede."
+      },
+      {
+        "id": "senales",
+        "title": "Señales de que la silla le quedó mal",
+        "body": "Sirven tanto para una silla que quedó chica como para una que siempre fue grande.",
+        "items": [
+          "Levanta los hombros para llegar a la mesa: **el asiento está bajo**.",
+          "Los pies cuelgan o tocan de punta: **falta apoyapiés** o está bajo.",
+          "Se sienta sobre el borde: **el asiento es demasiado profundo**.",
+          "Se recuesta sobre la mesa a los cinco minutos: **la altura no está**."
+        ]
+      },
+      {
+        "id": "lo-que-no-funciona",
+        "title": "Lo que parece que arregla y no arregla",
+        "body": "El almohadón sobre la silla de adulto sube al chico, pero le deja los pies todavía más lejos del piso: se gana altura de codos y se pierde apoyo. La caja debajo de los pies funciona una semana, hasta que se corre sola o el chico crece dos centímetros.\n\nLas dos soluciones tienen el mismo problema: no se regulan. Y lo que hay que ajustar no es un punto sino dos —el asiento y el apoyapiés—, cada uno por su lado."
+      },
+      {
+        "id": "silla-que-se-regula",
+        "title": "Por qué una silla que se regula cambia esto",
+        "body": "En una [silla evolutiva](/sillas/silla-evolutiva/) el asiento y el apoyapiés se mueven de a pasos, por separado. Eso es exactamente lo que pide la regla de los tres ángulos: subís el asiento hasta que los codos lleguen a la mesa y después subís el apoyapiés hasta que las rodillas queden rectas.\n\nLa misma silla acompaña de 1 a 15 años, así que regular no es algo que se hace una vez: son dos minutos cada tanto, a medida que el chico crece.",
+        "note": {
+          "title": "Para hacerlo hoy",
+          "text": "El paso a paso está en [¿A qué altura tiene que estar la silla?](/blog/a-que-altura-tiene-que-estar-la-silla/). Y si querés que además esté cómodo en las comidas largas, el [almohadón](/accesorios/almohadon/) va en el asiento y en el respaldo, y se lava a máquina."
+        }
+      }
+    ],
+    "relatedProducts": ["silla-evolutiva", "almohadon"],
     "seo": {
       "title": null,
-      "description": null
+      "description": "Por qué el chico se encorva en la mesa y qué cambia cuando los pies apoyan. La regla de los tres ángulos, explicada simple."
     }
   },
   {
@@ -34,11 +140,57 @@
     "excerpt": "Una regla simple para saber si el asiento y el apoyapiés están donde tienen que estar: mirá los codos y las rodillas.",
     "cover": "blog-altura",
     "date": "2026-07-05",
-    "body": "Borrador de demostración. El texto real lo escribe la marca.\n\nCon el chico sentado, los codos tienen que quedar a la altura de la mesa y las rodillas formar un ángulo recto. Si los codos quedan abajo, subí el asiento; si las piernas cuelgan, subí el apoyapiés.",
-    "relatedProducts": ["silla-evolutiva"],
+    "body": "Es la pregunta que más nos llega, y la respuesta no está en centímetros: está en el cuerpo del chico. Dos chicos de la misma edad pueden necesitar posiciones distintas, y la misma silla puede pedir una altura en tu casa y otra en lo de los abuelos.\n\nEste es el método que usamos en el taller para dejar una silla en su punto. Lleva dos minutos y no necesita metro.",
+    "sections": [
+      {
+        "id": "metodo",
+        "title": "El método, en dos minutos",
+        "body": "Hacelo con el chico despierto y con ganas, no en el medio de la comida.",
+        "ordered": true,
+        "items": [
+          "**Acercá la silla a la mesa** donde se va a usar de verdad, con el mantel puesto si lo hay.",
+          "**Sentá al chico** y pedile que apoye las manos sobre la mesa, relajado.",
+          "**Mirá los codos.** Tienen que quedar a la altura de la tabla. Si están por debajo, subí el asiento un paso.",
+          "**Mirá las rodillas y los pies.** Rodillas en ángulo recto y pies apoyados enteros. Si las piernas cuelgan, subí el apoyapiés.",
+          "**Comprobá los dos juntos al final.** Mover el apoyapiés no cambia la altura del asiento, pero conviene mirarlos de nuevo."
+        ]
+      },
+      {
+        "id": "codos",
+        "title": "Por qué manda el codo",
+        "body": "El codo marca la relación entre el chico y la mesa. Si queda por debajo de la tabla, el chico levanta el hombro para comer o escribir y a los diez minutos le duele el cuello. Si queda muy por encima, se encorva sobre el plato.\n\nEs el único de los tres puntos que depende de un mueble que no podés regular —la mesa—, y por eso se ajusta primero. Si los dos ajustes se contradicen, manda el codo: la altura de la mesa no se cambia, el apoyo de los pies sí."
+      },
+      {
+        "id": "pies",
+        "title": "Por qué el apoyapiés no es un detalle",
+        "body": "Cuando los pies apoyan, la pelvis se estabiliza y la columna se apila sola. Cuando cuelgan, el peso de las piernas tira hacia adelante y el chico compensa con la espalda.\n\nEs la diferencia entre una comida tranquila y una comida en la que hay que recordarle diez veces que se siente bien. En una [silla evolutiva](/sillas/silla-evolutiva/) el apoyapiés se mueve por separado del asiento justamente porque las piernas crecen a otro ritmo que el tronco.",
+        "quote": "El apoyapiés no es para los pies: es para la espalda."
+      },
+      {
+        "id": "cada-cuanto",
+        "title": "Cada cuánto hay que volver a regularla",
+        "body": "No hay una regla fija, pero conviene mirarla cada seis meses, o cada vez que le queden cortos los pantalones: es el mismo estirón.\n\nEl ajuste son dos tornillos y dos minutos. Si la silla se usa en el comedor y también en el escritorio, revisá los dos lugares: la altura no tiene por qué ser la misma.",
+        "note": {
+          "title": "Un truco simple",
+          "text": "Anotá en el celular en qué paso quedaron el asiento y el apoyapiés, con la fecha. La próxima vez sabés de dónde partiste, y si la silla viaja a lo de los abuelos la dejás igual en dos minutos."
+        }
+      },
+      {
+        "id": "errores",
+        "title": "Errores que vemos seguido",
+        "body": "Los cuatro son frecuentes y los cuatro son fáciles de corregir.",
+        "items": [
+          "**Regular la silla lejos de la mesa.** La altura se decide en la mesa donde se va a usar.",
+          "**Ajustar solo el asiento.** Sin mover el apoyapiés se gana altura y se pierde apoyo.",
+          "**Dejarla en el paso más alto «para que le dure».** Le va a quedar mal hoy y bien dentro de dos años.",
+          "**Probarla con zapatillas puestas.** Medí como se sienta habitualmente en casa."
+        ]
+      }
+    ],
+    "relatedProducts": ["silla-evolutiva", "silla-alta"],
     "seo": {
       "title": null,
-      "description": null
+      "description": "Cómo dejar la silla en su altura en dos minutos: codos a la altura de la mesa, rodillas en ángulo recto y pies bien apoyados."
     }
   },
   {
@@ -48,25 +200,130 @@
     "excerpt": "No hace falta llenar la casa de objetos: tres muebles bien elegidos alcanzan para que el chico participe solo.",
     "cover": "blog-montessori",
     "date": "2026-06-18",
-    "body": "Borrador de demostración. El texto real lo escribe la marca.\n\nLa idea de fondo es que el chico llegue a las cosas por sus propios medios: una silla a su medida, una torre para la mesada y un lugar bajo donde guardar lo suyo.",
-    "relatedProducts": ["torre-aprendizaje", "banquito-estrella"],
+    "body": "«Montessori» se volvió una etiqueta de venta. Hay estantes Montessori, torres Montessori, camas Montessori y una cantidad de objetos de madera clara que prometen autonomía.\n\nLa idea original es bastante más barata que todo eso: que el chico pueda hacer solo lo que quiere hacer. No necesita muebles especiales, necesita muebles a su medida y al alcance de su mano. Con tres alcanza.",
+    "sections": [
+      {
+        "id": "la-idea",
+        "title": "La idea, en una frase",
+        "body": "Si el chico no llega, alguien tiene que alzarlo. Y si alguien tiene que alzarlo, no está participando: está siendo llevado.\n\nTodo lo demás —los materiales, las bandejas, los colores— es secundario. Lo que cambia una casa es que el chico llegue: a la mesada, a la mesa, a sus cosas.",
+        "quote": "No se trata de comprar muebles chicos. Se trata de que el chico llegue solo."
+      },
+      {
+        "id": "la-cocina",
+        "title": "En la cocina: una torre, no una silla arrimada",
+        "body": "La cocina es donde más pasa y donde más peligro hay. La solución casera —arrimar una silla del comedor a la mesada— es justamente la que no conviene: no tiene baranda y el chico termina parado en el borde.\n\nUna [torre de aprendizaje](/accesorios/torre-de-aprendizaje/) es una plataforma con barandas a la altura del pecho: el chico sube, se queda parado y tiene las dos manos libres para lavar, mezclar o simplemente mirar. La nuestra es plegable, así que cuando no se usa no ocupa media cocina.",
+        "note": {
+          "title": "Sobre la seguridad",
+          "text": "La torre no reemplaza estar cerca. Sirve para que el chico esté a la altura correcta y con las manos libres, no para dejarlo solo frente a la mesada."
+        }
+      },
+      {
+        "id": "la-mesa",
+        "title": "En la mesa: que se siente y se levante solo",
+        "body": "El segundo lugar donde pasa la vida es la mesa. Si el chico depende de que lo suban, la comida empieza y termina cuando el adulto decide.\n\nPara eso sirven dos cosas distintas: una silla a su altura en la mesa familiar —una [silla evolutiva](/sillas/silla-evolutiva/), o la [versión con dos escalones](/sillas/silla-alta-dos-escalones/) si querés que suba sin ayuda— y, para dibujar o merendar aparte, un [set de mesa y sillas](/accesorios/set-mesa-y-sillas/) a su escala."
+      },
+      {
+        "id": "el-tercero",
+        "title": "El tercero: algo bajo, liviano y suyo",
+        "body": "El tercer mueble es el que casi nadie compra y el que más se usa: un asiento liviano que el chico pueda mover él mismo. Sirve para ponerse las zapatillas, para llegar al interruptor, para acercarse a la ventana.\n\nEl [banquito La Estrella](/accesorios/banquito-la-estrella/) pesa poco justamente por eso: la idea es que lo arrastre él, no vos."
+      },
+      {
+        "id": "lo-que-no-hace-falta",
+        "title": "Lo que no hace falta comprar",
+        "body": "Esta parte ahorra más plata que cualquier oferta.",
+        "items": [
+          "**Una cama especial.** Un colchón bajo hace lo mismo.",
+          "**Estantes de marca.** Cualquier estante a 60 cm del piso ya está a su alcance.",
+          "**Juguetes «Montessori» de plástico.** Lo que sostiene la atención suele ser más simple: apilar, encajar, trasvasar. Veinte [piezas de madera](/accesorios/equilibristas/) dan más juego que una caja llena de luces.",
+          "**Todo junto.** Es más útil un mueble por vez, cuando el chico lo empieza a necesitar."
+        ]
+      },
+      {
+        "id": "por-donde-empezar",
+        "title": "Por dónde empezar",
+        "body": "Si tuvieras que hacer una sola cosa este mes, sería esta.",
+        "ordered": true,
+        "items": [
+          "**Mirá dónde le decís «esperá» diez veces por día.** Ese es el lugar.",
+          "**Resolvé la altura ahí primero**, aunque sea con un solo mueble.",
+          "**Dejá pasar un mes** antes de comprar el siguiente. Vas a ver si de verdad hacía falta."
+        ]
+      }
+    ],
+    "relatedProducts": [
+      "torre-aprendizaje",
+      "banquito-estrella",
+      "set-mesa-sillas",
+      "equilibristas"
+    ],
     "seo": {
       "title": null,
-      "description": null
+      "description": "Montessori en casa con tres muebles, no con treinta objetos. Qué resolver primero en la cocina y en la mesa, y qué no hace falta comprar."
     }
   },
   {
     "id": "armado-en-casa",
     "slug": "como-armar-la-silla-en-casa",
     "title": "Cómo armar la silla en casa",
-    "excerpt": "Viene desarmada y con todos los herrajes. Qué tener a mano y en qué orden conviene armarla.",
+    "excerpt": "Viene desarmada y con todos los herrajes. Qué tener a mano, en qué orden conviene armarla y el error que casi todos cometemos.",
     "cover": "blog-armado",
     "date": "2026-05-30",
-    "body": "Borrador de demostración. El texto real lo escribe la marca.\n\nAlcanza con una llave allen y una superficie plana. Conviene apretar todos los tornillos al final, cuando la estructura ya está en su lugar.",
-    "relatedProducts": ["silla-evolutiva", "silla-alta"],
+    "body": "La silla llega en una caja plana porque así viaja mejor y llega sin golpes. Antes de salir del taller se arma completa para revisar que todo calce, y recién después se desarma y se embala con los herrajes y las instrucciones adentro.\n\nArmarla en casa no tiene ciencia, pero hay un orden que hace la diferencia entre veinte minutos tranquilos y una hora peleando con un tornillo que no entra.",
+    "sections": [
+      {
+        "id": "antes-de-empezar",
+        "title": "Antes de empezar",
+        "body": "Cinco minutos de preparación ahorran media hora después.",
+        "items": [
+          "**Una superficie plana y despejada.** El piso con una manta encima va mejor que la mesa: la silla se para ahí mismo para comprobarla.",
+          "**Las piezas a la vista**, no apiladas. Se reconocen por la forma, no por el nombre.",
+          "**Los herrajes en un plato hondo.** Es lo único que se pierde de verdad.",
+          "**Veinte minutos sin apuro.** No es una tarea difícil, pero apurarse se paga."
+        ]
+      },
+      {
+        "id": "el-orden",
+        "title": "El orden que conviene",
+        "body": "Siempre el mismo, para cualquiera de las sillas.",
+        "ordered": true,
+        "items": [
+          "**Separá las piezas grandes**: las dos laterales, el asiento, el apoyapiés y los travesaños.",
+          "**Armá primero la estructura**, laterales y travesaños. Es lo que da la forma y sostiene todo lo demás.",
+          "**Colocá el asiento y el apoyapiés** en la altura que calculaste para tu mesa, sin ajustar del todo.",
+          "**Parala sobre el piso** y comprobá que apoye pareja, sin hamacarse.",
+          "**Recién ahí apretá todos los tornillos**, en cruz: un poco cada uno, dando vueltas, hasta que queden firmes."
+        ]
+      },
+      {
+        "id": "el-error-comun",
+        "title": "El error más común",
+        "body": "Apretar cada tornillo a fondo apenas se coloca. La estructura queda rígida antes de estar completa y el último tornillo no entra: falta un milímetro que ya no se puede recuperar.\n\nCon todo flojo, en cambio, las piezas tienen juego para acomodarse solas. Se aprieta al final, cuando la silla ya está parada y apoyada en el piso.",
+        "quote": "Todo flojo hasta el final. Es la única regla que importa."
+      },
+      {
+        "id": "la-altura",
+        "title": "Dejarla en su altura desde el primer día",
+        "body": "Aprovechá el armado para dejar el asiento y el apoyapiés donde van, en vez de armarla en cualquier paso y regularla después. Es el mismo trabajo hecho una sola vez.\n\nEl método está en [¿A qué altura tiene que estar la silla?](/blog/a-que-altura-tiene-que-estar-la-silla/): codos a la altura de la mesa, rodillas en ángulo recto y pies apoyados enteros."
+      },
+      {
+        "id": "la-caja",
+        "title": "Guardá la caja hasta que esté en su lugar",
+        "body": "Hasta que la silla esté armada, regulada y probada en tu mesa, la caja ocupa poco y conviene tenerla. Es plana y entra detrás de un placard.\n\nSi algo no te cierra, el embalaje original es la forma más segura de que el paquete vuelva bien. Qué se puede devolver y en qué plazo está en [Cambios y devoluciones](/cambios-y-devoluciones/)."
+      },
+      {
+        "id": "repaso",
+        "title": "Un repaso cada tanto",
+        "body": "La madera trabaja con la humedad y los tornillos se acomodan con el uso. Dos veces al año, tocá cada tornillo y ajustá el que quedó flojo: la silla queda firme y sin ruidos, y no hace falta desarmar nada.",
+        "note": {
+          "title": "Si algo no calza",
+          "text": "No fuerces. Escribinos con una foto y lo resolvemos: si es una pieza con falla, la reemplazamos sin cargo. Las condiciones están en [Cambios y devoluciones](/cambios-y-devoluciones/)."
+        }
+      }
+    ],
+    "relatedProducts": ["silla-evolutiva", "silla-alta", "silla-alta-dos-escalones"],
     "seo": {
       "title": null,
-      "description": null
+      "description": "La silla viene desarmada, con los herrajes y las instrucciones. Qué tener a mano, en qué orden armarla y el error que conviene evitar."
     }
   },
   {
@@ -76,11 +333,62 @@
     "excerpt": "Comida, marcadores y humedad: qué hacer y qué evitar para que la silla siga como el primer día.",
     "cover": "blog-cuidado",
     "date": "2026-05-12",
-    "body": "Borrador de demostración. El texto real lo escribe la marca.\n\nUn paño apenas húmedo alcanza para el uso diario. Evitá productos abrasivos y no dejes agua estancada sobre la superficie.",
-    "relatedProducts": ["silla-evolutiva"],
+    "body": "Una silla de chico recibe puré, marcador, plastilina y agua, en ese orden y varias veces por semana. La buena noticia es que la terminación está pensada para eso: se aplica en capas finas, con secado entre una y otra, y deja una superficie pareja que no absorbe.\n\nLa mala es que hay dos o tres cosas que sí la arruinan, y son justamente las que uno hace con la mejor intención.",
+    "sections": [
+      {
+        "id": "el-dia-a-dia",
+        "title": "El día a día: un paño y nada más",
+        "body": "Para la limpieza de todos los días alcanza con un paño apenas húmedo, pasado en el sentido de la veta, y un paño seco después. Sin productos.\n\n«Apenas húmedo» quiere decir bien escurrido: si el paño gotea está mojado, y el agua que queda parada en un canto es lo que con el tiempo levanta la superficie."
+      },
+      {
+        "id": "manchas",
+        "title": "Las manchas que asustan",
+        "body": "Ninguna de estas necesita un producto especial.",
+        "items": [
+          "**Comida seca.** Paño húmedo tibio apoyado un minuto sobre la mancha para ablandarla, y recién después arrastrar. Nunca rascar con la uña ni con un cuchillo.",
+          "**Marcador o lápiz.** Primero el paño húmedo. Si no sale, un poco de jabón blanco neutro y enjuagar enseguida con el paño escurrido.",
+          "**Plastilina.** Dejala endurecer y levantala entera con el borde de una tarjeta. En caliente se desarma y se mete en la veta.",
+          "**Líquidos.** Secar en el momento. Es lo único de esta lista que no admite «después lo limpio»."
+        ]
+      },
+      {
+        "id": "evitar",
+        "title": "Lo que hay que evitar",
+        "body": "Esta lista importa más que la anterior: una mancha se saca, una superficie arruinada no vuelve.",
+        "items": [
+          "**Esponja verde y productos abrasivos.** Sacan la mancha y también la terminación.",
+          "**Alcohol, lavandina y limpiadores multiuso fuertes.** Opacan la superficie para siempre.",
+          "**Agua estancada.** Un vaso volcado que queda media hora hace más daño que un año de uso.",
+          "**Sol directo permanente.** El color se aclara de un lado y no del otro.",
+          "**Aceites y ceras «para madera».** No hacen falta y dejan una película que junta polvo."
+        ],
+        "quote": "El enemigo de un mueble de madera no es la comida: es el agua que se queda."
+      },
+      {
+        "id": "almohadon",
+        "title": "El almohadón, aparte",
+        "body": "Si usás [almohadón](/accesorios/almohadon/), esa parte es la fácil: sale, se lava a máquina a 30° y vuelve. Conviene sacarlo cuando la comida fue especialmente ambiciosa, en vez de limpiarlo encima de la silla.\n\nLavarlo cada tanto también le saca a la madera la mitad del trabajo: casi todo lo que cae, cae ahí."
+      },
+      {
+        "id": "revision",
+        "title": "Una revisión dos veces al año",
+        "body": "Aprovechá para pasar la mano por los cantos y tocar los tornillos. La madera trabaja con la humedad y alguno se afloja: ajustarlo lleva un minuto y evita el ruido que después se confunde con «la silla se está rompiendo».\n\nSi además la vas a regular porque el chico creció, es el mismo momento: el paso a paso está en [¿A qué altura tiene que estar la silla?](/blog/a-que-altura-tiene-que-estar-la-silla/).",
+        "note": {
+          "title": "Si aparece una marca que no sale",
+          "text": "Escribinos con una foto antes de intentar lijar. Muchas marcas se resuelven con el paño correcto, y si se trata de un defecto de fabricación entra en la garantía legal. Está explicado en [Cambios y devoluciones](/cambios-y-devoluciones/)."
+        }
+      },
+      {
+        "id": "segunda-vida",
+        "title": "Cuando le toca al hermano",
+        "body": "Una silla que se regula no se termina cuando el chico creció: baja de altura y empieza de nuevo con el que sigue. Antes de ese pase conviene hacer tres cosas: lavar el almohadón, repasar todos los tornillos y pasar la mano por los cantos.\n\nSi querés dejarla como nueva, se desarma entera y se vuelve a armar sin problema. El orden está en [Cómo armar la silla en casa](/blog/como-armar-la-silla-en-casa/): es el mismo mueble con veinte minutos de trabajo.",
+        "quote": "El mejor argumento de una silla evolutiva no es que dure: es que sirva dos veces."
+      }
+    ],
+    "relatedProducts": ["silla-evolutiva", "almohadon"],
     "seo": {
       "title": null,
-      "description": null
+      "description": "Cómo limpiar la silla de madera todos los días, qué hacer con las manchas difíciles y qué productos no hay que usar nunca."
     }
   }
 ]

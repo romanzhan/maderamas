@@ -202,8 +202,32 @@ export function or(a, b) {
 // Пустая строка разделяет абзацы — так же, как в описаниях товаров
 const PARAGRAPH_BREAK = /\n{2,}/
 
-/** Абзацы из текста с переводами строк: разбирать текст в шаблоне нечем */
+const HTML_ESCAPE = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }
+// Только внутренние адреса: ссылка наружу из текста статьи — решение, а не вёрстка,
+// и заводить её молча нельзя (принцип 6)
+const INLINE_LINK = /\[([^\]]+)\]\((\/[^\s)]*)\)/g
+const INLINE_STRONG = /\*\*([^*]+)\*\*/g
+
+/**
+ * Простая разметка внутри абзаца (данные.md §6): `**важное**` и ссылка `[текст](/ruta/)`.
+ * Больше ничего — вся структура текста живёт в разделах записи, а не в строке, и полный
+ * markdown потребовал бы разбора чужой библиотекой ради двух приёмов.
+ * Текст экранируется до разметки: данные пишем мы, но подставлять в HTML сырую строку —
+ * привычка, которая однажды выстрелит.
+ */
+export function inline(text) {
+  return String(text)
+    .replace(/[&<>"]/g, (char) => HTML_ESCAPE[char])
+    .replace(INLINE_LINK, '<a href="$2">$1</a>')
+    .replace(INLINE_STRONG, '<strong>$1</strong>')
+}
+
+/**
+ * Абзацы из текста с переводами строк: разбирать текст в шаблоне нечем.
+ * Возвращает готовый HTML абзаца (см. inline), поэтому в разметке он выводится
+ * тройными скобками.
+ */
 export function paragraphs(text) {
   if (typeof text !== 'string') return []
-  return text.split(PARAGRAPH_BREAK).filter(Boolean)
+  return text.split(PARAGRAPH_BREAK).filter(Boolean).map(inline)
 }
