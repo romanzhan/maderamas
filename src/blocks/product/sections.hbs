@@ -11,9 +11,9 @@
     <div id="descripcion-texto" class="mt-4 flex max-w-prose flex-col gap-3 text-charcoal/70">
       {{#each product.description}}
         {{#if (or (eq @index 0) (eq @index 1))}}
-          <p>{{this}}</p>
+          <p>{{{this}}}</p>
         {{else}}
-          <p x-show="open" x-cloak>{{this}}</p>
+          <p x-show="open" x-cloak>{{{this}}}</p>
         {{/if}}
       {{/each}}
     </div>

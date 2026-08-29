@@ -46,9 +46,9 @@
       <div class="mt-3 flex max-w-prose flex-col gap-3 text-charcoal/70">
         {{#each (paragraphs catalog.category.longDescription)}}
           {{#if @first}}
-            <p>{{this}}</p>
+            <p>{{{this}}}</p>
           {{else}}
-            <p x-show="open" x-cloak class="lg:block!">{{this}}</p>
+            <p x-show="open" x-cloak class="lg:block!">{{{this}}}</p>
           {{/if}}
         {{/each}}
       </div>

@@ -215,17 +215,22 @@ function checkPageFiles(pages) {
  * Разделы инфостраницы (данные.md §6): у каждого свой id, заголовок и текст, список
  * пунктов — необязательный. Раздел без текста дал бы на странице пустой заголовок.
  */
-function checkPageSections(pages) {
-  for (const page of pages) {
-    const sections = page.sections ?? []
+/**
+ * Разделы длинного текста — один контракт у инфостраницы и у статьи (данные.md §4),
+ * поэтому и проверка одна. У статьи сверх общего есть врезка и вынесенная фраза:
+ * инфостранице они не нужны, но запрещать их там нечем и незачем.
+ */
+function checkSections(list, label) {
+  for (const entry of list) {
+    const sections = entry.sections ?? []
     if (!Array.isArray(sections)) {
-      fail(`Инфостраница "${page.id}": sections должен быть списком`)
+      fail(`${label} "${entry.id}": sections должен быть списком`)
       continue
     }
 
     const seen = new Set()
     for (const section of sections) {
-      const where = `Инфостраница "${page.id}", раздел "${section.id}"`
+      const where = `${label} "${entry.id}", раздел "${section.id}"`
       if (!SLUG.test(section.id ?? '')) fail(`${where}: неверный или пропущенный id`)
       if (seen.has(section.id)) fail(`${where}: id раздела повторяется`)
       seen.add(section.id)
@@ -241,6 +246,53 @@ function checkPageSections(pages) {
           Array.isArray(section.items) &&
           section.items.every((item) => typeof item === 'string' && item.trim())
         if (!ok) fail(`${where}: items — список непустых строк`)
+      }
+
+      // Нумерованный список без самого списка — забытое поле, а не пустой раздел
+      if (section.ordered !== undefined && !Array.isArray(section.items)) {
+        fail(`${where}: ordered стоит, а items нет`)
+      }
+
+      if (section.note !== undefined) {
+        const note = section.note
+        const titleOk = note?.title === undefined || typeof note.title === 'string'
+        if (typeof note?.text !== 'string' || !note.text.trim() || !titleOk) {
+          fail(`${where}: note — объект с непустым text и необязательным title`)
+        }
+      }
+
+      if (section.quote !== undefined) {
+        if (typeof section.quote !== 'string' || !section.quote.trim()) {
+          fail(`${where}: quote — непустая строка`)
+        }
+      }
+    }
+  }
+}
+
+// Ссылка внутри текста ведёт только на свою страницу (данные.md §6): наружу — это
+// решение владельца, а не вёрстка. Чужой адрес разметка молча оставила бы скобками
+// прямо в тексте, поэтому ловим на сборке. Существование самой страницы здесь
+// не проверяется: постоянного обхода ссылок в проекте нет намеренно (принцип 21)
+const TEXT_LINK = /\[[^\]]+\]\(([^)]*)\)/g
+
+function checkTextLinks(list, label) {
+  const texts = (value) => {
+    if (typeof value === 'string') return [value]
+    if (Array.isArray(value)) return value.flatMap(texts)
+    if (value && typeof value === 'object') return Object.values(value).flatMap(texts)
+    return []
+  }
+
+  for (const entry of list) {
+    for (const text of texts(entry)) {
+      for (const [, href] of text.matchAll(TEXT_LINK)) {
+        if (!href.startsWith('/')) {
+          fail(
+            `${label} "${entry.id}": ссылка "${href}" в тексте — в статьях и описаниях ` +
+              `бывают только свои адреса, начинающиеся с /`,
+          )
+        }
       }
     }
   }
@@ -343,7 +395,11 @@ function validate() {
   checkRequiredText(articles, 'Статья', ['title', 'excerpt', 'body'])
   checkRequiredText(pages, 'Инфостраница', ['title', 'body'])
   checkRequiredText(faq, 'FAQ', ['topic', 'question', 'answer'])
-  checkPageSections(pages)
+  checkSections(pages, 'Инфостраница')
+  checkSections(articles, 'Статья')
+  checkTextLinks(articles, 'Статья')
+  checkTextLinks(pages, 'Инфостраница')
+  checkTextLinks(products, 'Товар')
   checkPageFiles(pages)
 
   // Блок seo — часть контракта товаров, категорий, статей и инфостраниц (данные.md).

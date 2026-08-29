@@ -7,6 +7,7 @@ import {
   articleUrl,
   image,
   imageIds,
+  inline,
   inlineJson,
   loadData,
   paragraphs,
@@ -372,16 +373,26 @@ function contentPage(entry) {
 }
 
 /**
- * Статья блога (страницы.md §14): тело абзацами, товары из подборки автора и соседние
- * статьи. Соседи берутся из общего списка по дате — второго порядка статей в проекте нет.
+ * Статья блога (страницы.md §14): лид абзацами, разделы, товары из подборки автора
+ * и соседние статьи. Соседи берутся из общего списка по дате — второго порядка статей
+ * в проекте нет. Разделы устроены так же, как у инфостраницы (данные.md §4): один
+ * контракт на два вида длинного текста, второго изобретать незачем.
  */
 function articlePage(article, byDate, products, withCard) {
   const others = byDate.filter((item) => item.id !== article.id)
+  const sections = (article.sections ?? []).map((section) => ({
+    ...section,
+    body: paragraphs(section.body),
+    items: (section.items ?? []).map(inline),
+    note: section.note && { ...section.note, text: inline(section.note.text) },
+    quote: section.quote && inline(section.quote),
+  }))
 
   return {
     ...article,
     body: paragraphs(article.body),
-    readingMinutes: readingMinutes(`${article.excerpt} ${article.body}`),
+    sections,
+    readingMinutes: readingMinutes(article),
     related: (article.relatedProducts ?? [])
       .map((id) => products.find((item) => item.id === id))
       .filter(Boolean)
@@ -395,9 +406,21 @@ function articlePage(article, byDate, products, withCard) {
 // «0 min de lectura» читается ошибкой, а не короткой заметкой
 const WORDS_PER_MINUTE = 200
 
-/** Время чтения статьи в минутах — считается по тексту, отдельным полем в данных его нет */
-function readingMinutes(text) {
-  const words = String(text ?? '')
+/**
+ * Время чтения статьи в минутах — считается по всему её тексту, отдельным полем
+ * в данных его нет. Считается по исходной записи, а не по подготовленной: подписи
+ * разделов и пункты списков читатель тоже читает.
+ */
+function readingMinutes(article) {
+  const parts = [article.excerpt, article.body]
+  for (const section of article.sections ?? []) {
+    parts.push(section.title, section.body, ...(section.items ?? []))
+    parts.push(section.note?.text, section.quote)
+  }
+
+  const words = parts
+    .filter(Boolean)
+    .join(' ')
     .split(/\s+/)
     .filter(Boolean).length
   return Math.max(1, Math.round(words / WORDS_PER_MINUTE))

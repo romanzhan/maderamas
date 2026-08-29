@@ -595,3 +595,24 @@
     stroke-width: 1;
   }
 }
+
+/* Простая разметка внутри текста из данных (данные.md §6): выделение и ссылка на свою
+   страницу. Обе живут только внутри абзаца, поэтому и правило одно на всю колонку
+   текста, а не класс на каждой ссылке — в данных классов нет и быть не должно.
+   Ссылка подчёркнута: в сплошном тексте один цвет её не выдаёт (стандарты-размеров.md п. 8) */
+@utility rich-text {
+  & strong {
+    font-weight: 600;
+  }
+
+  & a {
+    color: var(--color-clay);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    transition: color 150ms ease-out;
+  }
+
+  & a:hover {
+    color: var(--color-clay-hover);
+  }
+}
