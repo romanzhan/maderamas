@@ -2,13 +2,20 @@
       В кадре всегда одно место целиком: так показывают инфографику регулировки
       на главной и на странице «как это работает» — раньше эта разметка была написана
       в двух местах и уже начала расходиться.
-      Стрелок нет (решение владельца 28.08.2026): листают пальцем, а точки лежат прямо
-      на кадре — под ними тёмная подложка, иначе на светлом снимке их не видно.
+      Точки лежат прямо на кадре — под ними тёмная подложка, иначе на светлом снимке
+      их не видно. Стрелки (решение владельца 29.08.2026) стоят внутри кадра по центру
+      и **только на компьютере**: на телефоне листают пальцем, и стрелки там отнимали бы
+      у кадра четверть ширины. Появляются они при наведении на секцию — постоянные
+      стрелки поверх фотографии спорят с самой фотографией.
+      Кадры листаются сами раз в 3 секунды и замирают, пока мышь над кадром
+      (решение владельца 29.08.2026): секция объясняет механизм, и первый кадр
+      в одиночку его не объясняет. Это единственная автопрокрутка в проекте.
       **Колонке сетки, в которой стоит этот компонент, обязателен `min-w-0`** — своего
       здесь мало: растягивается именно колонка. Ошибка повторялась дважды (28.08.2026),
       и выглядит она как «бесконечная высота страницы». --}}
-<div class="min-w-0" data-carousel-root data-carousel-single {{> carousel-labels empty photos=true}}>
-  <div class="swiper overflow-hidden rounded-2xl bg-sand">
+<div class="min-w-0" data-carousel-root data-carousel-single data-carousel-autoplay
+  {{> carousel-labels empty photos=true}}>
+  <div class="swiper relative overflow-hidden rounded-2xl bg-sand">
     <div class="swiper-wrapper">
       {{#each frames}}
         <div class="swiper-slide">
@@ -16,6 +23,32 @@
               class="aspect-square w-full object-cover"}}
         </div>
       {{/each}}
+    </div>
+
+    {{!-- Стрелки внутри кадра: снаружи им места нет — кадр занимает колонку целиком --}}
+    <div class="pointer-events-none absolute inset-0 z-10 hidden items-center justify-between
+      px-3 opacity-0 transition-opacity duration-150 group-hover:opacity-100
+      group-focus-within:opacity-100 lg:flex">
+      <button
+        type="button"
+        data-carousel-prev
+        class="pointer-events-auto flex size-11 items-center justify-center rounded-full
+          bg-charcoal/45 text-cream transition-colors duration-150 hover:bg-charcoal/70
+          disabled:opacity-0"
+      >
+        <span class="sr-only">{{t "common.prev"}}</span>
+        {{> icon empty name="chevron-left" class="size-5"}}
+      </button>
+      <button
+        type="button"
+        data-carousel-next
+        class="pointer-events-auto flex size-11 items-center justify-center rounded-full
+          bg-charcoal/45 text-cream transition-colors duration-150 hover:bg-charcoal/70
+          disabled:opacity-0"
+      >
+        <span class="sr-only">{{t "common.next"}}</span>
+        {{> icon empty name="chevron-right" class="size-5"}}
+      </button>
     </div>
 
     <div class="pointer-events-none absolute inset-x-0 bottom-4 z-10 flex justify-center">

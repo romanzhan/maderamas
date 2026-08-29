@@ -39,7 +39,7 @@
           {{!-- Кнопка и цена одной строкой: цена справа от кнопки (решение владельца
                 28.08.2026). На узком экране цена переносится под кнопку.
                 Цена на тёмном: компонент рисует её текущим цветом, а он здесь кремовый --}}
-          <div class="flex flex-wrap items-center gap-x-6 gap-y-3">
+          <div class="mt-2 flex flex-wrap items-center gap-x-6 gap-y-3 lg:mt-4">
             {{> button ../empty primary=true sizeLg=true onDark=true label="home.flagshipCta"
                 href=(productUrl this)}}
 
