@@ -28,6 +28,7 @@
     x-show="overflows"
     x-cloak
     x-on:click="toggle()"
+    x-bind:aria-expanded="open"
     class="-mx-2 -mt-2 self-start rounded-lg px-2 py-1 text-small font-medium text-clay
       hover:text-clay-hover"
     x-text="open ? '{{t "common.readLess"}}' : '{{t "common.readMore"}}'"

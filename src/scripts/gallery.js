@@ -29,13 +29,18 @@ function slideHtml(slide, index, openLabel) {
   ].join('')
 }
 
+// Разметка кадра повторяет ту, что отдаёт сервер (product/gallery.hbs): кнопка,
+// а не простой блок — иначе до ленты превью не добраться клавиатурой
 function thumbHtml(slide) {
   return [
-    '<div class="swiper-slide cursor-pointer">',
+    '<div class="swiper-slide">',
+    '<button type="button" class="block w-full cursor-pointer rounded-lg',
+    ' focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay">',
     `<img src="${slide.src}" srcset="${slide.srcset}" sizes="120px"`,
     ` width="${slide.width}" height="${slide.height}" alt="${attr(slide.thumbAlt)}"`,
     ' loading="lazy" decoding="async"',
     ' class="aspect-square w-full rounded-lg bg-sand object-cover" />',
+    '</button>',
     '</div>',
   ].join('')
 }
@@ -102,6 +107,15 @@ export async function initGallery() {
   } catch {
     // Просмотрщика не будет — ссылки на фото остаются обычными ссылками
   }
+
+  // Переключение кадра по клику ведём сами: библиотека слушает своё «касание»,
+  // а Enter на кнопке даёт обычный клик — с клавиатуры лента превью иначе не работает
+  thumbsEl?.addEventListener('click', (event) => {
+    const slide = event.target.closest('.swiper-slide')
+    if (!slide) return
+    const index = [...thumbsEl.querySelectorAll('.swiper-slide')].indexOf(slide)
+    if (index >= 0) main.slideTo(index)
+  })
 
   const source = root.querySelector('[data-gallery-data]')
   if (!source) return

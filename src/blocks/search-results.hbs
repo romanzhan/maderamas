@@ -156,11 +156,16 @@
                   x-bind:href="option.href"
                   x-bind:aria-selected="activeId === option.domId"
                   x-bind:class="activeId === option.domId && 'bg-sand-hover'"
-                  x-html="option.html"
                   role="option"
-                  class="search-hit flex min-h-12 items-center rounded-lg px-2 text-body
+                  class="flex min-h-12 items-center rounded-lg px-2 text-body
                     hover:bg-sand-hover lg:min-h-10"
-                ></a>
+                >
+                  {{!-- Подсвеченное слово лежит в своей строке текста, а не прямо
+                        в flex-строке: там куски текста становятся отдельными
+                        элементами раскладки, и пробелы по краям срезаются —
+                        «la silla según» слипалось в «lasillasegún» --}}
+                  <span class="search-hit" x-html="option.html"></span>
+                </a>
               </li>
             </template>
           </ul>
@@ -184,11 +189,16 @@
                   x-bind:href="option.href"
                   x-bind:aria-selected="activeId === option.domId"
                   x-bind:class="activeId === option.domId && 'bg-sand-hover'"
-                  x-html="option.html"
                   role="option"
-                  class="search-hit flex min-h-12 items-center rounded-lg px-2 text-body
+                  class="flex min-h-12 items-center rounded-lg px-2 text-body
                     hover:bg-sand-hover lg:min-h-10"
-                ></a>
+                >
+                  {{!-- Подсвеченное слово лежит в своей строке текста, а не прямо
+                        в flex-строке: там куски текста становятся отдельными
+                        элементами раскладки, и пробелы по краям срезаются —
+                        «la silla según» слипалось в «lasillasegún» --}}
+                  <span class="search-hit" x-html="option.html"></span>
+                </a>
               </li>
             </template>
           </ul>
