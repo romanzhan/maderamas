@@ -1,0 +1,119 @@
+{{!-- «Nosotros» (страницы.md §9). Структура убеждения сверху вниз: кто мы → как рождается
+      стул → из чего он сделан → зачем именно растущая силла → живой отзыв → в каталог.
+      Своих фактов у страницы нет: этапы работы приходят из pages.json, пункты о материалах —
+      те же, что на странице товара, отзыв — настоящий, с пометкой источника (seo.md п. 5).
+      Фотографии мастерской готовит владелец; до них стоят заглушки бренда той же
+      геометрии, поэтому раскладка от их прихода не поедет. --}}
+<main id="contenido" class="pb-16">
+  <div class="page-container pt-6 lg:pt-10">
+    {{> breadcrumbs empty items=breadcrumbs.items plain=breadcrumbs.plain}}
+
+    <div class="mt-4 flex flex-col gap-4">
+      <h1 class="max-w-prose font-display text-h1 lg:text-h1-lg">{{page.heading}}</h1>
+      {{#if page.lead}}
+        <p class="max-w-prose text-lead text-charcoal/70">{{page.lead}}</p>
+      {{/if}}
+    </div>
+  </div>
+
+  {{!-- Широкий кадр мастерской: он и есть первое доказательство «делаем сами» --}}
+  <section class="mt-8 lg:mt-12">
+    {{> picture empty id="nosotros-taller" alt=(t "about.workshopAlt")
+        ratio="aspect-video sm:aspect-panorama" sizes="100vw"
+        class="aspect-video w-full object-cover sm:aspect-panorama"}}
+  </section>
+
+  {{!-- История: текст слева, живой кадр справа --}}
+  <section class="page-container mt-12 lg:mt-16">
+    <div class="grid items-start gap-8 lg:grid-cols-2 lg:gap-12">
+      {{> prose empty paragraphs=page.body}}
+
+      <div class="overflow-hidden rounded-2xl">
+        {{> picture empty id="nosotros-proceso" alt=(t "about.storyAlt")
+            sizes="(min-width: 1024px) 50vw, 100vw"
+            class="aspect-square w-full object-cover"}}
+      </div>
+    </div>
+  </section>
+
+  {{!-- Как рождается стул: этапы из данных, нумерованные. Фотографий этапов пока нет,
+        и четыре заглушки подряд читались бы браком, а не ожиданием (компоненты.md 6.4) --}}
+  {{#if page.sections.length}}
+    <section class="page-container mt-12 lg:mt-16">
+      <h2 class="font-display text-h2 lg:text-h2-lg">{{t "about.processTitle"}}</h2>
+      <p class="mt-3 max-w-prose text-charcoal/70">{{t "about.processLead"}}</p>
+
+      <ol class="step-counter mt-6 grid gap-6 sm:grid-cols-2 lg:mt-8 lg:grid-cols-4 lg:gap-8">
+        {{#each page.sections}}
+          <li class="flex flex-col gap-3">
+            {{!-- Номер рисует счётчик CSS: держать цифры в данных значило бы следить,
+                  чтобы они не разошлись с порядком этапов --}}
+            <span
+              data-step
+              aria-hidden="true"
+              class="flex size-12 items-center justify-center rounded-full bg-sand
+                font-display text-h4 text-clay tabular-nums lg:text-h4-lg"
+            ></span>
+            <h3 class="text-h4 lg:text-h4-lg">{{title}}</h3>
+            {{> prose ../empty paragraphs=body}}
+          </li>
+        {{/each}}
+      </ol>
+    </section>
+  {{/if}}
+
+  {{!-- Из чего сделана: те же пункты, что на странице товара и на «Cómo funciona» --}}
+  <section class="mt-12 bg-sand lg:mt-16">
+    <div class="page-container py-12 lg:py-16">
+      <h2 class="font-display text-h2 lg:text-h2-lg">{{t "about.materialsTitle"}}</h2>
+      <p class="mt-3 max-w-prose text-charcoal/70">{{t "about.materialsLead"}}</p>
+
+      <ul class="mt-6 grid gap-6 sm:grid-cols-2 lg:mt-8 lg:grid-cols-4">
+        {{#each safety}}
+          <li>
+            {{> feature-item ../empty icon=icon
+                title=(concat "product.safety" key "")
+                text=(concat "product.safety" key "Text")}}
+          </li>
+        {{/each}}
+      </ul>
+    </div>
+  </section>
+
+  {{!-- Почему именно растущая: главный довод бренда, без фотографий и украшений --}}
+  <section class="page-container mt-12 lg:mt-16">
+    <div class="max-w-prose">
+      <h2 class="font-display text-h2 lg:text-h2-lg">{{t "about.whyTitle"}}</h2>
+      <p class="mt-3 text-lead text-charcoal/70">{{t "about.whyText"}}</p>
+    </div>
+  </section>
+
+  {{!-- Живой отзыв во всю ширину. Отзыв с Mercado Libre обязан нести пометку источника
+        и ссылку на оригинал (seo.md п. 5), поэтому имя автора здесь — ссылка --}}
+  {{#if home.reviews.length}}
+    {{#with home.reviews.[0]}}
+      <section class="surface-dark mt-12 bg-walnut text-cream lg:mt-16">
+        <div class="page-container py-12 lg:py-16">
+          <figure class="mx-auto flex max-w-prose flex-col items-center gap-6 text-center">
+            <blockquote class="font-display text-h3 lg:text-h3-lg">{{text}}</blockquote>
+            <figcaption class="flex flex-wrap items-center justify-center gap-x-2 text-small
+              text-cream/75">
+              {{#if sourceUrl}}
+                <a href="{{sourceUrl}}" target="_blank" rel="noopener nofollow"
+                  class="underline underline-offset-2 hover:text-cream">{{author}}</a>
+              {{else}}
+                <span>{{author}}</span>
+              {{/if}}
+              <span aria-hidden="true">·</span>
+              <span>{{t "home.reviewsFromMl"}}</span>
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+    {{/with}}
+  {{/if}}
+
+  <section class="page-container mt-12 flex justify-center lg:mt-16">
+    {{> button empty primary=true sizeLg=true label="home.heroCta" href=nav.catalogHref}}
+  </section>
+</main>

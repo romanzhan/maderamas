@@ -1,0 +1,26 @@
+{{!-- «Сообщить, когда вернётся» (состояния-экранов.md п. 3 и 11, формы-и-поля.md §6).
+      Окно живёт в каркасе, а не на странице товара: кнопка «Avisame cuando vuelva»
+      стоит и на карточке в каталоге, и на странице товара, и в закреплённой полосе —
+      окно у них одно, и лежать оно обязано прямым потомком body (компоненты.md 5.1).
+      Какой товар ждут, кладёт кнопка в store: имя показывается в окне, чтобы человек
+      видел, о чём подписывается.
+      Отправлять пока некуда — обработчик придёт с WordPress; форма ведёт себя как
+      остальные формы сайта, а успех показывает уведомлением и закрывает окно. --}}
+{{#> modal name="notify" title="stock.notifyCta" openOn="notify:ask"}}
+  <p class="text-charcoal/70">
+    {{t "stock.notifyText"}}
+    <span class="font-medium text-charcoal" x-text="$store.notify.name"></span>
+  </p>
+
+  <div class="mt-4">
+    {{!-- Успех показывается уведомлением, а окно закрывается: блок успеха внутри окна
+          остался бы висеть до следующего открытия и встретил бы уже другого покупателя
+          (формы-и-поля.md п. 5 — тост для встроенных мини-форм) --}}
+    {{#> form-shell submitLabel="stock.notifySubmit" toastText="stock.notifySuccess"
+        onDone="close()"}}
+      {{> field empty live=true id="notify-email" name="email" label="fields.email"
+          type="email" inputmode="email" required=true autocomplete="email"
+          checkValid=true}}
+    {{/form-shell}}
+  </div>
+{{/modal}}

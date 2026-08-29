@@ -1,0 +1,86 @@
+[
+  {
+    "id": "como-elegir",
+    "slug": "como-elegir-la-silla-segun-la-edad",
+    "title": "Cómo elegir la silla según la edad del chico",
+    "excerpt": "De los primeros bocados a la tarea del colegio: qué mirar en cada etapa y por qué la altura del apoyapiés importa más de lo que parece.",
+    "cover": null,
+    "date": "2026-08-10",
+    "body": "Borrador de demostración. El texto real lo escribe la marca.\n\nEn los primeros meses lo que importa es la contención: respaldo alto, arnés y una base que no se vuelque. Más adelante, cuando el chico ya se sienta solo a la mesa, el foco pasa a la postura: los pies tienen que apoyar en algún lado.\n\nUna silla evolutiva resuelve las dos etapas porque el asiento y el apoyapiés se mueven con el chico.",
+    "relatedProducts": ["silla-evolutiva", "silla-para-bebe"],
+    "seo": {
+      "title": null,
+      "description": null
+    }
+  },
+  {
+    "id": "postura-a-la-mesa",
+    "slug": "postura-correcta-a-la-mesa",
+    "title": "Postura correcta a la mesa: por qué importa desde chiquitos",
+    "excerpt": "Los pies colgando cansan, y el chico se encorva para llegar al plato. Qué cambia cuando la silla se adapta a su altura.",
+    "cover": null,
+    "date": "2026-07-22",
+    "body": "Borrador de demostración. El texto real lo escribe la marca.\n\nCuando los pies no apoyan, el cuerpo busca estabilidad de otra manera: el chico se recuesta sobre la mesa o se sienta de costado. Con el apoyapiés a la altura correcta, la espalda queda derecha sin esfuerzo.\n\nPor eso una silla que se regula no es un lujo: es lo que permite que la postura acompañe el crecimiento.",
+    "relatedProducts": ["silla-evolutiva"],
+    "seo": {
+      "title": null,
+      "description": null
+    }
+  },
+  {
+    "id": "altura-correcta",
+    "slug": "a-que-altura-tiene-que-estar-la-silla",
+    "title": "¿A qué altura tiene que estar la silla?",
+    "excerpt": "Una regla simple para saber si el asiento y el apoyapiés están donde tienen que estar: mirá los codos y las rodillas.",
+    "cover": null,
+    "date": "2026-07-05",
+    "body": "Borrador de demostración. El texto real lo escribe la marca.\n\nCon el chico sentado, los codos tienen que quedar a la altura de la mesa y las rodillas formar un ángulo recto. Si los codos quedan abajo, subí el asiento; si las piernas cuelgan, subí el apoyapiés.",
+    "relatedProducts": ["silla-evolutiva"],
+    "seo": {
+      "title": null,
+      "description": null
+    }
+  },
+  {
+    "id": "montessori-en-casa",
+    "slug": "montessori-en-casa-sin-comprar-de-mas",
+    "title": "Montessori en casa sin comprar de más",
+    "excerpt": "No hace falta llenar la casa de objetos: tres muebles bien elegidos alcanzan para que el chico participe solo.",
+    "cover": null,
+    "date": "2026-06-18",
+    "body": "Borrador de demostración. El texto real lo escribe la marca.\n\nLa idea de fondo es que el chico llegue a las cosas por sus propios medios: una silla a su medida, una torre para la mesada y un lugar bajo donde guardar lo suyo.",
+    "relatedProducts": ["torre-aprendizaje", "banquito-estrella"],
+    "seo": {
+      "title": null,
+      "description": null
+    }
+  },
+  {
+    "id": "armado-en-casa",
+    "slug": "como-armar-la-silla-en-casa",
+    "title": "Cómo armar la silla en casa",
+    "excerpt": "Viene desarmada y con todos los herrajes. Qué tener a mano y en qué orden conviene armarla.",
+    "cover": null,
+    "date": "2026-05-30",
+    "body": "Borrador de demostración. El texto real lo escribe la marca.\n\nAlcanza con una llave allen y una superficie plana. Conviene apretar todos los tornillos al final, cuando la estructura ya está en su lugar.",
+    "relatedProducts": ["silla-evolutiva", "silla-alta"],
+    "seo": {
+      "title": null,
+      "description": null
+    }
+  },
+  {
+    "id": "cuidado-madera",
+    "slug": "cuidado-de-la-madera-en-el-dia-a-dia",
+    "title": "Cuidado de la madera en el día a día",
+    "excerpt": "Comida, marcadores y humedad: qué hacer y qué evitar para que la silla siga como el primer día.",
+    "cover": null,
+    "date": "2026-05-12",
+    "body": "Borrador de demostración. El texto real lo escribe la marca.\n\nUn paño apenas húmedo alcanza para el uso diario. Evitá productos abrasivos y no dejes agua estancada sobre la superficie.",
+    "relatedProducts": ["silla-evolutiva"],
+    "seo": {
+      "title": null,
+      "description": null
+    }
+  }
+]

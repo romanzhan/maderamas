@@ -1,0 +1,26 @@
+{{!-- Содержимое закреплённой полосы на странице товара (компоненты.md 1.4). Появляется,
+      когда кнопка в панели покупки уехала вверх: две одинаковые кнопки на одном экране
+      сбивают с толку. Цена и наличие берутся из того же состояния комбинации.
+      Сама полоса — общая оболочка cta-bar: её делит с чекаутом. --}}
+{{#> cta-bar show="showBar"}}
+  <div class="min-w-0 flex-1">
+    <p class="truncate text-small text-charcoal/70">{{product.name}}</p>
+    {{> price empty compact=true value=product.selectedPrice bind="priceLabel"}}
+  </div>
+
+  <div class="shrink-0">
+    <span x-show="inStock && !inCart">
+      {{> button empty primary=true sizeMd=true label="product.addToCartShort"
+          onClick="add()"}}
+    </span>
+    <span x-show="inStock && inCart" x-cloak>
+      {{> button empty secondary=true sizeMd=true icon="check" label="product.inCart"
+          href="/carrito/"}}
+    </span>
+    {{!-- Комбинации нет в наличии — кнопка не делает вид, что работает --}}
+    <span x-show="!inStock" x-cloak data-notify="{{product.name}}">
+      {{> button empty secondary=true sizeMd=true label="stock.notifyCta"
+          onClick="$store.notify.ask($el)"}}
+    </span>
+  </div>
+{{/cta-bar}}

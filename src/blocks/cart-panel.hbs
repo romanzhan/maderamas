@@ -1,0 +1,57 @@
+{{!-- Панель корзины (сложные-узлы.md п. 3). Лежит прямым потомком body: механика
+      панелей у всего сайта одна (п. 2). Открывается по иконке в шапке и сама
+      при добавлении товара.
+      На телефоне выезжает снизу, с 640 — справа: на узком экране низ ближе к пальцу,
+      на широком боковая панель не закрывает страницу целиком.
+      Шапку панель не перекрывает ни на одной ширине (решение владельца 28.08.2026):
+      она начинается ниже шапки, а на телефоне ещё и с зазором — так видно, что сайт
+      никуда не делся.
+      На самой странице /carrito/ панель не открывается — иконка шапки просто ведёт
+      наверх этой же страницы (состояния-экранов.md п. 6). --}}
+<div x-data="overlayPanel('cart')" x-cloak>
+  <div
+    x-show="open"
+    x-on:click="close()"
+    x-transition.opacity.duration.200ms
+    class="fixed inset-0 z-30 bg-charcoal/40"
+    aria-hidden="true"
+  ></div>
+
+  <div
+    x-show="open"
+    x-on:click="follow($event)"
+    x-on:keydown.escape.window="open && close()"
+    {{!-- Классы перехода — без адаптивных вариантов: с ними Alpine не снимает
+          стартовое положение, и панель остаётся сдвинутой за экран (проверено
+          в браузере 27.08.2026). Тот же переход, что у меню и поиска --}}
+    x-transition:enter="transition duration-200 ease-out"
+    x-transition:enter-start="translate-y-4 opacity-0"
+    x-transition:enter-end="translate-y-0 opacity-100"
+    x-transition:leave="transition duration-200 ease-in"
+    x-transition:leave-start="translate-y-0 opacity-100"
+    x-transition:leave-end="translate-y-4 opacity-0"
+    id="carrito-panel"
+    x-ref="first"
+    tabindex="-1"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="carrito-titulo"
+    class="max-h-sheet fixed inset-x-0 bottom-0 z-30 flex flex-col rounded-t-2xl bg-cream
+      sm:top-(--overlay-below) sm:right-0 sm:left-auto sm:w-100 sm:max-w-full
+      sm:rounded-none sm:rounded-bl-none"
+  >
+    <div class="page-container flex h-(--header-h) shrink-0 items-center justify-between">
+      <h2 id="carrito-titulo" class="text-h4">{{t "cart.title"}}</h2>
+      <button
+        type="button"
+        x-on:click="close()"
+        class="-mr-3 flex size-12 items-center justify-center rounded-lg hover:bg-sand-hover"
+      >
+        <span class="sr-only">{{t "common.close"}}</span>
+        {{> icon empty name="x" class="size-6"}}
+      </button>
+    </div>
+
+    {{> cart/body panel=true}}
+  </div>
+</div>

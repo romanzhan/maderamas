@@ -1,0 +1,57 @@
+{{!-- Допродажа аксессуара (компоненты.md 3.11): мини-фото → название → цена → галочка.
+      Отмечена — аксессуар уходит в корзину вместе со стулом, отдельной строкой.
+      У аксессуара с вариантами под галочкой открывается ряд цветов: без него галочка
+      клала бы в корзину случайный цвет, а подушку выбирают глазами (решение владельца
+      28.08.2026, когда подушки стали отдельным товаром).
+      Аксессуара нет или он распродан — блока нет вовсе (состояния-экранов.md п. 3). --}}
+{{#if product.accessory}}
+  {{#with product.accessory}}
+    <div class="rounded-xl border border-line bg-cream p-4">
+      {{!-- Данные для браузера: цена комбинации считается там же, где цена стула --}}
+      <script type="application/json" data-accessory-data>{{{clientJson}}}</script>
+
+      <label class="flex min-h-11 cursor-pointer items-start gap-3">
+        <span class="relative mt-1 flex size-6 shrink-0 items-center justify-center lg:size-5">
+          <input
+            type="checkbox"
+            x-model="accessoryOn"
+            class="peer size-full appearance-none rounded-sm border border-border bg-sand
+              checked:border-clay checked:bg-clay"
+          />
+          <span
+            class="pointer-events-none absolute text-cream opacity-0 peer-checked:opacity-100"
+          >{{> icon ../empty name="check" class="size-4"}}</span>
+        </span>
+
+        <span class="w-16 shrink-0 overflow-hidden rounded-lg">
+          {{> picture ../empty id=imageId alt=name sizes="64px"
+              class="aspect-square w-full object-cover"}}
+        </span>
+
+        <span class="flex min-w-0 flex-1 flex-col gap-1">
+          <span class="text-small font-medium">{{t "product.accessory"}}</span>
+          <span class="text-small text-charcoal/70">{{name}}</span>
+          {{!-- Цена живая: меняется вместе с выбранным цветом. Без «desde»: цвет
+                здесь выбран всегда (первый — по умолчанию), и цена точная --}}
+          {{> price ../empty compact=true value=price bind="accessoryPriceLabel"}}
+        </span>
+      </label>
+
+      {{#if axes.length}}
+        {{!-- Ряд цветов открывается только когда галочка стоит: закрытый выбор не мешает
+              смотреть на стул, а открытый сразу показывает, что цвет решает покупатель --}}
+        <div
+          x-show="accessoryOn"
+          x-cloak
+          class="mt-4 border-t border-line pt-4"
+          x-on:change="selectAccessory($event.target.name, $event.target.value)"
+        >
+          {{#each axes}}
+            {{> swatch-group ../../empty name=(concat "accesorio-" key) label=label
+                options=options selected=selected}}
+          {{/each}}
+        </div>
+      {{/if}}
+    </div>
+  {{/with}}
+{{/if}}

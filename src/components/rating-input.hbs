@@ -1,0 +1,59 @@
+{{!-- Ввод оценки (компоненты.md 3.5): пять звёзд, выбор один, клавиатура ходит
+      стрелками. Клавиатуру и отправку даёт нативная радиогруппа — своей механики выбора
+      мы не пишем; Alpine только закрашивает звёзды и подписывает выбранное.
+      Звёзды идут в областях нажатия 44 с зазором 8 (стандарты-размеров.md п. 3), сама
+      звезда 20 — размер звезды рейтинга на странице товара (п. 4 там же).
+      Сообщение под группой — то же, что у полей формы: ошибка приходит из слоя валидации,
+      и каждая звезда связана с ним через aria-describedby: иначе скринридер видит
+      «неверно», но не слышит почему.
+      Обязательные: name, label (ключ словаря), stars (список 1…5 из контекста). --}}
+<fieldset class="flex flex-col gap-2" x-data="{ value: 0 }">
+  <legend class="text-small font-medium">
+    {{t label}} <span class="text-error" aria-hidden="true">*</span>
+  </legend>
+
+  <div class="flex items-center gap-2">
+    {{#each stars}}
+      <label class="flex size-11 cursor-pointer items-center justify-center">
+        <input
+          type="radio"
+          name="{{../name}}"
+          value="{{this}}"
+          required
+          class="peer sr-only"
+          aria-describedby="{{../name}}-message"
+          aria-label="{{t "reviews.ratingValue" rating=this}}"
+          x-on:change="value = {{this}}"
+        />
+        {{!-- Пустая и полная звезда — два разных значка: заливка задаётся на сборке,
+              а не классом, поэтому переключаем показом --}}
+        {{!-- Кольцо и по :focus, а не только по :focus-visible: при отправке пустой
+              формы слой валидации ставит фокус сюда программно, и focus-visible после
+              нажатия мышью браузер не даёт — отметки не было бы видно вовсе --}}
+        <span
+          class="rounded-sm peer-focus:outline-2 peer-focus:outline-offset-2
+            peer-focus:outline-clay"
+        >
+          <span x-show="value < {{this}}" class="flex text-border"
+            >{{> icon ../empty name="star" class="size-5"}}</span
+          >
+          <span x-show="value >= {{this}}" x-cloak class="flex text-warning"
+            >{{> icon ../empty name="star" class="size-5" filled=true}}</span
+          >
+        </span>
+      </label>
+    {{/each}}
+
+    <span
+      class="ml-2 text-small text-charcoal/70 tabular-nums"
+      x-show="value > 0"
+      x-cloak
+      data-label="{{t "reviews.ratingValue" rating="{rating}"}}"
+      x-text="$el.dataset.label.replace('{rating}', () => value)"
+    ></span>
+  </div>
+
+  <p id="{{name}}-message" class="flex min-h-6 text-small">
+    {{> field-message empty live=true name=name}}
+  </p>
+</fieldset>

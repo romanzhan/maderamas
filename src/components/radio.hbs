@@ -1,0 +1,18 @@
+{{!-- Радио (компоненты.md ч. 2): выбор строго один, стрелки ходят по группе — это даёт
+      нативный input с общим name. Отрисовка своя, область нажатия не меньше 44. --}}
+<label class="flex min-h-11 items-start gap-3
+  {{#if disabled}}cursor-default opacity-45{{else}}cursor-pointer{{/if}}">
+  <span class="relative mt-1 flex size-6 shrink-0 items-center justify-center lg:size-5">
+    <input
+      type="radio"
+      name="{{name}}"
+      value="{{value}}"
+      {{#if checked}}checked{{/if}}
+      {{#if disabled}}disabled{{/if}}
+      class="peer size-full appearance-none rounded-full border border-border bg-sand
+        checked:border-clay disabled:cursor-default"
+    />
+    <span class="pointer-events-none absolute size-3 rounded-full bg-clay opacity-0 peer-checked:opacity-100 lg:size-2"></span>
+  </span>
+  <span class="text-body">{{t label}}</span>
+</label>

@@ -1,0 +1,121 @@
+{{!-- Живой поиск (сложные-узлы.md п. 11, состояния — состояния-экранов.md п. 4).
+      Лежит прямым потомком body: на время открытия остальные потомки получают inert —
+      это и фокус-ловушка, и скрытие фона от скринридера.
+      Разворачивается от верха шапки, а не от верха окна: открытая промо-полоса
+      остаётся видимой над панелью (решение владельца 27.08.2026).
+      Компьютер: строка поверх шапки, подсказки падают под ней. Телефон: до низа экрана.
+      Над полем стоит подпись раздела: без неё поле упиралось в самый верх панели
+      и выглядело обрубленным (замечание владельца 27.08.2026).
+      Закрытие крестиком справа от поля на всех ширинах — на телефоне раньше стояла
+      стрелка возврата слева, и она читалась как переход на другую страницу.
+      До ввода показываются категории — популярных запросов у магазина ещё нет
+      (решение владельца 27.08.2026).
+      Тело панели со всеми состояниями — отдельный блок search-results: тот же код
+      показывает состояния и в витрине. --}}
+<div x-data="searchPanel" x-cloak>
+  <div
+    x-show="open"
+    x-on:click="close()"
+    x-transition.opacity.duration.200ms
+    class="fixed inset-x-0 bottom-0 top-(--overlay-top) z-30 bg-charcoal/40"
+    aria-hidden="true"
+  ></div>
+
+  <div
+    x-show="open"
+    x-on:click="follow($event)"
+    x-on:keydown.escape.window="open && close()"
+    x-transition:enter="transition duration-200 ease-out"
+    x-transition:enter-start="-translate-y-4 opacity-0"
+    x-transition:enter-end="translate-y-0 opacity-100"
+    x-transition:leave="transition duration-200 ease-in"
+    x-transition:leave-start="translate-y-0 opacity-100"
+    x-transition:leave-end="-translate-y-4 opacity-0"
+    id="buscador"
+    data-search-panel
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="buscador-titulo"
+    class="fixed inset-x-0 bottom-0 top-(--overlay-top) z-30 flex flex-col bg-cream
+      lg:bottom-auto lg:shadow-md"
+  >
+    <div class="page-container shrink-0 pt-4 pb-3">
+      <p id="buscador-titulo" class="text-caption text-charcoal/70 uppercase">
+        {{t "nav.openSearch"}}
+      </p>
+
+      <div class="mt-2 flex items-center gap-2">
+        <form
+          action="/buscar/"
+          role="search"
+          aria-label="{{t "nav.openSearch"}}"
+          class="flex min-w-0 flex-1 items-center"
+          x-on:submit="submit($event)"
+        >
+          {{!-- Поле поиска: та же коробка, что у всех полей проекта (компоненты.md ч. 2,
+                формы-и-поля.md п. 2) — свой вид у него был бы третьим набором правил на
+                один и тот же элемент. Иконка слева и очистка справа лежат поверх поля,
+                поэтому под них оставлены отступы --}}
+          <div class="relative min-w-0 flex-1">
+            <span
+              class="pointer-events-none absolute inset-y-0 left-4 flex items-center
+                text-charcoal/70"
+            >{{> icon empty name="search" class="size-5"}}</span>
+
+            <input
+              x-ref="first"
+              x-model="query"
+              x-on:input="onInput()"
+              x-on:keydown.arrow-down.prevent="move(1)"
+              x-on:keydown.arrow-up.prevent="move(-1)"
+              x-bind:aria-expanded="count > 0"
+              x-bind:aria-activedescendant="activeId"
+              type="search"
+              name="q"
+              role="combobox"
+              aria-controls="buscador-resultados"
+              aria-autocomplete="list"
+              autocomplete="off"
+              autocapitalize="off"
+              spellcheck="false"
+              enterkeyhint="search"
+              aria-label="{{t "search.placeholder"}}"
+              placeholder="{{t "search.placeholder"}}"
+              class="{{> field-box empty}} pr-12 pl-11"
+            />
+
+            {{!-- Место справа одно на двоих: пока идёт поиск, очищать нечего --}}
+            <span
+              x-show="searching || status === 'loading'"
+              class="pointer-events-none absolute inset-y-0 right-4 flex items-center
+                text-charcoal/70"
+            >{{> icon empty name="loader-circle" class="size-5 animate-spin"}}</span>
+
+            <button
+              type="button"
+              x-show="query && !(searching || status === 'loading')"
+              x-on:click="clear()"
+              class="absolute inset-y-0 right-0 flex w-12 items-center justify-center
+                rounded-r-md text-charcoal/70 hover:text-charcoal"
+            >
+              <span class="sr-only">{{t "search.clear"}}</span>
+              {{> icon empty name="x" class="size-5"}}
+            </button>
+          </div>
+        </form>
+
+        <button
+          type="button"
+          x-on:click="close()"
+          class="-mr-3 flex size-12 shrink-0 items-center justify-center rounded-lg
+            hover:bg-sand-hover"
+        >
+          <span class="sr-only">{{t "nav.closeSearch"}}</span>
+          {{> icon empty name="x" class="size-6"}}
+        </button>
+      </div>
+    </div>
+
+    {{> search-results id="buscador"}}
+  </div>
+</div>

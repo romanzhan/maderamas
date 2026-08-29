@@ -1,0 +1,20 @@
+{{!-- Подбор по возрасту и задаче (страницы.md §1). Отвечает на «какой мне нужен»
+      лучше, чем ряд из двух категорий: покупатель думает возрастом ребёнка, а не
+      устройством каталога. Адреса и цены плиток приходят из самих товаров.
+      Три плитки — три промо-тона: это второй цветной ряд страницы (визуальная-система §4),
+      и он же отделяет ленту товаров от ряда плиток над ней. --}}
+<section class="bg-sand py-12 lg:py-20">
+  <div class="page-container">
+    <h2 class="font-display text-h2 lg:text-h2-lg">{{t "home.pickerTitle"}}</h2>
+
+    <div class="mt-6 grid gap-4 sm:grid-cols-3 lg:mt-8 lg:gap-6">
+      {{#each home.picker}}
+        {{> tile ../empty href=href imageId=image price=price priceFrom=priceFrom
+            blue=blue green=green yellow=yellow pink=pink onDark=onDark
+            imageAlt=(t (concat "home.picker" key "Title"))
+            title=(t (concat "home.picker" key "Title"))
+            text=(t (concat "home.picker" key "Text"))}}
+      {{/each}}
+    </div>
+  </div>
+</section>

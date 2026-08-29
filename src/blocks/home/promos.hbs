@@ -1,0 +1,23 @@
+{{!-- Промо-плитки (страницы.md §1, блок 2). Замена тонкой полосе доверия: рядом
+      с огромным героем и тёмным разбором флагмана она читалась рудиментом
+      (замечание владельца 27.08.2026). Четыре ярких входа — по референсу владельца.
+      Скидок среди них нет намеренно: акций у магазина сейчас нет, а выдуманная
+      скидка в Аргентине это нарушение (seo.md п. 8). Появится настоящая — станет
+      пятой плиткой или заменит любую. --}}
+{{!-- Отступ снизу срезан: следующая секция того же цвета, и вместе они читаются
+      одним блоком, а не двумя (замечание владельца 27.08.2026) --}}
+<section class="page-container pt-8 pb-2 lg:pt-12 lg:pb-4">
+  {{!-- По две в ряд уже на телефоне (решение владельца 27.08.2026): в один столбец
+        четыре плитки уводили первый экран далеко вниз --}}
+  <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
+    {{> promo-tile empty blue=true href=nav.catalogHref
+        title=(t "home.promoSillasTitle")
+        text=(t "home.promoSillasText" price=(money home.cheapestSilla))}}
+    {{> promo-tile empty pink=true href=nav.accesoriosHref
+        title=(t "home.promoAccesoriosTitle") text=(t "home.promoAccesoriosText")}}
+    {{> promo-tile empty yellow=true href="/envios-y-pagos/"
+        title=(t "home.promoEnvioTitle") text=(t "home.promoEnvioText")}}
+    {{> promo-tile empty green=true href="/nosotros/"
+        title=(t "home.promoTallerTitle") text=(t "home.promoTallerText")}}
+  </div>
+</section>

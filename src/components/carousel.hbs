@@ -1,0 +1,92 @@
+{{!-- Карусель (сложные-узлы.md п. 13а). Обёртка одна на все ленты страницы: товары,
+      отзывы, статьи, живые фото. Слайды передаются блоком вызова.
+      Обязательные: title. Опции: id (якорь секции), subtitle; linkHref + linkLabel («смотреть все») —
+      ссылка появляется сразу в двух местах: заголовок секции становится кликабельным
+      и в конец ленты встаёт карточка-вход; linkExternal (внешний адрес),
+      onSand (секция стоит на песочном фоне — карточка-вход становится кремовой).
+
+      Лента живёт внутри полей страницы и за край экрана не выходит (решение владельца
+      27.08.2026): карточка, обрезанная краем экрана, читается браком, а не подсказкой.
+      Сколько карточек в ряду — задаёт скрипт по ширине: четыре на компьютере,
+      меньше на узких. Управление: стрелки в строке заголовка, точки под лентой. --}}
+<section {{#if id}}id="{{id}}"{{/if}} class="{{sectionClass}}">
+  <div class="page-container">
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      <div class="flex min-w-0 flex-col gap-2">
+        {{#if linkHref}}
+          <h2 class="font-display text-h2 lg:text-h2-lg">
+            <a
+              href="{{linkHref}}"
+              {{#if linkExternal}}target="_blank" rel="noopener"{{/if}}
+              class="inline-flex items-center gap-2 transition-colors duration-150
+                hover:text-clay"
+            >{{title}}{{> icon empty name="arrow-right" class="size-6"}}</a>
+          </h2>
+        {{else}}
+          <h2 class="font-display text-h2 lg:text-h2-lg">{{title}}</h2>
+        {{/if}}
+        {{#if subtitle}}<p class="text-small text-charcoal/70">{{subtitle}}</p>{{/if}}
+      </div>
+
+      <div class="flex items-center gap-4">
+        <div class="hidden items-center gap-2 md:flex">
+          <button
+            type="button"
+            data-carousel-prev
+            class="flex size-11 items-center justify-center rounded-full border border-charcoal
+              text-charcoal transition-colors duration-150 hover:bg-sand-hover
+              active:bg-sand-active disabled:pointer-events-none disabled:opacity-45"
+          >
+            <span class="sr-only">{{t "common.prev"}}</span>
+            {{> icon empty name="chevron-left" class="size-5"}}
+          </button>
+          <button
+            type="button"
+            data-carousel-next
+            class="flex size-11 items-center justify-center rounded-full border border-charcoal
+              text-charcoal transition-colors duration-150 hover:bg-sand-hover
+              active:bg-sand-active disabled:pointer-events-none disabled:opacity-45"
+          >
+            <span class="sr-only">{{t "common.next"}}</span>
+            {{> icon empty name="chevron-right" class="size-5"}}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    {{!-- data-carousel-root: по нему скрипт находит ленту и её управление --}}
+    <div class="mt-6 lg:mt-8" data-carousel-root {{> carousel-labels empty}}>
+      {{!-- Поля ленты и высота слайдов заданы в main.css: классы здесь перебиваются
+            стилями Swiper --}}
+      <div class="swiper">
+        <div class="swiper-wrapper">
+          {{> @partial-block}}
+
+          {{#if linkHref}}
+            {{!-- Вход в раздел — последней карточкой ленты: он встречает покупателя
+                  ровно тогда, когда тот долистал (решение владельца 27.08.2026) --}}
+            <div class="swiper-slide">
+              <a
+                href="{{linkHref}}"
+                {{#if linkExternal}}target="_blank" rel="noopener"{{/if}}
+                class="flex h-full min-h-48 flex-col items-center justify-center gap-4
+                  rounded-xl border border-line p-6 text-center transition-colors duration-150
+                  {{#if onSand}}bg-cream hover:bg-sand{{else}}bg-sand hover:bg-sand-hover{{/if}}"
+              >
+                <span
+                  class="flex size-14 items-center justify-center rounded-full
+                    border border-charcoal text-charcoal"
+                >
+                  {{> icon empty name="arrow-right" class="size-6"}}
+                </span>
+                <span class="text-h4 lg:text-h4-lg">{{t linkLabel}}</span>
+              </a>
+            </div>
+          {{/if}}
+        </div>
+      </div>
+
+      <div class="mt-8 flex justify-center sm:mt-10" data-carousel-dots></div>
+    </div>
+  </div>
+</section>

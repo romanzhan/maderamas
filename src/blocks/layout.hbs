@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="es-AR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {{!-- Заголовок, описание, canonical и robots считает `scripts/seo-meta.js` по типу
+          страницы (seo.md §2). Страница может задать заголовок сама — так делает
+          только служебная витрина компонентов, у неё своего типа нет --}}
+    <title>{{#if title}}{{title}}{{else}}{{seo.title}}{{/if}}</title>
+    {{#if seo.description}}
+      <meta name="description" content="{{seo.description}}" />
+    {{/if}}
+    {{#if seo.canonical}}<link rel="canonical" href="{{seo.canonical}}" />{{/if}}
+    {{#if seo.noindex}}<meta name="robots" content="noindex" />{{/if}}
+
+    {{!-- Превью для WhatsApp и соцсетей стоит в начале головы: парсеры читают только
+          первые сотни килобайт документа (seo.md п. 7) --}}
+    {{#if seo.title}}
+      <meta property="og:site_name" content="{{seo.siteName}}" />
+      <meta property="og:locale" content="es_AR" />
+      <meta property="og:type" content="{{seo.ogType}}" />
+      <meta property="og:title" content="{{seo.title}}" />
+      {{#if seo.description}}
+        <meta property="og:description" content="{{seo.description}}" />
+      {{/if}}
+      {{#if seo.canonical}}<meta property="og:url" content="{{seo.canonical}}" />{{/if}}
+      {{#if seo.og}}
+        <meta property="og:image" content="{{seo.og.url}}" />
+        <meta property="og:image:width" content="{{seo.og.width}}" />
+        <meta property="og:image:height" content="{{seo.og.height}}" />
+        <meta name="twitter:card" content="summary_large_image" />
+      {{/if}}
+    {{/if}}
+
+    {{!-- Значки сайта: собираются из знака бренда скриптом `npm run brand` (seo.md п. 9) --}}
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600&family=Onest:wght@600;700;800&display=swap"
+    />
+    <link rel="stylesheet" href="{{assets.styles}}" />
+    {{!-- Единственный скрипт в <head> и единственный неотложенный: закрытую полосу
+          объявления нужно спрятать до первой отрисовки, иначе она мигнёт и сдвинет
+          страницу (сложные-узлы.md п. 13 и 14) --}}
+    <script>
+      try {
+        if (localStorage.getItem('madera.announcement') === '{{announcementId}}')
+          document.documentElement.classList.add('announcement-closed')
+      } catch {}
+    </script>
+    <script type="module" src="{{assets.script}}"></script>
+
+    {{!-- Микроразметка (seo.md §4 и §6). Блоки собраны на сборке и вставляются как есть;
+          размечается только то, что на странице видно. Крошки размечены на самом списке
+          крошек, поэтому их здесь нет --}}
+    {{#each seo.jsonLd}}
+      <script type="application/ld+json">{{{this}}}</script>
+    {{/each}}
+  </head>
+  {{!-- x-data на body — область видимости Alpine для всей страницы. Без неё привязки,
+        которым не нужен свой компонент (кнопка в карточке товара, сердце избранного,
+        фильтры каталога, счётчики), просто не обрабатываются: Alpine обходит дерево
+        только от узлов с x-data. Поймано 28.08.2026 — фильтры каталога не работали
+        вовсе, хотя и разметка, и store были на месте. --}}
+  <body class="flex min-h-dvh flex-col" x-data data-cart-max="{{site.cart.maxQtyPerItem}}">
+    {{{sprite}}}
+    <a href="#contenido" class="skip-link rounded-lg bg-cream px-4 py-3 shadow-md"
+      >{{t "common.skipToContent"}}</a
+    >
+    {{!-- bare — чекаут (страницы.md §7): промо-полоса, меню, поиск, корзина-панель
+          и плавающая кнопка скрыты, шапка упрощена. Отвлекающего на чекауте быть
+          не должно, а уводить с него ссылками — тем более --}}
+    {{#unless bare}}{{> announcement}}{{/unless}}
+    {{> header}}
+    {{> offline-notice}}
+    {{> @partial-block}}
+    {{> footer}}
+    {{> toast}}
+    {{#unless bare}}
+      {{> cart-panel}}
+      {{> whatsapp-button}}
+      {{> mobile-menu}}
+      {{> search}}
+      {{> notify-modal}}
+    {{/unless}}
+  </body>
+</html>

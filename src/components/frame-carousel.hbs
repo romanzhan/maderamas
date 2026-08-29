@@ -1,0 +1,28 @@
+{{!-- Одиночный кадр с листанием (сложные-узлы.md п. 13а, вид `data-carousel-single`).
+      В кадре всегда одно место целиком: так показывают инфографику регулировки
+      на главной и на странице «как это работает» — раньше эта разметка была написана
+      в двух местах и уже начала расходиться.
+      Стрелок нет (решение владельца 28.08.2026): листают пальцем, а точки лежат прямо
+      на кадре — под ними тёмная подложка, иначе на светлом снимке их не видно.
+      **Колонке сетки, в которой стоит этот компонент, обязателен `min-w-0`** — своего
+      здесь мало: растягивается именно колонка. Ошибка повторялась дважды (28.08.2026),
+      и выглядит она как «бесконечная высота страницы». --}}
+<div class="min-w-0" data-carousel-root data-carousel-single {{> carousel-labels empty photos=true}}>
+  <div class="swiper overflow-hidden rounded-2xl bg-sand">
+    <div class="swiper-wrapper">
+      {{#each frames}}
+        <div class="swiper-slide">
+          {{> picture ../empty id=this alt=../alt sizes=../sizes
+              class="aspect-square w-full object-cover"}}
+        </div>
+      {{/each}}
+    </div>
+
+    <div class="pointer-events-none absolute inset-x-0 bottom-4 z-10 flex justify-center">
+      <div
+        class="pointer-events-auto flex items-center rounded-full bg-charcoal/40 px-2 py-1"
+        data-carousel-dots
+      ></div>
+    </div>
+  </div>
+</div>

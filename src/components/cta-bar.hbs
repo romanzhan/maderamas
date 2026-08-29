@@ -1,0 +1,21 @@
+{{!-- Закреплённая CTA-полоса телефона (компоненты.md 1.4). Одна оболочка на страницу
+      товара и на чекаут: высота, безопасная зона, слой и появление у них общие, а
+      содержимое разное и приходит блоком вызова.
+      Обязательные: show — выражение Alpine, когда полосу видно (на чекауте она видна
+      всегда, на странице товара — когда своя кнопка уехала вверх).
+      Живёт только до 1024: выше места хватает и без неё. --}}
+<div
+  x-show="{{show}}"
+  x-cloak
+  x-transition:enter="transition duration-200 ease-out"
+  x-transition:enter-start="translate-y-full"
+  x-transition:enter-end="translate-y-0"
+  x-transition:leave="transition duration-200 ease-in"
+  x-transition:leave-start="translate-y-0"
+  x-transition:leave-end="translate-y-full"
+  class="fixed inset-x-0 bottom-0 z-10 border-t border-line bg-cream lg:hidden"
+>
+  <div class="page-container pb-safe flex min-h-(--cta-h) items-center gap-4 py-2">
+    {{> @partial-block}}
+  </div>
+</div>

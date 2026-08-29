@@ -1,0 +1,31 @@
+{{!-- Итог заказа (компоненты.md 3.10). Один компонент на панель корзины, страницу
+      корзины и чекаут; суммы — только через формат цены.
+      До чекаута доставка не считается: тарифов в статике не выдумываем
+      (состояния-экранов.md п. 6). На самом чекауте писать «se calcula en el checkout»
+      уже нельзя — покупатель на нём и стоит, поэтому там строка показывает настоящую
+      стоимость, а бесплатная доставка называется бесплатной.
+      Опция: final — итог на чекауте; shipping — стоимость доставки из настроек. --}}
+<div class="flex flex-col gap-1">
+  <div class="flex items-baseline justify-between gap-4">
+    <span class="text-small text-charcoal/70">{{t "cart.subtotal"}}</span>
+    {{> price empty compact=true value=0 bind="fmt(subtotal)"}}
+  </div>
+
+  <div class="flex items-baseline justify-between gap-4">
+    <span class="text-small text-charcoal/70">{{t "cart.shipping"}}</span>
+    {{#if final}}
+      {{#if shipping}}
+        <span class="text-small tabular-nums">{{money shipping}}</span>
+      {{else}}
+        <span class="text-small text-success">{{t "badge.freeShipping"}}</span>
+      {{/if}}
+    {{else}}
+      <span class="text-small text-charcoal/70">{{t "cart.shippingAtCheckout"}}</span>
+    {{/if}}
+  </div>
+
+  <div class="mt-1 flex items-baseline justify-between gap-4 border-t border-line pt-2">
+    <span class="text-body font-medium">{{t "cart.total"}}</span>
+    {{> price empty value=0 bind="fmt(total)"}}
+  </div>
+</div>

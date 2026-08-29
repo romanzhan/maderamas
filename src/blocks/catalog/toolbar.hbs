@@ -1,0 +1,62 @@
+{{!-- Панель управления каталогом (страницы.md §2, механика — сложные-узлы.md п. 4).
+      Фильтры строкой сверху, а не колонкой слева (решение 27.08.2026): фильтра всего
+      два, и ради них отдельная колонка отняла бы у сетки четверть ширины, а сама
+      выглядела бы пустой. Многоэтажной машинерии здесь не строим (принцип 4).
+      Телефон: кнопка «Filtrar (n)» открывает нижнюю панель, рядом сортировка. --}}
+<div class="mt-6 flex flex-col gap-4 lg:mt-8">
+  <div class="flex items-center gap-3">
+    {{#if catalog.hasFilters}}
+      <div class="flex-1 lg:hidden">
+        {{> button empty secondary=true sizeMd=true fullWidth=true
+            icon="sliders-horizontal" label="catalog.filter"
+            bindLabel="$store.catalog.filterLabel" controls="filtros-catalogo"
+            expanded="$store.overlay.is('filtros')"
+            onClick="$store.overlay.open('filtros')"}}
+      </div>
+
+      {{!-- Компьютер: значения фильтра стоят прямо в строке, открывать нечего --}}
+      <div class="hidden items-center gap-3 lg:flex">
+        {{#if catalog.woodColors.length}}
+          <span class="text-small font-medium">{{t "catalog.filterWood"}}</span>
+          <div class="flex flex-wrap items-center gap-4">
+            {{#each catalog.woodColors}}
+              {{> checkbox ../empty value=id xModel="$store.catalog.colors"
+                  onChange="$store.catalog.commit()" swatch=swatch text=name}}
+            {{/each}}
+          </div>
+        {{/if}}
+
+        {{#if catalog.hasStockFilter}}
+          {{> checkbox empty xModel="$store.catalog.inStockOnly"
+              onChange="$store.catalog.commit()" label="catalog.filterInStock"}}
+        {{/if}}
+      </div>
+    {{/if}}
+
+    {{!-- Сортировка есть всегда: она не фильтр и работает даже без них --}}
+    {{!-- Список сортировки отдаёт значение обычным change — он всплывает сюда
+          из спрятанного нативного select (компоненты.md ч. 2) --}}
+    <div
+      class="w-44 shrink-0 lg:ml-auto"
+      x-on:change="$store.catalog.setSort($event.target.value)"
+    >
+      {{> select empty compact=true id="orden" name="orden" label="catalog.sortBy"
+          value="relevancia" options=catalog.sortOptions}}
+    </div>
+  </div>
+
+  {{#if catalog.hasFilters}}
+    {{!-- Строка сброса живёт всегда, но пустует: без неё список прыгал бы вверх-вниз
+          при первом применении фильтра (сложные-узлы.md п. 4 — «без прыжков») --}}
+    <div class="flex min-h-11 items-center">
+      <button
+        type="button"
+        x-show="$store.catalog.active"
+        x-cloak
+        x-on:click="$store.catalog.clear()"
+        class="text-small font-medium text-clay transition-colors duration-150
+          hover:text-clay-hover"
+      >{{t "catalog.clearFilters"}}</button>
+    </div>
+  {{/if}}
+</div>

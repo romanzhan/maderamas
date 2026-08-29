@@ -1,0 +1,78 @@
+{{!-- Тело корзины: список строк, итог и тост отмены (состояния-экранов.md п. 6).
+      Один блок на панель и на страницу — состояние у них общее, и расходиться им
+      нельзя. panel — раскладка выдвижной панели: середина прокручивается, итог
+      закреплён внизу. --}}
+<div
+  class="flex min-h-0 flex-1 flex-col"
+  x-data="cartView({{site.cart.maxQtyPerItem}})"
+  data-t-removed="{{t "cart.removed"}}"
+  data-t-undo="{{t "cart.undo"}}"
+>
+  {{!-- До ответа каталога список не рисуем: пустая корзина и «ещё не загрузилось» —
+        разные вещи, и перепутать их нельзя --}}
+  <div x-show="!ready" class="{{#if panel}}page-container{{/if}} py-10 text-center">
+    <span class="inline-flex text-charcoal/70">
+      {{> icon empty name="loader-circle" class="size-6 animate-spin"}}
+    </span>
+  </div>
+
+  {{!-- Сеть подвела: пустая корзина и «не смогли загрузить» — разные вещи,
+        и подменять одно другим нельзя (состояния-экранов.md п. 0) --}}
+  <template x-if="failed">
+    <div class="{{#if panel}}page-container{{/if}} py-10 text-center">
+      <p class="max-w-prose text-lead">{{t "errors.network"}}</p>
+      <div class="mt-4 flex justify-center">
+        {{> button empty secondary=true sizeMd=true label="common.retry" onClick="load()"}}
+      </div>
+    </div>
+  </template>
+
+  <template x-if="ready && !failed && !lines.length">
+    <div class="{{#if panel}}page-container{{/if}} py-10 text-center">
+      <span class="inline-flex text-charcoal/45">
+        {{> icon empty name="shopping-bag" class="size-10"}}
+      </span>
+      <p class="mt-3 text-lead">{{t "cart.empty"}}</p>
+      <div class="mt-4 flex justify-center">
+        {{> button empty primary=true sizeMd=true label="cart.emptyCta" href=nav.catalogHref}}
+      </div>
+    </div>
+  </template>
+
+  <template x-if="ready && !failed && lines.length">
+    <div
+      class="flex min-h-0 flex-1 flex-col
+        {{#unless panel}}gap-8 lg:flex-row lg:items-start lg:gap-12{{/unless}}"
+    >
+      <ul
+        class="{{#if panel}}page-container scrollbar-soft min-h-0 flex-1 overflow-y-auto
+          overscroll-contain{{else}}min-w-0 flex-1{{/if}}"
+      >
+        <template
+          x-for="line in lines"
+          x-bind:key="line.productId + '--' + (line.variantId ?? '')"
+        >
+          {{> cart-line}}
+        </template>
+      </ul>
+
+      <div
+        class="{{#if panel}}page-container pb-safe shrink-0 border-t border-line pt-3{{/if}}
+          {{#unless panel}}w-full shrink-0 rounded-xl border border-line bg-cream p-6
+          lg:w-80{{/unless}}"
+      >
+        {{> order-summary}}
+
+        <div class="mt-3 flex flex-col gap-2">
+          {{> button empty primary=true sizeLg=true fullWidth=true label="cart.checkout"
+              href="/checkout/"}}
+          {{#if panel}}
+            {{> button empty tertiary=true sizeSm=true fullWidth=true label="cart.viewCart"
+                href="/carrito/"}}
+          {{/if}}
+        </div>
+      </div>
+    </div>
+  </template>
+
+</div>

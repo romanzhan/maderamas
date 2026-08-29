@@ -1,0 +1,42 @@
+{{!-- Контакты одной строкой: WhatsApp, почта, Instagram. Области нажатия 48 —
+      иконки соцсетей в частых нарушителях (стандарты-размеров.md п. 3).
+      Значки в ряду одного размера — 20, как велит шкала. Сплошной брендовый значок
+      и контурный значок набора рядом выглядят по-разному, и размером это не лечится:
+      у одного есть линии, у другого их нет вовсе. Владелец посмотрел оба варианта
+      и выбрал этот: разные значки лучше, чем ряд без почты (решение 28.08.2026).
+      Пустой контекст (стек-и-библиотеки.md п. 3) здесь не передаётся намеренно:
+      блоку нужны адреса каналов из контекста страницы, а перехватывать чужой флаг
+      ему нечем — ветвлений внутри нет вовсе. --}}
+<ul class="flex items-center gap-2">
+  <li>
+    <a
+      href="{{links.whatsapp}}"
+      target="_blank"
+      rel="noopener"
+      class="flex size-12 items-center justify-center rounded-lg {{hover}}"
+    >
+      <span class="sr-only">{{t "whatsapp.cta"}}</span>
+      {{> icon empty name="whatsapp" class="size-5" filled=true}}
+    </a>
+  </li>
+  <li>
+    <a
+      href="{{links.email}}"
+      class="flex size-12 items-center justify-center rounded-lg {{hover}}"
+    >
+      <span class="sr-only">{{t "social.email"}}</span>
+      {{> icon empty name="mail" class="size-5"}}
+    </a>
+  </li>
+  <li>
+    <a
+      href="{{links.instagram}}"
+      target="_blank"
+      rel="noopener"
+      class="flex size-12 items-center justify-center rounded-lg {{hover}}"
+    >
+      <span class="sr-only">{{t "social.instagram"}}</span>
+      {{> icon empty name="instagram" class="size-5" filled=true}}
+    </a>
+  </li>
+</ul>

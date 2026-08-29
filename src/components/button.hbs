@@ -1,0 +1,63 @@
+{{!-- Кнопка (компоненты.md 1.1).
+      Вид:     primary | secondary | tertiary | iconOnly | promo (жёлтая, только
+               вместе с onDark — она бывает лишь на промо-поверхности)
+      Размер:  sizeSm | sizeMd | sizeLg   (у iconOnly размер один)
+      Опции:   icon, iconRight (имя из спрайта), fullWidth, onDark, disabled, loading,
+               href — тогда это переход, и элемент становится ссылкой (компоненты.md 1.1:
+               «Кнопка = <button>, переход = <a> — не путать»),
+               onClick — выражение Alpine для нажатия (у ссылки его не бывает).
+      label и aria — ключи словаря; text — готовая подпись (её отдают данные, и второй
+      раз переводить её нечем); bindLabel — выражение Alpine вместо подписи, когда
+      в ней живое число («Filtrar (3)»); controls + expanded — связь с панелью, которую
+      кнопка открывает; submit — кнопка отправки формы (тогда это <button type="submit">,
+      и форму отправляет она, а не обработчик нажатия); bindLoading — выражение Alpine
+      вместо флага загрузки: у формы «отправляется» живое состояние.
+      Классы обоих видов — в button-class. --}}
+{{#if href}}
+  <a href="{{href}}" class="{{> button-class this}}" {{#if aria}}aria-label="{{t aria}}"{{/if}}>
+    <span class="inline-flex items-center gap-2">
+      {{#if icon}}{{> icon empty name=icon class="size-5"}}{{/if}}
+      <span {{#if bindLabel}}x-text="{{bindLabel}}"{{/if}}
+        >{{#if text}}{{text}}{{else}}{{t label}}{{/if}}</span>
+      {{#if iconRight}}{{> icon empty name=iconRight class="size-5"}}{{/if}}
+    </span>
+  </a>
+{{else}}
+  <button
+    type="{{#if submit}}submit{{else}}button{{/if}}"
+    {{#if onClick}}x-on:click="{{onClick}}"{{/if}}
+    {{#if controls}}aria-controls="{{controls}}"{{/if}}
+    {{#if expanded}}x-bind:aria-expanded="{{expanded}}"{{/if}}
+    {{#if loading}}disabled aria-busy="true"{{else}}{{#if disabled}}disabled{{/if}}{{/if}}
+    {{#if bindLoading}}
+      x-bind:disabled="{{bindLoading}}" x-bind:aria-busy="{{bindLoading}}"
+    {{/if}}
+    {{#if aria}}aria-label="{{t aria}}"{{/if}}
+    class="{{> button-class this}}"
+  >
+    {{#if iconOnly}}
+      {{> icon empty name=icon class="size-5"}}
+    {{else}}
+      {{!-- При загрузке текст остаётся на месте, но невидим: ширина кнопки не прыгает --}}
+      <span
+        class="inline-flex items-center gap-2 {{#if loading}}invisible{{/if}}"
+        {{#if bindLoading}}x-bind:class="{{bindLoading}} && 'invisible'"{{/if}}
+      >
+        {{#if icon}}{{> icon empty name=icon class="size-5"}}{{/if}}
+        <span {{#if bindLabel}}x-text="{{bindLabel}}"{{/if}}
+          >{{#if text}}{{text}}{{else}}{{t label}}{{/if}}</span>
+        {{#if iconRight}}{{> icon empty name=iconRight class="size-5"}}{{/if}}
+      </span>
+    {{/if}}
+    {{#if loading}}
+      <span class="absolute inline-flex">
+        {{> icon empty name="loader-circle" class="size-5 animate-spin"}}
+      </span>
+    {{/if}}
+    {{#if bindLoading}}
+      <span x-show="{{bindLoading}}" x-cloak class="absolute inline-flex">
+        {{> icon empty name="loader-circle" class="size-5 animate-spin"}}
+      </span>
+    {{/if}}
+  </button>
+{{/if}}

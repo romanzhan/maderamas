@@ -1,0 +1,53 @@
+{{!-- Картинка из манифеста конвейера (картинки.md §3). Обязательные: id, alt.
+      Опции: sizes (по умолчанию во всю ширину), class, ratio — класс пропорций для
+      заглушки, когда фото ещё не прислали; priority — для LCP-картинки
+      первого экрана: она грузится не лениво и с высоким приоритетом;
+      idMid и idWide — другие обрезки того же снимка: idMid берётся с 640, idWide с 1024
+      (картинки.md §3). Порядок источников от широкого к узкому — браузер берёт первый
+      подошедший.
+      Размеры проставлены атрибутами, поэтому место резервируется и ничего не прыгает.
+      Нет файла в манифесте — вместо картинки встаёт заглушка бренда (компоненты.md 6.4). --}}
+{{#with (image id)}}
+  {{!-- picture ничего не рисует и своей коробки не создаёт (display: contents),
+        поэтому классы на img работают так же, как без обёртки --}}
+  <picture class="contents">
+    {{#if ../idWide}}
+      {{#with (image ../idWide)}}
+        <source
+          media="(min-width: 64rem)"
+          srcset="{{srcset}}"
+          sizes="{{#if ../../sizes}}{{../../sizes}}{{else}}100vw{{/if}}"
+          width="{{width}}"
+          height="{{height}}"
+        />
+      {{/with}}
+    {{/if}}
+
+    {{#if ../idMid}}
+      {{#with (image ../idMid)}}
+        <source
+          media="(min-width: 40rem)"
+          srcset="{{srcset}}"
+          sizes="{{#if ../../sizes}}{{../../sizes}}{{else}}100vw{{/if}}"
+          width="{{width}}"
+          height="{{height}}"
+        />
+      {{/with}}
+    {{/if}}
+
+    <img
+      src="{{src}}"
+      srcset="{{srcset}}"
+      sizes="{{#if ../sizes}}{{../sizes}}{{else}}100vw{{/if}}"
+      width="{{width}}"
+      height="{{height}}"
+      alt="{{../alt}}"
+      class="{{../class}}"
+      decoding="async"
+      {{#if ../priority}}fetchpriority="high"{{else}}loading="lazy"{{/if}}
+    />
+  </picture>
+{{else}}
+  {{!-- В else-ветке with контекст не менялся, поэтому ratio берётся без «../» --}}
+  {{> image-placeholder empty ratio=ratio}}
+{{/with}}

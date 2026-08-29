@@ -1,0 +1,26 @@
+{{!-- Строка поиска обычной формой: отправка ведёт на /buscar/?q=… и работает без
+      JavaScript. Это не панель живого поиска (сложные-узлы.md п. 11) — та живёт
+      в шапке; здесь строка нужна там, где панели нет: на странице результатов
+      и на 404.
+      Коробка и фокус — те же, что у обычного поля: общий список классов в field-box.
+      Обязательные: id. Опции: bind — выражение Alpine для значения. --}}
+<form action="/buscar/" method="get" class="flex w-full max-w-prose gap-3">
+  <label for="{{id}}" class="sr-only">{{t "search.pageLabel"}}</label>
+
+  <div class="relative min-w-0 flex-1">
+    <span class="absolute inset-y-0 left-4 flex items-center text-charcoal/70">
+      {{> icon empty name="search" class="size-5"}}
+    </span>
+    <input
+      id="{{id}}"
+      type="search"
+      name="q"
+      autocomplete="off"
+      placeholder="{{t "search.placeholder"}}"
+      {{#if bind}}x-model="{{bind}}"{{/if}}
+      class="{{> field-box this}} pr-4 pl-11"
+    />
+  </div>
+
+  {{> button empty primary=true sizeMd=true submit=true label="search.submit"}}
+</form>

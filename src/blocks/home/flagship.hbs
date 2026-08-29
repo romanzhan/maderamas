@@ -1,0 +1,52 @@
+{{!-- Разбор флагманской модели (страницы.md §1, блок 3). Отвечает на «правда ли надолго»:
+      характеристики не спрятаны в таблицу внизу страницы товара, а показаны рядом с фото.
+      Единственная тёмная секция страницы (визуальная-система.md §4: не больше одной,
+      не считая подвала) — она же ломает ритм «заголовок → сетка» и выделяет главный товар.
+      Товар выбирает не шаблон, а page-context. --}}
+{{#with home.flagship}}
+  <section class="surface-dark bg-walnut text-cream">
+    <div class="page-container py-12 lg:py-20">
+      <div class="grid items-center gap-8 lg:grid-cols-2 lg:gap-16">
+        <div class="overflow-hidden rounded-2xl">
+          {{> picture ../empty id=imageId alt=name
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              class="aspect-square w-full object-cover"}}
+        </div>
+
+        <div class="flex flex-col items-start gap-4 lg:gap-6">
+          <p class="text-caption text-cream/75 uppercase">{{t "home.flagshipEyebrow"}}</p>
+          <h2 class="font-display text-h2 lg:text-h1-lg">{{name}}</h2>
+          <p class="max-w-prose text-lead text-cream/75">{{shortDescription}}</p>
+
+          <ul class="grid w-full gap-4 sm:grid-cols-2">
+            <li>
+              {{> feature-item ../empty compact=true onDark=true icon="baby" title="home.specAge"}}
+            </li>
+            <li>
+              {{> feature-item ../empty compact=true onDark=true icon="shield-check"
+                  title="home.specLoad"}}
+            </li>
+            <li>
+              {{> feature-item ../empty compact=true onDark=true icon="ruler"
+                  title="home.specAdjust"}}
+            </li>
+            <li>
+              {{> feature-item ../empty compact=true onDark=true icon="sparkles"
+                  title="home.specMaterial"}}
+            </li>
+          </ul>
+
+          {{!-- Кнопка и цена одной строкой: цена справа от кнопки (решение владельца
+                28.08.2026). На узком экране цена переносится под кнопку.
+                Цена на тёмном: компонент рисует её текущим цветом, а он здесь кремовый --}}
+          <div class="flex flex-wrap items-center gap-x-6 gap-y-3">
+            {{> button ../empty primary=true sizeLg=true onDark=true label="home.flagshipCta"
+                href=(productUrl this)}}
+
+            {{> price ../empty value=price large=true from=priceFrom onDark=true}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{{/with}}

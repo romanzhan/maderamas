@@ -1,0 +1,18 @@
+{{!-- Выход со страницы, где человек мог не найти ответ (компоненты.md 6.3: тупик без
+      кнопки запрещён). Стоит внизу информационных страниц, списка вопросов и статьи.
+      Своей ширины не задаёт — её даёт страница, поэтому блок годится и внутри
+      контейнера, и в секции во всю ширину. --}}
+<section class="mt-12 rounded-2xl bg-sand p-6 lg:mt-16 lg:p-10">
+  <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between lg:gap-12">
+    <div class="min-w-0">
+      <h2 class="font-display text-h3 lg:text-h3-lg">{{t "faq.helpTitle"}}</h2>
+      <p class="mt-2 max-w-prose text-charcoal/70">{{t "faq.helpText"}}</p>
+    </div>
+
+    <div class="flex shrink-0 flex-col gap-3 sm:flex-row lg:gap-4">
+      {{> button empty primary=true sizeMd=true icon="whatsapp" label="whatsapp.cta"
+          href=links.whatsapp}}
+      {{> button empty secondary=true sizeMd=true label="contact.title" href="/contacto/"}}
+    </div>
+  </div>
+</section>

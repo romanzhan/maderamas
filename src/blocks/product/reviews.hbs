@@ -1,0 +1,57 @@
+{{!-- Отзывы товара (страницы.md §3). Лентой, как отзывы на главной (решение владельца
+      27.08.2026): в сетке карточки разной длины оставляли дыры, а в ленте они одной
+      высоты и листаются пальцем.
+      Отзывы с Mercado Libre несут пометку источника и ссылку на оригинал — требование
+      Google (seo.md п. 5), поэтому микроразметку они не получают и средний рейтинг
+      из них в разметку не уходит.
+      Флаг reviews выключен — секции нет вовсе (состояния-экранов.md п. 3): это не то же,
+      что «отзывов нет». --}}
+{{#if site.features.reviews}}
+  {{#if product.reviews.length}}
+    {{#> carousel id="opiniones" sectionClass="mt-12 lg:mt-16"
+        title=(t "product.tabReviews") subtitle=(t "home.reviewsFromMl")}}
+      {{#each product.reviews}}
+        <div class="swiper-slide">{{> review-card ../empty review=this}}</div>
+      {{/each}}
+    {{/carousel}}
+  {{else}}
+    {{!-- Пустое состояние с выходом: тупик без кнопки запрещён (компоненты.md 6.3) --}}
+    <section id="opiniones" class="page-container mt-12 lg:mt-16">
+      <h2 class="font-display text-h3 lg:text-h3-lg">{{t "product.tabReviews"}}</h2>
+      <span class="mt-4 inline-flex text-charcoal/45">
+        {{> icon empty name="star" class="size-10"}}
+      </span>
+      <p class="mt-3 max-w-prose text-charcoal/70">{{t "reviews.empty"}}</p>
+      <div class="mt-4">
+        {{> button empty secondary=true sizeMd=true label="home.viewAllFem"
+            href=nav.catalogHref}}
+      </div>
+    </section>
+  {{/if}}
+
+  {{!-- Форма отзыва (страницы.md §3 п. 4, формы-и-поля.md §6). Стоит и при пустом
+        списке, и при полном: первый отзыв кто-то должен написать.
+        Отправлять пока некуда — премодерация и хранение придут с WooCommerce; форма
+        ведёт себя как остальные формы сайта и честно говорит о проверке --}}
+  <section class="page-container mt-12 lg:mt-16">
+    <h2 class="font-display text-h3 lg:text-h3-lg">{{t "reviews.formTitle"}}</h2>
+    <p class="mt-2 max-w-prose text-charcoal/70">{{t "reviews.moderation"}}</p>
+
+    <div class="mt-6">
+      {{#> form-shell submitLabel="reviews.submit" successTitle="reviews.successTitle"
+          successText="reviews.moderation" againLabel="home.viewAllFem"
+          href=nav.catalogHref}}
+        {{> rating-input empty name="calificacion" label="reviews.rating"
+            stars=ratingScale}}
+
+        {{> field empty live=true id="opinion-nombre" name="nombre" label="fields.name"
+            required=true autocomplete="name" pattern=(formPattern "nombre")
+            errorPattern="errors.nameFormat"}}
+
+        {{> textarea empty live=true id="opinion-texto" name="opinion"
+            label="reviews.text" required=true minlength=20 max=1000
+            hint="reviews.textHint"}}
+      {{/form-shell}}
+    </div>
+  </section>
+{{/if}}

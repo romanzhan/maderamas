@@ -1,0 +1,60 @@
+{{!-- Информационная страница (страницы.md §10–12, §16). Один блок на все записи
+      pages.json: доставка, возвраты, условия, приватность. Какая это страница —
+      определяет адрес, поэтому файлы страниц тонкие и одинаковые, как у категорий.
+
+      Раскладка: на компьютере слева липкий список разделов, справа текст. Одна узкая
+      колонка посреди экрана в 1440 оставляла бы пустой всю правую половину — это та
+      самая «труба с пустыми полями», которую запрещает стандарт (п. 2). На телефоне
+      списка нет: там до него дальше, чем до самих разделов.
+      Пустой раздел не рисуется вовсе (состояния-экранов.md п. 10). --}}
+<main id="contenido" class="page-container py-6 lg:py-10">
+  {{> breadcrumbs empty items=breadcrumbs.items plain=breadcrumbs.plain}}
+
+  <div class="mt-4 flex flex-col gap-4">
+    <h1 class="max-w-prose font-display text-h1 lg:text-h1-lg">{{page.heading}}</h1>
+    {{#if page.lead}}
+      <p class="max-w-prose text-lead text-charcoal/70">{{page.lead}}</p>
+    {{/if}}
+  </div>
+
+  <div class="mt-8 lg:mt-12 lg:grid lg:grid-cols-3 lg:gap-12">
+    {{#if page.sections.length}}
+      {{!-- Липкий список разделов начинается ниже шапки: величину даёт общее правило --}}
+      <nav class="hidden lg:block" aria-label="{{page.heading}}">
+        <ul class="sticky top-below-header flex flex-col">
+          {{#each page.sections}}
+            <li>
+              <a
+                href="#{{id}}"
+                class="-mx-2 flex min-h-10 items-center rounded-lg px-2 text-small
+                  text-charcoal/70 transition-colors duration-150 hover:bg-sand-hover
+                  hover:text-charcoal"
+              >{{title}}</a>
+            </li>
+          {{/each}}
+        </ul>
+      </nav>
+    {{/if}}
+
+    <div class="flex flex-col gap-10 lg:col-span-2 lg:gap-12">
+      {{> prose empty paragraphs=page.body}}
+
+      {{#each page.sections}}
+        <section id="{{id}}" class="flex flex-col gap-4">
+          <h2 class="font-display text-h2 lg:text-h2-lg">{{title}}</h2>
+          {{> prose ../empty paragraphs=body}}
+
+          {{#if items}}
+            <ul class="flex max-w-prose list-disc flex-col gap-2 pl-5 marker:text-clay">
+              {{#each items}}
+                <li>{{this}}</li>
+              {{/each}}
+            </ul>
+          {{/if}}
+        </section>
+      {{/each}}
+
+      {{> help-cta}}
+    </div>
+  </div>
+</main>

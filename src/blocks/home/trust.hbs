@@ -1,0 +1,20 @@
+{{!-- Доверие (страницы.md §1). Была тонкая строка мелким текстом — рядом с крупными
+      соседями она читалась рудиментом (замечание владельца 27.08.2026). Стала
+      полноценной секцией: крупные иконки в цветных кружках, по высоте наравне
+      с остальными. Отвечает на «а если не подойдёт» ровно перед уходом со страницы. --}}
+<section class="bg-sand py-12 lg:py-20">
+  <div class="page-container">
+    <h2 class="font-display text-h2 lg:text-h2-lg">{{t "home.trustTitle"}}</h2>
+
+    <div class="mt-6 grid gap-8 sm:grid-cols-2 lg:mt-10 lg:grid-cols-4">
+      {{> feature-item empty green=true icon="sparkles" title="home.trustMade"
+          text="home.trustMadeText"}}
+      {{> feature-item empty blue=true icon="truck" title="home.trustShipping"
+          text="home.trustShippingText"}}
+      {{> feature-item empty yellow=true icon="credit-card" title="home.trustPayment"
+          text="home.trustPaymentText"}}
+      {{> feature-item empty pink=true icon="rotate-ccw" title="home.trustReturn"
+          text="home.trustReturnText"}}
+    </div>
+  </div>
+</section>

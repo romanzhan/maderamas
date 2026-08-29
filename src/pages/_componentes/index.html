@@ -1,0 +1,657 @@
+{{#> layout title="Витрина компонентов"}}
+  <main id="contenido" class="page-container py-12 lg:py-16">
+    <h1 class="font-display text-h1 lg:text-h1-lg">Витрина компонентов</h1>
+    <p class="mt-4 max-w-prose text-charcoal/70">
+      Служебная страница: здесь собраны все элементы сайта во всех состояниях. Пока заложен
+      фундамент — цвета, шрифты, скругления и тени.
+    </p>
+
+    {{#> showcase/section title="Натуральная база"}}
+      <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6 lg:gap-6">
+        {{> showcase/swatch surface="bg-cream" token="cream"}}
+        {{> showcase/swatch surface="bg-sand" token="sand"}}
+        {{> showcase/swatch surface="bg-oak" token="oak"}}
+        {{> showcase/swatch surface="bg-walnut" token="walnut"}}
+        {{> showcase/swatch surface="bg-clay" token="clay"}}
+        {{> showcase/swatch surface="bg-charcoal" token="charcoal"}}
+      </div>
+    {{/showcase/section}}
+
+    {{#> showcase/section title="Производные"}}
+      <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6 lg:gap-6">
+        {{> showcase/swatch surface="bg-clay-hover" token="clay-hover"}}
+        {{> showcase/swatch surface="bg-clay-active" token="clay-active"}}
+        {{> showcase/swatch surface="bg-sand-hover" token="sand-hover"}}
+        {{> showcase/swatch surface="bg-sand-active" token="sand-active"}}
+        {{> showcase/swatch surface="bg-border" token="border"}}
+        {{> showcase/swatch surface="bg-line" token="line"}}
+      </div>
+    {{/showcase/section}}
+
+    {{#> showcase/section title="Состояния"}}
+      <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6 lg:gap-6">
+        {{> showcase/swatch surface="bg-error" token="error"}}
+        {{> showcase/swatch surface="bg-error-bg" token="error-bg"}}
+        {{> showcase/swatch surface="bg-success" token="success"}}
+        {{> showcase/swatch surface="bg-success-bg" token="success-bg"}}
+        {{> showcase/swatch surface="bg-warning" token="warning"}}
+        {{> showcase/swatch surface="bg-warning-bg" token="warning-bg"}}
+      </div>
+    {{/showcase/section}}
+
+    {{#> showcase/section title="Промо — только реклама"}}
+      <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6 lg:gap-6">
+        {{> showcase/swatch surface="bg-promo-blue" token="promo-blue"}}
+        {{> showcase/swatch surface="bg-promo-pink" token="promo-pink"}}
+        {{> showcase/swatch surface="bg-promo-yellow" token="promo-yellow"}}
+        {{> showcase/swatch surface="bg-promo-green" token="promo-green"}}
+        {{> showcase/swatch surface="bg-promo-orange" token="promo-orange"}}
+      </div>
+    {{/showcase/section}}
+
+    {{#> showcase/section title="На тёмном и отключённое"}}
+      <div class="surface-dark rounded-xl bg-walnut p-4 lg:p-6">
+        <p class="font-display text-h3 text-cream lg:text-h3-lg">Тёмная секция и подвал</p>
+        <p class="mt-3 text-body text-cream/75">Вторичный текст на тёмном — 75% кремового</p>
+        <p class="mt-4 border-t border-cream/20 pt-4 text-small text-cream">
+          Граница на тёмном — 20% кремового
+        </p>
+      </div>
+      <p class="mt-6 text-body text-charcoal/45">Отключённое состояние — 45% чёрного</p>
+    {{/showcase/section}}
+
+    {{#> showcase/section title="Типографика"}}
+      <div class="space-y-6">
+        <p class="font-display text-display lg:text-display-lg">Растущий стул — Display</p>
+        <p class="font-display text-h1 lg:text-h1-lg">Заголовок первого уровня — H1</p>
+        <p class="font-display text-h2 lg:text-h2-lg">Заголовок второго уровня — H2</p>
+        <p class="font-display text-h3 lg:text-h3-lg">Заголовок третьего уровня — H3</p>
+        <p class="text-h4 lg:text-h4-lg">Заголовок четвёртого уровня — H4</p>
+        <p class="max-w-prose text-lead lg:text-lead-lg">
+          Крупный текст (лид): вводный абзац секции. Дерево, спокойствие и живость — три
+          камертона визуальной системы.
+        </p>
+        <p class="max-w-prose text-body">
+          Основной текст: шестнадцать пикселей, межстрочное полтора. Длина строки ограничена,
+          чтобы читалось без усилий.
+        </p>
+        <p class="text-small text-charcoal/70">Дополнительный текст — вторичный, 70% чёрного</p>
+        <p class="text-caption">Мелкий служебный — подписи и бейджи</p>
+      </div>
+    {{/showcase/section}}
+
+    {{#> showcase/section title="Скругления и тени"}}
+      <div class="flex flex-wrap gap-6">
+        <div class="rounded-sm bg-sand px-4 py-3 text-small">rounded-sm</div>
+        <div class="rounded-md bg-sand px-4 py-3 text-small">rounded-md</div>
+        <div class="rounded-lg bg-sand px-4 py-3 text-small">rounded-lg</div>
+        <div class="rounded-xl bg-sand px-4 py-3 text-small">rounded-xl</div>
+        <div class="rounded-2xl bg-sand px-4 py-3 text-small">rounded-2xl</div>
+        <div class="rounded-full bg-sand px-4 py-3 text-small">rounded-full</div>
+      </div>
+      <div class="mt-6 flex flex-wrap gap-6">
+        <div class="rounded-lg bg-cream px-4 py-3 text-small shadow-sm">shadow-sm</div>
+        <div class="rounded-lg bg-cream px-4 py-3 text-small shadow-md">shadow-md</div>
+        <div class="rounded-lg bg-cream px-4 py-3 text-small shadow-lg">shadow-lg</div>
+      </div>
+    {{/showcase/section}}
+    {{#> showcase/section title="Кнопки — виды и размеры"}}
+      <p class="mb-6 max-w-prose text-small text-charcoal/70">
+        Наведение, нажатие и фокус живые: наведите мышь или пройдите по кнопкам клавишей Tab.
+      </p>
+      <div class="flex flex-wrap items-end gap-6">
+        {{#> showcase/item label="Главная, крупная"}}
+          {{> button primary=true sizeLg=true label="product.addToCart"}}
+        {{/showcase/item}}
+        {{#> showcase/item label="Главная, обычная"}}
+          {{> button primary=true sizeMd=true label="cart.checkout"}}
+        {{/showcase/item}}
+        {{#> showcase/item label="Главная, малая"}}
+          {{> button primary=true sizeSm=true label="cart.viewCart"}}
+        {{/showcase/item}}
+        {{#> showcase/item label="Вторичная"}}
+          {{> button secondary=true sizeMd=true label="common.back"}}
+        {{/showcase/item}}
+        {{#> showcase/item label="Третичная"}}
+          {{> button tertiary=true sizeMd=true label="catalog.viewAll"}}
+        {{/showcase/item}}
+        {{#> showcase/item label="Иконочная"}}
+          {{> button iconOnly=true icon="x" aria="common.close"}}
+        {{/showcase/item}}
+      </div>
+    {{/showcase/section}}
+
+    {{#> showcase/section title="Кнопки — опции и состояния"}}
+      <div class="flex flex-wrap items-end gap-6">
+        {{#> showcase/item label="С иконкой"}}
+          {{> button primary=true sizeMd=true icon="shopping-bag" label="product.addToCart"}}
+        {{/showcase/item}}
+        {{#> showcase/item label="Со стрелкой"}}
+          {{> button tertiary=true sizeMd=true iconRight="arrow-right" label="home.viewAllFem"}}
+        {{/showcase/item}}
+        {{#> showcase/item label="Отключена"}}
+          {{> button primary=true sizeMd=true disabled=true label="product.addToCart"}}
+        {{/showcase/item}}
+        {{#> showcase/item label="Загрузка"}}
+          {{> button primary=true sizeMd=true loading=true label="product.addToCart"}}
+        {{/showcase/item}}
+        {{#> showcase/item label="Длинный текст"}}
+          {{> button secondary=true sizeMd=true label="wishlist.emptyCta"}}
+        {{/showcase/item}}
+      </div>
+      <div class="mt-6 max-w-md">
+        {{#> showcase/item label="На всю ширину (мобильный CTA)"}}
+          {{> button primary=true sizeLg=true fullWidth=true label="cart.checkout"}}
+        {{/showcase/item}}
+      </div>
+    {{/showcase/section}}
+
+    {{#> showcase/section title="Кнопки и ссылки на тёмном"}}
+      <div class="surface-dark flex flex-wrap items-end gap-6 rounded-xl bg-walnut p-4 lg:p-6">
+        <div class="flex flex-col items-start gap-2">
+          <span class="text-caption text-cream/75">Главная</span>
+          {{> button primary=true sizeMd=true onDark=true label="cart.checkout"}}
+        </div>
+        <div class="flex flex-col items-start gap-2">
+          <span class="text-caption text-cream/75">Вторичная</span>
+          {{> button secondary=true sizeMd=true onDark=true label="common.back"}}
+        </div>
+        <div class="flex flex-col items-start gap-2">
+          <span class="text-caption text-cream/75">Третичная</span>
+          {{> button tertiary=true sizeMd=true onDark=true label="catalog.viewAll"}}
+        </div>
+        <div class="flex flex-col items-start gap-2">
+          <span class="text-caption text-cream/75">Иконочная</span>
+          {{> button iconOnly=true onDark=true icon="x" aria="common.close"}}
+        </div>
+        <div class="flex flex-col items-start gap-2">
+          <span class="text-caption text-cream/75">Ссылка подвала</span>
+          {{> link nav=true onDark=true href="#" label="nav.sillas"}}
+        </div>
+      </div>
+    {{/showcase/section}}
+
+    {{#> showcase/section title="Поле ввода — состояния"}}
+      <p class="mb-6 max-w-prose text-small text-charcoal/70">
+        Место под сообщение зарезервировано всегда, поэтому при появлении ошибки форма не
+        прыгает. Фокус — рамка глиной: щёлкните в поле или пройдите по ним клавишей Tab.
+      </p>
+      <div class="grid max-w-4xl gap-6 sm:grid-cols-2">
+        {{> field id="f-empty" name="billing_first_name" label="fields.name" autocomplete="given-name"}}
+        {{> field id="f-required" name="billing_last_name" label="fields.lastName" required=true autocomplete="family-name"}}
+        {{> field id="f-hint" label="fields.phone" type="tel" inputmode="tel" hint="fields.phoneHint" autocomplete="tel"}}
+        {{> field id="f-valid" label="fields.email" type="email" value="maria@gmail.com" valid=true autocomplete="email"}}
+        {{> field id="f-error" label="fields.email" type="email" value="maria@gmail" error="errors.emailFormat"}}
+        {{> field id="f-warning" label="fields.email" type="email" value="maria@gmial.com" warning="errors.emailSuggest" domain="gmail.com"}}
+        {{> field id="f-required-empty" label="fields.street" required=true error="errors.required"}}
+        {{> field id="f-dni" label="fields.dni" inputmode="numeric" value="12.345.678" hint="fields.dniHint"}}
+        {{> field id="f-readonly" label="fields.zip" value="C1426AAB" readonly=true}}
+        {{> field id="f-disabled" label="fields.city" value="Palermo" disabled=true}}
+        {{> field id="f-long" label="fields.references" value="Entre Av. Santa Fe y Av. Coronel Díaz, portón de madera al lado de la panadería"}}
+        {{> field id="f-placeholder" label="fields.floor" placeholder="fields.optional"}}
+      </div>
+      <p class="mt-6 text-small text-charcoal/70">{{t "forms.requiredLegend"}}</p>
+    {{/showcase/section}}
+
+    {{#> showcase/section title="Остальные поля"}}
+      <div class="grid max-w-4xl gap-6 sm:grid-cols-2">
+        {{> select id="f-province" name="billing_state" autocomplete="address-level1" label="fields.province" placeholder="fields.provincePlaceholder" options=provinces required=true}}
+        {{> select id="f-province-error" label="fields.province" placeholder="fields.provincePlaceholder" options=provinces error="errors.required"}}
+        {{> select id="f-province-off" label="fields.province" placeholder="fields.provincePlaceholder" options=provinces disabled=true}}
+        <div class="sm:col-span-2">
+          {{> textarea id="f-note" name="order_comments" label="checkout.note" max=500 optional=true}}
+        </div>
+        <div class="sm:col-span-2">
+          {{> textarea id="f-note-error" label="checkout.note" max=500 required=true error="errors.required"}}
+        </div>
+      </div>
+
+      <div class="mt-6 grid max-w-4xl gap-6 sm:grid-cols-2">
+        <div class="flex flex-col gap-2">
+          <span class="text-caption text-charcoal/70">Чекбокс</span>
+          {{> checkbox name="c1" label="catalog.filterInStock"}}
+          {{> checkbox name="c2" label="product.accessory" checked=true}}
+          {{> checkbox name="c3" label="badge.freeShipping" disabled=true}}
+          {{> textarea id="f-note-off" label="checkout.note" max=500 disabled=true}}
+        </div>
+        <div class="flex flex-col gap-2">
+          <span class="text-caption text-charcoal/70">Радиогруппа</span>
+          {{> radio name="orden" value="relevance" label="catalog.sortRelevance" checked=true}}
+          {{> radio name="orden" value="price-asc" label="catalog.sortPriceAsc"}}
+          {{> radio name="orden" value="price-desc" label="catalog.sortPriceDesc"}}
+        </div>
+      </div>
+    {{/showcase/section}}
+
+    {{#> showcase/section title="Цена"}}
+      <div class="flex flex-wrap items-end gap-8">
+        {{#> showcase/item label="Обычная"}}{{> price value=130000}}{{/showcase/item}}
+        {{#> showcase/item label="Со скидкой"}}{{> price value=104000 old=130000}}{{/showcase/item}}
+        {{#> showcase/item label="Разброс по вариантам"}}{{> price value=130000 from=true}}{{/showcase/item}}
+        {{#> showcase/item label="Компактная (списки)"}}{{> price value=130000 compact=true}}{{/showcase/item}}
+        {{#> showcase/item label="Нет в наличии"}}{{> price value=130000 muted=true}}{{/showcase/item}}
+        {{#> showcase/item label="Семизначная"}}{{> price value=1250000}}{{/showcase/item}}
+      </div>
+      <div class="mt-8">
+        {{#> showcase/item label="Крупная — страница товара, с юридической строкой"}}
+          {{> price value=130000 old=160000 large=true legal=true}}
+        {{/showcase/item}}
+      </div>
+    {{/showcase/section}}
+
+    {{#> showcase/section title="Бейджи"}}
+      <div class="flex flex-wrap items-end gap-6">
+        {{#> showcase/item label="Скидка"}}{{> badge discount=true text="-20%"}}{{/showcase/item}}
+        {{#> showcase/item label="Новинка"}}{{> badge status=true label="badge.new"}}{{/showcase/item}}
+        {{#> showcase/item label="Нет в наличии"}}{{> badge status=true label="badge.noStock"}}{{/showcase/item}}
+        {{#> showcase/item label="Информационный"}}{{> badge info=true label="badge.freeShipping"}}{{/showcase/item}}
+      </div>
+    {{/showcase/section}}
+
+    {{#> showcase/section title="Рейтинг, варианты и количество"}}
+      <div class="flex flex-wrap items-start gap-8">
+        {{#> showcase/item label="Рейтинг в карточке"}}
+          {{> rating value=4.5 count=12 starClass="size-4"}}
+        {{/showcase/item}}
+        {{#> showcase/item label="Рейтинг на странице товара"}}
+          {{> rating value=5 count=3 large=true starClass="size-5"}}
+        {{/showcase/item}}
+      </div>
+
+      <div class="mt-8 flex flex-wrap items-start gap-12">
+        {{> swatch-group label="product.woodColor" name="madera" options=showcase.woodColors}}
+        {{> quantity id="q-demo" max=site.cart.maxQtyPerItem}}
+      </div>
+      <p class="mt-4 max-w-prose text-small text-charcoal/70">
+        Третий цвет перечёркнут — его сейчас нет в наличии, но выбрать его можно: покупатель
+        должен видеть, что цвет существует. Счётчик упирается в предел из настроек и объясняет,
+        почему дальше нельзя.
+      </p>
+    {{/showcase/section}}
+
+    {{#> showcase/section title="Карточка товара"}}
+      <p class="mb-6 max-w-prose text-small text-charcoal/70">
+        Вся карточка кликабельна, но сердце и кнопка — отдельные цели: проверьте клавишей
+        Tab. Наведите указатель на первую карточку — снимок сменится на второй кадр
+        товара; у распроданной подмены нет, и её фото приглушено. Последняя карточка
+        оставлена без снимка: так выглядит заглушка бренда, пока фото не прислали.
+      </p>
+      <div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 lg:gap-6 xl:grid-cols-4">
+        {{> product-card preview=true name=cards.[0].name price=cards.[0].price href="#"
+            imageId=cards.[0].imageId imageIdHover=cards.[0].imageIdHover
+            isNew=true rating=4.5 reviewsCount=12 inStock=true freeShipping=true
+            variant=products.[0].options.woodColor.[0].name}}
+        {{> product-card preview=true name=cards.[1].name price=120000 old=150000 href="#"
+            imageId=cards.[1].imageId discount="-20%" inStock=true rating=5 reviewsCount=3}}
+        {{> product-card preview=true name=cards.[1].name price=cards.[1].price href="#"
+            imageId=cards.[1].imageId inStock=true inCart=true cartHref="/carrito/"}}
+        {{> product-card preview=true name=cards.[0].name price=cards.[0].price href="#"
+            imageId=cards.[0].imageId inStock=true wishlisted=true}}
+        {{!-- Распродано: фото приглушено, подмены по наведению нет --}}
+        {{> product-card preview=true name=cards.[2].name price=cards.[2].price href="#"
+            imageId=cards.[2].imageId imageIdHover=cards.[2].imageIdHover}}
+        {{> product-card preview=true name=cards.[1].name price=cards.[1].price href="#"
+            imageId=cards.[1].images.[0] inStock=true}}
+        {{> product-card preview=true name=cards.[1].name price=1250000 href="#" inStock=true}}
+        {{> skeleton}}
+        {{#> showcase/item label="Заглушка фото"}}{{> image-placeholder}}{{/showcase/item}}
+      </div>
+    {{/showcase/section}}
+
+    {{#> showcase/section title="Ссылки"}}
+      <div class="flex flex-wrap items-end gap-6">
+        {{#> showcase/item label="В тексте"}}
+          {{> link inline=true href="#" label="nav.contacto"}}
+        {{/showcase/item}}
+        {{#> showcase/item label="Навигационная"}}
+          {{> link nav=true href="#" label="nav.sillas"}}
+        {{/showcase/item}}
+        {{#> showcase/item label="Активный пункт"}}
+          {{> link nav=true active=true href="#" label="nav.nosotros"}}
+        {{/showcase/item}}
+        {{#> showcase/item label="Смотреть все"}}
+          {{> link viewAll=true iconRight="arrow-right" href="#" label="home.viewAllFem"}}
+        {{/showcase/item}}
+      </div>
+    {{/showcase/section}}
+    {{#> showcase/section title="Контентные блоки"}}
+      <p class="max-w-prose text-charcoal/70">
+        Кирпичи, из которых собрана главная. Пункт с иконкой — два вида: обычный
+        и компактный (полоса доверия под героем).
+      </p>
+
+      <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {{> feature-item empty icon="check" title="product.safetyCorners"
+            text="product.safetyCornersText"}}
+        {{> feature-item empty icon="check" title="product.safetyStable"
+            text="product.safetyStableText"}}
+        {{> feature-item empty compact=true icon="check" title="home.trustMade"
+            text="home.trustMadeText"}}
+        {{> feature-item empty compact=true icon="heart" title="home.trustReturn"
+            text="home.trustReturnText"}}
+      </div>
+
+      <p class="mt-8 text-caption text-charcoal/70">Плитка: категория и подбор</p>
+      <div class="mt-2 grid gap-4 sm:grid-cols-3">
+        {{> tile empty href="#" imageId="evolutiva-roble-1" imageAlt=""
+            title=(t "home.pickerKidTitle") text=(t "home.pickerKidText")}}
+        {{> tile empty href="#" imageId="torre-1" imageAlt=""
+            title=(t "home.pickerHelperTitle") text=(t "home.pickerHelperText")}}
+        {{> tile empty href="#" title=(t "nav.accesorios")}}
+      </div>
+
+      <p class="mt-8 text-caption text-charcoal/70">
+        Отзыв (с пометкой источника) и карточка статьи (фото ещё нет — заглушка)
+      </p>
+      <div class="mt-2 grid gap-6 md:grid-cols-3">
+        {{#if home.reviews.length}}{{> review-card empty review=home.reviews.[0]}}{{/if}}
+        {{#if home.articles.length}}{{> article-card empty article=home.articles.[0]}}{{/if}}
+      </div>
+
+      <p class="mt-8 text-caption text-charcoal/70">Аккордеон: закрыт и раскрывается нажатием</p>
+      <div class="mt-2 max-w-prose">
+        {{#if home.faq.[0]}}
+          {{> accordion-item empty id="vitrina-1" question=home.faq.[0].question
+              answer=home.faq.[0].answer}}
+        {{/if}}
+        {{#if home.faq.[2]}}
+          {{> accordion-item empty id="vitrina-2" question=home.faq.[2].question
+              answer=home.faq.[2].answer}}
+        {{/if}}
+      </div>
+    {{/showcase/section}}
+
+    {{#> showcase/section title="Элементы каркаса"}}
+      <p class="max-w-prose text-charcoal/70">
+        Полоса объявления, шапка, бургер-меню, живой поиск (лупа в шапке) и подвал видны
+        на этой же странице — каркас у неё общий со всем сайтом. Здесь собрано то, что
+        внутри каркаса имеет состояния или живёт отдельным кусочком.
+      </p>
+
+      <div class="mt-6 flex flex-wrap items-end gap-6">
+        {{#> showcase/item label="Счётчик: пусто"}}
+          <div class="relative flex size-12 items-center justify-center rounded-lg bg-sand">
+            {{> icon empty name="shopping-bag" class="size-6"}}
+          </div>
+        {{/showcase/item}}
+        {{#> showcase/item label="Счётчик: 1–99"}}
+          <div class="relative flex size-12 items-center justify-center rounded-lg bg-sand">
+            {{> icon empty name="shopping-bag" class="size-6"}}
+            {{> counter empty value=3}}
+          </div>
+        {{/showcase/item}}
+        {{#> showcase/item label="Счётчик: больше 99"}}
+          <div class="relative flex size-12 items-center justify-center rounded-lg bg-sand">
+            {{> icon empty name="shopping-bag" class="size-6"}}
+            {{> counter empty value="99+"}}
+          </div>
+        {{/showcase/item}}
+        {{#> showcase/item label="Пункт меню"}}
+          <div class="w-48">{{> nav-row empty empty=empty href="#" label=(t "nav.sillas") class="h-12"}}</div>
+        {{/showcase/item}}
+        {{#> showcase/item label="Пункт меню: текущий"}}
+          <div class="w-48">{{> nav-row empty empty=empty href="#" label=(t "nav.nosotros") current=true class="h-12"}}</div>
+        {{/showcase/item}}
+        {{#> showcase/item label="Контакты на светлом"}}
+          <div class="-ml-3">{{> social-links hover="hover:bg-sand-hover"}}</div>
+        {{/showcase/item}}
+      </div>
+
+      <div class="mt-8 space-y-2">
+        <p class="text-caption text-charcoal/70">
+          Панель поиска: состояние «есть подсказки» открывается лупой в шапке этой
+          страницы, остальные показаны ниже
+        </p>
+
+        <p class="pt-2 text-caption text-charcoal/70">Индекс грузится</p>
+        <div
+          class="rounded-xl border border-line"
+          x-data="{ term: 'silla', status: 'loading', slow: false, searching: false, count: 0,
+            results: { products: [], categories: [], articles: [] }, activeId: null,
+            allResultsHref: '#', load() {} }"
+        >
+          {{> search-results id="vitrina-cargando"}}
+        </div>
+
+        <p class="pt-2 text-caption text-charcoal/70">Грузится дольше пяти секунд</p>
+        <div
+          class="rounded-xl border border-line"
+          x-data="{ term: 'silla', status: 'loading', slow: true, searching: false, count: 0,
+            results: { products: [], categories: [], articles: [] }, activeId: null,
+            allResultsHref: '#', load() {} }"
+        >
+          {{> search-results id="vitrina-lento"}}
+        </div>
+
+        <p class="pt-2 text-caption text-charcoal/70">Индекс не загрузился</p>
+        <div
+          class="rounded-xl border border-line"
+          x-data="{ term: 'silla', status: 'error', slow: false, searching: false, count: 0,
+            results: { products: [], categories: [], articles: [] }, activeId: null,
+            allResultsHref: '#', load() {} }"
+        >
+          {{> search-results id="vitrina-sin-red"}}
+        </div>
+
+        <p class="pt-2 text-caption text-charcoal/70">Набрана одна буква</p>
+        <div
+          class="rounded-xl border border-line"
+          x-data="{ term: 's', status: 'ready', slow: false, searching: false, count: 0,
+            results: { products: [], categories: [], articles: [] }, activeId: null,
+            allResultsHref: '#', load() {} }"
+        >
+          {{> search-results id="vitrina-corto"}}
+        </div>
+
+        <p class="pt-2 text-caption text-charcoal/70">Ничего не найдено</p>
+        <div
+          class="rounded-xl border border-line"
+          x-data="{ term: 'zzzz', status: 'ready', slow: false, searching: false, count: 0,
+            results: { products: [], categories: [], articles: [] }, activeId: null,
+            allResultsHref: '#', load() {} }"
+        >
+          {{> search-results id="vitrina-sin-nada"}}
+        </div>
+
+        <p class="pt-2 text-caption text-charcoal/70">
+          Есть подсказки. Здесь группа категорий: строки товаров с фото и ценой смотрите
+          в живой панели (лупа в шапке) — цену товара в разметку не кладут
+          (сложные-узлы.md п. 3а). В живой панели совпадение ещё и выделяется жирным
+        </p>
+        <div
+          class="rounded-xl border border-line"
+          data-name="{{nav.categories.0.label}}"
+          x-data="{ term: 'silla', status: 'ready', slow: false, searching: false, count: 1,
+            results: { products: [], categories: [{ key: 'c', domId: 'vitrina-hallado-c',
+              href: '#', html: $el.dataset.name }], articles: [] },
+            activeId: null, allResultsHref: '#', load() {} }"
+        >
+          {{> search-results id="vitrina-hallado"}}
+        </div>
+
+        <p class="pt-2 text-caption text-charcoal/70">Идёт поиск: подсказки остаются, крестик
+          очистки уступает место кружку — он живёт в строке ввода, поэтому виден только
+          в живой панели</p>
+
+        <p class="pt-2 text-caption text-charcoal/70">Поле пустое: категории магазина</p>
+        <div
+          class="rounded-xl border border-line"
+          x-data="{ term: '', status: 'ready', slow: false, searching: false, count: 0,
+            results: { products: [], categories: [], articles: [] }, activeId: null,
+            allResultsHref: '#', load() {} }"
+        >
+          {{> search-results id="vitrina-vacio"}}
+        </div>
+
+        <p class="pt-6 text-caption text-charcoal/70">Плашка «нет сети»</p>
+        {{> offline-notice preview=true}}
+        <p class="pt-4 text-caption text-charcoal/70">
+          Полоса объявления. Настоящая — вверху этой страницы, с крестиком; здесь она же
+          без крестика, чтобы образец нельзя было закрыть
+        </p>
+        {{> announcement preview=true}}
+      </div>
+
+      <p class="mt-8 max-w-prose text-caption text-charcoal/70">
+        Подвал целиком — внизу этой страницы: он общий с сайтом. Отдельного образца здесь
+        нет намеренно — копия расходилась бы с настоящим (принцип 16).
+      </p>
+
+    {{/showcase/section}}
+
+    {{#> showcase/section title="Навигация и ленты"}}
+      <div class="flex flex-col gap-8">
+        <div>
+          <p class="text-caption text-charcoal/70">Хлебные крошки (на телефоне — только родитель)</p>
+          <div class="mt-2">
+            {{> breadcrumbs items=showcase.breadcrumbs.items
+                plain=showcase.breadcrumbs.plain}}
+          </div>
+        </div>
+
+        <div>
+          <p class="text-caption text-charcoal/70">Плитка подбора и промо-плитка</p>
+          <div class="mt-2 grid gap-4 sm:grid-cols-3">
+            {{> tile href="#" title="Sillas evolutivas" text="De 1 a 15 años"
+                price=products.[0].price priceFrom=true}}
+            {{> promo-tile blue=true href="#" title="Sillas evolutivas"
+                text="Desde $ 129.960"}}
+            {{> promo-tile yellow=true href="#" title="Envío gratis"
+                text="A todo el país"}}
+          </div>
+        </div>
+
+        <div>
+          <p class="text-caption text-charcoal/70">
+            Картинка из манифеста: настоящая, заглушка бренда и три кадра одного снимка
+          </p>
+          <div class="mt-2 grid gap-4 sm:grid-cols-3">
+            {{> picture id=cards.[0].imageId alt=cards.[0].name
+                class="aspect-square w-full rounded-xl object-cover" sizes="30vw"}}
+            {{> picture id="no-existe" alt="" ratio="aspect-square"}}
+            {{> picture id="home-hero-narrow" idMid="home-hero-mid" idWide="home-hero-wide"
+                alt="" class="aspect-square w-full rounded-xl object-cover sm:aspect-video"
+                ratio="aspect-square sm:aspect-video" sizes="30vw"}}
+          </div>
+        </div>
+      </div>
+
+      <p class="mt-8 max-w-prose text-caption text-charcoal/70">
+        Лента карточек (компонент carousel) отдельным образцом здесь не стоит: она
+        собирает вокруг себя целую секцию с заголовком и стрелками, и копия на витрине
+        разошлась бы с настоящей. Живые ленты — на главной и на странице товара.
+        По той же причине здесь нет модального окна и выдвижных панелей: они лежат
+        поверх страницы и показывают себя сами — окно «сообщить о поступлении»
+        открывается с карточки распроданного товара, панель корзины — по её иконке.
+      </p>
+    {{/showcase/section}}
+
+    {{#> showcase/section title="Корзина"}}
+      {{!-- Строка и итог живут на состоянии корзины; на витрине оно подменяется
+            неподвижным образцом — так же, как у подсказок поиска выше --}}
+      <div
+        class="max-w-120"
+        x-data="{
+          fmt(value) { return value },
+          lines: [{ productId: 'x', variantId: '', name: 'Silla Evolutiva',
+            href: '#', photo: null, variant: 'Roble americano', swatch: '#C69C6D',
+            qty: 2, sum: '$ 309.900', inStock: true, atMax: false }],
+          subtotal: '$ 309.900',
+          total: '$ 309.900',
+          step() {}, remove() {},
+        }"
+      >
+        <ul>
+          <template x-for="line in lines" x-bind:key="line.productId">
+            {{> cart-line}}
+          </template>
+        </ul>
+
+        <div class="mt-4 rounded-xl border border-line p-6">
+          {{> order-summary}}
+        </div>
+      </div>
+    {{/showcase/section}}
+
+    {{#> showcase/section title="Живые состояния поля"}}
+      <p class="mb-6 max-w-prose text-small text-charcoal/70">
+        В формах сайта рамку, текст ошибки и галочку ведёт общий слой проверки: до первого
+        ввода поле молчит, ошибка появляется по уходу из поля и гаснет в момент исправления,
+        а подсказка об опечатке в домене принимается одним нажатием. Попробуйте: уйдите
+        из пустого обязательного поля, наберите «maria@gmial.com» и уйдите из него.
+      </p>
+      <div
+        class="grid max-w-4xl gap-6 sm:grid-cols-2"
+        x-data="siteForm()"
+        {{> form-messages}}
+      >
+        <form
+          x-ref="form"
+          novalidate
+          class="contents"
+          x-on:submit.prevent="submit()"
+          x-on:input="onInput($event)"
+          x-on:change="onInput($event); check($event.target)"
+          x-on:blur.capture="onBlur($event)"
+        >
+          {{> field empty live=true id="sc-live-nombre" name="nombre" label="fields.name"
+              required=true pattern=(formPattern "nombre")
+              errorPattern="errors.nameFormat"}}
+          {{> field empty live=true id="sc-live-email" name="email" label="fields.email"
+              type="email" inputmode="email" required=true checkValid=true}}
+        </form>
+      </div>
+    {{/showcase/section}}
+
+    {{#> showcase/section title="Ввод оценки"}}
+      <p class="mb-6 max-w-prose text-small text-charcoal/70">
+        Оценка в форме отзыва на странице товара. Выбор один, стрелки ходят по звёздам,
+        рядом подписывается выбранное. Пустая группа — обязательное поле, и при отправке
+        она показывает ошибку так же, как обычное поле.
+      </p>
+      {{!-- Вне формы у образца нет слоя валидации: подсовываем ему пустое состояние,
+            как это уже сделано у блока успеха и подсказок поиска --}}
+      <div x-data="{ errors: {}, warnings: {} }">
+        {{> rating-input empty name="sc-calificacion" label="reviews.rating" stars=ratingScale}}
+      </div>
+    {{/showcase/section}}
+
+    {{#> showcase/section title="Блок успеха формы"}}
+      <p class="mb-6 max-w-prose text-small text-charcoal/70">
+        После отправки форма заменяется этим блоком: что произошло → что дальше → выход.
+        У Botón de Arrepentimiento и Libro de Quejas в нём стоит номер обращения — это
+        требование нормы. На витрине состояние подменено неподвижным образцом.
+      </p>
+      <div class="grid gap-6 lg:grid-cols-2">
+        <div x-data="{ sent: true, code: '' }">
+          {{> form-success empty title="contact.successTitle" text="contact.successText"
+              actionLabel="contact.sendAnother" onAction=""}}
+        </div>
+        <div x-data="{ sent: true, code: '20260828-4271' }">
+          {{> form-success empty code=true title="quejas.successTitle"
+              text="quejas.successText" actionLabel="common.goHome" href="#"}}
+        </div>
+      </div>
+    {{/showcase/section}}
+
+    {{#> showcase/section title="Абзацы текста из данных"}}
+      <p class="mb-6 max-w-prose text-small text-charcoal/70">
+        Тексты информационных страниц и статей приходят готовыми абзацами из данных.
+        Ширина колонки ограничена длиной строки: текста во всю ширину экрана не бывает.
+      </p>
+      {{> prose empty paragraphs=showcase.body}}
+    {{/showcase/section}}
+
+    {{#> showcase/section title="Строка поиска и контакты"}}
+      <p class="mb-6 max-w-prose text-small text-charcoal/70">
+        Строка поиска обычной формой стоит на странице результатов и на 404 — там, где
+        панели живого поиска нет. Список контактов один на подвал и страницу контактов;
+        адрес и часы появляются в нём, только когда заданы в настройках.
+      </p>
+      <div class="grid gap-8 lg:grid-cols-2">
+        {{> search-form empty id="sc-buscar"}}
+        {{> contact-list}}
+      </div>
+    {{/showcase/section}}
+  </main>
+{{/layout}}

@@ -1,0 +1,23 @@
+{{!-- Подписи ленты для скринридера. Кусок атрибутов, а не разметка: скрипт читает их
+      с корня ленты. Заведено одним местом, потому что у Swiper свои английские подписи
+      по умолчанию, и они перебивают наши sr-only на стрелках — забыть их у одной ленты
+      значит оставить там кнопки без имени.
+      photos=true — лента кадров, а не карточек: слова другие.
+      Часть подписей нужна не каждой ленте (у галереи товара нет ни стрелок, ни точек),
+      но кусок один и тот же намеренно: выбирать по месту, какие писать, — это ровно
+      тот способ, которым у одной из лент подписи однажды уже забыли. --}}
+{{#if photos}}
+  data-t-prev="{{t "gallery.prev"}}"
+  data-t-next="{{t "gallery.next"}}"
+  data-t-first="{{t "gallery.first"}}"
+  data-t-last="{{t "gallery.last"}}"
+  data-t-dot="{{t "gallery.goTo" n="{n}"}}"
+  data-t-slide="{{t "gallery.imageOf" n="{n}" total="{total}"}}"
+{{else}}
+  data-t-prev="{{t "common.prev"}}"
+  data-t-next="{{t "common.next"}}"
+  data-t-first="{{t "carousel.first"}}"
+  data-t-last="{{t "carousel.last"}}"
+  data-t-dot="{{t "carousel.goTo" n="{n}"}}"
+  data-t-slide="{{t "carousel.slideOf" n="{n}" total="{total}"}}"
+{{/if}}

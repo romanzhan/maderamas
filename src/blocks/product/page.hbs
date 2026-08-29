@@ -1,0 +1,27 @@
+{{!-- Страница товара (страницы.md §3). Верх просторный, низ информативный.
+      Всё состояние выбора — в одном компоненте (сложные-узлы.md п. 12): от него
+      цена, наличие, кнопка, полоса внизу, галерея и адрес страницы. --}}
+{{!-- Нижний отступ на телефоне — под закреплённую полосу покупки: она перекрыла бы
+      последний блок страницы (стандарты-размеров.md п. 11). Высота полосы приходит
+      токеном, поэтому отступ и подъём кнопки WhatsApp не разъедутся с ней --}}
+<main
+  id="contenido"
+  class="pb-cta pt-6 lg:py-10"
+  x-data="productPage"
+  data-price-no-taxes="{{t "legal.priceNoTaxes" amount="{amount}"}}"
+>
+  <div class="page-container">
+    {{> breadcrumbs empty items=breadcrumbs.items plain=breadcrumbs.plain}}
+
+    <div class="mt-4 grid gap-8 lg:mt-6 lg:grid-cols-2 lg:gap-12">
+      {{> product/gallery}}
+      {{> product/buy}}
+    </div>
+  </div>
+
+  {{> product/sections}}
+  {{> product/reviews}}
+  {{> product/related}}
+
+  {{> product/cta-bar}}
+</main>

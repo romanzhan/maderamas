@@ -1,0 +1,27 @@
+{{!-- Промо-плитка (компоненты.md 3.7, вид «промо»). Единственное место кроме баннера,
+      где промо-цвет заливает блок — решение владельца 27.08.2026 по его референсу.
+      Цвет текста на промо-фоне не выбирается: он закреплён за цветом в
+      визуальная-система.md §2.2 (на жёлтом тёмный, на остальных светлый).
+      Обязательные: href, tone (blue|pink|yellow|green), title, text. --}}
+<a
+  href="{{href}}"
+  class="group relative flex min-h-32 flex-col justify-between overflow-hidden rounded-xl p-5
+    transition-colors duration-150
+    {{#if blue}}surface-dark bg-promo-blue text-cream{{/if}}
+    {{#if pink}}surface-dark bg-promo-pink text-cream{{/if}}
+    {{#if yellow}}bg-promo-yellow text-charcoal{{/if}}
+    {{#if green}}surface-dark bg-promo-green text-cream{{/if}}"
+>
+  {{!-- Скруглённый уголок из референса: тот же цвет светлее, поверх фона.
+        Декоративный, поэтому спрятан от скринридера --}}
+  <span
+    class="pointer-events-none absolute right-0 bottom-0 size-16 rounded-tl-2xl bg-cream/20
+      sm:size-20"
+    aria-hidden="true"
+  ></span>
+
+  <span class="relative text-h4 font-semibold lg:text-h4-lg">{{title}}</span>
+  <span class="relative text-small {{#if yellow}}text-charcoal{{else}}text-cream/75{{/if}}">
+    {{text}}
+  </span>
+</a>

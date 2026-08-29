@@ -1,0 +1,107 @@
+{{!-- Шапка (компоненты.md 4.1). Липкая, слой 10; тень появляется только при прокрутке,
+      в самом верху страницы шапка сливается с фоном. Никуда не уезжает: прятать её
+      при прокрутке вниз перестали 27.08.2026 по решению владельца — на телефоне это
+      читалось как «шапка пропала», а не как экономия места.
+      Иконки поиска и корзины — ссылки на свои страницы, которые скрипт превращает
+      в открытие панели: без JS они работают переходом. Избранное остаётся простой
+      ссылкой — своей панели у него нет.
+      bare — упрощённый вид для чекаута (компоненты.md 4.1): логотип и возврат в корзину,
+      без меню, поиска, избранного и корзины. Уводить покупателя с чекаута нечем. --}}
+<header
+  x-data="siteHeader"
+  x-bind:class="$store.header.scrolled && 'shadow-sm'"
+  class="sticky top-0 z-10 bg-cream transition-shadow duration-200"
+>
+  {{#if bare}}
+    <div class="page-container flex h-(--header-h) items-center gap-4">
+      <a href="/" class="flex min-h-11 items-center">{{> wordmark empty}}</a>
+
+      <a
+        href="/carrito/"
+        class="-mr-3 ml-auto inline-flex min-h-11 items-center gap-2 rounded-lg px-3 text-small
+          transition-colors duration-150 hover:bg-sand-hover"
+      >
+        {{> icon empty name="chevron-left" class="size-5"}}
+        {{t "checkout.backToCart"}}
+      </a>
+    </div>
+  {{else}}
+  <div class="page-container flex h-(--header-h) items-center gap-2">
+    {{!-- Одна кнопка на открытие и закрытие: меню раскрывается под шапкой, шапка при
+          этом остаётся на месте, и бургер становится крестиком (решение владельца
+          27.08.2026). Прятать шапку под панелью было бы двумя крестиками на экране --}}
+    <button
+      type="button"
+      class="-ml-3 flex size-12 items-center justify-center rounded-lg hover:bg-sand-hover
+        lg:hidden"
+      x-on:click="$store.overlay.is('menu') ? $store.overlay.close() : $store.overlay.open('menu')"
+      x-bind:aria-expanded="$store.overlay.is('menu')"
+      aria-controls="menu-movil"
+    >
+      <span
+        class="sr-only"
+        x-text="$store.overlay.is('menu') ? '{{t "nav.closeMenu"}}' : '{{t "nav.openMenu"}}'"
+      >{{t "nav.openMenu"}}</span>
+      <span x-show="!$store.overlay.is('menu')">{{> icon empty name="menu" class="size-6"}}</span>
+      <span x-show="$store.overlay.is('menu')" x-cloak>
+        {{> icon empty name="x" class="size-6"}}
+      </span>
+    </button>
+
+    {{!-- Единственный выход на главную с любой страницы: цель нажатия 44
+          (стандарты-размеров.md п. 3), а не высота строки надписи --}}
+    <a href="/" class="flex min-h-11 items-center">{{> wordmark empty}}</a>
+
+    <nav class="ml-8 hidden lg:block" aria-label="{{t "nav.main"}}">
+      <ul class="flex items-center gap-2">
+        {{#each nav.main}}
+          <li>
+            {{> nav-row ../empty empty=../empty href=href label=label current=current class="h-10"}}
+          </li>
+        {{/each}}
+      </ul>
+    </nav>
+
+    <div class="-mr-3 ml-auto flex items-center gap-2">
+      <a
+        href="/buscar/"
+        x-on:click="openSearch($event)"
+        x-bind:aria-expanded="$store.overlay.is('search')"
+        aria-controls="buscador"
+        class="flex size-12 items-center justify-center rounded-lg hover:bg-sand-hover"
+      >
+        <span class="sr-only">{{t "nav.openSearch"}}</span>
+        {{> icon empty name="search" class="size-6"}}
+      </a>
+
+      {{#if site.features.wishlist}}
+        {{!-- Сердце стоит в шапке на всех ширинах (решение владельца 27.08.2026):
+              на телефоне вход в избранное прятался в бургер-меню, и до него надо было
+              дойти двумя нажатиями --}}
+        <a
+          href="/favoritos/"
+          class="relative flex size-12 items-center justify-center rounded-lg
+            hover:bg-sand-hover"
+        >
+          <span class="sr-only">{{t "wishlist.title"}}</span>
+          {{> icon empty name="heart" class="size-6"}}
+          {{> counter empty store="wishlist"}}
+        </a>
+      {{/if}}
+
+      <a
+        href="/carrito/"
+        x-on:click="openCart($event)"
+        x-bind:aria-expanded="$store.overlay.is('cart')"
+        aria-controls="carrito-panel"
+        class="relative flex size-12 items-center justify-center rounded-lg
+          hover:bg-sand-hover"
+      >
+        <span class="sr-only">{{t "nav.openCart"}}</span>
+        {{> icon empty name="shopping-bag" class="size-6"}}
+        {{> counter empty store="cart"}}
+      </a>
+    </div>
+  </div>
+  {{/if}}
+</header>

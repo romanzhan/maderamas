@@ -1,0 +1,60 @@
+{{!-- Оболочка отдельно стоящей формы (формы-и-поля.md п. 3 и 5). Одна на все формы
+      обратной связи проекта: контакт, Botón de Arrepentimiento, Libro de Quejas.
+      Здесь живёт всё, что у них общее и обязано быть одинаковым: `novalidate` (браузерный
+      пузырь не показываем никогда), ловушка для ботов, легенда обязательных полей,
+      строка о приватности, кнопка отправки с блокировкой на время отправки и блок успеха.
+      Сами поля приходят блоком вызова.
+
+      Обязательные: submitLabel; для формы с блоком успеха — ещё successTitle,
+      successText, againLabel (ключи словаря) и onAction либо href (выход из блока).
+      Опции: code — выдать номер обращения в блоке успеха (норма для юридических форм,
+      seo.md п. 8); href — выход из блока успеха переходом, а не действием;
+      toastText — встроенная мини-форма: успех показывается уведомлением, а не блоком
+      (формы-и-поля.md п. 5), и форма сразу возвращается в исходное состояние;
+      onDone — что сделать после удачной отправки (окно закрывает себя само).
+
+      Слушатели висят на самой форме, а не на каждом поле: input и change всплывают,
+      blur ловится на погружении. Так поле остаётся полем и ничего не знает о проверке. --}}
+<div
+  x-data="siteForm({ code: {{#if code}}true{{else}}false{{/if}} })"
+  {{#if toastText}}data-toast="{{t toastText}}"{{/if}}
+  {{#if onDone}}x-on:form:sent="{{onDone}}"{{/if}}
+  {{> form-messages}}
+>
+  <form
+    x-ref="form"
+    x-show="!sent"
+    novalidate
+    x-on:submit.prevent="submit()"
+    x-on:input="onInput($event)"
+    x-on:change="onInput($event); check($event.target)"
+    x-on:blur.capture="onBlur($event)"
+    class="flex max-w-prose flex-col gap-4"
+  >
+    <p class="text-small text-charcoal/70">{{t "forms.requiredLegend"}}</p>
+
+    {{> @partial-block}}
+
+    {{> form-trap}}
+
+    {{!-- Ошибка отправки — над кнопкой, введённое не теряется (формы-и-поля.md п. 3.5).
+          В статике отправлять некуда, поэтому единственная настоящая причина отказа —
+          отсутствие связи; серверные ошибки появятся с обработчиком на WordPress --}}
+    <p x-show="sendFailed" x-cloak role="alert" class="flex items-start gap-2 text-small text-error">
+      <span class="icon-line shrink-0">{{> icon empty name="circle-alert" class="size-4"}}</span>
+      {{t "errors.submit"}}
+    </p>
+
+    <div class="mt-2">
+      {{> button empty primary=true sizeLg=true submit=true bindLoading="sending"
+          label=submitLabel}}
+    </div>
+
+    {{> form-privacy}}
+  </form>
+
+  {{#unless toastText}}
+    {{> form-success empty title=successTitle text=successText code=code href=href
+        actionLabel=againLabel onAction=onAction}}
+  {{/unless}}
+</div>

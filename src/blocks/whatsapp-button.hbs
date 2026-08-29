@@ -1,0 +1,16 @@
+{{!-- Плавающая кнопка WhatsApp (компоненты.md 1.3): слой 10. Заливка clay — цвет
+      главного действия сайта; зелёный бренда мессенджера в палитре не участвует
+      (визуальная-система.md §4). Нижний отступ учитывает безопасную зону телефона —
+      иначе на моделях с жестовой полосой кнопка садится на неё. Над закреплённой
+      CTA-полосой поднимается сама: полоса ставит признак на странице, а высоту подъёма
+      знает утилита `bottom-safe` (main.css). --}}
+<a
+  href="{{links.whatsapp}}"
+  target="_blank"
+  rel="noopener"
+  class="bottom-safe fixed right-4 z-10 flex size-14 items-center justify-center rounded-full
+    bg-clay text-cream shadow-md hover:bg-clay-hover active:bg-clay-active"
+>
+  <span class="sr-only">{{t "whatsapp.cta"}}</span>
+  {{> icon empty name="whatsapp" class="size-6" filled=true}}
+</a>

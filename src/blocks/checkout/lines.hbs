@@ -1,0 +1,18 @@
+{{!-- Состав заказа в итоге чекаута: только чтение. Строку корзины (компоненты.md 3.8)
+      здесь не используем намеренно — у неё есть счётчик и удаление, а на чекауте
+      количество уже выбрано; менять его можно, вернувшись в корзину. --}}
+<ul class="flex flex-col gap-3">
+  <template
+    x-for="line in lines"
+    x-bind:key="line.productId + '--' + (line.variantId ?? '')"
+  >
+    <li class="flex items-start justify-between gap-4 text-small">
+      <span class="min-w-0">
+        <span class="block" x-text="line.name"></span>
+        <span class="block text-charcoal/70" x-show="line.variant" x-text="line.variant"></span>
+        <span class="block text-charcoal/70 tabular-nums" x-text="'× ' + line.qty"></span>
+      </span>
+      <span class="shrink-0 tabular-nums" x-text="fmt(line.sum)"></span>
+    </li>
+  </template>
+</ul>

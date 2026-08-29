@@ -1,0 +1,75 @@
+{{!-- Нижняя часть страницы товара (страницы.md §3). Секциями, а не вкладками
+      (решено 27.08.2026 при вёрстке): за вкладкой текст не виден ни человеку без
+      нажатия, ни поисковику без раскрытия, а прятать здесь нечего — секций три.
+      Якоря нужны ссылке на отзывы из панели покупки. --}}
+<div class="page-container mt-12 flex flex-col gap-12 lg:mt-16 lg:gap-16">
+  {{!-- Длинное описание свёрнуто до двух абзацев (состояния-экранов.md п. 3);
+        у короткого кнопки нет вовсе --}}
+  <section id="descripcion" x-data="{ open: false }">
+    <h2 class="font-display text-h3 lg:text-h3-lg">{{t "product.tabDescription"}}</h2>
+
+    <div class="mt-4 flex max-w-prose flex-col gap-3 text-charcoal/70">
+      {{#each product.description}}
+        {{#if (or (eq @index 0) (eq @index 1))}}
+          <p>{{this}}</p>
+        {{else}}
+          <p x-show="open" x-cloak>{{this}}</p>
+        {{/if}}
+      {{/each}}
+    </div>
+
+    {{#if product.descriptionLong}}
+      <button
+        type="button"
+        x-on:click="open = !open"
+        x-text="open ? '{{t "common.readLess"}}' : '{{t "common.readMore"}}'"
+        class="mt-3 text-small font-medium text-clay transition-colors duration-150
+          hover:text-clay-hover"
+      >{{t "common.readMore"}}</button>
+    {{/if}}
+  </section>
+
+  {{#if product.specs.length}}
+    <section id="medidas">
+      <h2 class="font-display text-h3 lg:text-h3-lg">{{t "product.tabSpecs"}}</h2>
+
+      <div class="mt-4 grid gap-8 lg:grid-cols-2 lg:gap-12">
+        <dl class="flex flex-col">
+          {{#each product.specs}}
+            <div
+              class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1
+                border-b border-line py-3"
+            >
+              <dt class="text-small text-charcoal/70">{{t label}}</dt>
+              <dd class="text-body">{{value}}</dd>
+            </div>
+          {{/each}}
+        </dl>
+
+        {{!-- Схема размеров — не заглушка: пока владелец её не прислал, блока нет
+              (компоненты.md 3.9) --}}
+        {{#if product.dimensionsImage}}
+          <div class="overflow-hidden rounded-xl bg-sand">
+            {{> picture empty id=product.dimensionsImage
+                alt=(t "product.dimensionsAlt" name=product.name)
+                sizes="(min-width: 1024px) 50vw, 100vw"
+                class="aspect-square w-full object-contain"}}
+          </div>
+        {{/if}}
+      </div>
+    </section>
+  {{/if}}
+
+  <section>
+    <h2 class="font-display text-h3 lg:text-h3-lg">{{t "product.safetyTitle"}}</h2>
+    <ul class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {{#each product.safety}}
+        <li>
+          {{> feature-item ../empty icon=icon
+              title=(concat "product.safety" key "")
+              text=(concat "product.safety" key "Text")}}
+        </li>
+      {{/each}}
+    </ul>
+  </section>
+</div>

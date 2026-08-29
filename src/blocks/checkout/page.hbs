@@ -1,0 +1,194 @@
+{{!-- Чекаут (страницы.md §7, сложные-узлы.md п. 5) — самая рискованная страница проекта.
+      Один экран секциями: контакт → доставка → оплата → примечание. Итог справа липкий
+      на компьютере и свёрнутый сверху на телефоне; внизу телефона — закреплённая полоса
+      с суммой и отправкой.
+      Имена полей — стандартные WooCommerce (`billing_*`, `order_comments`), обёртки несут
+      классы `form-row` и `woocommerce-input-wrapper`: перенос в тему должен быть
+      переносом классов, а не переверсткой.
+      Способ доставки один — самовывоза нет (решение владельца 26.08.2026), поэтому
+      тумблера доставки не существует. Оплата — макет по структуре классического Woo:
+      радиогруппа со способом и описанием, полей ввода нет; настоящую форму даст плагин
+      Mercado Pago после переноса.
+      Шапка на этой странице упрощённая, промо-полосы, меню, поиска и плавающей кнопки
+      нет — отвлекающего на чекауте быть не должно. --}}
+<main
+  id="contenido"
+  class="page-container pb-cta pt-6 lg:py-10"
+  x-data="checkoutView({{site.cart.maxQtyPerItem}}, {{site.shipping.cost}})"
+  data-t-removed="{{t "cart.removed"}}"
+  data-t-undo="{{t "cart.undo"}}"
+  {{> form-messages}}
+>
+  <h1 class="font-display text-h1 lg:text-h1-lg">{{t "cart.checkout"}}</h1>
+
+  {{!-- Итог на телефоне: свёрнут сверху, сумма всегда видна в полосе внизу --}}
+  <div class="mt-6 rounded-xl border border-line bg-cream lg:hidden">
+    <button
+      type="button"
+      x-on:click="summaryOpen = !summaryOpen"
+      x-bind:aria-expanded="summaryOpen"
+      aria-controls="resumen-movil"
+      class="flex min-h-12 w-full items-center justify-between gap-4 rounded-xl px-4
+        text-left hover:bg-sand-hover"
+    >
+      <span class="text-small font-medium">{{t "checkout.summaryToggle"}}</span>
+      <span class="flex items-center gap-2">
+        {{> price empty compact=true value=0 bind="fmt(total)"}}
+        <span
+          x-bind:class="summaryOpen && 'rotate-180'"
+          class="text-charcoal/70 transition-transform duration-200"
+        >{{> icon empty name="chevron-down" class="size-5"}}</span>
+      </span>
+    </button>
+
+    <div id="resumen-movil" class="accordion-body" x-bind:class="summaryOpen && 'is-open'"
+      x-bind:inert="!summaryOpen">
+      <div>
+        <div class="border-t border-line px-4 py-4" x-show="!failed">
+          {{> checkout/lines}}
+          <div class="mt-4">{{> order-summary final=true shipping=site.shipping.cost}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <form
+    x-ref="form"
+    novalidate
+    x-on:submit.prevent="submit()"
+    x-on:input="onInput($event)"
+    x-on:change="onInput($event); check($event.target)"
+    x-on:blur.capture="onBlur($event)"
+    class="mt-8 grid gap-8 lg:mt-10 lg:grid-cols-3 lg:gap-12"
+  >
+    <div class="flex flex-col gap-10 lg:col-span-2">
+      <p class="text-small text-charcoal/70">{{t "forms.requiredLegend"}}</p>
+
+      <section class="flex flex-col gap-4">
+        <h2 class="font-display text-h3 lg:text-h3-lg">{{t "checkout.contact"}}</h2>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          {{> field empty live=true woo=true id="co-nombre" name="billing_first_name"
+              label="fields.name" required=true autocomplete="given-name"
+              pattern=(formPattern "nombre") errorPattern="errors.nameFormat"}}
+          {{> field empty live=true woo=true id="co-apellido" name="billing_last_name"
+              label="fields.lastName" required=true autocomplete="family-name"
+              pattern=(formPattern "nombre") errorPattern="errors.nameFormat"}}
+          {{> field empty live=true woo=true id="co-email" name="billing_email"
+              label="fields.email" type="email" inputmode="email" required=true
+              autocomplete="email" checkValid=true}}
+          {{> field empty live=true woo=true id="co-telefono" name="billing_phone"
+              label="fields.phone" type="tel" inputmode="tel" required=true
+              autocomplete="tel" format="phone" pattern=(formPattern "telefono")
+              errorPattern="errors.phoneFormat" hint="fields.phoneHint" checkValid=true}}
+        </div>
+      </section>
+
+      <section class="flex flex-col gap-4">
+        <h2 class="font-display text-h3 lg:text-h3-lg">{{t "checkout.delivery"}}</h2>
+
+        {{!-- Способ доставки один: тумблера нет, но человек должен видеть, куда поедет
+              заказ и почём (состояния-экранов.md п. 7) --}}
+        <div class="flex items-start gap-3 rounded-xl bg-sand p-4">
+          <span class="icon-line shrink-0 text-clay">
+            {{> icon empty name="truck" class="size-5"}}
+          </span>
+          <span>
+            <span class="block font-medium">{{t "checkout.shipHome"}}</span>
+            {{#if site.shipping.cost}}
+              <span class="block text-small text-charcoal/70">{{t "cart.shippingAtCheckout"}}</span>
+            {{else}}
+              <span class="block text-small text-charcoal/70">{{t "home.trustShippingText"}}</span>
+            {{/if}}
+          </span>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div class="sm:col-span-2">
+            {{> field empty live=true woo=true id="co-calle" name="billing_address_1"
+                label="fields.street" required=true autocomplete="street-address"}}
+          </div>
+          {{> field empty live=true woo=true id="co-piso" name="billing_address_2"
+              label="fields.floor" optional=true autocomplete="address-line2"}}
+          {{> field empty live=true woo=true id="co-cp" name="billing_postcode"
+              label="fields.zip" required=true autocomplete="postal-code" format="zip"
+              pattern=(formPattern "cp") errorPattern="errors.zipFormat"}}
+          {{> select empty live=true woo=true id="co-provincia" name="billing_state"
+              label="fields.province" placeholder="fields.provincePlaceholder"
+              options=provinces required=true autocomplete="address-level1"}}
+          {{!-- Для CABA подпись меняется на «Barrio» (формы-и-поля.md п. 4) --}}
+          {{> field empty live=true woo=true id="co-localidad" name="billing_city"
+              label="fields.city" labelAlt="fields.cityCaba" labelAltWhen="province === 'C'"
+              required=true autocomplete="address-level2"}}
+          {{> field empty live=true woo=true id="co-dni" name="billing_dni" label="fields.dni"
+              inputmode="numeric" required=true format="dni" pattern=(formPattern "dni")
+              errorPattern="errors.dniFormat" hint="fields.dniHint"}}
+          <div class="sm:col-span-2">
+            {{> textarea empty live=true woo=true id="co-referencias" name="billing_references"
+                label="fields.references" optional=true max=200}}
+          </div>
+        </div>
+      </section>
+
+      <section class="flex flex-col gap-4">
+        <h2 class="font-display text-h3 lg:text-h3-lg">{{t "checkout.payment"}}</h2>
+
+        {{!-- Макет по структуре классического Woo: способ выбран, полей ввода нет —
+              оплата открывается после подтверждения заказа --}}
+        <div class="rounded-xl border border-clay bg-cream p-4">
+          {{> radio empty name="payment_method" value="mercadopago" checked=true
+              label="checkout.mercadoPago"}}
+          <p class="mt-2 pl-9 text-small text-charcoal/70">{{t "checkout.mercadoPagoText"}}</p>
+        </div>
+      </section>
+
+      <section class="flex flex-col gap-4">
+        <h2 class="font-display text-h3 lg:text-h3-lg">{{t "checkout.note"}}</h2>
+        {{> textarea empty live=true woo=true id="co-nota" name="order_comments"
+            label="checkout.note" optional=true max=500 hint="checkout.noteHint"}}
+      </section>
+
+      {{> form-trap}}
+    </div>
+
+    <aside class="hidden lg:block">
+      {{!-- Липкий итог начинается ниже шапки: величину даёт общее правило --}}
+      <div class="sticky top-below-header rounded-xl border border-line bg-cream p-6">
+        <h2 class="font-display text-h4 lg:text-h4-lg">{{t "checkout.summary"}}</h2>
+
+        <div class="mt-4" x-show="!failed">{{> checkout/lines}}</div>
+        <div class="mt-4 border-t border-line pt-4" x-show="!failed">
+          {{> order-summary final=true shipping=site.shipping.cost}}
+        </div>
+
+        <div class="mt-6 flex flex-col gap-3">
+          {{> checkout/alerts}}
+          {{!-- Оформлять нечего, пока состав заказа неизвестен --}}
+          <span x-show="!failed">
+            {{> button empty primary=true sizeLg=true fullWidth=true submit=true
+                bindLoading="sending" label="checkout.submit"}}
+          </span>
+          {{> form-privacy}}
+        </div>
+      </div>
+    </aside>
+
+    {{!-- Телефон: предупреждения над полосой, чтобы их не закрыла сама полоса --}}
+    <div class="lg:hidden">
+      {{> checkout/alerts}}
+      {{> form-privacy}}
+    </div>
+
+    {{!-- Полоса лежит внутри формы: кнопка в ней отправляет ту же форму, а не свою --}}
+    {{#> cta-bar show="true"}}
+      <div class="min-w-0 flex-1">
+        <p class="truncate text-small text-charcoal/70">{{t "cart.total"}}</p>
+        {{> price empty compact=true value=0 bind="fmt(total)"}}
+      </div>
+      <div class="shrink-0" x-show="!failed">
+        {{> button empty primary=true sizeMd=true submit=true bindLoading="sending"
+            label="checkout.submit"}}
+      </div>
+    {{/cta-bar}}
+  </form>
+</main>

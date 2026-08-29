@@ -1,0 +1,11 @@
+{{!-- Блог (страницы.md §1). Флаг blog выключен или статей нет — раздела нет вовсе. --}}
+{{#if site.features.blog}}
+  {{#if home.articles.length}}
+    {{#> carousel sectionClass="py-12 lg:py-20" title=(t "home.blogTitle")
+        linkHref="/blog/" linkLabel="catalog.viewAll"}}
+      {{#each home.articles}}
+        <div class="swiper-slide">{{> article-card ../empty article=this}}</div>
+      {{/each}}
+    {{/carousel}}
+  {{/if}}
+{{/if}}

@@ -1,0 +1,9 @@
+{{~!-- Тексты ошибок формы одной строкой атрибутов: их читает слой валидации
+       (src/scripts/form.js), потому что испанских строк в скриптах не бывает
+       (принцип 27). Список живёт здесь, а не в каждой форме, — иначе четыре формы
+       проекта разошлись бы формулировками. Отдельным компонентом не является. --~}}
+data-msg-required="{{t "errors.required"}}"
+data-msg-email="{{t "errors.emailFormat"}}"
+data-msg-email-suggest="{{t "errors.emailSuggest" domain="{domain}"}}"
+data-msg-short="{{t "errors.tooShort"}}"
+data-msg-check="{{t "errors.check"}}"

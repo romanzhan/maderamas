@@ -1,0 +1,33 @@
+{{!-- Уведомление (компоненты.md 5.5, сложные-узлы.md п. 8). Один механизм на весь сайт:
+      кто угодно зовёт `$store.toast.notify({...})`, разметка живёт только здесь.
+      Позиция закреплена реестром: телефон — низ по центру над CTA-полосой (её высоту
+      учитывает `bottom-safe`), компьютер — верхний правый угол.
+      Наведение приостанавливает таймер; текст объявляет скринридер. --}}
+<div
+  x-data
+  data-overlay-keep
+  x-show="$store.toast.visible"
+  x-cloak
+  x-transition.opacity.duration.200ms
+  x-on:mouseenter="$store.toast.hold()"
+  x-on:mouseleave="$store.toast.resume()"
+  role="status"
+  aria-live="polite"
+  class="bottom-safe fixed inset-x-0 z-50 flex justify-center px-4
+    lg:inset-x-auto lg:top-4 lg:right-4 lg:bottom-auto lg:justify-end"
+>
+  <div
+    class="surface-dark flex max-w-full items-center gap-4 rounded-lg bg-charcoal px-4 py-3
+      text-cream shadow-lg"
+  >
+    <span class="min-w-0 text-small" x-text="$store.toast.text"></span>
+    <button
+      type="button"
+      x-show="$store.toast.actionLabel"
+      x-on:click="$store.toast.run()"
+      x-text="$store.toast.actionLabel"
+      class="shrink-0 text-small font-medium underline underline-offset-2
+        hover:text-cream/75"
+    ></button>
+  </div>
+</div>

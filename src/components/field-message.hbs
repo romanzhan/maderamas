@@ -1,0 +1,45 @@
+{{!-- Сообщение под полем: ошибка → предупреждение → подсказка (формы-и-поля.md п. 2).
+      Один блок на все поля проекта: поле, селект и многострочное поле показывают его
+      одинаково. До 27.08.2026 он был написан в каждом из трёх файлов и успел разойтись —
+      знак ошибки стоял по центру строки только в одном из них (принцип 16).
+      Опции: error | warning | hint — ключи словаря; domain — подстановка в текст;
+      live + name — живая форма: текст ошибки и подсказки ведёт слой валидации
+      (src/scripts/form.js), а вид строки остаётся этим же. Подсказка домена — кнопка:
+      её принимают в одно нажатие (формы-и-поля.md п. 2, сост. 13). --}}
+{{#if live}}
+  <span class="flex items-start gap-2">
+    <span x-show="errors['{{name}}']" x-cloak class="icon-line shrink-0 text-error">
+      {{> icon empty name="circle-alert" class="size-4"}}
+    </span>
+    <span x-show="errors['{{name}}']" x-cloak class="text-error" x-text="errors['{{name}}']"></span>
+
+    <button
+      type="button"
+      x-show="!errors['{{name}}'] && warnings['{{name}}']"
+      x-cloak
+      x-on:click="acceptSuggestion('{{name}}')"
+      class="text-left text-warning underline underline-offset-2"
+      x-text="warnings['{{name}}']"
+    ></button>
+
+    {{#if hint}}
+      <span
+        x-show="!errors['{{name}}'] && !warnings['{{name}}']"
+        class="text-charcoal/70"
+      >{{t hint}}</span>
+    {{/if}}
+  </span>
+{{else}}
+  <span class="flex items-start gap-2">
+    {{#if error}}
+      <span class="icon-line shrink-0 text-error">
+        {{> icon empty name="circle-alert" class="size-4"}}
+      </span>
+      <span class="text-error">{{t error domain=domain}}</span>
+    {{else if warning}}
+      <span class="text-warning">{{t warning domain=domain}}</span>
+    {{else if hint}}
+      <span class="text-charcoal/70">{{t hint}}</span>
+    {{/if}}
+  </span>
+{{/if}}

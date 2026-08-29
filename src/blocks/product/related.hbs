@@ -1,0 +1,15 @@
+{{!-- Похожие товары (страницы.md §3). Пусто — блока нет (состояния-экранов.md п. 3).
+      Сеткой, а не лентой: их не больше четырёх, и они помещаются в ряд. --}}
+{{#if product.related.length}}
+  <section class="page-container mt-12 lg:mt-16">
+    <h2 class="font-display text-h3 lg:text-h3-lg">{{t "product.related"}}</h2>
+    <div class="mt-6 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 lg:gap-6 xl:grid-cols-4">
+      {{#each product.related}}
+        {{> product-card ../empty id=id name=name price=price old=old discount=discount priceFrom=priceFrom
+            hasOptions=hasOptions href=href inStock=inStock isNew=isNew rating=rating
+            reviewsCount=reviewsCount imageId=imageId imageIdHover=imageIdHover
+            freeShipping=freeShipping}}
+      {{/each}}
+    </div>
+  </section>
+{{/if}}

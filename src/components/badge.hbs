@@ -1,0 +1,12 @@
+{{!-- Бейдж (компоненты.md 3.3). Виды: discount (скидка — малиновый) · isNew (Nuevo —
+      синий) · status (Sin stock — тёмный) · info (envío gratis — зелёный).
+      Цвета закреплены за смыслом, а не выбираются по месту: цвет текста на каждом
+      промо-фоне задан в визуальная-система.md §2.2.
+      Больше двух бейджей на карточке не вешаем: приоритет скидка → статус → инфо. --}}
+<span
+  class="inline-flex h-6 items-center rounded-sm px-2 text-caption whitespace-nowrap
+    {{#if discount}}bg-promo-pink text-cream{{/if}}
+    {{#if isNew}}bg-promo-blue text-cream{{/if}}
+    {{#if status}}bg-charcoal text-cream{{/if}}
+    {{#if info}}bg-promo-green text-cream{{/if}}"
+>{{#if text}}{{text}}{{else}}{{t label}}{{/if}}</span>

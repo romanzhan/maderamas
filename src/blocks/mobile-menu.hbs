@@ -1,0 +1,65 @@
+{{!-- Бургер-меню (компоненты.md 4.2, сложные-узлы.md п. 2). Раскрывается под шапкой,
+      а не поверх неё (решение владельца 27.08.2026): логотип, поиск и корзина остаются
+      на местах, меняется только бургер — он становится крестиком. Поэтому шапка здесь
+      не «фон», а часть механики, и inert на неё не ставится.
+      Разделы с заголовками и линиями между ними: одним списком в рост экрана панель
+      выглядела пустой (замечание владельца). Второй уровень («Ayuda» за стрелкой)
+      убран по той же причине — теперь помощь видно сразу.
+      Избранного здесь больше нет: с 27.08.2026 сердце стоит в шапке на всех ширинах,
+      и вход в него из меню был бы вторым путём к одной странице.
+      Окно растянули до компьютера — панель там не нужна, и механика её закрывает,
+      иначе страница осталась бы под замком. --}}
+<div x-data="overlayPanel('menu', '(min-width: 1024px)', true)" x-cloak>
+  <div
+    x-show="open"
+    x-on:click="close()"
+    x-transition.opacity.duration.200ms
+    class="fixed inset-x-0 bottom-0 top-(--overlay-below) z-30 bg-charcoal/40 lg:hidden"
+    aria-hidden="true"
+  ></div>
+
+  <div
+    x-show="open"
+    x-on:click="follow($event)"
+    x-on:keydown.escape.window="open && close()"
+    x-transition:enter="transition duration-200 ease-out"
+    x-transition:enter-start="-translate-y-4 opacity-0"
+    x-transition:enter-end="translate-y-0 opacity-100"
+    x-transition:leave="transition duration-200 ease-in"
+    x-transition:leave-start="translate-y-0 opacity-100"
+    x-transition:leave-end="-translate-y-4 opacity-0"
+    id="menu-movil"
+    class="fixed inset-x-0 bottom-0 top-(--overlay-below) z-30 flex flex-col bg-cream
+      md:right-auto md:max-w-100 lg:hidden"
+  >
+    <div class="scrollbar-soft flex-1 overflow-y-auto overscroll-contain">
+      <nav class="page-container py-4" aria-label="{{t "nav.main"}}">
+        <p class="text-caption text-charcoal/70 uppercase">{{t "footer.tienda"}}</p>
+        <ul class="-mx-3 mt-2 flex flex-col">
+          {{#each nav.main}}
+            <li>
+              {{> nav-row ../empty empty=../empty href=href label=label current=current class="h-12"}}
+            </li>
+          {{/each}}
+        </ul>
+      </nav>
+
+      <div class="page-container"><div class="border-t border-line"></div></div>
+
+      <nav class="page-container py-4" aria-label="{{t "nav.ayuda"}}">
+        <p class="text-caption text-charcoal/70 uppercase">{{t "nav.ayuda"}}</p>
+        <ul class="-mx-3 mt-2 flex flex-col">
+          {{#each nav.help}}
+            <li>
+              {{> nav-row ../empty empty=../empty href=href label=label current=current class="h-12"}}
+            </li>
+          {{/each}}
+        </ul>
+      </nav>
+    </div>
+
+    <div class="page-container pb-safe shrink-0 border-t border-line py-3">
+      {{> social-links hover="hover:bg-sand-hover"}}
+    </div>
+  </div>
+</div>

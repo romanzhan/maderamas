@@ -1,0 +1,68 @@
+{
+  "features": {
+    "cuotas": false,
+    "secondCurrency": false,
+    "secondLanguage": false,
+    "blog": true,
+    "wishlist": true,
+    "promoCodes": false,
+    "reviews": true
+  },
+  "cuotas": {
+    "count": 6,
+    "interestFree": true
+  },
+  "currencies": {
+    "base": "ARS",
+    "second": "USD",
+    "rate": null
+  },
+  "languages": {
+    "base": "es",
+    "second": "en"
+  },
+  "cart": {
+    "maxQtyPerItem": 10
+  },
+  "catalog": {
+    "newBadgeDays": 30
+  },
+  "announcement": {
+    "enabled": true,
+    "text": "Seguinos en Instagram y mirá nuestras sillas en casas reales",
+    "textShort": "Seguinos en Instagram",
+    "icon": "instagram",
+    "url": "https://instagram.com/madera.mas.arg",
+    "cta": "Seguir"
+  },
+  "promo": {
+    "enabled": true,
+    "title": "Envío gratis a todo el país",
+    "text": "En todas las sillas y accesorios, sin mínimo de compra.",
+    "image": null,
+    "url": "/sillas/"
+  },
+  "contacts": {
+    "whatsapp": "5491127915729",
+    "phone": "+54 9 11 2791-5729",
+    "email": "madera.mas.arg@gmail.com",
+    "instagram": "https://instagram.com/madera.mas.arg",
+    "address": null,
+    "hours": null
+  },
+  "shipping": {
+    "cost": 0
+  },
+  "seo": {
+    "siteUrl": "https://www.maderamas.com.ar",
+    "defaultOgImage": "og-brand",
+    "homeTitle": "Madera Más — Sillas evolutivas de madera",
+    "homeDescription": "Sillas evolutivas de madera que se regulan en altura y profundidad y acompañan al chico durante años. Fabricación propia en Buenos Aires y envío gratis."
+  },
+  "legal": {
+    "cuit": null,
+    "razonSocial": null,
+    "dataFiscalUrl": null,
+    "ivaRate": 21
+  }
+}

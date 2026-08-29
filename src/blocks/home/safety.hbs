@@ -1,0 +1,19 @@
+{{!-- Безопасность (страницы.md §1, блок 7). Формулировки — из собственных материалов
+      бренда, а не придуманы: те же четыре довода он печатает в своих коллажах.
+      Ключи общие с карточкой товара (product.safety.*), второго набора текстов нет. --}}
+<section class="bg-sand">
+  <div class="page-container py-12 lg:py-20">
+    <h2 class="font-display text-h2 lg:text-h2-lg">{{t "home.safetyTitle"}}</h2>
+
+    <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:mt-8 lg:grid-cols-4">
+      {{> feature-item empty green=true icon="shield-check" title="product.safetyCorners"
+          text="product.safetyCornersText"}}
+      {{> feature-item empty blue=true icon="ruler" title="product.safetyStable"
+          text="product.safetyStableText"}}
+      {{> feature-item empty yellow=true icon="sparkles" title="product.safetyHardware"
+          text="product.safetyHardwareText"}}
+      {{> feature-item empty pink=true icon="baby" title="product.safetyPosture"
+          text="product.safetyPostureText"}}
+    </div>
+  </div>
+</section>

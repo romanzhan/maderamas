@@ -1,0 +1,14 @@
+{{!-- Строка меню (компоненты.md 4.1 и 4.2). Одна разметка на шапку и бургер-панель:
+      высоту и отступы задаёт вызывающий (шапка — 40, панель — 48).
+      Текущий пункт — глиной; под курсором строка подсвечивается, и текст на подсветке
+      становится тёмным: глина на sand-hover даёт 4.11 при норме 4.5
+      (визуальная-система.md §2.1). --}}
+<a
+  href="{{href}}"
+  class="flex items-center rounded-lg px-3 whitespace-nowrap hover:bg-sand-hover {{class}}
+    {{#if current}}text-clay hover:text-charcoal{{/if}}"
+  {{#if current}}aria-current="page"{{/if}}
+>
+  {{#if icon}}{{> icon empty name=icon class="size-5"}}{{/if}}
+  {{label}}
+</a>

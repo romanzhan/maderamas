@@ -1,0 +1,133 @@
+{{!-- Страница результатов поиска (страницы.md §4, состояния — состояния-экранов.md п. 4).
+      Товары, категории и статьи отрисованы все и сразу, скрипт прячет несовпавшее:
+      второй разметки карточки на сайте быть не должно.
+      Строки с подстановкой лежат в data-атрибутах — что наберут, заранее неизвестно,
+      а испанских строк в скриптах не бывает.
+      Noindex: страница служебная (seo.md п. 2). --}}
+<main id="contenido" class="page-container py-6 lg:py-10" x-data="searchResults()">
+  {{> breadcrumbs empty items=breadcrumbs.items plain=breadcrumbs.plain}}
+
+  <h1
+    class="mt-4 font-display text-h1 lg:text-h1-lg"
+    data-found="{{t "search.resultsTitle" query="{query}"}}"
+    data-plain="{{t "nav.openSearch"}}"
+    x-text="term ? $el.dataset.found.replace('{query}', () => term) : $el.dataset.plain"
+  >{{t "nav.openSearch"}}</h1>
+
+  <div class="mt-6">
+    {{> search-form empty id="buscar-q" bind="draft"}}
+  </div>
+
+  {{!-- До ввода — приглашение и категории магазина: тупика на пустой странице нет
+        (состояния-экранов.md п. 4, то же правило, что у панели поиска в шапке) --}}
+  {{!-- x-cloak: главный вход сюда — адрес с запросом, и приглашение на нём
+        показываться не должно вовсе (чеклист-приёмки.md Г) --}}
+  <div x-show="!term" x-cloak>
+    <p class="mt-6 max-w-prose text-charcoal/70">{{t "search.pageLead"}}</p>
+
+    <section class="mt-8">
+      <h2 class="text-h4 lg:text-h4-lg">{{t "search.groupCategories"}}</h2>
+      <ul class="mt-4 flex flex-wrap gap-3">
+        {{#each nav.categories}}
+          <li>
+            <a
+              href="{{href}}"
+              class="inline-flex min-h-11 items-center rounded-lg border border-charcoal px-4
+                transition-colors duration-150 hover:bg-sand-hover active:bg-sand-active"
+            >{{label}}</a>
+          </li>
+        {{/each}}
+      </ul>
+    </section>
+  </div>
+
+  {{!-- Одна буква: поиск не выполняется, но человек знает почему --}}
+  <p x-show="term.length === 1" x-cloak class="mt-6 text-charcoal/70">{{t "search.minChars"}}</p>
+
+  {{!-- Индекс грузится: заготовки повторяют геометрию будущих карточек --}}
+  <div x-show="status === 'loading'" x-cloak class="mt-8">
+    <div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 lg:gap-6 xl:grid-cols-4"
+      aria-hidden="true">
+      <div class="h-72 rounded-xl bg-sand"></div>
+      <div class="h-72 rounded-xl bg-sand"></div>
+      <div class="hidden h-72 rounded-xl bg-sand lg:block"></div>
+      <div class="hidden h-72 rounded-xl bg-sand xl:block"></div>
+    </div>
+    <p x-show="slow" class="mt-4 text-small text-charcoal/70">{{t "common.stillLoading"}}</p>
+  </div>
+
+  {{!-- Индекс не загрузился: сообщение по сквозному шаблону, строка ввода не заперта --}}
+  <div x-show="status === 'error'" x-cloak class="mt-8 flex flex-col items-start gap-3">
+    <p class="flex items-start gap-2 text-error">
+      <span class="icon-line shrink-0">{{> icon empty name="circle-alert" class="size-4"}}</span>
+      {{t "errors.network"}}
+    </p>
+    {{> button empty secondary=true sizeMd=true label="common.retry" onClick="load()"}}
+  </div>
+
+  <div x-show="status === 'ready'" x-cloak>
+    <p
+      class="sr-only"
+      role="status"
+      data-one="{{t "search.resultsOne"}}"
+      data-many="{{t "search.resultsMany" count="{count}"}}"
+      x-text="count === 1 ? $el.dataset.one : $el.dataset.many.replace('{count}', () => count)"
+    ></p>
+
+    {{!-- Ничего не найдено: не тупик, а выход в каталог --}}
+    <div x-show="count === 0" class="mt-10 text-center">
+      <p
+        class="mx-auto max-w-prose text-lead"
+        data-empty="{{t "search.empty" query="{query}"}}"
+        x-text="$el.dataset.empty.replace('{query}', () => term)"
+      ></p>
+      <div class="mt-4 flex justify-center">
+        {{> button empty primary=true sizeMd=true label="search.emptyCta" href=nav.catalogHref}}
+      </div>
+    </div>
+
+    <section x-show="found.products.length" class="mt-8">
+      <h2 class="text-h4 lg:text-h4-lg">{{t "search.groupProducts"}}</h2>
+      <div
+        class="mt-4 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 lg:gap-6 xl:grid-cols-4"
+      >
+        {{#each cards}}
+          <div x-show="has('products', '{{id}}')">
+            {{> product-card ../empty id=id name=name price=price old=old discount=discount priceFrom=priceFrom
+                hasOptions=hasOptions href=href inStock=inStock isNew=isNew rating=rating
+                reviewsCount=reviewsCount imageId=imageId imageIdHover=imageIdHover
+                freeShipping=freeShipping}}
+          </div>
+        {{/each}}
+      </div>
+    </section>
+
+    <section x-show="found.categories.length" class="mt-10">
+      <h2 class="text-h4 lg:text-h4-lg">{{t "search.groupCategories"}}</h2>
+      <ul class="mt-4 flex flex-wrap gap-3">
+        {{#each nav.categories}}
+          <li x-show="has('categories', '{{id}}')" x-cloak>
+            <a
+              href="{{href}}"
+              class="inline-flex min-h-11 items-center rounded-lg border border-charcoal px-4
+                transition-colors duration-150 hover:bg-sand-hover active:bg-sand-active"
+            >{{label}}</a>
+          </li>
+        {{/each}}
+      </ul>
+    </section>
+
+    {{#if site.features.blog}}
+      <section x-show="found.articles.length" class="mt-10">
+        <h2 class="text-h4 lg:text-h4-lg">{{t "search.groupArticles"}}</h2>
+        <div class="mt-4 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+          {{#each articles}}
+            <div x-show="has('articles', '{{id}}')">
+              {{> article-card ../empty article=this}}
+            </div>
+          {{/each}}
+        </div>
+      </section>
+    {{/if}}
+  </div>
+</main>

@@ -1,0 +1,43 @@
+{{!-- Botón de Arrepentimiento (страницы.md §16, норма — seo.md п. 8: Disposición 954/2025).
+      Форма без регистрации, ответ с кодом обращения в 24 часа тем же каналом.
+      Номер заказа не обязателен: норма запрещает делать отказ от покупки сложнее,
+      чем саму покупку, — поэтому хватает контакта.
+      Обвязка формы (проверка, ловушка для ботов, строка о приватности, блок успеха
+      с номером обращения) — общая, в form-shell. --}}
+<main id="contenido" class="page-container py-6 lg:py-10">
+  {{> breadcrumbs empty items=breadcrumbs.items plain=breadcrumbs.plain}}
+
+  <div class="mt-4 flex flex-col gap-4">
+    <h1 class="max-w-prose font-display text-h1 lg:text-h1-lg">{{t "legal.arrepentimiento"}}</h1>
+    <p class="max-w-prose text-lead text-charcoal/70">{{t "arrepentimiento.lead"}}</p>
+  </div>
+
+  <div class="mt-8 lg:mt-12">
+    {{#> form-shell code=true submitLabel="arrepentimiento.submit"
+        successTitle="arrepentimiento.successTitle" successText="arrepentimiento.successText"
+        againLabel="common.goHome" href="/"}}
+      {{> field empty live=true id="arr-nombre" name="nombre" label="fields.name"
+          required=true autocomplete="name" pattern=(formPattern "nombre")
+          errorPattern="errors.nameFormat"}}
+
+      {{> field empty live=true id="arr-email" name="email" label="fields.email"
+          type="email" inputmode="email" required=true autocomplete="email" checkValid=true}}
+
+      {{> field empty live=true id="arr-telefono" name="telefono" label="fields.phone"
+          type="tel" inputmode="tel" optional=true autocomplete="tel" format="phone"
+          pattern=(formPattern "telefono") errorPattern="errors.phoneFormat" hint="fields.phoneHint" checkValid=true}}
+
+      {{> field empty live=true id="arr-pedido" name="pedido" label="fields.orderNumber"
+          optional=true hint="arrepentimiento.orderHint"}}
+
+      {{> textarea empty live=true id="arr-motivo" name="motivo" label="fields.reason"
+          optional=true max=500 hint="arrepentimiento.reasonHint"}}
+    {{/form-shell}}
+  </div>
+
+  <div class="mt-12 max-w-prose lg:mt-16">
+    <p class="text-charcoal/70">
+      {{> link empty inline=true href="/cambios-y-devoluciones/" label="footer.devoluciones"}}
+    </p>
+  </div>
+</main>

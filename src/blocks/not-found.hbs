@@ -1,0 +1,43 @@
+{{!-- 404 (страницы.md §15): человеческий текст → поиск → категории → на главную.
+      Тупика нет: с этой страницы ведут три разные дороги.
+      HTTP-код отдаёт хостинг (seo.md п. 9) — разметка о нём не знает.
+      Тот же блок показывается вместо страницы избранного, когда флаг wishlist выключен:
+      такой страницы не существует, и притворяться пустым списком она не должна. --}}
+<main id="contenido" class="page-container py-12 lg:py-20">
+  <div class="mx-auto flex max-w-prose flex-col items-center gap-6 text-center">
+    <span class="inline-flex text-charcoal/45">
+      {{> icon empty name="circle-alert" class="size-12"}}
+    </span>
+
+    <div class="flex flex-col gap-3">
+      <h1 class="font-display text-h1 lg:text-h1-lg">{{t "notFound.title"}}</h1>
+      <p class="text-lead text-charcoal/70">{{t "notFound.text"}}</p>
+    </div>
+
+    <div class="mt-2 w-full">
+      <h2 class="text-h4 lg:text-h4-lg">{{t "notFound.searchTitle"}}</h2>
+      <div class="mt-3 flex justify-center">
+        {{> search-form empty id="nf-buscar"}}
+      </div>
+    </div>
+
+    <div class="mt-2 w-full">
+      <h2 class="text-h4 lg:text-h4-lg">{{t "notFound.categoriesTitle"}}</h2>
+      <ul class="mt-3 flex flex-wrap justify-center gap-3">
+        {{#each nav.categories}}
+          <li>
+            <a
+              href="{{href}}"
+              class="inline-flex min-h-11 items-center rounded-lg border border-charcoal px-4
+                transition-colors duration-150 hover:bg-sand-hover active:bg-sand-active"
+            >{{label}}</a>
+          </li>
+        {{/each}}
+      </ul>
+    </div>
+
+    <div class="mt-2">
+      {{> button empty primary=true sizeLg=true label="common.goHome" href="/"}}
+    </div>
+  </div>
+</main>

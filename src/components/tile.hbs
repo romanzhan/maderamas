@@ -1,0 +1,37 @@
+{{!-- Плитка (компоненты.md 3.7): фото на подложке → заголовок → пояснение → цена «от».
+      Виды: категория и подбор («что нужно ребёнку сегодня»).
+      Обязательные: href, title. Опции: text, imageId, imageAlt, price, priceFrom;
+      промо-подложка — один из флагов blue | pink | yellow | green плюс onDark
+      (он приходит вместе с флагом и выключен только у жёлтого).
+
+      Цвет текста на промо-фоне не выбирается: он закреплён за тоном
+      в визуальная-система.md §2.2 — на жёлтом тёмный, на остальных светлый.
+      Без флагов плитка песочная. Фото лежит на светлой подложке внутри: снимок
+      прямо на цветном фоне спорит с ним и теряет собственный тон. --}}
+<a
+  href="{{href}}"
+  class="group flex h-full flex-col gap-3 rounded-xl p-4 transition-colors duration-150
+    {{#if blue}}surface-dark bg-promo-blue text-cream{{/if}}
+    {{#if pink}}surface-dark bg-promo-pink text-cream{{/if}}
+    {{#if yellow}}bg-promo-yellow text-charcoal{{/if}}
+    {{#if green}}surface-dark bg-promo-green text-cream{{/if}}
+    {{#unless blue}}{{#unless pink}}{{#unless yellow}}{{#unless green}}
+      bg-sand text-charcoal hover:bg-sand-active
+    {{/unless}}{{/unless}}{{/unless}}{{/unless}}"
+>
+  <div class="overflow-hidden rounded-lg bg-cream">
+    {{> picture empty id=imageId alt=imageAlt class="aspect-square w-full object-cover"
+        sizes="(min-width: 1024px) 30vw, 100vw"}}
+  </div>
+
+  <h3 class="text-h4 lg:text-h4-lg">{{title}}</h3>
+  {{#if text}}
+    <p class="text-small {{#if onDark}}text-cream/75{{else}}text-charcoal/70{{/if}}">{{text}}</p>
+  {{/if}}
+
+  {{#if price}}
+    <div class="mt-auto">
+      {{> price empty value=price compact=true from=priceFrom onDark=onDark}}
+    </div>
+  {{/if}}
+</a>

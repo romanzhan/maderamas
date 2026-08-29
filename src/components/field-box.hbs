@@ -1,0 +1,13 @@
+{{~!-- Коробка поля одной строкой: её делят обычное поле и строка поиска, поэтому список
+       живёт здесь, а не в двух местах (принцип 16). Отдельным компонентом не является.
+       Отступы задаёт вызывающий: у поля они одинаковые с обеих сторон, у строки поиска
+       слева иконка, справа крестик. Опция: error.
+       Цвет рамки печатается всегда, в том числе у полей живой формы: без него до старта
+       Alpine рамка достаётся от `border: 0 solid` сброса, то есть тёмная, и все поля
+       на секунду мигают (поймано ревью 28.08.2026). Живая форма перекрашивает рамку
+       объектной формой x-bind:class — она снимает эти же классы, когда появляется
+       ошибка. --~}}
+field-autofill h-12 w-full rounded-md border bg-sand text-body ring-inset
+placeholder:text-charcoal/70 focus:ring-1 focus:outline-none lg:h-11
+{{#if error}}border-error focus:border-error focus:ring-error{{/if}}
+{{#unless error}}border-border focus:border-clay focus:ring-clay{{/unless}}
