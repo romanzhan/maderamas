@@ -2,13 +2,13 @@
       Один экран секциями: контакт → доставка → оплата → примечание. Итог справа липкий
       на компьютере и свёрнутый сверху на телефоне; внизу телефона — закреплённая полоса
       с суммой и отправкой.
-      Имена полей — стандартные WooCommerce (`billing_*`, `order_comments`), обёртки несут
-      классы `form-row` и `woocommerce-input-wrapper`: перенос в тему должен быть
-      переносом классов, а не переверсткой.
+      Имена полей (`billing_*`, `order_comments`) — контракт заказа для сервера
+      (бэкенд.md §4); классы `form-row` и `woocommerce-input-wrapper` на обёртках —
+      наследие снятого плана WooCommerce, ни на что не влияют (сложные-узлы.md п. 5).
       Способ доставки один — самовывоза нет (решение владельца 26.08.2026), поэтому
-      тумблера доставки не существует. Оплата — макет по структуре классического Woo:
-      радиогруппа со способом и описанием, полей ввода нет; настоящую форму даст плагин
-      Mercado Pago после переноса.
+      тумблера доставки не существует. Оплата: радиогруппа с единственным способом,
+      полей ввода нет — карту покупатель вводит на странице Mercado Pago, куда его уводит
+      сервер после подтверждения заказа (бэкенд.md §5).
       Шапка на этой странице упрощённая, промо-полосы, меню, поиска и плавающей кнопки
       нет — отвлекающего на чекауте быть не должно. --}}
 <main
@@ -68,15 +68,17 @@
         <h2 class="font-display text-h3 lg:text-h3-lg">{{t "checkout.contact"}}</h2>
 
         <div class="grid gap-4 sm:grid-cols-2">
+          {{!-- Пределы длины — те же, что проверяет сервер (бэкенд.md §4): иначе он
+                отказал бы общим сообщением там, где форма могла подсказать заранее --}}
           {{> field empty live=true woo=true id="co-nombre" name="billing_first_name"
-              label="fields.name" required=true autocomplete="given-name"
+              label="fields.name" required=true autocomplete="given-name" maxlength=60
               pattern=(formPattern "nombre") errorPattern="errors.nameFormat"}}
           {{> field empty live=true woo=true id="co-apellido" name="billing_last_name"
-              label="fields.lastName" required=true autocomplete="family-name"
+              label="fields.lastName" required=true autocomplete="family-name" maxlength=60
               pattern=(formPattern "nombre") errorPattern="errors.nameFormat"}}
           {{> field empty live=true woo=true id="co-email" name="billing_email"
               label="fields.email" type="email" inputmode="email" required=true
-              autocomplete="email" checkValid=true}}
+              autocomplete="email" checkValid=true maxlength=120}}
           {{> field empty live=true woo=true id="co-telefono" name="billing_phone"
               label="fields.phone" type="tel" inputmode="tel" required=true
               autocomplete="tel" format="phone" pattern=(formPattern "telefono")
@@ -106,10 +108,10 @@
         <div class="grid gap-4 sm:grid-cols-2">
           <div class="sm:col-span-2">
             {{> field empty live=true woo=true id="co-calle" name="billing_address_1"
-                label="fields.street" required=true autocomplete="street-address"}}
+                label="fields.street" required=true autocomplete="street-address" maxlength=120}}
           </div>
           {{> field empty live=true woo=true id="co-piso" name="billing_address_2"
-              label="fields.floor" optional=true autocomplete="address-line2"}}
+              label="fields.floor" optional=true autocomplete="address-line2" maxlength=60}}
           {{> field empty live=true woo=true id="co-cp" name="billing_postcode"
               label="fields.zip" required=true autocomplete="postal-code" format="zip"
               pattern=(formPattern "cp") errorPattern="errors.zipFormat"}}
@@ -119,7 +121,7 @@
           {{!-- Для CABA подпись меняется на «Barrio» (формы-и-поля.md п. 4) --}}
           {{> field empty live=true woo=true id="co-localidad" name="billing_city"
               label="fields.city" labelAlt="fields.cityCaba" labelAltWhen="province === 'C'"
-              required=true autocomplete="address-level2"}}
+              required=true autocomplete="address-level2" maxlength=80}}
           {{> field empty live=true woo=true id="co-dni" name="billing_dni" label="fields.dni"
               inputmode="numeric" required=true format="dni" pattern=(formPattern "dni")
               errorPattern="errors.dniFormat" hint="fields.dniHint"}}
@@ -133,8 +135,8 @@
       <section class="flex flex-col gap-4">
         <h2 class="font-display text-h3 lg:text-h3-lg">{{t "checkout.payment"}}</h2>
 
-        {{!-- Макет по структуре классического Woo: способ выбран, полей ввода нет —
-              оплата открывается после подтверждения заказа --}}
+        {{!-- Способ один и выбран, полей ввода нет — оплата открывается на странице
+              Mercado Pago после подтверждения заказа (бэкенд.md §5) --}}
         <div class="rounded-xl border border-clay bg-cream p-4">
           {{> radio empty name="payment_method" value="mercadopago" checked=true
               label="checkout.mercadoPago"}}

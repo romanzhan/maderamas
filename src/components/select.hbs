@@ -7,8 +7,8 @@
       live — список живой формы: рамку и текст ошибки ведёт слой валидации
       (src/scripts/form.js); значение по-прежнему хранит спрятанный нативный select,
       поэтому «не выбрано» ловится штатным Constraint API.
-      woo — обёртки получают классы классического чекаута WooCommerce
-      (сложные-узлы.md п. 5). --}}
+      woo — обёртки получают классы `form-row` и `woocommerce-input-wrapper`: наследие
+      снятого плана переноса в WooCommerce, ни на что не влияют (сложные-узлы.md п. 5). --}}
 <div
   class="flex flex-col {{#unless compact}}gap-2{{/unless}} {{#if woo}}form-row{{/if}}"
   id="{{id}}-field"

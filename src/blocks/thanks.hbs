@@ -1,53 +1,113 @@
-{{!-- «Спасибо» (страницы.md §8). Номер заказа приходит от чекаута через sessionStorage;
-      прямой заход без заказа уводит на главную — показывать здесь нечего.
-      Корзина очищается при открытии этой страницы, а не при отправке: заказ считается
-      оформленным, когда покупатель сюда дошёл.
-      С WooCommerce страница станет штатной order-received, поэтому блоки те же:
-      номер → что дальше → контакты → «продолжить покупки». --}}
-<main id="contenido" class="page-container py-6 pb-12 lg:py-10 lg:pb-20" x-data="thanksPage()">
-  <div x-show="ready" x-cloak>
-    {{> breadcrumbs empty items=breadcrumbs.items plain=breadcrumbs.plain}}
+{{!-- «Спасибо» (страницы.md §8, бэкенд.md §8). Токен заказа приходит в адресе (?pedido=…)
+      со страницы оплаты Mercado Pago, статус — с сервера; прямой заход без токена или
+      с незнакомым токеном уводит на главную. Корзина и черновик чекаута очищаются, когда
+      оплата прошла или ждёт подтверждения; вернувшийся без оплаты сохраняет и то, и другое —
+      заказ уже записан на сервере, и оплатить его можно той же ссылкой.
+      Блоки: состояние оплаты → номер → что дальше → контакты → «продолжить покупки».
+      Заголовок и подзаголовок зависят от статуса: строки словаря отдаются data-атрибутами,
+      а скрипт выбирает нужную (испанских строк в скриптах не бывает). --}}
+<main
+  id="contenido"
+  class="page-container py-6 pb-12 lg:py-10 lg:pb-20"
+  x-data="thanksPage()"
+  data-order="{{t "thanks.order" n="{n}"}}"
+  data-pay="{{t "thanks.pay"}}"
+  data-retry-pay="{{t "thanks.retryPay"}}"
+  data-title-paid="{{t "thanks.title"}}"
+  data-lead-paid="{{t "thanks.lead"}}"
+  data-title-pending="{{t "thanks.pendingTitle"}}"
+  data-lead-pending="{{t "thanks.pendingLead"}}"
+  data-title-created="{{t "thanks.createdTitle"}}"
+  data-lead-created="{{t "thanks.createdLead"}}"
+  data-title-rejected="{{t "thanks.rejectedTitle"}}"
+  data-lead-rejected="{{t "thanks.rejectedLead"}}"
+  data-title-cancelled="{{t "thanks.cancelledTitle"}}"
+  data-lead-cancelled="{{t "thanks.cancelledLead"}}"
+  data-title-refunded="{{t "thanks.refundedTitle"}}"
+  data-lead-refunded="{{t "thanks.refundedLead"}}"
+>
+  {{> breadcrumbs empty items=breadcrumbs.items plain=breadcrumbs.plain}}
 
-    <div class="mx-auto mt-8 flex max-w-prose flex-col items-center gap-6 lg:mt-12">
-      <span
-        class="flex size-14 items-center justify-center rounded-full bg-success-bg text-success"
-      >{{> icon empty name="check" class="size-6"}}</span>
-
-      <div class="flex flex-col items-center gap-3 text-center">
-        <h1 class="font-display text-h1 lg:text-h1-lg">{{t "thanks.title"}}</h1>
-        <p class="text-lead text-charcoal/70">{{t "thanks.lead"}}</p>
-      </div>
-
-      {{!-- Номер приходит из браузера, поэтому строка словаря отдаётся в data-атрибуте --}}
-      <p
-        class="w-full rounded-xl bg-sand px-4 py-3 text-center font-medium tabular-nums"
-        data-order="{{t "thanks.order" n="{n}"}}"
-        x-text="$el.dataset.order.replace('{n}', () => number)"
-      ></p>
-
-      <section class="w-full">
-        <h2 class="font-display text-h3 lg:text-h3-lg">{{t "thanks.nextTitle"}}</h2>
-        <ul class="mt-4 flex flex-col gap-4">
-          <li>
-            {{> feature-item empty inline=true icon="truck" title="thanks.nextPrepare"}}
-          </li>
-          <li>
-            {{> feature-item empty inline=true icon="whatsapp" iconFilled=true
-                title="thanks.nextContact"}}
-          </li>
-        </ul>
-      </section>
-
-      <section class="w-full">
-        <h2 class="font-display text-h3 lg:text-h3-lg">{{t "thanks.contactTitle"}}</h2>
-        <div class="mt-4">
-          {{> contact-list}}
-        </div>
-      </section>
-
-      <div class="mt-2">
-        {{> button empty primary=true sizeLg=true label="thanks.continue" href=nav.catalogHref}}
-      </div>
+  <div class="mx-auto mt-8 flex max-w-prose flex-col items-center gap-6 lg:mt-12">
+    {{!-- Пока статус не пришёл — место под значок, заголовок и номер, чтобы страница
+          не прыгала при подмене. Мерцания нет: это анимация (принцип 12) --}}
+    <div x-show="state === 'loading'" role="status" class="flex w-full flex-col items-center gap-6">
+      <span class="sr-only">{{t "thanks.loading"}}</span>
+      <div aria-hidden="true" class="size-14 rounded-full bg-sand"></div>
+      <div aria-hidden="true" class="h-9 w-2/3 rounded-sm bg-sand"></div>
+      <div aria-hidden="true" class="h-12 w-full rounded-xl bg-sand"></div>
+      <p x-show="slow" x-cloak class="text-small text-charcoal/70">{{t "common.stillLoading"}}</p>
     </div>
+
+    {{!-- Статус не загрузился: заказ на месте, не хватает только связи --}}
+    <div x-show="state === 'failed'" x-cloak class="flex flex-col items-center gap-3">
+      <p role="alert" class="flex items-start gap-2 rounded-md bg-error-bg px-3 py-2 text-small text-error">
+        <span class="icon-line shrink-0">{{> icon empty name="circle-alert" class="size-4"}}</span>
+        {{t "errors.network"}}
+      </p>
+      {{> button empty secondary=true sizeMd=true label="common.retry" onClick="load()"}}
+    </div>
+
+    <template x-if="state === 'ready'">
+      <div class="flex w-full flex-col items-center gap-6">
+        {{!-- Значок и его цвет говорят о статусе раньше слов: зелёный — оплачено,
+              жёлтый — ждём денег, серый — заказа больше нет --}}
+        <span
+          class="flex size-14 items-center justify-center rounded-full"
+          x-bind:class="{
+            'bg-success-bg text-success': status === 'paid',
+            'bg-warning-bg text-warning': awaitingPayment,
+            'bg-sand text-charcoal/70': status === 'cancelled' || status === 'refunded',
+          }"
+        >
+          <span x-show="status === 'paid'">{{> icon empty name="check" class="size-6"}}</span>
+          <span x-show="status === 'pending'">{{> icon empty name="loader-circle" class="size-6"}}</span>
+          <span x-show="status === 'created' || status === 'rejected'">{{> icon empty name="circle-alert" class="size-6"}}</span>
+          <span x-show="status === 'cancelled'">{{> icon empty name="x" class="size-6"}}</span>
+          <span x-show="status === 'refunded'">{{> icon empty name="rotate-ccw" class="size-6"}}</span>
+        </span>
+
+        <div class="flex flex-col items-center gap-3 text-center">
+          <h1 class="font-display text-h1 lg:text-h1-lg" x-text="text('title')"></h1>
+          <p class="text-lead text-charcoal/70" x-text="text('lead')"></p>
+        </div>
+
+        <p
+          class="w-full rounded-xl bg-sand px-4 py-3 text-center font-medium tabular-nums"
+          x-text="orderLabel"
+        ></p>
+
+        {{!-- Оплатить или повторить оплату — той же ссылкой Mercado Pago, что и в первый раз --}}
+        <template x-if="order.payUrl">
+          <div>
+            {{> button empty primary=true sizeLg=true bindHref="order.payUrl" bindLabel="payLabel" label="thanks.pay"}}
+          </div>
+        </template>
+
+        <section class="w-full" x-show="inProgress">
+          <h2 class="font-display text-h3 lg:text-h3-lg">{{t "thanks.nextTitle"}}</h2>
+          <ul class="mt-4 flex flex-col gap-4">
+            <li>
+              {{> feature-item empty inline=true icon="truck" title="thanks.nextPrepare"}}
+            </li>
+            <li>
+              {{> feature-item empty inline=true icon="whatsapp" iconFilled=true
+                  title="thanks.nextContact"}}
+            </li>
+          </ul>
+        </section>
+
+        <section class="w-full">
+          <h2 class="font-display text-h3 lg:text-h3-lg">{{t "thanks.contactTitle"}}</h2>
+          <div class="mt-4">
+            {{> contact-list}}
+          </div>
+        </section>
+
+        <div class="mt-2">
+          {{> button empty primary=true sizeLg=true label="thanks.continue" href=nav.catalogHref}}
+        </div>
+      </div>
+    </template>
   </div>
 </main>

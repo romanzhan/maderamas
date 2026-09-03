@@ -40,6 +40,8 @@ jobs:
           test -n "${{ secrets.DEPLOY_PATH }}" || { echo 'Пустой путь заливки'; exit 1; }
           test -s dist/index.html || { echo 'Нет главной страницы'; exit 1; }
           test -s dist/.htaccess || { echo 'Нет правил сервера'; exit 1; }
+          test -s dist/api/index.php || { echo 'Нет сервера заказов'; exit 1; }
+          test -s dist/api/runtime.json || { echo 'Нет runtime.json для сервера'; exit 1; }
           pages=$(find dist -name index.html | wc -l)
           echo "Страниц в сборке: $pages"
           [ "$pages" -ge 30 ] || { echo 'Страниц меньше, чем должно быть'; exit 1; }
@@ -75,6 +77,13 @@ jobs:
           code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 "$site/no-existe-xyz/")
           echo "$code /no-existe-xyz/ (ждём 404)"
           [ "$code" = 404 ] || fail=1
+
+          # Сервер заказов (бэкенд.md §10): отвечает сам и не отдаёт своих файлов
+          curl -s --max-time 20 "$site/api/health" | grep -q '"ok":true' \
+            || { echo 'сервер заказов не отвечает на /api/health'; fail=1; }
+          code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 "$site/api/runtime.json")
+          echo "$code /api/runtime.json (ждём не 200)"
+          [ "$code" != 200 ] || fail=1
 
           curl -s --max-time 20 "$site/robots.txt" | grep -qx 'Disallow: /' \
             || { echo 'robots.txt не закрывает превью'; fail=1; }

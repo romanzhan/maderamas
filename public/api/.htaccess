@@ -1,0 +1,14 @@
+# Сервер заказов (бэкенд.md §7 п. 2): всё идёт через index.php, остальные файлы папки
+# снаружи не открываются — ни модули, ни runtime.json. Первая проверка — переписывание
+# адреса, вторая — прямой запрет на случай, если модуль переписывания выключен
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{REQUEST_URI} !/api/index\.php$
+  RewriteRule ^ index.php [L]
+</IfModule>
+
+<FilesMatch "^(?!index\.php$).+$">
+  Require all denied
+</FilesMatch>

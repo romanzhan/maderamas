@@ -3,8 +3,8 @@
       ошибка → предупреждение → подсказка, место под него зарезервировано.
       live — поле живой формы: рамку и текст ошибки ведёт слой валидации
       (src/scripts/form.js), как у обычного поля.
-      woo — обёртка получает класс `form-row` классического чекаута WooCommerce
-      (сложные-узлы.md п. 5). --}}
+      woo — обёртка получает класс `form-row`: наследие снятого плана переноса
+      в WooCommerce, ни на что не влияет (сложные-узлы.md п. 5). --}}
 <div class="flex flex-col gap-2 {{#if woo}}form-row{{/if}}" x-data="{ value: '' }">
   <label for="{{id}}" class="text-small font-medium {{#if disabled}}text-charcoal/70{{/if}}">
     {{t label}}{{#if required}} <span class="text-error" aria-hidden="true">*</span>{{/if}}{{#if optional}}
