@@ -197,8 +197,9 @@ function webhookHandler(): never
         // уведомления Mercado Pago (в песочнице 03.09.2026 на один платёж пришло два)
         logLine('warn', 'webhook: подпись не сошлась', [
             'payment' => $dataId,
-            'signed' => isset($_SERVER['HTTP_X_SIGNATURE']),
-            'query' => array_keys($_GET),
+            'signature' => $_SERVER['HTTP_X_SIGNATURE'] ?? null,
+            'requestId' => $_SERVER['HTTP_X_REQUEST_ID'] ?? null,
+            'query' => $_SERVER['QUERY_STRING'] ?? null,
             'action' => $body['action'] ?? null,
             'live' => $body['live_mode'] ?? null,
         ]);
