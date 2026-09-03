@@ -181,10 +181,15 @@ function webhookHandler(): never
         jsonResponse(200, ['ok' => true]);
     }
 
+    // Mercado Pago шлёт уведомление дважды: из настроек Webhooks (?type=payment&data.id=…)
+    // и по notification_url предпочтения (?topic=payment&id=…). Подписаны оба одним
+    // секретом, но в строку подписи входит только data.id из адреса — у второго вида
+    // его нет, и подписывается строка без него (песочница 03.09.2026, документация
+    // «Validar origen»)
     $verified = mpVerifySignature(
         (string) ($_SERVER['HTTP_X_SIGNATURE'] ?? ''),
         (string) ($_SERVER['HTTP_X_REQUEST_ID'] ?? ''),
-        $dataId,
+        (string) ($_GET['data_id'] ?? ''),
         (string) mpConfig()['webhookSecret'],
     );
     if (!$verified) {
