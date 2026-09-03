@@ -181,11 +181,7 @@ function webhookHandler(): never
         jsonResponse(200, ['ok' => true]);
     }
 
-    // Mercado Pago шлёт уведомление дважды: из настроек Webhooks (?type=payment&data.id=…)
-    // и по notification_url предпочтения (?topic=payment&id=…). Подписаны оба одним
-    // секретом, но в строку подписи входит только data.id из адреса — у второго вида
-    // его нет, и подписывается строка без него (песочница 03.09.2026, документация
-    // «Validar origen»)
+    // В строку подписи входит data.id из адреса запроса (документация «Validar origen»)
     $verified = mpVerifySignature(
         (string) ($_SERVER['HTTP_X_SIGNATURE'] ?? ''),
         (string) ($_SERVER['HTTP_X_REQUEST_ID'] ?? ''),
@@ -193,15 +189,11 @@ function webhookHandler(): never
         (string) mpConfig()['webhookSecret'],
     );
     if (!$verified) {
-        // Что именно пришло — чтобы отличить подделку от второго, иначе подписанного
-        // уведомления Mercado Pago (в песочнице 03.09.2026 на один платёж пришло два)
+        // Форма адреса отличает подделку от уведомления старого канала (?topic=payment&id=…),
+        // который мы не заказываем и проверить не можем (бэкенд.md §5)
         logLine('warn', 'webhook: подпись не сошлась', [
             'payment' => $dataId,
-            'signature' => $_SERVER['HTTP_X_SIGNATURE'] ?? null,
-            'requestId' => $_SERVER['HTTP_X_REQUEST_ID'] ?? null,
-            'query' => $_SERVER['QUERY_STRING'] ?? null,
-            'action' => $body['action'] ?? null,
-            'live' => $body['live_mode'] ?? null,
+            'query' => array_keys($_GET),
         ]);
         fail(401, 'forbidden');
     }
