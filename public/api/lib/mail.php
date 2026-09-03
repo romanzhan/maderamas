@@ -20,6 +20,73 @@ function fillText(string $template, array $values): string
     return $template;
 }
 
+// Сеть до почтового сервера: дольше ждать нет смысла — заказ уже записан
+const SMTP_TIMEOUT = 15;
+
+/**
+ * Отправка через почтовый сервер хостинга с паролем ящика (бэкенд.md §6): письмо уходит
+ * от настоящего ящика домена, подписанное хостингом, — так его не принимают за подделку.
+ * Разговор по SMTP короткий и стандартный, библиотека ради него не нужна (там же).
+ * Получатели — «кому» плюс скрытые копии; в самом письме скрытых копий не видно.
+ */
+function smtpSend(array $smtp, string $from, array $recipients, string $message): void
+{
+    $socket = @stream_socket_client(
+        'ssl://' . $smtp['host'] . ':' . $smtp['port'],
+        $errno,
+        $errstr,
+        SMTP_TIMEOUT,
+    );
+    if ($socket === false) {
+        throw new RuntimeException('SMTP: нет соединения — ' . $errstr);
+    }
+    stream_set_timeout($socket, SMTP_TIMEOUT);
+
+    // Ответ сервера может быть многострочным («250-…», последняя строка «250 …»)
+    $expect = function (string $code) use ($socket): void {
+        do {
+            $line = fgets($socket);
+            if ($line === false) {
+                throw new RuntimeException('SMTP: сервер замолчал');
+            }
+        } while (isset($line[3]) && $line[3] === '-');
+        if (!str_starts_with($line, $code)) {
+            throw new RuntimeException('SMTP: ' . trim($line));
+        }
+    };
+    $command = function (string $line, string $code) use ($socket, $expect): void {
+        fwrite($socket, $line . "\r\n");
+        $expect($code);
+    };
+
+    try {
+        $expect('220');
+        $command('EHLO ' . substr(strrchr($from, '@'), 1), '250');
+        $command('AUTH LOGIN', '334');
+        $command(base64_encode((string) $smtp['user']), '334');
+        $command(base64_encode((string) $smtp['password']), '235');
+        $command('MAIL FROM:<' . $from . '>', '250');
+        foreach ($recipients as $recipient) {
+            $command('RCPT TO:<' . $recipient . '>', '250');
+        }
+        $command('DATA', '354');
+        // Строка из одной точки закончила бы письмо раньше времени — точки в начале удваиваются
+        fwrite($socket, preg_replace('/^\./m', '..', $message) . "\r\n.\r\n");
+        $expect('250');
+        fwrite($socket, "QUIT\r\n");
+    } finally {
+        fclose($socket);
+    }
+}
+
+/** Настроена ли отправка через ящик: без пароля идти на почтовый сервер бессмысленно */
+function smtpConfigured(array $mail): bool
+{
+    $smtp = $mail['smtp'] ?? [];
+
+    return !empty($smtp['host']) && !empty($smtp['user']) && !empty($smtp['password']);
+}
+
 function sendMail(string $to, string $subject, string $body): bool
 {
     $mail = config()['mail'];
@@ -37,11 +104,28 @@ function sendMail(string $to, string $subject, string $body): bool
     if (!empty($mail['replyTo'])) {
         $headers[] = 'Reply-To: ' . $mail['replyTo'];
     }
+    // Скрытые копии — только адреса из конфига: владелец следит за перепиской магазина
+    $bcc = array_values(array_filter((array) ($mail['bcc'] ?? []), fn ($address) => is_string($address) && $address !== '' && $address !== $to));
 
     // Недоступный почтовый механизм даёт предупреждение PHP, а предупреждения у нас —
     // исключения (app.php). Письмо — не повод ронять заказ (бэкенд.md §6)
     try {
-        $sent = mail($to, mb_encode_mimeheader($subject, 'UTF-8'), $body, implode("\r\n", $headers));
+        if (smtpConfigured($mail)) {
+            $message = implode("\r\n", array_merge(
+                ['To: ' . $to, 'Subject: ' . mb_encode_mimeheader($subject, 'UTF-8'), 'Date: ' . gmdate('r'),
+                    'Message-ID: <' . bin2hex(random_bytes(12)) . '@' . substr(strrchr($mail['from'], '@'), 1) . '>'],
+                $headers,
+                ['', str_replace("\n", "\r\n", $body)],
+            ));
+            smtpSend($mail['smtp'], $mail['from'], [$to, ...$bcc], $message);
+            $sent = true;
+        } else {
+            // Почтовый механизм PHP — только там, где ящика нет (рабочая машина)
+            if ($bcc !== []) {
+                $headers[] = 'Bcc: ' . implode(', ', $bcc);
+            }
+            $sent = mail($to, mb_encode_mimeheader($subject, 'UTF-8'), $body, implode("\r\n", $headers));
+        }
     } catch (Throwable $error) {
         logLine('warn', 'mail: отправка не удалась', ['subject' => $subject, 'reason' => $error->getMessage()]);
         return false;
