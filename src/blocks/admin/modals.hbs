@@ -1,0 +1,53 @@
+{{!-- Окна подтверждения действий над заказом (бэкенд.md §13): отправлен, отменить,
+      разобрать. Лежат прямыми потомками body, как велит компоненты.md 5.1; поля
+      каждого окна — обычная форма, её значения уходят на сервер как есть.
+      `close()` — из общего механизма окна (overlayPanel), `a` — store списка заказов. --}}
+{{#> modal name="admin-ship" title="admin.shipTitle"}}
+  <form x-data="{ a: $store.admin }" x-on:submit.prevent="a.act('ship', $event.target)" class="flex flex-col gap-4">
+    <p class="text-charcoal/70">{{t "admin.shipText"}}</p>
+    {{> field empty id="admin-tracking" name="tracking" label="admin.shipTracking" optional=true
+        maxlength=60 hint="admin.shipTrackingHint" autocomplete="off"}}
+    <p x-show="a.actionFailed" x-cloak role="alert" class="flex items-start gap-2 text-small text-error">
+      <span class="icon-line shrink-0">{{> icon empty name="circle-alert" class="size-4"}}</span>
+      {{t "admin.actionFailed"}}
+    </p>
+    <div class="flex flex-wrap gap-3">
+      {{> button empty primary=true sizeLg=true submit=true bindLoading="a.acting" label="admin.shipConfirm"}}
+      {{> button empty secondary=true sizeLg=true label="common.back" onClick="close()"}}
+    </div>
+  </form>
+{{/modal}}
+
+{{#> modal name="admin-cancel" title="admin.cancelTitle"}}
+  <form x-data="{ a: $store.admin }" x-on:submit.prevent="a.act('cancel', $event.target)" class="flex flex-col gap-4">
+    <p class="text-charcoal/70">{{t "admin.cancelText"}}</p>
+    <p x-show="a.actionFailed" x-cloak role="alert" class="flex items-start gap-2 text-small text-error">
+      <span class="icon-line shrink-0">{{> icon empty name="circle-alert" class="size-4"}}</span>
+      {{t "admin.actionFailed"}}
+    </p>
+    <div class="flex flex-wrap gap-3">
+      {{> button empty primary=true sizeLg=true submit=true bindLoading="a.acting" label="admin.cancelConfirm"}}
+      {{> button empty secondary=true sizeLg=true label="common.back" onClick="close()"}}
+    </div>
+  </form>
+{{/modal}}
+
+{{#> modal name="admin-resolve" title="admin.resolveTitle"}}
+  <form x-data="{ a: $store.admin }" x-on:submit.prevent="a.act('resolve', $event.target)" class="flex flex-col gap-4">
+    <p class="text-charcoal/70">{{t "admin.resolveText"}}</p>
+    <fieldset class="flex flex-col gap-1">
+      {{> radio empty name="decision" value="paid" checked=true label="admin.resolvePaid"}}
+      {{> radio empty name="decision" value="cancelled" label="admin.resolveCancelled"}}
+    </fieldset>
+    {{> textarea empty id="admin-note" name="note" label="admin.resolveNote" optional=true max=500
+        hint="admin.resolveNoteHint"}}
+    <p x-show="a.actionFailed" x-cloak role="alert" class="flex items-start gap-2 text-small text-error">
+      <span class="icon-line shrink-0">{{> icon empty name="circle-alert" class="size-4"}}</span>
+      {{t "admin.actionFailed"}}
+    </p>
+    <div class="flex flex-wrap gap-3">
+      {{> button empty primary=true sizeLg=true submit=true bindLoading="a.acting" label="admin.resolveConfirm"}}
+      {{> button empty secondary=true sizeLg=true label="common.back" onClick="close()"}}
+    </div>
+  </form>
+{{/modal}}

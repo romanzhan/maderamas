@@ -52,6 +52,7 @@ const RESERVED_SLUGS = new Set([
   'checkout',
   'favoritos',
   'gracias',
+  'pedidos',
   '404',
 ])
 
@@ -665,6 +666,9 @@ const EMAIL_KEYS = [
   'reviewAmount',
   'reviewCancelled',
   'reviewDuplicate',
+  'subjectShipped',
+  'shippedIntro',
+  'tracking',
   'statusPaid',
   'statusPending',
   'statusReview',

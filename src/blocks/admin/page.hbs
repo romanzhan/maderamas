@@ -1,0 +1,287 @@
+{{!-- Список заказов владельца (страницы.md §17, бэкенд.md §13). Один экран, три вида
+      по очереди: вход по паролю → список с вкладками → заказ подробно. Состояние живёт
+      в store `admin` (src/scripts/admin.js): окна подтверждения лежат прямыми потомками
+      body и делят его со страницей. Строки, которые скрипт подставляет сам (состояния,
+      хронология, ошибки входа), отдаются data-атрибутами — испанских строк в скриптах
+      не бывает. Noindex и Disallow: страница служебная и под паролем. --}}
+<main
+  id="contenido"
+  class="page-container py-6 lg:py-10"
+  x-data="{ a: $store.admin }"
+  x-init="a.start($el)"
+  data-t-wrong-password="{{t "admin.wrongPassword"}}"
+  data-t-too-many-attempts="{{t "admin.tooManyAttempts"}}"
+  data-t-action-failed="{{t "admin.actionFailed"}}"
+  data-t-required="{{t "errors.required"}}"
+  data-t-network="{{t "errors.network"}}"
+  data-t-status-created="{{t "admin.statusCreated"}}"
+  data-t-status-pending="{{t "admin.statusPending"}}"
+  data-t-status-paid="{{t "admin.statusPaid"}}"
+  data-t-status-shipped="{{t "admin.statusShipped"}}"
+  data-t-status-rejected="{{t "admin.statusRejected"}}"
+  data-t-status-cancelled="{{t "admin.statusCancelled"}}"
+  data-t-status-refunded="{{t "admin.statusRefunded"}}"
+  data-t-status-review="{{t "admin.statusReview"}}"
+  data-t-event-created="{{t "admin.eventCreated"}}"
+  data-t-event-payment-started="{{t "admin.eventPaymentStarted"}}"
+  data-t-event-payment-skipped="{{t "admin.eventPaymentSkipped"}}"
+  data-t-event-payment-unavailable="{{t "admin.eventPaymentUnavailable"}}"
+  data-t-event-webhook-received="{{t "admin.eventWebhookReceived"}}"
+  data-t-event-status-changed="{{t "admin.eventStatusChanged" from="{from}" to="{to}"}}"
+  data-t-event-payment-recorded="{{t "admin.eventPaymentRecorded"}}"
+  data-t-event-payment-ignored="{{t "admin.eventPaymentIgnored"}}"
+  data-t-event-transition-refused="{{t "admin.eventTransitionRefused"}}"
+  data-t-event-email-customer-sent="{{t "admin.eventEmailCustomerSent"}}"
+  data-t-event-email-customer-failed="{{t "admin.eventEmailCustomerFailed"}}"
+  data-t-event-email-owner-sent="{{t "admin.eventEmailOwnerSent"}}"
+  data-t-event-email-owner-failed="{{t "admin.eventEmailOwnerFailed"}}"
+  data-t-event-shipped="{{t "admin.eventShipped"}}"
+  data-t-event-cancelled-by-owner="{{t "admin.eventCancelledByOwner"}}"
+  data-t-event-resolved="{{t "admin.eventResolved" to="{to}"}}"
+>
+  <div class="flex items-center justify-between gap-4">
+    <h1 class="font-display text-h1 lg:text-h1-lg">{{t "admin.title"}}</h1>
+    <span x-show="a.auth === 'in'" x-cloak>
+      {{> button empty tertiary=true sizeMd=true label="admin.logout" onClick="a.logout()"}}
+    </span>
+  </div>
+
+  {{!-- Сессия ещё проверяется: место под форму или список, чтобы страница не прыгала --}}
+  <div x-show="a.auth === 'checking'" aria-hidden="true" class="mt-8 flex max-w-sm flex-col gap-4">
+    <div class="h-7 w-2/3 rounded-sm bg-sand"></div>
+    <div class="h-12 w-full rounded-lg bg-sand"></div>
+    <div class="h-12 w-1/2 rounded-lg bg-sand"></div>
+  </div>
+
+  {{!-- Вход: один пароль, без логинов и ролей (бэкенд.md §13) --}}
+  <form
+    x-show="a.auth === 'out'"
+    x-cloak
+    novalidate
+    x-on:submit.prevent="a.login($event.target.elements.password.value)"
+    class="mt-8 flex max-w-sm flex-col gap-4"
+  >
+    <h2 class="text-h3 lg:text-h3-lg">{{t "admin.loginTitle"}}</h2>
+    {{> field empty id="admin-password" name="password" type="password" label="admin.password"
+        required=true autocomplete="current-password"}}
+    <p x-show="a.loginError" x-cloak role="alert" class="flex items-start gap-2 text-small text-error">
+      <span class="icon-line shrink-0">{{> icon empty name="circle-alert" class="size-4"}}</span>
+      <span x-text="a.loginError"></span>
+    </p>
+    <div>
+      {{> button empty primary=true sizeLg=true submit=true bindLoading="a.loggingIn" label="admin.enter"}}
+    </div>
+  </form>
+
+  {{!-- Список --}}
+  <div x-show="a.auth === 'in' && !a.order" x-cloak class="mt-6">
+    {{!-- Вкладки (компоненты.md 4.4): на узком экране прокручиваются по горизонтали --}}
+    <div
+      role="tablist"
+      aria-label="{{t "admin.tabs"}}"
+      class="scrollbar-soft -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0"
+    >
+      {{#each adminTabs}}
+        <button
+          type="button"
+          role="tab"
+          data-tab="{{id}}"
+          x-bind:aria-selected="a.tab === '{{id}}'"
+          x-bind:tabindex="a.tab === '{{id}}' ? 0 : -1"
+          x-on:click="a.setTab('{{id}}')"
+          x-on:keydown="a.tabKey($event)"
+          x-bind:class="a.tab === '{{id}}' ? 'border-clay text-clay' : 'border-transparent text-charcoal/70 hover:text-charcoal'"
+          class="min-h-11 shrink-0 border-b-2 px-3 font-medium whitespace-nowrap transition-colors
+            duration-150"
+        >{{t label}}</button>
+      {{/each}}
+    </div>
+
+    <form class="mt-4 max-w-xs" x-on:submit.prevent="a.search($event.target.elements.q.value)">
+      {{> field empty id="admin-q" name="q" label="admin.search" inputmode="numeric"
+          placeholder="admin.searchPlaceholder"}}
+    </form>
+
+    <div x-show="a.list === 'loading'" aria-hidden="true" class="mt-4 flex flex-col gap-3">
+      <div class="h-20 rounded-xl bg-sand"></div>
+      <div class="h-20 rounded-xl bg-sand"></div>
+      <div class="h-20 rounded-xl bg-sand"></div>
+    </div>
+
+    <div x-show="a.list === 'failed'" x-cloak class="mt-6 flex flex-col items-start gap-3">
+      <p role="alert" class="flex items-start gap-2 text-error">
+        <span class="icon-line shrink-0">{{> icon empty name="circle-alert" class="size-4"}}</span>
+        {{t "errors.network"}}
+      </p>
+      {{> button empty secondary=true sizeMd=true label="common.retry" onClick="a.load()"}}
+    </div>
+
+    <div x-show="a.list === 'ready'" x-cloak>
+      <p x-show="!a.orders.length" class="mt-6 text-charcoal/70">{{t "admin.empty"}}</p>
+
+      {{!-- Строка заказа: на телефоне карточка, с 1024 — колонки таблицы --}}
+      <ul x-show="a.orders.length" class="mt-4 flex flex-col gap-3">
+        <template x-for="row in a.orders" x-bind:key="row.number">
+          <li>
+            <button
+              type="button"
+              x-on:click="a.openOrder(row.number)"
+              class="grid w-full gap-x-4 gap-y-1 rounded-xl border border-line bg-cream p-4 text-left
+                transition-colors duration-150 hover:bg-sand-hover lg:grid-cols-[7rem_1fr_1fr_8rem_9rem]
+                lg:items-center"
+            >
+              <span class="font-medium tabular-nums" x-text="'#' + row.number"></span>
+              <span class="text-small text-charcoal/70 lg:order-4 lg:text-body lg:text-charcoal"
+                x-text="a.fmtDate(row.createdAt)"></span>
+              <span class="lg:order-2" x-text="row.name"></span>
+              <span class="text-small text-charcoal/70 lg:order-3 lg:text-body lg:text-charcoal"
+                x-text="row.place"></span>
+              <span class="mt-2 flex items-center justify-between gap-3 lg:order-5 lg:mt-0 lg:contents">
+                <span class="font-medium tabular-nums lg:order-4" x-text="a.fmtMoney(row.total)"></span>
+                <span class="lg:order-6">
+                  {{> badge empty bindKind="a.statusKind(a.statusOf(row))" bindText="a.statusLabel(a.statusOf(row))"}}
+                </span>
+              </span>
+            </button>
+          </li>
+        </template>
+      </ul>
+
+      <div x-show="a.hasMore" class="mt-6">
+        {{> button empty secondary=true sizeMd=true label="admin.loadMore" bindLoading="a.loadingMore"
+            onClick="a.load(true)"}}
+      </div>
+    </div>
+  </div>
+
+  {{!-- Заказ подробно --}}
+  <div x-show="a.auth === 'in' && a.order" x-cloak class="mt-6">
+    {{> button empty tertiary=true sizeMd=true icon="chevron-left" label="admin.back" onClick="a.closeOrder()"}}
+
+    <div x-show="a.detail === 'loading'" aria-hidden="true" class="mt-6 flex flex-col gap-4">
+      <div class="h-8 w-1/2 rounded-sm bg-sand"></div>
+      <div class="h-32 rounded-xl bg-sand"></div>
+      <div class="h-32 rounded-xl bg-sand"></div>
+    </div>
+
+    <div x-show="a.detail === 'failed'" x-cloak class="mt-6 flex flex-col items-start gap-3">
+      <p role="alert" class="flex items-start gap-2 text-error">
+        <span class="icon-line shrink-0">{{> icon empty name="circle-alert" class="size-4"}}</span>
+        {{t "errors.network"}}
+      </p>
+      {{> button empty secondary=true sizeMd=true label="common.retry" onClick="a.openOrder(a.order.number, false)"}}
+    </div>
+
+    <template x-if="a.order && a.detail === 'ready'">
+      <div class="mt-6 flex max-w-3xl flex-col gap-8">
+        <div class="flex flex-wrap items-center gap-3">
+          <h2 class="font-display text-h2 lg:text-h2-lg" x-text="'#' + a.order.number"></h2>
+          {{> badge empty bindKind="a.statusKind(a.statusOf(a.order))" bindText="a.statusLabel(a.statusOf(a.order))"}}
+          <span class="text-small text-charcoal/70" x-text="a.fmtDate(a.order.createdAt)"></span>
+        </div>
+
+        {{!-- Действия: каждое с подтверждением в окне (бэкенд.md §13) --}}
+        <div class="flex flex-wrap gap-3" x-show="a.canShip || a.canCancel || a.canResolve">
+          <span x-show="a.canShip">
+            {{> button empty primary=true sizeMd=true icon="truck" label="admin.actionShip" onClick="a.openAction('admin-ship')"}}
+          </span>
+          <span x-show="a.canResolve">
+            {{> button empty primary=true sizeMd=true label="admin.actionResolve" onClick="a.openAction('admin-resolve')"}}
+          </span>
+          <span x-show="a.canCancel">
+            {{> button empty secondary=true sizeMd=true label="admin.actionCancel" onClick="a.openAction('admin-cancel')"}}
+          </span>
+        </div>
+
+        <section class="grid gap-6 sm:grid-cols-2">
+          <div>
+            <h3 class="text-h4 lg:text-h4-lg">{{t "admin.customer"}}</h3>
+            <p class="mt-2" x-text="a.order.customer.billing_first_name + ' ' + a.order.customer.billing_last_name"></p>
+            <p>{{> link empty inline=true bindHref="'mailto:' + a.order.customer.billing_email" bindText="a.order.customer.billing_email"}}</p>
+            <p class="tabular-nums" x-text="a.order.customer.billing_phone"></p>
+            <p class="text-small text-charcoal/70">
+              <span>{{t "admin.dni"}}</span> <span class="tabular-nums" x-text="a.order.customer.billing_dni"></span>
+            </p>
+            <div class="mt-3">
+              {{> button empty secondary=true sizeMd=true icon="whatsapp" iconFilled=true label="admin.whatsapp"
+                  bindHref="a.whatsappUrl(a.order.customer.billing_phone)" external=true}}
+            </div>
+          </div>
+          <div>
+            <h3 class="text-h4 lg:text-h4-lg">{{t "admin.delivery"}}</h3>
+            <p class="mt-2" x-text="a.order.customer.billing_address_1"></p>
+            <p x-show="a.order.customer.billing_address_2" x-text="a.order.customer.billing_address_2"></p>
+            <p x-text="a.order.customer.billing_city + ', ' + a.order.customer.stateName"></p>
+            <p class="tabular-nums" x-text="a.order.customer.billing_postcode"></p>
+            <div x-show="a.order.customer.billing_references" class="mt-3">
+              <h4 class="text-small font-medium">{{t "admin.references"}}</h4>
+              <p class="whitespace-pre-line" x-text="a.order.customer.billing_references"></p>
+            </div>
+            <div x-show="a.order.tracking" class="mt-3">
+              <h4 class="text-small font-medium">{{t "admin.tracking"}}</h4>
+              <p class="tabular-nums" x-text="a.order.tracking"></p>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h3 class="text-h4 lg:text-h4-lg">{{t "admin.items"}}</h3>
+          <ul class="mt-3 flex flex-col gap-2">
+            <template x-for="line in a.order.items" x-bind:key="line.productId + (line.variantId ?? '')">
+              <li class="flex items-start justify-between gap-4">
+                <span>
+                  <span x-text="line.name"></span>
+                  <span class="text-charcoal/70" x-show="line.variant" x-text="' · ' + line.variant"></span>
+                  <span class="text-charcoal/70 tabular-nums" x-text="' × ' + line.qty"></span>
+                </span>
+                <span class="shrink-0 tabular-nums" x-text="a.fmtMoney(line.sum)"></span>
+              </li>
+            </template>
+          </ul>
+          <dl class="mt-3 flex flex-col gap-1 border-t border-line pt-3">
+            <div class="flex justify-between gap-4 text-small text-charcoal/70">
+              <dt>{{t "cart.shipping"}}</dt>
+              <dd class="tabular-nums" x-text="a.order.shipping ? a.fmtMoney(a.order.shipping) : '{{t "admin.shippingFree"}}'"></dd>
+            </div>
+            <div class="flex justify-between gap-4 font-medium">
+              <dt>{{t "cart.total"}}</dt>
+              <dd class="tabular-nums" x-text="a.fmtMoney(a.order.total)"></dd>
+            </div>
+          </dl>
+        </section>
+
+        <section>
+          <h3 class="text-h4 lg:text-h4-lg">{{t "admin.payment"}}</h3>
+          <p class="mt-2" x-show="!a.order.payment.id">{{t "admin.noPayment"}}</p>
+          <dl x-show="a.order.payment.id" class="mt-2 flex flex-col gap-1 text-small">
+            <div class="flex gap-2"><dt class="text-charcoal/70">{{t "admin.mpPayment"}}</dt><dd class="tabular-nums" x-text="a.order.payment.id"></dd></div>
+            <div class="flex gap-2"><dt class="text-charcoal/70">{{t "admin.mpStatus"}}</dt><dd x-text="a.order.payment.status + (a.order.payment.detail ? ' · ' + a.order.payment.detail : '')"></dd></div>
+          </dl>
+        </section>
+
+        <section x-show="a.order.customer.order_comments">
+          <h3 class="text-h4 lg:text-h4-lg">{{t "admin.note"}}</h3>
+          <p class="mt-2 whitespace-pre-line" x-text="a.order.customer.order_comments"></p>
+        </section>
+
+        <section>
+          <h3 class="text-h4 lg:text-h4-lg">{{t "admin.history"}}</h3>
+          <ol class="mt-3 flex flex-col gap-2 text-small">
+            <template x-for="(event, index) in a.order.events" x-bind:key="index">
+              <li class="flex flex-col gap-1 sm:flex-row sm:gap-4">
+                <span class="shrink-0 text-charcoal/70 tabular-nums sm:w-36" x-text="a.fmtDate(event.at)"></span>
+                <span>
+                  <span x-text="a.eventText(event)"></span>
+                  <span x-show="event.detail?.note" class="block text-charcoal/70 whitespace-pre-line" x-text="event.detail?.note"></span>
+                  <span x-show="event.detail?.tracking" class="block text-charcoal/70 tabular-nums" x-text="event.detail?.tracking"></span>
+                </span>
+              </li>
+            </template>
+          </ol>
+        </section>
+      </div>
+    </template>
+  </div>
+</main>
+
+{{> admin/modals}}

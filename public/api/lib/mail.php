@@ -72,6 +72,40 @@ function orderTotalsText(array $order, array $texts): string
     return $shipping . "\n" . fillText($texts['total'], ['amount' => money($order['total'])]);
 }
 
+/** Письмо «заказ в пути» — когда владелец отметил отправку (бэкенд.md §13) */
+function notifyShipped(PDO $db, array $order, string $baseUrl): void
+{
+    $runtime = runtime();
+    $texts = $runtime['texts'];
+    $customer = $order['customer'];
+
+    $body = [
+        fillText($texts['greeting'], ['name' => $customer['billing_first_name']]),
+        '',
+        $texts['shippedIntro'],
+    ];
+    if (!empty($order['tracking'])) {
+        $body[] = fillText($texts['tracking'], ['code' => $order['tracking']]);
+    }
+    $body = array_merge($body, [
+        '',
+        fillText($texts['order'], ['n' => $order['number']]),
+        orderLinesText($order),
+        '',
+        fillText($texts['orderLink'], ['url' => orderUrl($baseUrl, $order)]),
+        fillText($texts['questions'], ['phone' => $runtime['ownerPhone']]),
+        '',
+        $runtime['siteName'],
+    ]);
+
+    $sent = sendMail(
+        $customer['billing_email'],
+        fillText($texts['subjectShipped'], ['n' => $order['number']]),
+        implode("\n", $body),
+    );
+    addEvent($db, $order['id'], $sent ? 'email_customer_sent' : 'email_customer_failed', ['status' => 'shipped']);
+}
+
 /**
  * Почему заказ ушёл в «review» — по последней записи о смене статуса в хронологии
  * (бэкенд.md §4): владелец должен прочитать причину, а не искать её сам.
@@ -96,10 +130,11 @@ function reviewReasonKey(PDO $db, int $orderId): string
 
 /**
  * Письма по смене статуса (бэкенд.md §6): покупателю — при «оплачен» и «ждём оплату»,
- * владельцу — при тех же двух и при расхождении суммы. Неудача отправки записывается,
- * заказ от неё не страдает.
+ * владельцу — при тех же двух и при расхождении суммы (кроме случая, когда статус
+ * поставил он сам, — withOwner = false). Неудача отправки записывается, заказ от неё
+ * не страдает.
  */
-function notifyOrderStatus(PDO $db, array $order, string $status, string $baseUrl): void
+function notifyOrderStatus(PDO $db, array $order, string $status, string $baseUrl, bool $withOwner = true): void
 {
     $runtime = runtime();
     $texts = $runtime['texts'];
@@ -130,7 +165,7 @@ function notifyOrderStatus(PDO $db, array $order, string $status, string $baseUr
         addEvent($db, $order['id'], $sent ? 'email_customer_sent' : 'email_customer_failed', ['status' => $status]);
     }
 
-    if (in_array($status, ['paid', 'pending', 'review'], true)) {
+    if ($withOwner && in_array($status, ['paid', 'pending', 'review'], true)) {
         $subjectKey = ['paid' => 'ownerSubjectPaid', 'pending' => 'ownerSubjectPending', 'review' => 'ownerSubjectReview'][$status];
         $statusKey = ['paid' => 'statusPaid', 'pending' => 'statusPending', 'review' => 'statusReview'][$status];
         $address = implode("\n", array_filter([

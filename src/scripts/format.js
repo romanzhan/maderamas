@@ -17,3 +17,20 @@ export function money(amount) {
 export function decimal(value) {
   return decimals.format(value)
 }
+
+// Время заказа хранится в UTC (бэкенд.md §10), владельцу показывается по Буэнос-Айресу
+const dateTimes = new Intl.DateTimeFormat('es-AR', {
+  timeZone: 'America/Argentina/Buenos_Aires',
+  day: '2-digit',
+  month: '2-digit',
+  year: 'numeric',
+  hour: '2-digit',
+  minute: '2-digit',
+  // 24 часа: «a. m.»/«p. m.» в аргентинском формате Intl добавляет сам, а на сайте их нет
+  hourCycle: 'h23',
+})
+
+/** ISO-строка → «03/09/2026 14:05» (тексты.md §3: дата ДД/ММ/ГГГГ) */
+export function dateTime(iso) {
+  return dateTimes.format(new Date(iso)).replace(',', '')
+}

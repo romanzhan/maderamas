@@ -9,9 +9,10 @@ const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const distRoot = resolve(projectRoot, 'dist')
 
 // Витрина закрыта в robots.txt: своей meta у неё нет, а в карту ей нельзя.
-// Сервер заказов роботу тем более не нужен — он отвечает JSON, а не страницами
+// Сервер заказов роботу тем более не нужен — он отвечает JSON, а не страницами;
+// список заказов владельца — под паролем, роботу там делать нечего
 const HIDDEN = ['/_componentes/']
-const DISALLOW = ['/_componentes/', '/api/']
+const DISALLOW = ['/_componentes/', '/api/', '/pedidos/']
 
 // Второго списка «что не индексируем» не держим: страница сама несёт meta noindex,
 // и карта читает её же (27.08.2026 — иначе списки расходятся, и в карту попадает
@@ -112,7 +113,18 @@ ${
   Header set X-Robots-Tag "noindex, nofollow"
 </IfModule>
 `
-    : ''
+    : `
+# Список заказов владельца (бэкенд.md §13): robots.txt запрещает обход, поэтому meta
+# noindex на странице робот не прочтёт — попадание в индекс по внешней ссылке
+# запрещает заголовок, как у превью
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteRule ^pedidos/ - [E=NOINDEX:1]
+</IfModule>
+<IfModule mod_headers.c>
+  Header set X-Robots-Tag "noindex, nofollow" env=NOINDEX
+</IfModule>
+`
 }`,
 )
 

@@ -7,7 +7,9 @@
                пустым местом; fullWidth, onDark, disabled, loading,
                href — тогда это переход, и элемент становится ссылкой (компоненты.md 1.1:
                «Кнопка = <button>, переход = <a> — не путать»); bindHref — выражение
-               Alpine вместо адреса, когда адрес приходит с сервера (ссылка на оплату),
+               Alpine вместо адреса, когда адрес приходит с сервера (ссылка на оплату);
+               external — переход на чужой сайт в новой вкладке (WhatsApp), как у всех
+               внешних ссылок проекта,
                onClick — выражение Alpine для нажатия (у ссылки его не бывает).
       label и aria — ключи словаря; text — готовая подпись (её отдают данные, и второй
       раз переводить её нечем); bindLabel — выражение Alpine вместо подписи, когда
@@ -20,6 +22,7 @@
   <a
     {{#if href}}href="{{href}}"{{/if}}
     {{#if bindHref}}x-bind:href="{{bindHref}}"{{/if}}
+    {{#if external}}target="_blank" rel="noopener"{{/if}}
     class="{{> button-class this}}"
     {{#if aria}}aria-label="{{t aria}}"{{/if}}
   >
