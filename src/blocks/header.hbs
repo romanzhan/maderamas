@@ -6,7 +6,9 @@
       в открытие панели: без JS они работают переходом. Избранное остаётся простой
       ссылкой — своей панели у него нет.
       bare — упрощённый вид для чекаута (компоненты.md 4.1): логотип и возврат в корзину,
-      без меню, поиска, избранного и корзины. Уводить покупателя с чекаута нечем. --}}
+      без меню, поиска, избранного и корзины. Уводить покупателя с чекаута нечем.
+      bareHome — тот же вид без возврата в корзину: список заказов владельца
+      (бэкенд.md §13) к покупке отношения не имеет. --}}
 <header
   x-data="siteHeader"
   x-bind:class="$store.header.scrolled && 'shadow-sm'"
@@ -16,14 +18,16 @@
     <div class="page-container flex h-(--header-h) items-center gap-4">
       <a href="/" class="flex min-h-11 items-center">{{> wordmark empty}}</a>
 
-      <a
-        href="/carrito/"
-        class="-mr-3 ml-auto inline-flex min-h-11 items-center gap-2 rounded-lg px-3 text-small
-          transition-colors duration-150 hover:bg-sand-hover"
-      >
-        {{> icon empty name="chevron-left" class="size-5"}}
-        {{t "checkout.backToCart"}}
-      </a>
+      {{#unless bareHome}}
+        <a
+          href="/carrito/"
+          class="-mr-3 ml-auto inline-flex min-h-11 items-center gap-2 rounded-lg px-3 text-small
+            transition-colors duration-150 hover:bg-sand-hover"
+        >
+          {{> icon empty name="chevron-left" class="size-5"}}
+          {{t "checkout.backToCart"}}
+        </a>
+      {{/unless}}
     </div>
   {{else}}
   <div class="page-container flex h-(--header-h) items-center gap-2">

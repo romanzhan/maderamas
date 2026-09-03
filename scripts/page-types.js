@@ -13,6 +13,8 @@ export const SERVICE_PAGES = {
   '/favoritos/': 'wishlist.title',
   '/buscar/': 'nav.openSearch',
   '/gracias/': 'thanks.title',
+  // Список заказов владельца: закрыт паролем и в robots.txt (бэкенд.md §13)
+  '/pedidos/': 'admin.title',
 }
 
 /**

@@ -24,4 +24,9 @@ return [
         // Куда уходят ответы покупателей; null — на адрес отправителя
         'replyTo' => null,
     ],
+    'admin' => [
+        // Хеш пароля списка заказов /pedidos/ (бэкенд.md §13):
+        // php -r 'echo password_hash("пароль", PASSWORD_DEFAULT), PHP_EOL;'
+        'passwordHash' => '',
+    ],
 ];

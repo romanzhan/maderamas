@@ -9,9 +9,12 @@
       Опции:  active (текущий пункт навигации), onDark, iconRight
       label — ключ словаря; text — готовая подпись (её отдаёт навигация, собранная
       из данных, и второй раз переводить её нечем). Стрелка у viewAll — иконка,
-      а не символ в тексте. --}}
+      а не символ в тексте. bindHref и bindText — адрес и подпись из выражений Alpine,
+      когда оба приходят с сервера (почта покупателя в списке заказов). --}}
 <a
-  href="{{href}}"
+  {{#if href}}href="{{href}}"{{/if}}
+  {{#if bindHref}}x-bind:href="{{bindHref}}"{{/if}}
+  {{#if bindText}}x-text="{{bindText}}"{{/if}}
   {{#if active}}aria-current="page"{{/if}}
   class="inline-flex items-center gap-2 transition-colors duration-150
     {{#unless onDark}}
@@ -27,7 +30,7 @@
       {{#if active}}text-cream{{/if}}
       {{#if viewAll}}-mx-2 rounded-lg px-2 text-cream hover:bg-cream/20{{/if}}
     {{/if}}"
-  >{{#if text}}{{text}}{{else}}{{t label}}{{/if}}{{#if iconRight}}
+  >{{#if text}}{{text}}{{else}}{{#if label}}{{t label}}{{/if}}{{/if}}{{#if iconRight}}
     {{> icon empty name=iconRight class="size-4"}}
   {{/if}}</a
 >

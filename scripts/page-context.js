@@ -33,6 +33,15 @@ const SAFETY = [
 // не создать, а число 5 в разметке было бы магическим
 const RATING_SCALE = [1, 2, 3, 4, 5]
 
+// Вкладки списка заказов владельца (бэкенд.md §13): id — как у сервера, подпись — словарь
+const ADMIN_TABS = [
+  { id: 'pending', label: 'admin.tabPending' },
+  { id: 'paid', label: 'admin.tabPaid' },
+  { id: 'shipped', label: 'admin.tabShipped' },
+  { id: 'review', label: 'admin.tabReview' },
+  { id: 'all', label: 'admin.tabAll' },
+]
+
 const srcDir = resolve(dirname(fileURLToPath(import.meta.url)), '../src')
 const spritePath = resolve(srcDir, 'icons/sprite.svg')
 const iconsDir = resolve(srcDir, 'icons/source')
@@ -289,6 +298,7 @@ export function pageContext(pagePath) {
     faqPage,
     breadcrumbs,
     showcase,
+    adminTabs: ADMIN_TABS,
     site,
     sprite,
     cards,

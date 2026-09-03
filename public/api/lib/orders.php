@@ -258,7 +258,10 @@ function fetchOrderByToken(PDO $db, string $token): ?array
 /** Точечное обновление полей заказа; список колонок закрыт, чтобы имя поля не пришло снаружи */
 function updateOrder(PDO $db, int $id, array $fields): void
 {
-    $allowed = ['status', 'mp_preference_id', 'mp_init_point', 'mp_payment_id', 'mp_status', 'mp_status_detail', 'mp_checked_at'];
+    $allowed = [
+        'status', 'mp_preference_id', 'mp_init_point', 'mp_payment_id', 'mp_status', 'mp_status_detail',
+        'mp_checked_at', 'shipped_at', 'tracking',
+    ];
     $sets = ['updated_at = ?'];
     $values = [nowUtc()];
     foreach ($fields as $column => $value) {

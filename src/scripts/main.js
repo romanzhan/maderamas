@@ -18,6 +18,7 @@ import { checkoutView, thanksPage } from './checkout.js'
 import { siteForm } from './form.js'
 import { searchResults } from './search-page.js'
 import { cart, notify, syncStores, wishlist } from './store.js'
+import { admin } from './admin.js'
 
 // Всё, что Alpine должен знать, регистрируется до старта (сложные-узлы.md п. 14)
 document.addEventListener('alpine:init', () => {
@@ -29,6 +30,8 @@ document.addEventListener('alpine:init', () => {
   Alpine.store('catalog', catalogStore(Alpine))
   Alpine.store('toast', toast)
   Alpine.store('notify', notify)
+  // Список заказов владельца: без своей страницы store молча ничего не делает
+  Alpine.store('admin', admin)
 
   Alpine.data('selectField', selectField)
   Alpine.data('quantity', quantity)

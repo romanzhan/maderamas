@@ -7,6 +7,7 @@ declare(strict_types=1);
 //   POST /api/orders                 оформить заказ → номер, токен, ссылка на оплату
 //   GET  /api/orders/{token}         статус заказа для страницы «Gracias»
 //   POST /api/mercadopago/webhook    уведомления Mercado Pago о платежах
+//   /api/admin/…                     список заказов владельца (lib/admin.php, бэкенд.md §13)
 
 require __DIR__ . '/lib/app.php';
 require __DIR__ . '/lib/http.php';
@@ -15,6 +16,7 @@ require __DIR__ . '/lib/catalog.php';
 require __DIR__ . '/lib/orders.php';
 require __DIR__ . '/lib/mercadopago.php';
 require __DIR__ . '/lib/mail.php';
+require __DIR__ . '/lib/admin.php';
 
 // Сверка с Mercado Pago по запросу статуса — не чаще раза в минуту на заказ (бэкенд.md §5)
 const RECONCILE_INTERVAL = 60;
@@ -230,6 +232,29 @@ if ($method === 'GET' && preg_match('#^/orders/([a-f0-9]{32})$#', $path, $matche
 }
 if ($method === 'POST' && $path === '/mercadopago/webhook') {
     webhookHandler();
+}
+
+if ($method === 'POST' && $path === '/admin/login') {
+    adminLoginHandler();
+}
+if ($method === 'POST' && $path === '/admin/logout') {
+    adminLogoutHandler();
+}
+if ($method === 'GET' && $path === '/admin/session') {
+    adminSessionHandler();
+}
+if ($method === 'GET' && $path === '/admin/orders') {
+    adminListHandler();
+}
+if ($method === 'GET' && preg_match('#^/admin/orders/(\d{4,9})$#', $path, $matches)) {
+    adminDetailHandler($matches[1]);
+}
+if ($method === 'POST' && preg_match('#^/admin/orders/(\d{4,9})/(ship|cancel|resolve)$#', $path, $matches)) {
+    match ($matches[2]) {
+        'ship' => adminShipHandler($matches[1]),
+        'cancel' => adminCancelHandler($matches[1]),
+        'resolve' => adminResolveHandler($matches[1]),
+    };
 }
 
 fail(404, 'notFound');

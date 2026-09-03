@@ -6,7 +6,7 @@ declare(strict_types=1);
 // обращении; её версия лежит в таблице meta, чтобы будущие изменения шли миграциями,
 // а не правкой файла руками.
 
-const SCHEMA_VERSION = 1;
+const SCHEMA_VERSION = 2;
 
 function db(): PDO
 {
@@ -78,6 +78,18 @@ function migrate(PDO $pdo): void
                 key TEXT PRIMARY KEY,
                 count INTEGER NOT NULL,
                 window_start INTEGER NOT NULL
+            );
+            SQL);
+    }
+    // Список заказов для владельца (бэкенд.md §13): отметка отправки и сессии входа
+    if ($current < 2) {
+        $pdo->exec(<<<'SQL'
+            ALTER TABLE orders ADD COLUMN shipped_at TEXT;
+            ALTER TABLE orders ADD COLUMN tracking TEXT;
+            CREATE TABLE sessions (
+                key TEXT PRIMARY KEY,
+                created_at TEXT NOT NULL,
+                expires_at TEXT NOT NULL
             );
             SQL);
     }
