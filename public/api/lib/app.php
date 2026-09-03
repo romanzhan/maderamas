@@ -63,7 +63,10 @@ function config(): array
 
     return $config = array_replace_recursive([
         'mercadopago' => ['enabled' => true, 'accessToken' => '', 'webhookSecret' => ''],
-        'mail' => ['from' => '', 'fromName' => '', 'replyTo' => null],
+        'mail' => [
+            'from' => '', 'fromName' => '', 'replyTo' => null, 'bcc' => [],
+            'smtp' => ['host' => '', 'port' => 465, 'user' => '', 'password' => ''],
+        ],
         'admin' => ['passwordHash' => ''],
     ], $loaded);
 }
