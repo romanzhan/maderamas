@@ -8,9 +8,10 @@ import { articleUrl, loadData } from './data.js'
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const distRoot = resolve(projectRoot, 'dist')
 
-// Витрина закрыта в robots.txt: своей meta у неё нет, а в карту ей нельзя
+// Витрина закрыта в robots.txt: своей meta у неё нет, а в карту ей нельзя.
+// Сервер заказов роботу тем более не нужен — он отвечает JSON, а не страницами
 const HIDDEN = ['/_componentes/']
-const DISALLOW = '/_componentes/'
+const DISALLOW = ['/_componentes/', '/api/']
 
 // Второго списка «что не индексируем» не держим: страница сама несёт meta noindex,
 // и карта читает её же (27.08.2026 — иначе списки расходятся, и в карту попадает
@@ -70,7 +71,7 @@ const robots = preview
 Disallow: /
 `
   : `User-agent: *
-Disallow: ${DISALLOW}
+${DISALLOW.map((path) => `Disallow: ${path}`).join('\n')}
 ${sitemapLine}`
 
 writeFileSync(resolve(distRoot, 'robots.txt'), robots)

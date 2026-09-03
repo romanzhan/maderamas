@@ -14,8 +14,9 @@ const DOMAINS = ['gmail.com', 'hotmail.com', 'outlook.com', 'yahoo.com.ar', 'icl
 // Отправка быстрее трёх секунд после открытия страницы — это не человек (п. 5, анти-спам)
 const MIN_FILL_MS = 3000
 
-// Макетная отправка: показать состояние «действие выполняется» и вернуть управление.
-// Настоящий обработчик появится с WordPress (страницы.md п. 8)
+// Макетная отправка форм, у которых серверного обработчика ещё нет (контакт, юридические,
+// отзыв, уведомление о наличии — бэкенд.md §1): показать «действие выполняется» и вернуть
+// управление. Чекаут отправляет по-настоящему — через свою функцию send
 const FAKE_SEND_MS = 600
 
 /**
@@ -65,9 +66,16 @@ function requestCode() {
 
 /**
  * Форма проекта. Параметры: code — выдавать номер обращения в блоке успеха;
- * onSent — что сделать после удачной отправки (чекаут уходит на страницу «спасибо»).
+ * onSent — что сделать после удачной отправки; send — настоящая отправка на сервер:
+ * возвращает false, если сама показала ошибку (чекаут: наличие изменилось), бросает
+ * исключение при любой другой беде — тогда над кнопкой встаёт `errors.submit`.
  */
-export function siteForm({ code: withCode = false, onSent = null, spamTimer = true } = {}) {
+export function siteForm({
+  code: withCode = false,
+  onSent = null,
+  spamTimer = true,
+  send = null,
+} = {}) {
   return {
     errors: {},
     warnings: {},
@@ -258,15 +266,30 @@ export function siteForm({ code: withCode = false, onSent = null, spamTimer = tr
 
       this.sendFailed = false
       this.sending = true
-      await new Promise((resolve) => setTimeout(resolve, FAKE_SEND_MS))
-      this.sending = false
+      let ok = true
 
-      // Отправлять пока некуда: обработчик придёт с WordPress. Единственная честная
-      // причина отказа в статике — отсутствие связи, и её мы показываем по-настоящему
-      if (!navigator.onLine) {
-        this.sendFailed = true
-        return
+      if (send) {
+        try {
+          ok = (await send(this)) !== false
+        } catch {
+          ok = false
+          this.sendFailed = true
+        }
+      } else {
+        await new Promise((resolve) => setTimeout(resolve, FAKE_SEND_MS))
+        // Отправлять пока некуда. Единственная честная причина отказа у макета —
+        // отсутствие связи, и её мы показываем по-настоящему
+        if (!navigator.onLine) {
+          ok = false
+          this.sendFailed = true
+        }
       }
+
+      // Успех настоящей отправки — это уход на другую страницу (оплата): кнопка остаётся
+      // заблокированной до самого перехода, иначе в эти полсекунды-две повторное нажатие
+      // создало бы второй заказ (сложные-узлы.md п. 5)
+      if (!(send && ok)) this.sending = false
+      if (!ok) return
 
       this.finish()
     },

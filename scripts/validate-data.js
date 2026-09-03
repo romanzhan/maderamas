@@ -3,7 +3,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { articleUrl, image, imageIds, loadData, productUrl } from './data.js'
+import { articleUrl, formPattern, image, imageIds, loadData, productUrl } from './data.js'
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 
@@ -173,8 +173,8 @@ function checkConfigSections(site) {
   return broken.length === 0
 }
 
-// Список провинций попадает в чекаут и в WooCommerce: недостача или кривой код там
-// обнаружатся уже на живом заказе
+// Список провинций попадает в чекаут и на сервер заказов (runtime.json): недостача или
+// кривой код там обнаружатся уже на живом заказе
 function checkProvinces(provinces) {
   if (provinces.length !== PROVINCE_COUNT) {
     fail(`provinces.json: должно быть ${PROVINCE_COUNT} юрисдикций, а не ${provinces.length}`)
@@ -577,7 +577,7 @@ function validate() {
     warnings.push('site.config.json: боевой домен ещё не задан (seo.siteUrl)')
   }
 
-  return { site, products, categories, articles }
+  return { site, products, categories, articles, provinces, dictionary }
 }
 
 function checkDictionaryParity(es) {
@@ -647,6 +647,73 @@ function buildCatalog({ site, products, categories, articles }) {
   return catalog
 }
 
+// Тексты, без которых сервер не соберёт письмо (бэкенд.md §6). Проверяются здесь, а не
+// на первом заказе: пропавший ключ словаря должен ломать сборку, а не письмо покупателю
+const EMAIL_KEYS = [
+  'subjectPaid',
+  'subjectPending',
+  'greeting',
+  'paidIntro',
+  'pendingIntro',
+  'total',
+  'shippingFree',
+  'orderLink',
+  'questions',
+  'ownerSubjectPaid',
+  'ownerSubjectPending',
+  'ownerSubjectReview',
+  'reviewAmount',
+  'reviewCancelled',
+  'reviewDuplicate',
+  'statusPaid',
+  'statusPending',
+  'statusReview',
+  'customerTitle',
+  'deliveryTitle',
+  'referencesTitle',
+  'notesTitle',
+  'dni',
+]
+
+/**
+ * Производный файл для сервера заказов (бэкенд.md §3, данные.md §12): то немногое из
+ * настроек и словаря, что нужно, чтобы посчитать заказ и написать письмо. Пишется
+ * рядом с кодом сервера и, как catalog.json, руками не правится и в git не хранится.
+ */
+function buildRuntime({ site, provinces, dictionary }) {
+  for (const key of EMAIL_KEYS) {
+    if (typeof dictionary.email?.[key] !== 'string') fail(`es.json: нет ключа "email.${key}"`)
+  }
+
+  const runtime = {
+    shippingCost: site.shipping.cost,
+    maxQtyPerItem: site.cart.maxQtyPerItem,
+    provinces: Object.fromEntries(provinces.map(({ code, name }) => [code, name])),
+    // Те же шаблоны, что стоят в атрибутах pattern формы: сервер проверяет поля ими же,
+    // второго списка правил нет. DNI сервер проверяет уже без точек — ему шаблон не нужен
+    patterns: {
+      nombre: formPattern('nombre'),
+      telefono: formPattern('telefono'),
+      cp: formPattern('cp'),
+    },
+    ownerEmail: site.contacts.email,
+    ownerPhone: site.contacts.phone,
+    siteName: dictionary.seo.siteName,
+    texts: {
+      ...dictionary.email,
+      // Строки, которые письмо делит со страницей «Gracias» и корзиной, — те же ключи,
+      // чтобы формулировки не разошлись
+      order: dictionary.thanks.order,
+      nextPrepare: dictionary.thanks.nextPrepare,
+      nextContact: dictionary.thanks.nextContact,
+      shipping: dictionary.cart.shipping,
+    },
+  }
+
+  const target = resolve(projectRoot, 'public/api/runtime.json')
+  writeFileSync(target, JSON.stringify(runtime))
+}
+
 // Нечитаемый файл данных вылетает исключением из data.js — показываем владельцу
 // одну понятную строку вместо стека Node
 try {
@@ -661,6 +728,7 @@ try {
   }
 
   const catalog = buildCatalog(data)
+  buildRuntime(data)
   console.log(
     `Данные в порядке: товаров ${catalog.products.length}, категорий ${catalog.categories.length}.`,
   )

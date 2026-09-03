@@ -10,6 +10,7 @@
     "dev": "node scripts/validate-data.js && node scripts/generate-pages.js && vite",
     "build": "node scripts/validate-data.js && node scripts/generate-pages.js && vite build && node scripts/seo.js",
     "preview": "vite preview",
+    "api": "php -S 127.0.0.1:8787 -t public scripts/api-dev-router.php",
     "validate": "node scripts/validate-data.js",
     "images": "node scripts/images.js",
     "icons": "node scripts/icons.js",

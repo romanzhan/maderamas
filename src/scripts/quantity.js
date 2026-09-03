@@ -1,5 +1,5 @@
 // Счётчик количества (компоненты.md ч. 2). Предел приходит из настроек
-// (cart.maxQtyPerItem): реального остатка в статике нет, он появится с WooCommerce.
+// (cart.maxQtyPerItem): остатка штуками нет ни на сайте, ни на сервере (бэкенд.md §1).
 export function quantity({ value = 1, max = 10 } = {}) {
   return {
     value,

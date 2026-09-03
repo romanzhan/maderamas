@@ -6,7 +6,8 @@
                (Simple Icons): он рисуется заливкой, а не контуром, и без флага остался бы
                пустым местом; fullWidth, onDark, disabled, loading,
                href — тогда это переход, и элемент становится ссылкой (компоненты.md 1.1:
-               «Кнопка = <button>, переход = <a> — не путать»),
+               «Кнопка = <button>, переход = <a> — не путать»); bindHref — выражение
+               Alpine вместо адреса, когда адрес приходит с сервера (ссылка на оплату),
                onClick — выражение Alpine для нажатия (у ссылки его не бывает).
       label и aria — ключи словаря; text — готовая подпись (её отдают данные, и второй
       раз переводить её нечем); bindLabel — выражение Alpine вместо подписи, когда
@@ -15,8 +16,13 @@
       и форму отправляет она, а не обработчик нажатия); bindLoading — выражение Alpine
       вместо флага загрузки: у формы «отправляется» живое состояние.
       Классы обоих видов — в button-class. --}}
-{{#if href}}
-  <a href="{{href}}" class="{{> button-class this}}" {{#if aria}}aria-label="{{t aria}}"{{/if}}>
+{{#if (or href bindHref)}}
+  <a
+    {{#if href}}href="{{href}}"{{/if}}
+    {{#if bindHref}}x-bind:href="{{bindHref}}"{{/if}}
+    class="{{> button-class this}}"
+    {{#if aria}}aria-label="{{t aria}}"{{/if}}
+  >
     <span class="inline-flex items-center gap-2">
       {{#if icon}}{{> icon empty name=icon class="size-5" filled=iconFilled}}{{/if}}
       <span {{#if bindLabel}}x-text="{{bindLabel}}"{{/if}}

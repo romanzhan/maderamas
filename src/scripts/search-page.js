@@ -6,9 +6,9 @@
 // Индекс и правила совпадения — общие с панелью поиска в шапке (src/scripts/search.js):
 // одна и та же опечатка обязана находить одно и то же в обоих местах.
 import { loadIndex } from './search.js'
+import { SLOW_AFTER } from './timing.js'
 
 const MIN_CHARS = 2
-const SLOW_AFTER = 5000 // «долгая загрузка» — стандарты-размеров.md п. 12
 
 export function searchResults() {
   // Индекс держим вне состояния Alpine: реактивный прокси оборачивал бы внутренности

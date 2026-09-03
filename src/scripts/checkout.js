@@ -3,29 +3,24 @@
 // ни другого здесь нет — иначе итог на чекауте и итог в корзине однажды разошлись бы.
 //
 // Что добавляет сам чекаут: автосохранение введённого, проверку «есть что оформлять»
-// и макетную отправку — она пишет номер заказа в sessionStorage и уводит на страницу
-// «спасибо» (страницы.md §8). Настоящая отправка появится с WooCommerce.
+// и отправку заказа на сервер (бэкенд.md §4): туда уходят только id товаров, id опций
+// и количество плюс поля формы — цены сервер считает сам. В ответ приходит ссылка
+// на оплату Mercado Pago, и покупатель уходит по ней; обратно он вернётся на «Gracias».
 import { cartView } from './cart.js'
 import { siteForm } from './form.js'
+import { SLOW_AFTER } from './timing.js'
 
 // Ничего платёжного здесь не бывает никогда (сложные-узлы.md п. 5) — платёжных полей
 // у нас и нет: оплата уходит в Mercado Pago после подтверждения заказа
 const DRAFT_KEY = 'madera.checkout'
-const ORDER_KEY = 'madera.order'
-
-/** Макетный номер заказа: дата и четыре цифры — так же, как номер обращения у форм */
-function orderNumber() {
-  const now = new Date()
-  const day = `${String(now.getDate()).padStart(2, '0')}${String(now.getMonth() + 1).padStart(2, '0')}`
-  return `${day}-${Math.floor(Math.random() * 9000 + 1000)}`
-}
+const ORDERS_URL = '/api/orders'
 
 export function checkoutView(maxQty, shippingCost) {
   const cart = cartView(maxQty)
   // Отметка времени против ботов на чекауте не ставится: форма приходит уже заполненной
   // из сохранённого черновика, и покупателю остаётся одно нажатие — он законно
   // укладывается в три секунды (поймано ревью 28.08.2026). Ловушка-поле остаётся
-  const form = siteForm({ onSent: (view) => view.placeOrder(), spamTimer: false })
+  const form = siteForm({ send: (view) => view.placeOrder(), spamTimer: false })
 
   const checkout = {
     // Итог на телефоне свёрнут: форма важнее, а сумма всегда видна в полосе внизу
@@ -47,11 +42,16 @@ export function checkoutView(maxQty, shippingCost) {
       this.$watch('ready', () => this.guard())
       this.guard()
 
-      // Возврат «назад» со страницы «спасибо»: браузер достаёт чекаут из своего кеша
-      // целиком, init() второй раз не бывает, а корзина к этому моменту уже пуста —
-      // и покупатель видел рабочую форму с итогом в ноль (поймано ревью 29.08.2026)
+      // Возврат «назад» со страницы «спасибо» или со страницы оплаты: браузер достаёт
+      // чекаут из своего кеша целиком, init() второй раз не бывает. Корзина к этому моменту
+      // может быть пуста — покупатель видел бы рабочую форму с итогом в ноль (поймано ревью
+      // 29.08.2026); а кнопка осталась бы заблокированной с момента ухода на оплату —
+      // снимаем блокировку, чтобы передумавший мог оформить заказ заново (ревью 03.09.2026)
       window.addEventListener('pageshow', (event) => {
-        if (event.persisted) this.guard()
+        if (!event.persisted) return
+        this.sending = false
+        this.sent = false
+        this.guard()
       })
     },
 
@@ -126,19 +126,47 @@ export function checkoutView(maxQty, shippingCost) {
     },
 
     /**
-     * Макетное оформление: номер заказа уезжает в sessionStorage, страница «спасибо»
-     * читает его оттуда и очищает корзину. Корзину чистим не здесь: оборвись переход,
-     * покупатель остался бы и без заказа, и без корзины.
+     * Оформление на сервере (бэкенд.md §4). Успех — переход на оплату; сервер сказал
+     * «нет в наличии» — то же сообщение, что при смене наличия в корзине, и false,
+     * чтобы слой формы не показывал общую ошибку поверх; всё остальное — исключение,
+     * и над кнопкой встаёт `errors.submit`, а введённое остаётся на месте.
+     * Ни корзину, ни черновик формы здесь не чистим — это делает «Gracias», когда оплата
+     * прошла или ждёт подтверждения: вернувшийся со страницы оплаты без платежа должен
+     * найти форму заполненной, а корзину целой.
      */
-    placeOrder() {
-      try {
-        sessionStorage.setItem(ORDER_KEY, JSON.stringify({ number: orderNumber() }))
-        sessionStorage.removeItem(DRAFT_KEY)
-      } catch {
-        // Без sessionStorage номер заказа показать негде — страница «спасибо» вернёт
-        // на главную, и это честнее, чем выдуманный номер
+    async placeOrder() {
+      const customer = {}
+      for (const field of this.fields()) {
+        if (field.name !== 'payment_method') customer[field.name] = field.value
       }
-      location.assign('/gracias/')
+      const payload = {
+        items: this.lines.map(({ productId, variantId, qty }) => ({
+          productId,
+          variantId: variantId ?? null,
+          qty,
+        })),
+        customer,
+        website: this.$refs.form.elements.website?.value ?? '',
+      }
+
+      const response = await fetch(ORDERS_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify(payload),
+      })
+      const result = await response.json().catch(() => null)
+
+      if (response.ok && result?.token) {
+        location.assign(result.payUrl ?? `/gracias/?pedido=${result.token}`)
+        return true
+      }
+
+      if (result?.error === 'outOfStock') {
+        this.stockChanged = true
+        return false
+      }
+
+      throw new Error(result?.error ?? `HTTP ${response.status}`)
     },
   }
 
@@ -155,35 +183,101 @@ export function checkoutView(maxQty, shippingCost) {
 }
 
 /**
- * Страница «спасибо» (страницы.md §8). Номер заказа приходит от чекаута через
- * sessionStorage; его нет — человек попал сюда прямым заходом, и показывать ему
- * нечего. Корзина очищается здесь, а не при отправке: заказ считается оформленным,
- * когда покупатель дошёл до этой страницы.
+ * Страница «спасибо» (страницы.md §8, бэкенд.md §8). Токен заказа приходит в адресе
+ * со страницы оплаты Mercado Pago, статус — с сервера. Без токена или с незнакомым
+ * токеном показывать нечего — на главную. Корзина и черновик формы очищаются, когда
+ * оплата прошла или ждёт подтверждения: заказ состоялся. Вернувшийся без оплаты
+ * («reservado», «no se aprobó») сохраняет и корзину, и заполненную форму.
  */
 export function thanksPage() {
   return {
-    ready: false,
-    number: '',
+    // loading → ready | failed
+    state: 'loading',
+    // Загрузка тянется дольше обычного — к скелетону добавляется строка «ещё немного»
+    // (состояния-экранов.md п. 0)
+    slow: false,
+    token: '',
+    // Id платежа, который Mercado Pago дописывает в обратный адрес: сервер по нему
+    // узнаёт результат раньше, чем дойдёт уведомление (бэкенд.md §5)
+    paymentId: '',
+    order: null,
+    texts: {},
 
     init() {
-      let order = null
-      try {
-        order = JSON.parse(sessionStorage.getItem(ORDER_KEY) ?? 'null')
-      } catch {
-        order = null
-      }
-
-      if (!order?.number) {
+      this.texts = { ...this.$el.dataset }
+      const params = new URLSearchParams(location.search)
+      const token = params.get('pedido') ?? ''
+      if (!/^[a-f0-9]{32}$/.test(token)) {
         location.replace('/')
         return
       }
+      this.token = token
+      this.paymentId = params.get('payment_id') ?? params.get('collection_id') ?? ''
+      this.load()
+    },
 
-      this.number = order.number
+    async load() {
+      this.state = 'loading'
+      const slowTimer = setTimeout(() => (this.slow = true), SLOW_AFTER)
+      try {
+        const query = this.paymentId ? `?payment=${encodeURIComponent(this.paymentId)}` : ''
+        const response = await fetch(`/api/orders/${this.token}${query}`, {
+          headers: { Accept: 'application/json' },
+        })
+        if (response.status === 404) {
+          location.replace('/')
+          return
+        }
+        if (!response.ok) throw new Error(`HTTP ${response.status}`)
+        this.order = await response.json()
+      } catch {
+        this.state = 'failed'
+        return
+      } finally {
+        clearTimeout(slowTimer)
+        this.slow = false
+      }
+
+      this.state = 'ready'
+      if (!this.inProgress) return
+
       if (this.$store.cart.items.length) {
         this.$store.cart.items = []
         this.$store.cart.save()
       }
-      this.ready = true
+      try {
+        sessionStorage.removeItem(DRAFT_KEY)
+      } catch {
+        // Черновик не стёрся — переживём: следующий заказ начнётся с заполненной формы
+      }
+    },
+
+    get status() {
+      return this.order?.status ?? ''
+    },
+
+    /** Заказ ждёт денег: не оплачен, отклонён или платёж ещё не подтверждён */
+    get awaitingPayment() {
+      return ['created', 'rejected', 'pending'].includes(this.status)
+    },
+
+    /** Всё в порядке или скоро будет — покупателю есть что ждать дальше */
+    get inProgress() {
+      return this.status === 'paid' || this.status === 'pending'
+    },
+
+    /** Строка словаря по статусу: data-title-paid, data-lead-created… */
+    text(kind) {
+      const key = kind + this.status.charAt(0).toUpperCase() + this.status.slice(1)
+      return this.texts[key] ?? ''
+    },
+
+    get orderLabel() {
+      return (this.texts.order ?? '').replace('{n}', () => String(this.order?.number ?? ''))
+    },
+
+    get payLabel() {
+      return this.status === 'rejected' ? this.texts.retryPay : this.texts.pay
     },
   }
 }

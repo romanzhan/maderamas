@@ -5,9 +5,9 @@
 import { loadCatalog } from './catalog-data.js'
 import { money } from './format.js'
 import { overlayPanel } from './overlay.js'
+import { SLOW_AFTER } from './timing.js'
 
 const DEBOUNCE = 200 // стандарты-размеров.md п. 12
-const SLOW_AFTER = 5000 // «долгая загрузка» — там же
 const MIN_CHARS = 2
 
 // Больше в подсказки не помещается без прокрутки, а прокручивать их покупатель не
