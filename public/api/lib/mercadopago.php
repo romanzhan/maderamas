@@ -77,7 +77,7 @@ function statementDescriptor(string $siteName): string
 /**
  * Создаёт оплату и возвращает её id и ссылку. Обратные адреса строятся от текущего
  * хоста: превью и боевой домен работают без настроек. Без HTTPS (рабочая машина)
- * Mercado Pago не примет ни уведомления, ни автовозврат — эти поля тогда не отправляются.
+ * Mercado Pago не примет автовозврат — поле тогда не отправляется.
  */
 function mpCreatePreference(array $order, string $baseUrl, array $runtime): array
 {
@@ -123,9 +123,12 @@ function mpCreatePreference(array $order, string $baseUrl, array $runtime): arra
         // от чужого с тем же номером (orders.php, applyPayment)
         'metadata' => ['order_token' => $order['token'], 'order_number' => $order['number']],
     ];
+    // Адрес уведомлений в предпочтение не кладём: такие уведомления приходят вторым
+    // каналом (?topic=payment&id=…) и подписаны ключом, которого Mercado Pago не выдаёт, —
+    // проверить их нельзя. Уведомления настраиваются в кабинете приложения (Webhooks),
+    // они подписаны секретом из конфига (песочница 03.09.2026, бэкенд.md §5)
     if (str_starts_with($baseUrl, 'https://')) {
         $body['auto_return'] = 'approved';
-        $body['notification_url'] = $baseUrl . '/api/mercadopago/webhook';
     }
 
     $response = mpRequest('POST', '/checkout/preferences', $body, $order['token']);
