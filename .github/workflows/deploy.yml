@@ -56,11 +56,20 @@ jobs:
       # Правила сервера (.htaccess) лежат в самой сборке и приезжают вместе с ней:
       # дописывать их отдельным шагом после --delete значит оставить сайт без своей
       # страницы 404, а при сбое того шага — оставить насовсем
+      # Хостинг время от времени не отвечает GitHub по SSH (тайм-аут соединения,
+      # 03.09.2026 — трижды за вечер); со второй попытки через минуту проходит.
+      # Повторяем сами, чтобы не перезапускать всю сборку руками
       - name: Заливка на хостинг
         run: |
-          rsync -az --delete --chmod=D755,F644 \
-            -e "ssh -i ~/.ssh/deploy -p ${{ secrets.SSH_PORT }} -o UserKnownHostsFile=~/.ssh/known_hosts" \
-            dist/ "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DEPLOY_PATH }}/"
+          for attempt in 1 2 3; do
+            rsync -az --delete --chmod=D755,F644 \
+              -e "ssh -i ~/.ssh/deploy -p ${{ secrets.SSH_PORT }} -o UserKnownHostsFile=~/.ssh/known_hosts -o ConnectTimeout=30" \
+              dist/ "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DEPLOY_PATH }}/" && exit 0
+            echo "Попытка $attempt не прошла, ждём минуту"
+            sleep 60
+          done
+          echo 'Хостинг не принял заливку за три попытки'
+          exit 1
 
       # Проверяем не только «страница открылась»: несуществующий адрес обязан отдать 404
       # своей страницей (значит .htaccess доехал), а превью — остаться закрытым от поиска
