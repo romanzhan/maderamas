@@ -6,6 +6,8 @@ declare(strict_types=1);
 // журнал и как выглядит любой ответ. Подключается первым, остальные модули на него опираются.
 
 const API_DIR = __DIR__ . '/..';
+const MINUTE_SECONDS = 60;
+const HOUR_SECONDS = 3600;
 const DAY_SECONDS = 86400;
 // От папки api до домашней папки хостинга — четыре уровня; запас на другую раскладку
 const DATA_DIR_SEARCH_DEPTH = 8;

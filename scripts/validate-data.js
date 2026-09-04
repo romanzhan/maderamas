@@ -4,6 +4,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { articleUrl, formPattern, image, imageIds, loadData, productUrl } from './data.js'
+import { MESSAGE_FIELD_LABELS, MESSAGE_TYPE_LABELS } from './message-fields.js'
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 
@@ -677,6 +678,12 @@ const EMAIL_KEYS = [
   'referencesTitle',
   'notesTitle',
   'dni',
+  'ownerMessageSubject',
+  'arrepentimientoSubject',
+  'arrepentimientoBody',
+  'quejasSubject',
+  'quejasBody',
+  'copyTitle',
 ]
 
 /**
@@ -688,6 +695,17 @@ function buildRuntime({ site, provinces, dictionary }) {
   for (const key of EMAIL_KEYS) {
     if (typeof dictionary.email?.[key] !== 'string') fail(`es.json: нет ключа "email.${key}"`)
   }
+  const lookup = (path) => {
+    const value = path.split('.').reduce((node, part) => node?.[part], dictionary)
+    if (typeof value !== 'string') fail(`es.json: нет ключа "${path}"`)
+    return value
+  }
+  const labels = Object.fromEntries(
+    Object.entries(MESSAGE_FIELD_LABELS).map(([field, key]) => [field, lookup(key)]),
+  )
+  const messageTypes = Object.fromEntries(
+    Object.entries(MESSAGE_TYPE_LABELS).map(([type, key]) => [type, lookup(key)]),
+  )
 
   const runtime = {
     shippingCost: site.shipping.cost,
@@ -703,14 +721,17 @@ function buildRuntime({ site, provinces, dictionary }) {
     ownerEmail: site.contacts.email,
     ownerPhone: site.contacts.phone,
     siteName: dictionary.seo.siteName,
+    labels,
+    messageTypes,
     texts: {
       ...dictionary.email,
-      // Строки, которые письмо делит со страницей «Gracias» и корзиной, — те же ключи,
-      // чтобы формулировки не разошлись
+      // Строки, которые письмо делит со страницей «Gracias», корзиной и блоком успеха
+      // юридических форм, — те же ключи, чтобы формулировки не разошлись
       order: dictionary.thanks.order,
       nextPrepare: dictionary.thanks.nextPrepare,
       nextContact: dictionary.thanks.nextContact,
       shipping: dictionary.cart.shipping,
+      requestCode: dictionary.legal.requestCode,
     },
   }
 

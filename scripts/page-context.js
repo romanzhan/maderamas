@@ -16,6 +16,7 @@ import {
   t,
   video,
 } from './data.js'
+import { MESSAGE_FIELD_LABELS, MESSAGE_TYPE_LABELS } from './message-fields.js'
 import { navigation } from './navigation.js'
 import { AXIS_PARAM, CONTENT_PAGES, SERVICE_PAGES, SHOWCASE } from './page-types.js'
 import { seoMeta } from './seo-meta.js'
@@ -40,6 +41,20 @@ const ADMIN_TABS = [
   { id: 'shipped', label: 'admin.tabShipped' },
   { id: 'review', label: 'admin.tabReview' },
   { id: 'all', label: 'admin.tabAll' },
+]
+
+// Разделы той же страницы и вкладки сообщений по типу формы (бэкенд.md §14)
+const ADMIN_SECTIONS = [
+  { id: 'orders', label: 'admin.sectionOrders' },
+  { id: 'messages', label: 'admin.sectionMessages' },
+]
+const ADMIN_MESSAGE_TABS = [
+  { id: 'all', label: 'admin.msgTabAll' },
+  { id: 'contact', label: 'admin.msgTabContact' },
+  { id: 'arrepentimiento', label: 'admin.msgTabArrepentimiento' },
+  { id: 'quejas', label: 'admin.msgTabQuejas' },
+  { id: 'review', label: 'admin.msgTabReview' },
+  { id: 'notify', label: 'admin.msgTabNotify' },
 ]
 
 const srcDir = resolve(dirname(fileURLToPath(import.meta.url)), '../src')
@@ -299,6 +314,11 @@ export function pageContext(pagePath) {
     breadcrumbs,
     showcase,
     adminTabs: ADMIN_TABS,
+    adminSections: ADMIN_SECTIONS,
+    adminMessageTabs: ADMIN_MESSAGE_TABS,
+    // Подписи полей и названия типов сообщений — из того же списка, что и письма владельцу
+    adminMessageLabels: Object.entries(MESSAGE_FIELD_LABELS).map(([field, key]) => ({ field, key })),
+    adminMessageTypes: Object.entries(MESSAGE_TYPE_LABELS).map(([type, key]) => ({ type, key })),
     site,
     sprite,
     cards,

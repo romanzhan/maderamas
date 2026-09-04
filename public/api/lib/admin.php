@@ -260,6 +260,60 @@ function adminCancelHandler(string $number): never
     jsonResponse(200, ['ok' => true]);
 }
 
+/** Сообщения из форм: вкладка «Mensajes» (бэкенд.md §14). Новые сверху, тип — фильтр */
+function adminMessagesHandler(): never
+{
+    requireHttps();
+    requireSameOrigin();
+    $db = db();
+    requireAdmin($db);
+
+    $type = (string) ($_GET['type'] ?? 'all');
+    if ($type !== 'all' && !in_array($type, MESSAGE_TYPES, true)) {
+        fail(400, 'badRequest');
+    }
+    $page = max(1, (int) ($_GET['page'] ?? 1));
+
+    $where = $type === 'all' ? '1 = 1' : 'type = ?';
+    $params = $type === 'all' ? [] : [$type];
+    $select = $db->prepare("SELECT * FROM messages WHERE $where ORDER BY id DESC LIMIT ? OFFSET ?");
+    $select->execute([...$params, ADMIN_PAGE_SIZE + 1, ($page - 1) * ADMIN_PAGE_SIZE]);
+    $rows = $select->fetchAll();
+    $hasMore = count($rows) > ADMIN_PAGE_SIZE;
+
+    $messages = array_map(fn (array $row) => [
+        'id' => (int) $row['id'],
+        'type' => $row['type'],
+        'status' => $row['status'],
+        'code' => messageCode($row['type'], (int) $row['id']),
+        'createdAt' => $row['created_at'],
+        'fields' => json_decode((string) $row['data'], true) ?: [],
+    ], array_slice($rows, 0, ADMIN_PAGE_SIZE));
+
+    jsonResponse(200, ['messages' => $messages, 'page' => $page, 'hasMore' => $hasMore]);
+}
+
+/** «Atendido» — для любого сообщения; «Publicar»/«Rechazar» — только для отзыва */
+function adminMessageStatusHandler(int $id): never
+{
+    [$db, $input] = adminActionInput();
+    $select = $db->prepare('SELECT type, status FROM messages WHERE id = ?');
+    $select->execute([$id]);
+    $message = $select->fetch();
+    if (!$message) {
+        fail(404, 'notFound');
+    }
+
+    $status = $input['status'] ?? '';
+    $allowed = $message['type'] === 'review' ? ['attended', 'approved', 'rejected'] : ['attended'];
+    if (!in_array($status, $allowed, true)) {
+        fail(422, 'invalidField', ['fields' => ['status']]);
+    }
+
+    $db->prepare('UPDATE messages SET status = ?, updated_at = ? WHERE id = ?')->execute([$status, nowUtc(), $id]);
+    jsonResponse(200, ['ok' => true]);
+}
+
 function adminResolveHandler(string $number): never
 {
     [$db, $input] = adminActionInput();

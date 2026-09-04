@@ -10,8 +10,12 @@ if (PHP_SAPI !== 'cli') {
 }
 
 require __DIR__ . '/lib/app.php';
+require __DIR__ . '/lib/db.php';
 
 const BACKUP_KEEP_DAYS = 30;
+// Сообщения из форм хранятся два года (решение владельца 03.09.2026, бэкенд.md §14);
+// заказы не удаляются никогда
+const MESSAGES_KEEP_DAYS = 730;
 
 /** Копия базы средствами SQLite (не копированием файла: тот может быть на середине записи) */
 function backup(): void
@@ -43,7 +47,17 @@ function backup(): void
     echo 'Копия сделана: ' . basename($target) . "\n";
 }
 
+/** Чистка старых сообщений: чужие данные без нужды не хранятся (Ley 25.326) */
+function purge(): void
+{
+    $before = gmdate('Y-m-d\TH:i:s\Z', time() - MESSAGES_KEEP_DAYS * DAY_SECONDS);
+    $statement = db()->prepare('DELETE FROM messages WHERE created_at < ?');
+    $statement->execute([$before]);
+    echo 'Удалено сообщений старше двух лет: ' . $statement->rowCount() . "\n";
+}
+
 match ($argv[1] ?? '') {
     'backup' => backup(),
-    default => fwrite(STDERR, "Использование: php cli.php backup\n"),
+    'purge' => purge(),
+    default => fwrite(STDERR, "Использование: php cli.php backup | purge\n"),
 };
