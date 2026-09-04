@@ -286,6 +286,21 @@ function addEvent(PDO $db, int $orderId, string $kind, ?array $detail = null): v
     ]);
 }
 
+/** Уходило ли покупателю письмо об этом статусе — по хронологии заказа */
+function customerAlreadyMailed(PDO $db, int $orderId, string $status): bool
+{
+    $select = $db->prepare("SELECT detail FROM events WHERE order_id = ? AND kind = 'email_customer_sent'");
+    $select->execute([$orderId]);
+    foreach ($select->fetchAll() as $row) {
+        $detail = json_decode((string) $row['detail'], true);
+        if (($detail['status'] ?? null) === $status) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 function canTransition(string $from, string $to): bool
 {
     return in_array($to, STATUS_TRANSITIONS[$from] ?? [], true);
@@ -358,9 +373,9 @@ function applyPaymentLocked(PDO $db, array $order, array $payment, string $payme
         'mp_checked_at' => nowUtc(),
     ];
 
-    $sameAsBefore = $order['mp_payment_id'] === $paymentId
-        && $order['mp_status'] === $mpStatus
-        && $order['status'] === $target;
+    // Тот же платёж в том же состоянии уже применён — повтор уведомления ничего не меняет,
+    // даже если владелец с тех пор разобрал заказ руками (иначе повтор откатывал бы его решение)
+    $sameAsBefore = $order['mp_payment_id'] === $paymentId && $order['mp_status'] === $mpStatus;
     if ($sameAsBefore) {
         updateOrder($db, $order['id'], ['mp_checked_at' => nowUtc()]);
         return null;

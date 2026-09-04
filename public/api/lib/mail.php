@@ -31,7 +31,10 @@ const SMTP_TIMEOUT = 15;
  */
 function smtpSend(array $smtp, string $from, array $recipients, string $message): void
 {
-    $socket = @stream_socket_client(
+    // Неудача соединения — предупреждение PHP, а предупреждения у нас — исключения
+    // (app.php): ловит его sendMail. Проверка на false осталась на случай, если тот
+    // обработчик когда-нибудь снимут
+    $socket = stream_socket_client(
         'ssl://' . $smtp['host'] . ':' . $smtp['port'],
         $errno,
         $errstr,
@@ -42,7 +45,9 @@ function smtpSend(array $smtp, string $from, array $recipients, string $message)
     }
     stream_set_timeout($socket, SMTP_TIMEOUT);
 
-    // Ответ сервера может быть многострочным («250-…», последняя строка «250 …»)
+    // Ответ сервера может быть многострочным («250-…», последняя строка «250 …»).
+    // В ошибку идёт код и текст без адресов в угловых скобках: строка попадёт в журнал,
+    // а журнал персональных данных не хранит (бэкенд.md §7 п. 15)
     $expect = function (string $code) use ($socket): void {
         do {
             $line = fgets($socket);
@@ -51,7 +56,7 @@ function smtpSend(array $smtp, string $from, array $recipients, string $message)
             }
         } while (isset($line[3]) && $line[3] === '-');
         if (!str_starts_with($line, $code)) {
-            throw new RuntimeException('SMTP: ' . trim($line));
+            throw new RuntimeException('SMTP: ' . trim((string) preg_replace('/<[^>]*>/', '<…>', $line)));
         }
     };
     $command = function (string $line, string $code) use ($socket, $expect): void {

@@ -503,7 +503,8 @@
     "msgReject": "Rechazar",
     "msgProduct": "Producto",
     "msgCode": "Número de gestión",
-    "msgPublishHint": "Las reseñas publicadas se suben al sitio en la próxima actualización."
+    "msgPublishHint": "Las reseñas publicadas se suben al sitio en la próxima actualización.",
+    "msgMailFailed": "El email de confirmación no se pudo enviar: escribile vos con el número de gestión."
   },
   "notFound": {
     "title": "Página no encontrada",

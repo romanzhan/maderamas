@@ -6,7 +6,7 @@ declare(strict_types=1);
 // обращении; её версия лежит в таблице meta, чтобы будущие изменения шли миграциями,
 // а не правкой файла руками.
 
-const SCHEMA_VERSION = 3;
+const SCHEMA_VERSION = 4;
 
 function db(): PDO
 {
@@ -106,6 +106,11 @@ function migrate(PDO $pdo): void
             );
             CREATE INDEX messages_type_status ON messages(type, status);
             SQL);
+    }
+    // Ушло ли покупателю письмо с номером обращения: провал должен быть виден владельцу
+    // во вкладке «Mensajes», а не только в журнале (бэкенд.md §14)
+    if ($current < 4) {
+        $pdo->exec('ALTER TABLE messages ADD COLUMN mail_status TEXT');
     }
     $pdo->prepare("INSERT OR REPLACE INTO meta (key, value) VALUES ('schema_version', ?)")
         ->execute([(string) SCHEMA_VERSION]);

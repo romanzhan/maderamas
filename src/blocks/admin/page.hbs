@@ -248,6 +248,11 @@
               <p x-show="message.code" class="mb-3 text-small text-charcoal/70">
                 <span>{{t "admin.msgCode"}}</span> <span class="font-medium tabular-nums" x-text="message.code"></span>
               </p>
+              {{!-- Письмо с номером обращения не ушло — норма нарушена, владелец должен связаться сам --}}
+              <p x-show="message.mailStatus === 'failed'" class="mb-3 flex items-start gap-2 text-small text-error">
+                <span class="icon-line shrink-0">{{> icon empty name="circle-alert" class="size-4"}}</span>
+                {{t "admin.msgMailFailed"}}
+              </p>
               <dl class="flex flex-col gap-2">
                 <template x-for="[name, value] in Object.entries(message.fields)" x-bind:key="name">
                   <div class="flex flex-col sm:flex-row sm:gap-4">
