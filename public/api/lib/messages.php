@@ -117,9 +117,10 @@ function messageFieldsText(array $data, array $labels): string
 
 /**
  * Письма по сообщению (бэкенд.md §14): владельцу — о каждом; покупателю — подтверждение
- * с номером обращения у юридических форм (норма — seo.md п. 8).
+ * с номером обращения у юридических форм (норма — seo.md п. 8). Возвращает, ушло ли письмо
+ * покупателю: null — не полагалось, true/false — результат.
  */
-function notifyMessage(string $type, array $data, ?string $code): void
+function notifyMessage(string $type, array $data, ?string $code): ?bool
 {
     $runtime = runtime();
     $texts = $runtime['texts'];
@@ -150,8 +151,11 @@ function notifyMessage(string $type, array $data, ?string $code): void
             '',
             $runtime['siteName'],
         ]);
-        sendMail($data['email'], $texts[$subjectKey], $body);
+
+        return sendMail($data['email'], $texts[$subjectKey], $body);
     }
+
+    return null;
 }
 
 function messagesHandler(): never
@@ -180,10 +184,13 @@ function messagesHandler(): never
         fail(422, 'invalidField', ['fields' => $errors]);
     }
 
-    ['code' => $code] = createMessage($db, $type, $data);
+    ['id' => $id, 'code' => $code] = createMessage($db, $type, $data);
 
     // Ответ уходит сразу, письма — после него: покупатель ждёт номер обращения, а не почту
     finishResponse(201, ['ok' => true, 'code' => $code]);
-    notifyMessage($type, $data, $code);
+    $mailed = notifyMessage($type, $data, $code);
+    if ($mailed !== null) {
+        $db->prepare('UPDATE messages SET mail_status = ? WHERE id = ?')->execute([$mailed ? 'sent' : 'failed', $id]);
+    }
     exit;
 }

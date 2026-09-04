@@ -39,7 +39,12 @@ function backup(): void
     $from->close();
     chmod($target, 0600);
 
-    foreach (glob($dir . '/orders-*.sqlite') ?: [] as $file) {
+    // Ключи и пароли восстанавливать неоткуда, кроме как отсюда: копия конфига лежит
+    // рядом с копией базы, с теми же правами
+    copy(dataDir() . '/config.php', $dir . '/config-' . gmdate('Y-m-d') . '.php');
+    chmod($dir . '/config-' . gmdate('Y-m-d') . '.php', 0600);
+
+    foreach (array_merge(glob($dir . '/orders-*.sqlite') ?: [], glob($dir . '/config-*.php') ?: []) as $file) {
         if (filemtime($file) < time() - BACKUP_KEEP_DAYS * DAY_SECONDS) {
             unlink($file);
         }

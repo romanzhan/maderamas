@@ -143,11 +143,22 @@ function mpCreatePreference(array $order, string $baseUrl, array $runtime): arra
     return ['id' => (string) $response['data']['id'], 'initPoint' => (string) $response['data']['init_point']];
 }
 
+/**
+ * Платёж по id. Нет такого — null; любой другой сбой (ключ, лимит, их авария) —
+ * исключение: webhook тогда ответит ошибкой, и Mercado Pago повторит уведомление сам,
+ * а не сочтёт его доставленным.
+ */
 function mpGetPayment(string $id): ?array
 {
     $response = mpRequest('GET', '/v1/payments/' . rawurlencode($id));
+    if ($response['status'] === 404) {
+        return null;
+    }
+    if ($response['status'] !== 200) {
+        throw new RuntimeException('Mercado Pago не отдал платёж: HTTP ' . $response['status']);
+    }
 
-    return $response['status'] === 200 ? $response['data'] : null;
+    return $response['data'];
 }
 
 /** Платежи по номеру заказа, свежие первыми — для сверки без webhook (бэкенд.md §5) */

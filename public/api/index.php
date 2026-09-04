@@ -156,7 +156,7 @@ function orderStatusHandler(string $token): never
     }
 
     // Id платежа из обратного адреса Mercado Pago (число); всё остальное — как будто его нет
-    $returnedPaymentId = (string) ($_GET['payment'] ?? '');
+    $returnedPaymentId = queryString('payment');
     if (!preg_match('/^\d{1,20}$/', $returnedPaymentId)) {
         $returnedPaymentId = '';
     }
@@ -172,8 +172,8 @@ function webhookHandler(): never
     $body = json_decode((string) file_get_contents('php://input', false, null, 0, BODY_LIMIT), true);
     $body = is_array($body) ? $body : [];
     // PHP превращает параметр data.id в data_id; тип приходит как type или topic
-    $type = (string) ($_GET['type'] ?? $_GET['topic'] ?? $body['type'] ?? '');
-    $dataId = (string) ($_GET['data_id'] ?? $body['data']['id'] ?? $_GET['id'] ?? '');
+    $type = queryString('type') ?: queryString('topic') ?: (string) ($body['type'] ?? '');
+    $dataId = queryString('data_id') ?: (string) ($body['data']['id'] ?? '') ?: queryString('id');
 
     // Уведомления о чём угодно, кроме платежей (merchant_order и прочее), нам не нужны:
     // отвечаем «200», чтобы Mercado Pago не повторял их
@@ -185,7 +185,7 @@ function webhookHandler(): never
     $verified = mpVerifySignature(
         (string) ($_SERVER['HTTP_X_SIGNATURE'] ?? ''),
         (string) ($_SERVER['HTTP_X_REQUEST_ID'] ?? ''),
-        (string) ($_GET['data_id'] ?? ''),
+        queryString('data_id'),
         (string) mpConfig()['webhookSecret'],
     );
     if (!$verified) {

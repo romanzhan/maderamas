@@ -12,6 +12,14 @@ function requestMethod(): string
     return strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET');
 }
 
+/** Параметр адреса как строка: массив (`?tab[]=x`) — это не значение, а мусор */
+function queryString(string $key): string
+{
+    $value = $_GET[$key] ?? '';
+
+    return is_string($value) ? $value : '';
+}
+
 /** Путь после /api без хвостового слеша: /api/orders/abc → /orders/abc */
 function requestPath(): string
 {
@@ -71,8 +79,10 @@ function requireSameOrigin(): void
         fail(403, 'forbidden');
     }
 
+    // Нет заголовка — обычный переход или запрос того же сайта; «null» — чужая страница
+    // без происхождения, ей здесь делать нечего
     $origin = $_SERVER['HTTP_ORIGIN'] ?? null;
-    if ($origin === null || $origin === 'null') {
+    if ($origin === null) {
         return;
     }
     $host = parse_url($origin, PHP_URL_HOST);

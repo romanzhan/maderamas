@@ -135,12 +135,12 @@ function adminListHandler(): never
     requireAdmin($db);
     $runtime = runtime();
 
-    $tab = (string) ($_GET['tab'] ?? 'paid');
+    $tab = queryString('tab') ?: 'paid';
     if (!isset(ADMIN_TABS[$tab])) {
         fail(400, 'badRequest');
     }
-    $page = max(1, (int) ($_GET['page'] ?? 1));
-    $query = trim((string) ($_GET['q'] ?? ''));
+    $page = max(1, (int) queryString('page'));
+    $query = trim(queryString('q'));
 
     $where = ADMIN_TABS[$tab];
     $params = [];
@@ -268,11 +268,11 @@ function adminMessagesHandler(): never
     $db = db();
     requireAdmin($db);
 
-    $type = (string) ($_GET['type'] ?? 'all');
+    $type = queryString('type') ?: 'all';
     if ($type !== 'all' && !in_array($type, MESSAGE_TYPES, true)) {
         fail(400, 'badRequest');
     }
-    $page = max(1, (int) ($_GET['page'] ?? 1));
+    $page = max(1, (int) queryString('page'));
 
     $where = $type === 'all' ? '1 = 1' : 'type = ?';
     $params = $type === 'all' ? [] : [$type];
@@ -287,6 +287,7 @@ function adminMessagesHandler(): never
         'status' => $row['status'],
         'code' => messageCode($row['type'], (int) $row['id']),
         'createdAt' => $row['created_at'],
+        'mailStatus' => $row['mail_status'],
         'fields' => json_decode((string) $row['data'], true) ?: [],
     ], array_slice($rows, 0, ADMIN_PAGE_SIZE));
 
@@ -331,9 +332,10 @@ function adminResolveHandler(string $number): never
     addEvent($db, $order['id'], 'resolved', ['to' => $decision, 'note' => $note]);
 
     finishResponse(200, ['ok' => true]);
-    // Покупатель, чей платёж владелец признал верным, письма об оплате ещё не получал;
-    // самому владельцу письмо о его же решении не нужно
-    if ($decision === 'paid') {
+    // Покупатель, чей платёж владелец признал верным, письма об оплате обычно ещё не получал —
+    // кроме случая «второй платёж по уже оплаченному»: там оно ушло при первом платеже.
+    // Самому владельцу письмо о его же решении не нужно
+    if ($decision === 'paid' && !customerAlreadyMailed($db, $order['id'], 'paid')) {
         notifyOrderStatus($db, fetchOrderById($db, $order['id']), 'paid', baseUrl(), false);
     }
     exit;
