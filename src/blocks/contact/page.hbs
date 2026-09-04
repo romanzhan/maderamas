@@ -34,14 +34,14 @@
       <p class="mt-2 max-w-prose text-charcoal/70">{{t "contact.formLead"}}</p>
 
       <div class="mt-6">
-        {{#> form-shell submitLabel="contact.submit" successTitle="contact.successTitle"
+        {{#> form-shell send="contact" submitLabel="contact.submit" successTitle="contact.successTitle"
             successText="contact.successText" againLabel="contact.sendAnother"
             onAction="again()"}}
-          {{> field empty live=true id="contacto-nombre" name="nombre" label="fields.name"
+          {{> field empty live=true id="contacto-nombre" name="nombre" label="fields.name" maxlength=60
               required=true autocomplete="name" pattern=(formPattern "nombre")
               errorPattern="errors.nameFormat"}}
 
-          {{> field empty live=true id="contacto-email" name="email" label="fields.email"
+          {{> field empty live=true id="contacto-email" name="email" label="fields.email" maxlength=120
               type="email" inputmode="email" required=true autocomplete="email" checkValid=true}}
 
           {{> textarea empty live=true id="contacto-mensaje" name="mensaje"

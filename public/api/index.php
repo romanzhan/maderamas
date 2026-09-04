@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-// Единственная точка входа сервера (бэкенд.md §2): четыре адреса, всё остальное — 404.
+// Единственная точка входа сервера (бэкенд.md §2): адреса ниже, всё остальное — 404.
 //   GET  /api/health                 живой ли сервер (проверка после деплоя)
 //   POST /api/orders                 оформить заказ → номер, токен, ссылка на оплату
 //   GET  /api/orders/{token}         статус заказа для страницы «Gracias»
 //   POST /api/mercadopago/webhook    уведомления Mercado Pago о платежах
-//   /api/admin/…                     список заказов владельца (lib/admin.php, бэкенд.md §13)
+//   POST /api/messages               формы обратной связи (lib/messages.php, бэкенд.md §14)
+//   /api/admin/…                     заказы и сообщения для владельца (lib/admin.php, §13)
 
 require __DIR__ . '/lib/app.php';
 require __DIR__ . '/lib/http.php';
@@ -16,6 +17,7 @@ require __DIR__ . '/lib/catalog.php';
 require __DIR__ . '/lib/orders.php';
 require __DIR__ . '/lib/mercadopago.php';
 require __DIR__ . '/lib/mail.php';
+require __DIR__ . '/lib/messages.php';
 require __DIR__ . '/lib/admin.php';
 
 // Сверка с Mercado Pago по запросу статуса — не чаще раза в минуту на заказ (бэкенд.md §5)
@@ -23,8 +25,6 @@ const RECONCILE_INTERVAL = 60;
 // Пределы частоты на один IP (бэкенд.md §7 п. 7)
 const ORDERS_PER_HOUR = 10;
 const STATUS_CHECKS_PER_MINUTE = 60;
-const HOUR_SECONDS = 3600;
-const MINUTE_SECONDS = 60;
 
 function healthHandler(): never
 {
@@ -240,6 +240,10 @@ if ($method === 'POST' && $path === '/mercadopago/webhook') {
     webhookHandler();
 }
 
+if ($method === 'POST' && $path === '/messages') {
+    messagesHandler();
+}
+
 if ($method === 'POST' && $path === '/admin/login') {
     adminLoginHandler();
 }
@@ -261,6 +265,12 @@ if ($method === 'POST' && preg_match('#^/admin/orders/(\d{4,9})/(ship|cancel|res
         'cancel' => adminCancelHandler($matches[1]),
         'resolve' => adminResolveHandler($matches[1]),
     };
+}
+if ($method === 'GET' && $path === '/admin/messages') {
+    adminMessagesHandler();
+}
+if ($method === 'POST' && preg_match('#^/admin/messages/(\d{1,9})/status$#', $path, $matches)) {
+    adminMessageStatusHandler((int) $matches[1]);
 }
 
 fail(404, 'notFound');

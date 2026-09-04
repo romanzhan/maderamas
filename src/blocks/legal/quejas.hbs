@@ -12,9 +12,9 @@
   </div>
 
   <div class="mt-8 lg:mt-12">
-    {{#> form-shell code=true submitLabel="quejas.submit" successTitle="quejas.successTitle"
+    {{#> form-shell send="quejas" code=true submitLabel="quejas.submit" successTitle="quejas.successTitle"
         successText="quejas.successText" againLabel="common.goHome" href="/"}}
-      {{> field empty live=true id="quejas-nombre" name="nombre" label="fields.name"
+      {{> field empty live=true id="quejas-nombre" name="nombre" label="fields.name" maxlength=60
           required=true autocomplete="name" pattern=(formPattern "nombre")
           errorPattern="errors.nameFormat"}}
 
@@ -23,7 +23,7 @@
           inputmode="numeric" required=true format="dni" pattern=(formPattern "dni")
           errorPattern="errors.dniFormat"}}
 
-      {{> field empty live=true id="quejas-email" name="email" label="fields.email"
+      {{> field empty live=true id="quejas-email" name="email" label="fields.email" maxlength=120
           type="email" inputmode="email" required=true autocomplete="email" checkValid=true}}
 
       {{> field empty live=true id="quejas-telefono" name="telefono" label="fields.phone"

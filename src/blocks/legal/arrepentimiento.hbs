@@ -13,21 +13,21 @@
   </div>
 
   <div class="mt-8 lg:mt-12">
-    {{#> form-shell code=true submitLabel="arrepentimiento.submit"
+    {{#> form-shell send="arrepentimiento" code=true submitLabel="arrepentimiento.submit"
         successTitle="arrepentimiento.successTitle" successText="arrepentimiento.successText"
         againLabel="common.goHome" href="/"}}
-      {{> field empty live=true id="arr-nombre" name="nombre" label="fields.name"
+      {{> field empty live=true id="arr-nombre" name="nombre" label="fields.name" maxlength=60
           required=true autocomplete="name" pattern=(formPattern "nombre")
           errorPattern="errors.nameFormat"}}
 
-      {{> field empty live=true id="arr-email" name="email" label="fields.email"
+      {{> field empty live=true id="arr-email" name="email" label="fields.email" maxlength=120
           type="email" inputmode="email" required=true autocomplete="email" checkValid=true}}
 
       {{> field empty live=true id="arr-telefono" name="telefono" label="fields.phone"
           type="tel" inputmode="tel" optional=true autocomplete="tel" format="phone"
           pattern=(formPattern "telefono") errorPattern="errors.phoneFormat" hint="fields.phoneHint" checkValid=true}}
 
-      {{> field empty live=true id="arr-pedido" name="pedido" label="fields.orderNumber"
+      {{> field empty live=true id="arr-pedido" name="pedido" label="fields.orderNumber" maxlength=20
           optional=true hint="arrepentimiento.orderHint"}}
 
       {{> textarea empty live=true id="arr-motivo" name="motivo" label="fields.reason"

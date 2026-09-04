@@ -6,7 +6,7 @@ declare(strict_types=1);
 // обращении; её версия лежит в таблице meta, чтобы будущие изменения шли миграциями,
 // а не правкой файла руками.
 
-const SCHEMA_VERSION = 2;
+const SCHEMA_VERSION = 3;
 
 function db(): PDO
 {
@@ -91,6 +91,20 @@ function migrate(PDO $pdo): void
                 created_at TEXT NOT NULL,
                 expires_at TEXT NOT NULL
             );
+            SQL);
+    }
+    // Сообщения из форм обратной связи (бэкенд.md §14): тип, состояние и поля как есть
+    if ($current < 3) {
+        $pdo->exec(<<<'SQL'
+            CREATE TABLE messages (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                type TEXT NOT NULL,
+                status TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                data TEXT NOT NULL
+            );
+            CREATE INDEX messages_type_status ON messages(type, status);
             SQL);
     }
     $pdo->prepare("INSERT OR REPLACE INTO meta (key, value) VALUES ('schema_version', ?)")

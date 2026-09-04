@@ -8,6 +8,16 @@ import { dateTime, money } from './format.js'
 
 const API = '/api/admin'
 const DEFAULT_TAB = 'paid'
+const DEFAULT_SECTION = 'orders'
+
+// Тон плашки состояния сообщения: новое ждёт, отвеченное — серое, отзыв — опубликован
+// или отклонён
+const MESSAGE_STATUS_KIND = {
+  new: 'warning',
+  attended: 'neutral',
+  approved: 'success',
+  rejected: 'error',
+}
 
 // Тон плашки состояния: зелёный — всё хорошо, жёлтый — ждём, красный — нужно смотреть,
 // серый — заказа больше нет (визуальная-система.md, тона состояний)
@@ -59,8 +69,8 @@ export const admin = {
   orders: [],
   page: 1,
   hasMore: false,
-  // loading | ready | failed
-  list: 'loading',
+  // idle | loading | ready | failed — заказы грузятся при первом заходе в раздел
+  list: 'idle',
   loadingMore: false,
 
   // Открытый заказ; null — показан список
@@ -68,6 +78,22 @@ export const admin = {
   // Заказ открыт из списка (своя запись в истории) — «назад» вернёт к списку;
   // открытый по прямой ссылке записи не имеет, и «назад» увёл бы с сайта
   pushedOrder: false,
+
+  // Разделы страницы: заказы и сообщения из форм (бэкенд.md §14)
+  sections: [],
+  section: DEFAULT_SECTION,
+  messageTabs: [],
+  msgTab: 'all',
+  messages: [],
+  msgPage: 0,
+  msgHasMore: false,
+  // idle | loading | ready | failed — сообщения грузятся при первом заходе в раздел
+  msgList: 'idle',
+  msgLoadingMore: false,
+  // Раскрытое сообщение и то, над которым идёт действие
+  openMessage: null,
+  msgActing: null,
+  msgActionFailed: null,
   // loading | ready | failed
   detail: 'idle',
   acting: false,
@@ -76,11 +102,19 @@ export const admin = {
   start(element) {
     this.root = element
     this.texts = { ...element.dataset }
-    this.tabs = [...element.querySelectorAll('[role="tab"]')].map((button) => button.dataset.tab)
+    this.tabs = [...element.querySelectorAll('[data-tab]')].map((button) => button.dataset.tab)
+    this.sections = [...element.querySelectorAll('[data-section]')].map(
+      (button) => button.dataset.section,
+    )
+    this.messageTabs = [...element.querySelectorAll('[data-msg-tab]')].map(
+      (button) => button.dataset.msgTab,
+    )
 
     const params = new URLSearchParams(location.search)
     const tab = params.get('tab')
     if (this.tabs.includes(tab)) this.tab = tab
+    const section = params.get('s')
+    if (this.sections.includes(section)) this.section = section
 
     // «Назад» браузера закрывает заказ и возвращает список (чеклист Г): открытие
     // заказа пишет запись в историю с его номером. Окна подтверждения пишут свою запись
@@ -100,7 +134,10 @@ export const admin = {
   async request(path, body = null) {
     const response = await fetch(API + path, {
       method: body ? 'POST' : 'GET',
-      headers: { Accept: 'application/json', ...(body ? { 'Content-Type': 'application/json' } : {}) },
+      headers: {
+        Accept: 'application/json',
+        ...(body ? { 'Content-Type': 'application/json' } : {}),
+      },
       body: body ? JSON.stringify(body) : undefined,
     })
     if (response.status === 401 && path !== '/login') {
@@ -125,9 +162,48 @@ export const admin = {
 
   /** Вход состоялся (или сессия жива): список и, если в адресе есть номер, заказ */
   enter() {
-    this.load()
+    if (this.section === 'messages') this.loadMessages()
+    else this.load()
     const number = Number(location.hash.slice(1))
     if (Number.isInteger(number) && number > 0) this.openOrder(number, false)
+  },
+
+  /** Адрес хранит раздел и вкладку заказов: перезагрузка и ссылка открывают то же место */
+  syncUrl() {
+    const params = new URLSearchParams()
+    if (this.section !== DEFAULT_SECTION) params.set('s', this.section)
+    if (this.section === DEFAULT_SECTION && this.tab !== DEFAULT_TAB) params.set('tab', this.tab)
+    const query = params.toString()
+    history.replaceState(history.state, '', location.pathname + (query ? `?${query}` : ''))
+  },
+
+  setSection(section) {
+    if (!this.sections.includes(section) || section === this.section) return
+    this.section = section
+    this.syncUrl()
+    // Каждый раздел грузится при первом заходе в него, а не заранее
+    if (section === 'messages' && this.msgList === 'idle') this.loadMessages()
+    if (section === 'orders' && this.list === 'idle') this.load()
+  },
+
+  /** Стрелки по вкладкам — общее правило для всех трёх полос (компоненты.md 4.4) */
+  stepTabs(event, tabs, current, select, attribute) {
+    const step = { ArrowRight: 1, ArrowLeft: -1 }[event.key]
+    if (!step) return
+    event.preventDefault()
+    const next = tabs[(tabs.indexOf(current) + step + tabs.length) % tabs.length]
+    select(next)
+    event.currentTarget.parentElement.querySelector(`[${attribute}="${next}"]`)?.focus()
+  },
+
+  sectionKey(event) {
+    this.stepTabs(
+      event,
+      this.sections,
+      this.section,
+      (next) => this.setSection(next),
+      'data-section',
+    )
   },
 
   async login(password) {
@@ -165,6 +241,9 @@ export const admin = {
     }
     this.auth = 'out'
     this.orders = []
+    this.list = 'idle'
+    this.messages = []
+    this.msgList = 'idle'
     this.leaveOrder()
   },
 
@@ -181,20 +260,98 @@ export const admin = {
     this.query = ''
     const search = this.root?.querySelector('input[name="q"]')
     if (search) search.value = ''
-    // Вкладка живёт в адресе: перезагрузка и ссылка открывают её же
-    history.replaceState(history.state, '', tab === DEFAULT_TAB ? location.pathname : `?tab=${tab}`)
+    this.syncUrl()
     this.load()
   },
 
-  /** Стрелки ходят по вкладкам (компоненты.md 4.4) */
   tabKey(event) {
-    const step = { ArrowRight: 1, ArrowLeft: -1 }[event.key]
-    if (!step) return
-    event.preventDefault()
-    const count = this.tabs.length
-    const next = this.tabs[(this.tabs.indexOf(this.tab) + step + count) % count]
-    this.setTab(next)
-    event.currentTarget.parentElement.querySelector(`[data-tab="${next}"]`)?.focus()
+    this.stepTabs(event, this.tabs, this.tab, (next) => this.setTab(next), 'data-tab')
+  },
+
+  setMsgTab(tab) {
+    if (!this.messageTabs.includes(tab) || tab === this.msgTab) return
+    this.msgTab = tab
+    this.openMessage = null
+    this.loadMessages()
+  },
+
+  msgTabKey(event) {
+    this.stepTabs(
+      event,
+      this.messageTabs,
+      this.msgTab,
+      (next) => this.setMsgTab(next),
+      'data-msg-tab',
+    )
+  },
+
+  async loadMessages(more = false) {
+    if (more) {
+      if (this.msgLoadingMore || !this.msgHasMore) return
+      this.msgLoadingMore = true
+    } else {
+      this.msgList = 'loading'
+      this.msgPage = 0
+    }
+
+    const params = new URLSearchParams({ type: this.msgTab, page: String(this.msgPage + 1) })
+    try {
+      const response = await this.request(`/messages?${params}`)
+      if (!response.ok) throw new Error(`HTTP ${response.status}`)
+      const data = await response.json()
+      this.messages = more ? [...this.messages, ...data.messages] : data.messages
+      this.msgPage = data.page
+      this.msgHasMore = data.hasMore
+      this.msgList = 'ready'
+    } catch {
+      if (more) Alpine.store('toast').notify({ text: this.texts.tNetwork })
+      else this.msgList = 'failed'
+    }
+    this.msgLoadingMore = false
+  },
+
+  toggleMessage(id) {
+    this.openMessage = this.openMessage === id ? null : id
+    this.msgActionFailed = null
+  },
+
+  /** Действие над сообщением: «отвечено», у отзыва — «опубликовать» / «отклонить» */
+  async msgAct(id, status) {
+    if (this.msgActing) return
+    this.msgActing = id
+    this.msgActionFailed = null
+    try {
+      const response = await this.request(`/messages/${id}/status`, { status })
+      if (!response.ok) throw new Error(`HTTP ${response.status}`)
+      this.messages = this.messages.map((message) =>
+        message.id === id ? { ...message, status } : message,
+      )
+    } catch {
+      this.msgActionFailed = id
+    }
+    this.msgActing = null
+  },
+
+  msgTypeLabel(type) {
+    return this.texts[`tType${capitalize(type)}`] ?? type
+  },
+
+  msgStatusLabel(status) {
+    return this.texts[`tMsg${capitalize(status)}`] ?? status
+  },
+
+  msgStatusKind(status) {
+    return MESSAGE_STATUS_KIND[status] ?? 'neutral'
+  },
+
+  /** Кто написал: имя, а у «сообщить о поступлении» — почта и товар */
+  msgSummary(message) {
+    const fields = message.fields
+    return [fields.nombre ?? fields.email, fields.producto].filter(Boolean).join(' · ')
+  },
+
+  fieldLabel(name) {
+    return this.texts[`l${capitalize(name)}`] ?? name
   },
 
   search(value) {

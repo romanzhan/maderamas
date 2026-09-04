@@ -23,15 +23,17 @@
   <p class="text-charcoal/70">{{t text}}</p>
 
   {{#if code}}
-    {{!-- Номер обращения приходит из браузера, поэтому строка словаря отдаётся
+    {{!-- Номер обращения приходит с сервера, поэтому строка словаря отдаётся
           в data-атрибуте и подстановка делается на месте: испанских строк в скриптах
-          не бывает (принцип 27) --}}
+          не бывает (принцип 27). Без номера (отправку отсекла ловушка для ботов) строки
+          нет — пустой номер и обещание письма были бы ложью --}}
     <p
+      x-show="code"
       class="w-full rounded-md bg-sand px-4 py-3 font-medium tabular-nums"
       data-code="{{t "legal.requestCode" code="{code}"}}"
       x-text="$el.dataset.code.replace('{code}', () => code)"
     ></p>
-    <p class="text-small text-charcoal/70">{{t "legal.requestCodeNote"}}</p>
+    <p x-show="code" class="text-small text-charcoal/70">{{t "legal.requestCodeNote"}}</p>
   {{/if}}
 
   {{#if actionLabel}}

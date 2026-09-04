@@ -14,9 +14,12 @@ const DOMAINS = ['gmail.com', 'hotmail.com', 'outlook.com', 'yahoo.com.ar', 'icl
 // Отправка быстрее трёх секунд после открытия страницы — это не человек (п. 5, анти-спам)
 const MIN_FILL_MS = 3000
 
-// Макетная отправка форм, у которых серверного обработчика ещё нет (контакт, юридические,
-// отзыв, уведомление о наличии — бэкенд.md §1): показать «действие выполняется» и вернуть
-// управление. Чекаут отправляет по-настоящему — через свою функцию send
+// Формы обратной связи уходят на сервер одним адресом (бэкенд.md §14); тип формы
+// приходит из разметки оболочки (data-send). Чекаут шлёт своей функцией send
+const MESSAGES_URL = '/api/messages'
+
+// Макетная отправка — только для формы без адреса (витрина компонентов): показать
+// «действие выполняется» и вернуть управление
 const FAKE_SEND_MS = 600
 
 /**
@@ -55,27 +58,39 @@ function focusTarget(field) {
   return document.getElementById(`${field.id}-trigger`) ?? field
 }
 
-/** Номер обращения для юридических форм (seo.md п. 8): дата плюс короткий счётчик */
-function requestCode() {
-  const now = new Date()
-  const day = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(
-    now.getDate(),
-  ).padStart(2, '0')}`
-  return `${day}-${Math.floor(Math.random() * 9000 + 1000)}`
+/**
+ * Отправка формы обратной связи (бэкенд.md §14): все поля формы как есть, тип — из
+ * разметки. Номер обращения юридических форм выдаёт сервер — он же его и хранит.
+ * Любой отказ сервера — исключение: над кнопкой встанет `errors.submit`, введённое
+ * останется на месте.
+ */
+async function sendMessage(type, view) {
+  const fields = {}
+  for (const [name, value] of new FormData(view.$refs.form).entries()) {
+    if (name !== 'website') fields[name] = value
+  }
+
+  const response = await fetch(MESSAGES_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    body: JSON.stringify({ type, fields, website: '' }),
+  })
+  const result = await response.json().catch(() => null)
+  if (!response.ok || !result?.ok) throw new Error(result?.error ?? `HTTP ${response.status}`)
+
+  view.code = result.code ?? ''
+  return true
 }
 
 /**
- * Форма проекта. Параметры: code — выдавать номер обращения в блоке успеха;
- * onSent — что сделать после удачной отправки; send — настоящая отправка на сервер:
- * возвращает false, если сама показала ошибку (чекаут: наличие изменилось), бросает
+ * Форма проекта. Параметры: code — показывать номер обращения в блоке успеха (его
+ * присылает сервер); onSent — что сделать после удачной отправки; send — своя отправка
+ * (чекаут): возвращает false, если сама показала ошибку (наличие изменилось), бросает
  * исключение при любой другой беде — тогда над кнопкой встаёт `errors.submit`.
+ * Формы обратной связи свою функцию не передают: тип формы стоит в разметке (data-send),
+ * и отправляет их общая sendMessage.
  */
-export function siteForm({
-  code: withCode = false,
-  onSent = null,
-  spamTimer = true,
-  send = null,
-} = {}) {
+export function siteForm({ onSent = null, spamTimer = true, send = null } = {}) {
   return {
     errors: {},
     warnings: {},
@@ -268,26 +283,28 @@ export function siteForm({
       this.sending = true
       let ok = true
 
-      if (send) {
+      const sender = send ?? (this.texts.send ? (view) => sendMessage(this.texts.send, view) : null)
+      if (sender) {
         try {
-          ok = (await send(this)) !== false
+          ok = (await sender(this)) !== false
         } catch {
           ok = false
           this.sendFailed = true
         }
       } else {
         await new Promise((resolve) => setTimeout(resolve, FAKE_SEND_MS))
-        // Отправлять пока некуда. Единственная честная причина отказа у макета —
-        // отсутствие связи, и её мы показываем по-настоящему
+        // Форме без адреса (витрина) отправлять некуда. Единственная честная причина
+        // отказа у макета — отсутствие связи, и её мы показываем по-настоящему
         if (!navigator.onLine) {
           ok = false
           this.sendFailed = true
         }
       }
 
-      // Успех настоящей отправки — это уход на другую страницу (оплата): кнопка остаётся
+      // Успех своей отправки — это уход на другую страницу (оплата): кнопка остаётся
       // заблокированной до самого перехода, иначе в эти полсекунды-две повторное нажатие
-      // создало бы второй заказ (сложные-узлы.md п. 5)
+      // создало бы второй заказ (сложные-узлы.md п. 5). Формы обратной связи остаются
+      // на месте — их кнопка освобождается, блок успеха закрывает форму сам
       if (!(send && ok)) this.sending = false
       if (!ok) return
 
@@ -303,7 +320,6 @@ export function siteForm({
         this.reset()
       } else {
         this.sent = true
-        if (withCode) this.code = requestCode()
         // Блок успеха обязан объявиться скринридеру: без фокуса на заголовке человек
         // с диктором не узнает, что отправка прошла (формы-и-поля.md п. 5)
         this.$nextTick(() => this.$refs.success?.focus())
@@ -319,6 +335,7 @@ export function siteForm({
     /** Форма в исходное состояние: пустые поля, снятые ошибки. Фокус не трогаем */
     reset() {
       this.sent = false
+      this.code = ''
       this.errors = {}
       this.warnings = {}
       this.suggestions = {}
