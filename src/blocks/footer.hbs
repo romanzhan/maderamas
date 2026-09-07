@@ -32,8 +32,34 @@
       {{/footer-column}}
     </div>
 
-    <div class="mt-8 border-t border-cream/20 pt-6 text-cream/75 text-small">
+    <div
+      class="mt-8 flex flex-col gap-6 border-t border-cream/20 pt-6 text-cream/75 text-small
+        md:flex-row md:items-center md:justify-between"
+    >
       <p>{{t "footer.rights" year=year}}</p>
+
+      {{!-- Знак «Formulario 960/D» (RG AFIP 4042-E, seo.md п. 8). Картинку отдаёт сама
+            ARCA и грузиться она обязана с её сервера: знак показывает текущий статус
+            продавца, поэтому своей копии у нас нет и в конвейер картинок он не идёт.
+            Размеры проставлены родные — иначе полоса дёргается, пока знак грузится --}}
+      {{#if site.legal.dataFiscalUrl}}
+        <a
+          href="{{site.legal.dataFiscalUrl}}"
+          target="_blank"
+          rel="noopener"
+          class="-m-2 inline-flex shrink-0 rounded-lg p-2 hover:bg-cream/20"
+        >
+          <img
+            src="https://www.afip.gob.ar/images/f960/DATAWEB.jpg"
+            alt="{{t "footer.dataFiscal"}}"
+            width="239"
+            height="327"
+            class="w-16"
+            loading="lazy"
+            decoding="async"
+          />
+        </a>
+      {{/if}}
     </div>
   </div>
 </footer>

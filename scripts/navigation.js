@@ -50,17 +50,15 @@ export function navigation(currentPath) {
     help,
     helpFooter: [...help, contacto],
     shop: [...catalog, item(t('howItWorks.title'), '/como-funciona/'), nosotros, ...blog],
-    // Data Fiscal — последняя строка юридической колонки (страницы.md, «Навигация
-    // сайта»); ссылка ведёт на страницу ARCA, поэтому открывается в новой вкладке
+    // Data Fiscal текстовой строкой здесь больше нет: RG AFIP 4042-E требует
+    // официальный знак «Formulario 960/D», и с 07.09.2026 он стоит картинкой
+    // в нижней полосе подвала (footer.hbs)
     // Botón de Arrepentimiento стоит здесь же: с 27.08.2026 это его единственное место
     legal: [
       item(t('footer.terminos'), '/terminos/'),
       item(t('footer.privacidad'), '/privacidad/'),
       item(t('legal.arrepentimiento'), '/boton-de-arrepentimiento/'),
       item(t('footer.quejas'), '/libro-de-quejas/'),
-      ...(site.legal.dataFiscalUrl
-        ? [{ ...item(t('footer.dataFiscal'), site.legal.dataFiscalUrl), external: true }]
-        : []),
     ],
   }
 }
