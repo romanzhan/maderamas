@@ -190,6 +190,15 @@ export function productUrl(product) {
   return category ? `/${category.slug}/${product.slug}/` : '/'
 }
 
+/**
+ * Ссылка на адрес в Google Maps. Собирается здесь, а не в разметке:
+ * в адресе есть пробелы, запятые и буквы с ударением, и в адрес ссылки они обязаны
+ * попасть закодированными — шаблон этого не делает
+ */
+export function mapUrl(address) {
+  return `https://maps.google.com/?q=${encodeURIComponent(address)}`
+}
+
 /** Адрес статьи знает только это место — остальные его спрашивают, а не собирают сами */
 export function articleUrl(article) {
   return `/blog/${article.slug}/`

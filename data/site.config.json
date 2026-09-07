@@ -25,7 +25,7 @@
     "maxQtyPerItem": 10
   },
   "catalog": {
-    "newBadgeDays": 30
+    "newBadgeDays": 90
   },
   "announcement": {
     "enabled": true,
@@ -47,7 +47,7 @@
     "phone": "+54 9 11 2791-5729",
     "email": "madera.mas.arg@gmail.com",
     "instagram": "https://instagram.com/madera.mas.arg",
-    "address": null,
+    "address": "Aráoz 942 1C, Villa Crespo, CABA",
     "hours": null
   },
   "shipping": {
@@ -60,9 +60,9 @@
     "homeDescription": "Sillas evolutivas de madera que se regulan en altura y profundidad y acompañan al chico durante años. Fabricación propia en Buenos Aires y envío gratis."
   },
   "legal": {
-    "cuit": null,
+    "cuit": "27-96400620-8",
     "razonSocial": null,
-    "dataFiscalUrl": null,
+    "dataFiscalUrl": "https://qr.afip.gob.ar/?qr=-h538ARTUUKJ2zSmwdV-HQ,,",
     "ivaRate": 21
   }
 }
