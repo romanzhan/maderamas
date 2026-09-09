@@ -41,38 +41,6 @@
       "800": "almohadon-celeste-1-800-1aed9593.webp"
     }
   },
-  "almohadon-rayas-beige": {
-    "type": "product",
-    "width": 1200,
-    "height": 1200,
-    "sizes": [
-      400,
-      800,
-      1200
-    ],
-    "format": "webp",
-    "files": {
-      "400": "almohadon-rayas-beige-400-09664332.webp",
-      "800": "almohadon-rayas-beige-800-09664332.webp",
-      "1200": "almohadon-rayas-beige-1200-09664332.webp"
-    }
-  },
-  "almohadon-rayas-gris": {
-    "type": "product",
-    "width": 1200,
-    "height": 1200,
-    "sizes": [
-      400,
-      800,
-      1200
-    ],
-    "format": "webp",
-    "files": {
-      "400": "almohadon-rayas-gris-400-924a5428.webp",
-      "800": "almohadon-rayas-gris-800-924a5428.webp",
-      "1200": "almohadon-rayas-gris-1200-924a5428.webp"
-    }
-  },
   "almohadon-verde-1": {
     "type": "product",
     "width": 800,
@@ -1709,6 +1677,30 @@
       "818": "medidas-silla-evolutiva-818-b6923d32.webp"
     }
   },
+  "og-almohadon": {
+    "type": "og",
+    "width": 1200,
+    "height": 630,
+    "sizes": [
+      1200
+    ],
+    "format": "jpeg",
+    "files": {
+      "1200": "og-almohadon-1200-59365b86.jpg"
+    }
+  },
+  "og-banquito-estrella": {
+    "type": "og",
+    "width": 1200,
+    "height": 630,
+    "sizes": [
+      1200
+    ],
+    "format": "jpeg",
+    "files": {
+      "1200": "og-banquito-estrella-1200-28da5681.jpg"
+    }
+  },
   "og-brand": {
     "type": "og",
     "width": 1200,
@@ -1719,6 +1711,102 @@
     "format": "jpeg",
     "files": {
       "1200": "og-brand-1200-480b409c.jpg"
+    }
+  },
+  "og-equilibristas": {
+    "type": "og",
+    "width": 1200,
+    "height": 630,
+    "sizes": [
+      1200
+    ],
+    "format": "jpeg",
+    "files": {
+      "1200": "og-equilibristas-1200-641af7f9.jpg"
+    }
+  },
+  "og-mesa-silla-evolutiva": {
+    "type": "og",
+    "width": 1200,
+    "height": 630,
+    "sizes": [
+      1200
+    ],
+    "format": "jpeg",
+    "files": {
+      "1200": "og-mesa-silla-evolutiva-1200-41a634a6.jpg"
+    }
+  },
+  "og-set-mesa-sillas": {
+    "type": "og",
+    "width": 1200,
+    "height": 630,
+    "sizes": [
+      1200
+    ],
+    "format": "jpeg",
+    "files": {
+      "1200": "og-set-mesa-sillas-1200-b69f5316.jpg"
+    }
+  },
+  "og-silla-alta-dos-escalones": {
+    "type": "og",
+    "width": 1200,
+    "height": 630,
+    "sizes": [
+      1200
+    ],
+    "format": "jpeg",
+    "files": {
+      "1200": "og-silla-alta-dos-escalones-1200-6079adf0.jpg"
+    }
+  },
+  "og-silla-alta": {
+    "type": "og",
+    "width": 1200,
+    "height": 630,
+    "sizes": [
+      1200
+    ],
+    "format": "jpeg",
+    "files": {
+      "1200": "og-silla-alta-1200-ec618bb5.jpg"
+    }
+  },
+  "og-silla-evolutiva": {
+    "type": "og",
+    "width": 1200,
+    "height": 630,
+    "sizes": [
+      1200
+    ],
+    "format": "jpeg",
+    "files": {
+      "1200": "og-silla-evolutiva-1200-f7275c9e.jpg"
+    }
+  },
+  "og-silla-para-bebe": {
+    "type": "og",
+    "width": 1200,
+    "height": 630,
+    "sizes": [
+      1200
+    ],
+    "format": "jpeg",
+    "files": {
+      "1200": "og-silla-para-bebe-1200-fe0a7f2a.jpg"
+    }
+  },
+  "og-torre-aprendizaje": {
+    "type": "og",
+    "width": 1200,
+    "height": 630,
+    "sizes": [
+      1200
+    ],
+    "format": "jpeg",
+    "files": {
+      "1200": "og-torre-aprendizaje-1200-ecfba0e2.jpg"
     }
   },
   "ig-1-1": {

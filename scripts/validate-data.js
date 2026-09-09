@@ -710,6 +710,7 @@ function buildRuntime({ site, provinces, dictionary }) {
   const runtime = {
     shippingCost: site.shipping.cost,
     maxQtyPerItem: site.cart.maxQtyPerItem,
+    paymentLinkDays: site.cart.paymentLinkDays,
     provinces: Object.fromEntries(provinces.map(({ code, name }) => [code, name])),
     // Те же шаблоны, что стоят в атрибутах pattern формы: сервер проверяет поля ими же,
     // второго списка правил нет. DNI сервер проверяет уже без точек — ему шаблон не нужен

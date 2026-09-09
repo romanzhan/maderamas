@@ -512,9 +512,7 @@
       "almohadon-celeste-1",
       "almohadon-verde-1",
       "almohadon-azul-1",
-      "almohadon-azul-2",
-      "almohadon-rayas-gris",
-      "almohadon-rayas-beige"
+      "almohadon-azul-2"
     ],
     "dimensionsImage": null,
     "ogImage": null,
@@ -538,20 +536,6 @@
           "id": "verde",
           "name": "Verde menta",
           "swatch": "#BDE2C7",
-          "priceDelta": 0,
-          "inStock": true
-        },
-        {
-          "id": "rayas",
-          "name": "Rayas grises",
-          "swatch": "#B7B6BC",
-          "priceDelta": 0,
-          "inStock": true
-        },
-        {
-          "id": "rojo",
-          "name": "Rojo estampado",
-          "swatch": "#D65839",
           "priceDelta": 0,
           "inStock": true
         },
