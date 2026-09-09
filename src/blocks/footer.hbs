@@ -36,7 +36,17 @@
       class="mt-8 flex flex-col gap-6 border-t border-cream/20 pt-6 text-cream/75 text-small
         md:flex-row md:items-center md:justify-between"
     >
-      <p>{{t "footer.rights" year=year}}</p>
+      <div class="flex flex-col gap-1">
+        <p>{{t "footer.rights" year=year}}</p>
+        {{!-- Реквизиты продавца (seo.md п. 8): razón social, CUIT и адрес одной строкой.
+              Пока в настройках нет имени или CUIT, строки нет вовсе — половина реквизитов
+              выглядела бы как ошибка, а не как соблюдение нормы --}}
+        {{#if site.legal.razonSocial}}
+          {{#if site.legal.cuit}}
+            <p>{{t "footer.requisites" name=site.legal.razonSocial cuit=site.legal.cuit address=site.contacts.address}}</p>
+          {{/if}}
+        {{/if}}
+      </div>
 
       {{!-- Знак «Formulario 960/D» (RG AFIP 4042-E, seo.md п. 8). Картинку отдаёт сама
             ARCA и грузиться она обязана с её сервера: знак показывает текущий статус

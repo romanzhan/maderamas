@@ -22,7 +22,8 @@
     "second": "en"
   },
   "cart": {
-    "maxQtyPerItem": 10
+    "maxQtyPerItem": 10,
+    "paymentLinkDays": 3
   },
   "catalog": {
     "newBadgeDays": 90
@@ -47,7 +48,7 @@
     "phone": "+54 9 11 2791-5729",
     "email": "madera.mas.arg@gmail.com",
     "instagram": "https://instagram.com/madera.mas.arg",
-    "address": "Aráoz 942 1C, Villa Crespo, CABA",
+    "address": "Aráoz 942, Villa Crespo, CABA",
     "hours": null
   },
   "shipping": {
@@ -61,7 +62,7 @@
   },
   "legal": {
     "cuit": "27-96400620-8",
-    "razonSocial": null,
+    "razonSocial": "PETROV SERGEI",
     "dataFiscalUrl": "https://qr.afip.gob.ar/?qr=-h538ARTUUKJ2zSmwdV-HQ,,",
     "ivaRate": 21
   }

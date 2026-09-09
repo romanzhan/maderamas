@@ -63,7 +63,9 @@ export function seoMeta({ site, currentPath, category, catalog, product, page, a
       })
     meta.description = product.seo.description ?? product.shortDescription
     meta.ogType = 'product'
-    meta.og = ogFrom(product.ogImage) ?? meta.og
+    // Своего баннера у товара обычно нет — тогда берётся собранный из первого фото
+    // (`npm run og`, картинки.md §5); нет и его — общая брендовая
+    meta.og = ogFrom(product.ogImage) ?? ogFrom(`og-${product.id}`) ?? meta.og
   } else if (article) {
     meta.title = article.seo.title ?? t('seo.titleArticle', { title: article.title })
     meta.description = article.seo.description ?? article.excerpt

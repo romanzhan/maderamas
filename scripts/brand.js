@@ -5,58 +5,14 @@
 //
 // Через конвейер картинок это не идёт: favicon — статика в /public (seo.md п. 9),
 // а OG-баннер конвейер только сожмёт, собрать его всё равно надо здесь.
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
-import { dirname, resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { mkdirSync, writeFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import sharp from 'sharp'
+import { COLOR, ISOTIPO, LOGOTIPO, paths, projectRoot } from './brand-assets.js'
 import { t } from './data.js'
 
-const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
-const iconsDir = resolve(projectRoot, 'src/icons/source')
 const publicDir = resolve(projectRoot, 'public')
 const ogDir = resolve(projectRoot, 'images-source/og')
-
-/**
- * Палитра читается из того же места, где живёт вся палитра сайта (`@theme` в main.css).
- * Своих значений здесь нет: сменится глиняный — значки и баннер сменятся вместе с сайтом,
- * а не останутся молча старыми (принцип 17).
- */
-function palette() {
-  const css = readFileSync(resolve(projectRoot, 'src/styles/main.css'), 'utf8')
-  return Object.fromEntries(
-    [...css.matchAll(/--color-([a-z-]+):\s*(#[0-9a-f]{3,8});/gi)].map(([, name, value]) => [
-      name,
-      value,
-    ]),
-  )
-}
-
-const COLOR = palette()
-
-/** Размер холста знака — из него самого: другой viewBox не должен молча сдвигать знак */
-function viewBox(name) {
-  const file = readFileSync(resolve(iconsDir, `${name}.svg`), 'utf8')
-  const box = file.match(/viewBox="0 0 ([\d.]+) ([\d.]+)"/)
-  if (!box) throw new Error(`У ${name}.svg нет viewBox — размер знака взять неоткуда`)
-  return { w: Number(box[1]), h: Number(box[2]) }
-}
-
-/**
- * Содержимое svg без обёртки: нужны только сами контуры. Знак нарисован currentColor —
- * ему цвет задаём мы; надпись сама делится на два цвета токенами палитры, и эту
- * двухцветность надо сохранить: «madera» тёмная, «más» глиняная.
- */
-function paths(name, fill) {
-  const file = readFileSync(resolve(iconsDir, `${name}.svg`), 'utf8')
-  const inner = file.replace(/^[\s\S]*?<svg[^>]*>/, '').replace(/<\/svg>[\s\S]*$/, '')
-
-  return inner
-    .replace(/var\(--color-([a-z-]+)\)/g, (match, token) => COLOR[token] ?? match)
-    .replace(/currentColor/g, fill)
-}
-
-const ISOTIPO = viewBox('isotipo')
-const LOGOTIPO = viewBox('logotipo')
 
 /** Квадратный значок: знак на кремовом поле с полями, чтобы не резался маской */
 function iconSvg(size) {

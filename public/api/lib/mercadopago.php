@@ -122,6 +122,10 @@ function mpCreatePreference(array $order, string $baseUrl, array $runtime): arra
         // Токен возвращается в metadata платежа — по нему сервер отличает наш платёж
         // от чужого с тем же номером (orders.php, applyPayment)
         'metadata' => ['order_token' => $order['token'], 'order_number' => $order['number']],
+        // Ссылка живёт столько дней, сколько владелец держит цену (cart.paymentLinkDays):
+        // без срока заказ можно было бы оплатить через месяцы по цене дня оформления
+        'expires' => true,
+        'expiration_date_to' => gmdate('Y-m-d\TH:i:s.000P', time() + max(1, (int) $runtime['paymentLinkDays']) * 86400),
     ];
     // Адрес уведомлений в предпочтение не кладём: такие уведомления приходят вторым
     // каналом (?topic=payment&id=…) и подписаны ключом, которого Mercado Pago не выдаёт, —

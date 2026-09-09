@@ -15,6 +15,7 @@
     "images": "node scripts/images.js",
     "icons": "node scripts/icons.js",
     "brand": "node scripts/brand.js",
+    "og": "node scripts/og-products.js",
     "format": "prettier --write .",
     "pages": "node scripts/generate-pages.js"
   },
