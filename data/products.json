@@ -6,7 +6,7 @@
     "shortDescription": "La silla que crece con tu hijo: se adapta a cada etapa, de 1 a 15 años.",
     "description": "Silla evolutiva infantil que acompaña el crecimiento de tu hijo. Se adapta fácilmente a cada etapa y sostiene una postura correcta, cómoda y segura.\n\nMide 85 cm de alto, 49 cm de largo y 47 cm de ancho, así que entra sin problema en cualquier espacio de la casa: la habitación, el escritorio, el rincón de juegos o la mesa a la hora de comer.\n\nFabricada en MDF de 18 mm: resistente, durable y pensada para el uso diario.\n\nSe entrega desarmada.",
     "categoryId": "sillas",
-    "price": 130000,
+    "price": 110000,
     "oldPrice": null,
     "currency": "ARS",
     "inStock": true,
@@ -46,7 +46,7 @@
           "id": "roble",
           "name": "Roble americano",
           "swatch": "#C69C6D",
-          "priceDelta": 0,
+          "priceDelta": 20000,
           "inStock": true,
           "images": [
             "evolutiva-roble-1",
@@ -66,7 +66,7 @@
           "id": "nogal",
           "name": "Nogal",
           "swatch": "#5E3D28",
-          "priceDelta": 20000,
+          "priceDelta": 40000,
           "inStock": true,
           "images": [
             "evolutiva-nogal-1",
@@ -86,7 +86,7 @@
           "id": "blanco",
           "name": "Blanco",
           "swatch": "#F2EFE9",
-          "priceDelta": 0,
+          "priceDelta": 20000,
           "inStock": true,
           "images": ["evolutiva-blanco-1", "evolutiva-blanco-2", "evolutiva-blanco-3"]
         },
@@ -115,7 +115,7 @@
     "shortDescription": "Silla alta que acompaña el crecimiento: para la mesa de casa, el bar o el restaurante.",
     "description": "La Silla Alta de Comer Evolutiva acompaña el crecimiento de tus pequeños. Diseñada para chicos desde 1 año, se adapta a las distintas etapas y mantiene la comodidad y la seguridad en cada uso.\n\nSu estructura de MDF da estabilidad y resistencia: soporta hasta 80 kg. Con 75 cm de altura máxima y medidas de 49 cm de ancho por 47 cm de profundidad, queda cómoda con distintos tipos de mesa, tanto en casa como en un bar o un restaurante.\n\nSe entrega desarmada.",
     "categoryId": "sillas",
-    "price": 130000,
+    "price": 110000,
     "oldPrice": null,
     "currency": "ARS",
     "inStock": true,
@@ -143,7 +143,7 @@
           "id": "roble",
           "name": "Roble americano",
           "swatch": "#C69C6D",
-          "priceDelta": 0,
+          "priceDelta": 20000,
           "inStock": true,
           "images": ["alta-roble-1", "alta-roble-3", "alta-roble-5"]
         },
@@ -151,9 +151,24 @@
           "id": "nogal",
           "name": "Nogal",
           "swatch": "#5E3D28",
-          "priceDelta": 20000,
+          "priceDelta": 40000,
           "inStock": true,
           "images": ["alta-2-1", "alta-2-3", "alta-2-5"]
+        },
+        {
+          "id": "blanco",
+          "name": "Blanco",
+          "swatch": "#F2EFE9",
+          "priceDelta": 20000,
+          "inStock": true
+        },
+        {
+          "id": "crudo",
+          "name": "Crudo",
+          "swatch": "#DCC9A8",
+          "priceDelta": 0,
+          "inStock": true,
+          "images": ["alta-crudo-1", "alta-crudo-2"]
         }
       ]
     },
@@ -486,14 +501,21 @@
     "shortDescription": "Almohadón de asiento y respaldo para las sillas Madera Más. Se lava a máquina y tiene forro suave.",
     "description": "Almohadón de asiento y respaldo para la Silla Evolutiva y la Silla Alta. Suma comodidad en las comidas largas y en la tarea del colegio.\n\nSe lava a máquina a 30° y cuenta con un forro suave. Elegí el color liso o estampado que más le guste al chico.",
     "categoryId": "accesorios",
-    "price": 19900,
+    "price": 35000,
     "oldPrice": null,
     "currency": "ARS",
     "inStock": true,
     "createdAt": "2026-06-01",
     "order": 60,
     "featured": false,
-    "images": ["almohadon-rayas-gris", "almohadon-rayas-beige"],
+    "images": [
+      "almohadon-celeste-1",
+      "almohadon-verde-1",
+      "almohadon-azul-1",
+      "almohadon-azul-2",
+      "almohadon-rayas-gris",
+      "almohadon-rayas-beige"
+    ],
     "dimensionsImage": null,
     "ogImage": null,
     "attributes": {
@@ -523,27 +545,60 @@
           "id": "rayas",
           "name": "Rayas grises",
           "swatch": "#B7B6BC",
-          "priceDelta": 5000,
+          "priceDelta": 0,
           "inStock": true
         },
         {
           "id": "rojo",
           "name": "Rojo estampado",
           "swatch": "#D65839",
-          "priceDelta": 5000,
+          "priceDelta": 0,
           "inStock": true
         },
         {
           "id": "azul",
           "name": "Azul estampado",
           "swatch": "#32448F",
-          "priceDelta": 5000,
+          "priceDelta": 0,
           "inStock": true
         }
       ]
     },
     "accessories": [],
     "related": ["silla-evolutiva", "silla-alta"],
+    "sku": null,
+    "seo": {
+      "title": null,
+      "description": null
+    }
+  },
+  {
+    "id": "mesa-silla-evolutiva",
+    "slug": "mesa-silla-evolutiva",
+    "name": "Mesa para la Silla Evolutiva",
+    "shortDescription": "Se engancha a la Silla Evolutiva y suma una superficie firme para comer, dibujar y jugar.",
+    "description": "La mesa para la Silla Evolutiva se engancha a la silla de forma segura y firme, y le suma una superficie amplia y estable para comer, jugar, dibujar o aprender.\n\nAyuda a mantener una postura correcta y ordena las actividades de todos los días: la silla se convierte en un espacio completo a la altura del chico.\n\nRecomendada a partir de 1 año.",
+    "categoryId": "accesorios",
+    "price": 30000,
+    "oldPrice": null,
+    "currency": "ARS",
+    "inStock": true,
+    "createdAt": "2026-06-01",
+    "order": 70,
+    "featured": false,
+    "images": ["mesa-silla-evolutiva-1", "mesa-silla-evolutiva-2"],
+    "dimensionsImage": null,
+    "ogImage": null,
+    "attributes": {
+      "material": "MDF",
+      "dimensions": null,
+      "weight": null,
+      "ageRange": "Desde 1 año",
+      "maxLoad": null
+    },
+    "options": {},
+    "accessories": [],
+    "related": ["silla-evolutiva", "almohadon"],
     "sku": null,
     "seo": {
       "title": null,

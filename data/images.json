@@ -1,4 +1,46 @@
 {
+  "almohadon-azul-1": {
+    "type": "product",
+    "width": 800,
+    "height": 800,
+    "sizes": [
+      400,
+      800
+    ],
+    "format": "webp",
+    "files": {
+      "400": "almohadon-azul-1-400-7f2333fb.webp",
+      "800": "almohadon-azul-1-800-7f2333fb.webp"
+    }
+  },
+  "almohadon-azul-2": {
+    "type": "product",
+    "width": 800,
+    "height": 800,
+    "sizes": [
+      400,
+      800
+    ],
+    "format": "webp",
+    "files": {
+      "400": "almohadon-azul-2-400-d2188046.webp",
+      "800": "almohadon-azul-2-800-d2188046.webp"
+    }
+  },
+  "almohadon-celeste-1": {
+    "type": "product",
+    "width": 800,
+    "height": 800,
+    "sizes": [
+      400,
+      800
+    ],
+    "format": "webp",
+    "files": {
+      "400": "almohadon-celeste-1-400-1aed9593.webp",
+      "800": "almohadon-celeste-1-800-1aed9593.webp"
+    }
+  },
   "almohadon-rayas-beige": {
     "type": "product",
     "width": 1200,
@@ -29,6 +71,20 @@
       "400": "almohadon-rayas-gris-400-924a5428.webp",
       "800": "almohadon-rayas-gris-800-924a5428.webp",
       "1200": "almohadon-rayas-gris-1200-924a5428.webp"
+    }
+  },
+  "almohadon-verde-1": {
+    "type": "product",
+    "width": 800,
+    "height": 800,
+    "sizes": [
+      400,
+      800
+    ],
+    "format": "webp",
+    "files": {
+      "400": "almohadon-verde-1-400-61708f7e.webp",
+      "800": "almohadon-verde-1-800-61708f7e.webp"
     }
   },
   "alta-2-1": {
@@ -75,6 +131,34 @@
       "400": "alta-2-5-400-a4b8ce6f.webp",
       "800": "alta-2-5-800-a4b8ce6f.webp",
       "1200": "alta-2-5-1200-a4b8ce6f.webp"
+    }
+  },
+  "alta-crudo-1": {
+    "type": "product",
+    "width": 800,
+    "height": 800,
+    "sizes": [
+      400,
+      800
+    ],
+    "format": "webp",
+    "files": {
+      "400": "alta-crudo-1-400-5c070c17.webp",
+      "800": "alta-crudo-1-800-5c070c17.webp"
+    }
+  },
+  "alta-crudo-2": {
+    "type": "product",
+    "width": 800,
+    "height": 800,
+    "sizes": [
+      400,
+      800
+    ],
+    "format": "webp",
+    "files": {
+      "400": "alta-crudo-2-400-dc036d0c.webp",
+      "800": "alta-crudo-2-800-dc036d0c.webp"
     }
   },
   "alta-escalones-nogal-1": {
@@ -1193,6 +1277,34 @@
     "files": {
       "400": "evolutiva-roble-uso-3-400-939f8d8c.webp",
       "800": "evolutiva-roble-uso-3-800-939f8d8c.webp"
+    }
+  },
+  "mesa-silla-evolutiva-1": {
+    "type": "product",
+    "width": 800,
+    "height": 800,
+    "sizes": [
+      400,
+      800
+    ],
+    "format": "webp",
+    "files": {
+      "400": "mesa-silla-evolutiva-1-400-6d5bbded.webp",
+      "800": "mesa-silla-evolutiva-1-800-6d5bbded.webp"
+    }
+  },
+  "mesa-silla-evolutiva-2": {
+    "type": "product",
+    "width": 800,
+    "height": 800,
+    "sizes": [
+      400,
+      800
+    ],
+    "format": "webp",
+    "files": {
+      "400": "mesa-silla-evolutiva-2-400-33e735b9.webp",
+      "800": "mesa-silla-evolutiva-2-800-33e735b9.webp"
     }
   },
   "set-mesa-1": {
