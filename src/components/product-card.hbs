@@ -8,7 +8,7 @@
       нет — встаёт заглушка бренда той же геометрии), imageIdHover (второе фото: под
       курсором карточка показывает его), old (старая цена), discount (текст бейджа),
       isNew, inStock=false, inCart, wishlisted, rating + reviewsCount, variant (подпись
-      материала), freeShipping, priceFrom (цена «от» — у товара есть варианты дороже).
+      материала), priceFrom (цена «от» — у товара есть варианты дороже).
       Вся карточка — ссылка: её растягивает псевдоэлемент у названия, поэтому кнопки
       внутри остаются отдельными целями и фокус-кольцо одно на карточку. --}}
 {{!-- Кольцо фокуса рисуется по всей карточке, а не по тексту названия: у растянутой
@@ -131,10 +131,6 @@
       {{> price empty value=price old=old compact=true from=priceFrom}}
     {{else}}
       {{> price empty value=price old=old compact=true from=priceFrom muted=true}}
-    {{/if}}
-
-    {{#if freeShipping}}
-      <div class="mt-1">{{> badge empty info=true label="badge.freeShipping"}}</div>
     {{/if}}
   </div>
 

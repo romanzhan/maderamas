@@ -6,7 +6,7 @@
     "shortDescription": "La silla que crece con tu hijo: se adapta a cada etapa, de 1 a 15 años.",
     "description": "Silla evolutiva infantil que acompaña el crecimiento de tu hijo. Se adapta fácilmente a cada etapa y sostiene una postura correcta, cómoda y segura.\n\nMide 85 cm de alto, 49 cm de largo y 47 cm de ancho, así que entra sin problema en cualquier espacio de la casa: la habitación, el escritorio, el rincón de juegos o la mesa a la hora de comer.\n\nFabricada en MDF de 18 mm: resistente, durable y pensada para el uso diario.\n\nSe entrega desarmada.",
     "categoryId": "sillas",
-    "price": 154950,
+    "price": 130000,
     "oldPrice": null,
     "currency": "ARS",
     "inStock": true,
@@ -66,7 +66,7 @@
           "id": "nogal",
           "name": "Nogal",
           "swatch": "#5E3D28",
-          "priceDelta": 0,
+          "priceDelta": 20000,
           "inStock": true,
           "images": [
             "evolutiva-nogal-1",
@@ -115,7 +115,7 @@
     "shortDescription": "Silla alta que acompaña el crecimiento: para la mesa de casa, el bar o el restaurante.",
     "description": "La Silla Alta de Comer Evolutiva acompaña el crecimiento de tus pequeños. Diseñada para chicos desde 1 año, se adapta a las distintas etapas y mantiene la comodidad y la seguridad en cada uso.\n\nSu estructura de MDF da estabilidad y resistencia: soporta hasta 80 kg. Con 75 cm de altura máxima y medidas de 49 cm de ancho por 47 cm de profundidad, queda cómoda con distintos tipos de mesa, tanto en casa como en un bar o un restaurante.\n\nSe entrega desarmada.",
     "categoryId": "sillas",
-    "price": 174850,
+    "price": 130000,
     "oldPrice": null,
     "currency": "ARS",
     "inStock": true,
@@ -151,7 +151,7 @@
           "id": "nogal",
           "name": "Nogal",
           "swatch": "#5E3D28",
-          "priceDelta": 0,
+          "priceDelta": 20000,
           "inStock": true,
           "images": ["alta-2-1", "alta-2-3", "alta-2-5"]
         }
@@ -447,39 +447,6 @@
     }
   },
   {
-    "id": "pata-pata",
-    "slug": "pata-pata",
-    "name": "Pata Pata andador de madera",
-    "shortDescription": "Andador de madera con barra de empuje, para los primeros pasos.",
-    "description": "Andador de madera con barra de empuje que acompaña los primeros pasos.\n\nSoporta hasta 45 kg. Recomendado de 6 meses a 3 años.",
-    "categoryId": "accesorios",
-    "price": 59900,
-    "oldPrice": null,
-    "currency": "ARS",
-    "inStock": true,
-    "createdAt": "2026-06-01",
-    "order": 40,
-    "featured": false,
-    "images": ["pata-pata-1"],
-    "dimensionsImage": "medidas-pata-pata",
-    "ogImage": null,
-    "attributes": {
-      "material": "MDF",
-      "dimensions": null,
-      "weight": null,
-      "ageRange": "6 meses – 3 años",
-      "maxLoad": 45
-    },
-    "options": {},
-    "accessories": [],
-    "related": ["banquito-estrella", "equilibristas"],
-    "sku": null,
-    "seo": {
-      "title": null,
-      "description": null
-    }
-  },
-  {
     "id": "equilibristas",
     "slug": "equilibristas",
     "name": "Equilibristas apilables x20",
@@ -505,7 +472,7 @@
     },
     "options": {},
     "accessories": [],
-    "related": ["set-mesa-sillas", "pata-pata"],
+    "related": ["set-mesa-sillas", "banquito-estrella"],
     "sku": null,
     "seo": {
       "title": null,

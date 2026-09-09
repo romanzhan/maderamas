@@ -30,16 +30,16 @@ function variantOf(product, variantId) {
   }
 }
 
-export function cartView(maxQty) {
+export function cartView(maxQty, shippingCost) {
   return {
     ready: false,
     failed: false,
     loading: false,
     products: null,
     texts: {},
-    // Стоимость доставки известна только на чекауте: до него её не считают вовсе
-    // (состояния-экранов.md п. 6), и в итоге корзины она равна подытогу
-    shipping: 0,
+    // Ставка доставки из настроек — одна и та же в корзине и на чекауте, иначе их итоги
+    // разойдутся. Сейчас она ноль: сайт доставку не считает (данные.md §7)
+    shipping: shippingCost,
 
     /** Формат суммы один на весь сайт — шаблон зовёт его же (тексты.md §3) */
     fmt(value) {

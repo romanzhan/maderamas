@@ -156,7 +156,7 @@ function orderTotalsText(array $order, array $texts): string
 {
     $shipping = $order['shipping'] > 0
         ? $texts['shipping'] . ': ' . money($order['shipping'])
-        : $texts['shippingFree'];
+        : $texts['shippingNotIncluded'];
 
     return $shipping . "\n" . fillText($texts['total'], ['amount' => money($order['total'])]);
 }

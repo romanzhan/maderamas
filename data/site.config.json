@@ -37,8 +37,8 @@
   },
   "promo": {
     "enabled": true,
-    "title": "Envío gratis a todo el país",
-    "text": "En todas las sillas y accesorios, sin mínimo de compra.",
+    "title": "Envíos a todo el país",
+    "text": "Despachamos sillas y accesorios a cualquier provincia.",
     "image": null,
     "url": "/sillas/"
   },
@@ -57,7 +57,7 @@
     "siteUrl": "https://www.maderamas.com.ar",
     "defaultOgImage": "og-brand",
     "homeTitle": "Madera Más — Sillas evolutivas de madera",
-    "homeDescription": "Sillas evolutivas de madera que se regulan en altura y profundidad y acompañan al chico durante años. Fabricación propia en Buenos Aires y envío gratis."
+    "homeDescription": "Sillas evolutivas de madera que se regulan en altura y profundidad y acompañan al chico durante años. Fabricación propia en Buenos Aires y envíos a todo el país."
   },
   "legal": {
     "cuit": "27-96400620-8",
