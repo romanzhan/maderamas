@@ -16,7 +16,7 @@ const DRAFT_KEY = 'madera.checkout'
 const ORDERS_URL = '/api/orders'
 
 export function checkoutView(maxQty, shippingCost) {
-  const cart = cartView(maxQty)
+  const cart = cartView(maxQty, shippingCost)
   // Отметка времени против ботов на чекауте не ставится: форма приходит уже заполненной
   // из сохранённого черновика, и покупателю остаётся одно нажатие — он законно
   // укладывается в три секунды (поймано ревью 28.08.2026). Ловушка-поле остаётся
@@ -34,7 +34,6 @@ export function checkoutView(maxQty, shippingCost) {
     init() {
       cart.init.call(this)
       form.init.call(this)
-      this.shipping = shippingCost
       this.restore()
 
       // Пустая корзина на чекауте — не экран, а тупик: возвращаем в корзину.

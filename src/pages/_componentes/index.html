@@ -211,7 +211,7 @@
           <span class="text-caption text-charcoal/70">Чекбокс</span>
           {{> checkbox name="c1" label="catalog.filterInStock"}}
           {{> checkbox name="c2" label="product.accessory" checked=true}}
-          {{> checkbox name="c3" label="badge.freeShipping" disabled=true}}
+          {{> checkbox name="c3" label="badge.noStock" disabled=true}}
           {{> textarea id="f-note-off" label="checkout.note" max=500 disabled=true}}
         </div>
         <div class="flex flex-col gap-2">
@@ -244,7 +244,7 @@
         {{#> showcase/item label="Скидка"}}{{> badge discount=true text="-20%"}}{{/showcase/item}}
         {{#> showcase/item label="Новинка"}}{{> badge status=true label="badge.new"}}{{/showcase/item}}
         {{#> showcase/item label="Нет в наличии"}}{{> badge status=true label="badge.noStock"}}{{/showcase/item}}
-        {{#> showcase/item label="Информационный"}}{{> badge info=true label="badge.freeShipping"}}{{/showcase/item}}
+        {{#> showcase/item label="Информационный"}}{{> badge info=true label="home.heroBadge"}}{{/showcase/item}}
       </div>
     {{/showcase/section}}
 
@@ -279,7 +279,7 @@
       <div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 lg:gap-6 xl:grid-cols-4">
         {{> product-card preview=true name=cards.[0].name price=cards.[0].price href="#"
             imageId=cards.[0].imageId imageIdHover=cards.[0].imageIdHover
-            isNew=true rating=4.5 reviewsCount=12 inStock=true freeShipping=true
+            isNew=true rating=4.5 reviewsCount=12 inStock=true
             variant=products.[0].options.woodColor.[0].name}}
         {{> product-card preview=true name=cards.[1].name price=120000 old=150000 href="#"
             imageId=cards.[1].imageId discount="-20%" inStock=true rating=5 reviewsCount=3}}
@@ -516,8 +516,8 @@
                 price=products.[0].price priceFrom=true}}
             {{> promo-tile blue=true href="#" title="Sillas evolutivas"
                 text="Desde $ 129.960"}}
-            {{> promo-tile yellow=true href="#" title="Envío gratis"
-                text="A todo el país"}}
+            {{> promo-tile yellow=true href="#" title="Envíos a todo el país"
+                text="Despachamos por correo"}}
           </div>
         </div>
 

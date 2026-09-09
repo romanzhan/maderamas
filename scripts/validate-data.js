@@ -658,7 +658,7 @@ const EMAIL_KEYS = [
   'paidIntro',
   'pendingIntro',
   'total',
-  'shippingFree',
+  'shippingNotIncluded',
   'orderLink',
   'questions',
   'ownerSubjectPaid',

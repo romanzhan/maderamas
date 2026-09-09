@@ -1,10 +1,9 @@
 {{!-- Итог заказа (компоненты.md 3.10). Один компонент на панель корзины, страницу
       корзины и чекаут; суммы — только через формат цены.
-      До чекаута доставка не считается: тарифов в статике не выдумываем
-      (состояния-экранов.md п. 6). На самом чекауте писать «se calcula en el checkout»
-      уже нельзя — покупатель на нём и стоит, поэтому там строка показывает настоящую
-      стоимость, а бесплатная доставка называется бесплатной.
-      Опция: final — итог на чекауте; shipping — стоимость доставки из настроек. --}}
+      Доставку сайт не считает и не берёт (решение владельца 09.09.2026): её стоимость
+      в цену не входит и согласуется с покупателем после покупки, поэтому строка так и
+      говорит — «no incluido» — и в корзине, и на чекауте. Появится ставка в настройках —
+      строка покажет сумму. Опция: shipping — ставка доставки из настроек. --}}
 <div class="flex flex-col gap-1">
   <div class="flex items-baseline justify-between gap-4">
     <span class="text-small text-charcoal/70">{{t "cart.subtotal"}}</span>
@@ -13,14 +12,10 @@
 
   <div class="flex items-baseline justify-between gap-4">
     <span class="text-small text-charcoal/70">{{t "cart.shipping"}}</span>
-    {{#if final}}
-      {{#if shipping}}
-        <span class="text-small tabular-nums">{{money shipping}}</span>
-      {{else}}
-        <span class="text-small text-success">{{t "badge.freeShipping"}}</span>
-      {{/if}}
+    {{#if shipping}}
+      <span class="text-small tabular-nums">{{money shipping}}</span>
     {{else}}
-      <span class="text-small text-charcoal/70">{{t "cart.shippingAtCheckout"}}</span>
+      <span class="text-small text-charcoal/70">{{t "cart.shippingNotIncluded"}}</span>
     {{/if}}
   </div>
 

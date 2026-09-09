@@ -1195,20 +1195,6 @@
       "800": "evolutiva-roble-uso-3-800-939f8d8c.webp"
     }
   },
-  "pata-pata-1": {
-    "type": "product",
-    "width": 800,
-    "height": 800,
-    "sizes": [
-      400,
-      800
-    ],
-    "format": "webp",
-    "files": {
-      "400": "pata-pata-1-400-0db49adc.webp",
-      "800": "pata-pata-1-800-0db49adc.webp"
-    }
-  },
   "set-mesa-1": {
     "type": "product",
     "width": 800,
@@ -1553,20 +1539,6 @@
     "format": "webp",
     "files": {
       "480": "medidas-banquito-480-a3068867.webp"
-    }
-  },
-  "medidas-pata-pata": {
-    "type": "content",
-    "width": 794,
-    "height": 1123,
-    "sizes": [
-      480,
-      794
-    ],
-    "format": "webp",
-    "files": {
-      "480": "medidas-pata-pata-480-c7cc31a8.webp",
-      "794": "medidas-pata-pata-794-c7cc31a8.webp"
     }
   },
   "medidas-set-mesa": {

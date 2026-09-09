@@ -36,15 +36,15 @@
     "id": "envios",
     "slug": "envios-y-pagos",
     "title": "Envíos y pagos",
-    "lead": "Enviamos a todo el país sin cargo y sin mínimo de compra. Acá está cómo llega el pedido y cómo se paga.",
-    "body": "El envío es gratis en todas las sillas y accesorios, a cualquier provincia. No hay monto mínimo ni recargo por zona: el precio que ves en el producto es el que pagás.",
+    "lead": "Enviamos a todo el país. Acá está cómo llega el pedido, qué pasa con el costo del envío y cómo se paga.",
+    "body": "El costo del envío no está incluido en el precio de las sillas y los accesorios: depende de tu zona y lo coordinamos con vos después de la compra. El precio que ves en el producto es el precio del producto.",
     "sections": [
       {
         "id": "envio",
         "title": "Cómo enviamos",
         "body": "Preparamos el pedido en el taller y lo despachamos por correo. La silla viaja desarmada, en caja, con todos los herrajes y las instrucciones adentro.",
         "items": [
-          "Envío gratis a todo el país, sin mínimo de compra.",
+          "Enviamos a todo el país; el costo del envío no está incluido en el precio.",
           "Preparamos el pedido en 2 días hábiles.",
           "El plazo de entrega depende de tu provincia.",
           "Te avisamos cuando el pedido sale del taller."

@@ -137,7 +137,7 @@ export function pageContext(pagePath) {
         href: productUrl(product),
         image,
         key,
-        ...listPrice(product, site),
+        ...listPrice(product),
         [tone]: true,
         onDark: tone !== 'yellow',
       }
@@ -153,7 +153,7 @@ export function pageContext(pagePath) {
     const photos = imageIds(product.images)
     return {
       ...product,
-      ...listPrice(product, site),
+      ...listPrice(product),
       ...ratingOf(product.id, reviews),
       href: productUrl(product),
       isNew: Date.parse(product.createdAt) > newBefore,
@@ -173,7 +173,7 @@ export function pageContext(pagePath) {
   const cheapestIn = (categoryId) => {
     const prices = products
       .filter((product) => product.categoryId === categoryId)
-      .map((product) => listPrice(product, site).price)
+      .map((product) => listPrice(product).price)
 
     // Пустая категория: цены нет — плитка покажет название без обещания, а не «Infinity»
     return prices.length ? Math.min(...prices) : null
@@ -342,7 +342,7 @@ export function pageContext(pagePath) {
  * и подпись «desde», если разброс по вариантам вообще есть. Считается в одном месте —
  * каталог, главная и подбор показывают одно и то же число.
  */
-function listPrice(product, site) {
+function listPrice(product) {
   const axes = Object.values(product.options ?? {})
   const deltas = axes.flat().map((option) => option.priceDelta ?? 0)
 
@@ -368,12 +368,6 @@ function listPrice(product, site) {
     priceFrom: deltas.some((delta) => delta !== 0),
     // Есть из чего выбирать — карточка ведёт на страницу товара, а не кладёт в корзину
     hasOptions: axes.length > 0,
-    // Плашка envío существует только при бесплатной доставке (компоненты.md 3.6):
-    // поставит владелец стоимость — плашка исчезнет сама, а не останется врать.
-    // У распроданного товара её нет вовсе (замечание владельца 29.08.2026): бесплатная
-    // доставка — довод купить, а купить сейчас нельзя, и рядом с «Sin stock» плашка
-    // обещает то, чего не будет
-    freeShipping: site.shipping.cost === 0 && product.inStock,
   }
 }
 
@@ -560,7 +554,7 @@ function categoryPage(category, products, withCard) {
  * выбранное по умолчанию и данные для браузера — чтобы цена в блоке менялась вместе
  * с выбранным цветом, а в корзину уходила именно выбранная комбинация.
  */
-function accessoryFor(item, site) {
+function accessoryFor(item) {
   const axes = Object.entries(item.options ?? {}).map(([key, options]) => ({
     key,
     label: `product.${key}`,
@@ -575,7 +569,7 @@ function accessoryFor(item, site) {
     name: item.name,
     href: productUrl(item),
     imageId: imageIds(item.images)[0],
-    ...listPrice(item, site),
+    ...listPrice(item),
     axes,
     clientJson: inlineJson({
       id: item.id,
@@ -667,7 +661,7 @@ function productPage(product, { categories, products, reviews, site, withCard })
     .map((id) => products.find((item) => item.id === id))
     .find((item) => item && item.inStock)
 
-  const accessory = upsell ? accessoryFor(upsell, site) : null
+  const accessory = upsell ? accessoryFor(upsell) : null
 
   const productReviews = reviews
     .filter((review) => review.productId === product.id)
@@ -710,7 +704,7 @@ function productPage(product, { categories, products, reviews, site, withCard })
 
   return {
     ...product,
-    ...listPrice(product, site),
+    ...listPrice(product),
     basePrice: product.price,
     selectedPrice: product.price + defaultDelta,
     selectedOldPrice: product.oldPrice ? product.oldPrice + defaultDelta : null,
@@ -746,8 +740,6 @@ function productPage(product, { categories, products, reviews, site, withCard })
     accessory,
     reviews: productReviews,
     ...ratingOf(product.id, reviews),
-    // То же правило, что на карточке: у распроданного товара доставку не обещаем
-    freeShipping: site.shipping.cost === 0 && product.inStock,
     // Подборка владельца (поле related в данных) — главная; она может уводить и в другую
     // категорию, в этом и смысл. Пусто — показываем соседей по категории
     related: relatedFor(product, products).slice(0, 4).map(withCard),

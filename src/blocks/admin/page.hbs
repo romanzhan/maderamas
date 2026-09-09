@@ -379,7 +379,7 @@
           <dl class="mt-3 flex flex-col gap-1 border-t border-line pt-3">
             <div class="flex justify-between gap-4 text-small text-charcoal/70">
               <dt>{{t "cart.shipping"}}</dt>
-              <dd class="tabular-nums" x-text="a.order.shipping ? a.fmtMoney(a.order.shipping) : '{{t "admin.shippingFree"}}'"></dd>
+              <dd class="tabular-nums" x-text="a.order.shipping ? a.fmtMoney(a.order.shipping) : '{{t "cart.shippingNotIncluded"}}'"></dd>
             </div>
             <div class="flex justify-between gap-4 font-medium">
               <dt>{{t "cart.total"}}</dt>
