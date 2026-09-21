@@ -17,7 +17,8 @@
     "brand": "node scripts/brand.js",
     "og": "node scripts/og-products.js",
     "format": "prettier --write .",
-    "pages": "node scripts/generate-pages.js"
+    "pages": "node scripts/generate-pages.js",
+    "deploy": "node scripts/deploy.js"
   },
   "dependencies": {
     "alpinejs": "^3.15.0",
