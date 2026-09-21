@@ -125,11 +125,12 @@ function organizationLd(site, siteUrl, absolute) {
     email: contacts.email,
     telephone: contacts.phone,
     sameAs: [contacts.instagram].filter(Boolean),
-    ...(contacts.address
+    // Домицилий — юридический, из реквизитов; точки самовывоза у магазина нет
+    ...(site.legal.domicilio
       ? {
           address: {
             '@type': 'PostalAddress',
-            streetAddress: contacts.address,
+            streetAddress: site.legal.domicilio,
             addressCountry: 'AR',
           },
         }

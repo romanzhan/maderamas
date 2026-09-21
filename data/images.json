@@ -101,34 +101,6 @@
       "1200": "alta-2-5-1200-a4b8ce6f.webp"
     }
   },
-  "alta-crudo-1": {
-    "type": "product",
-    "width": 800,
-    "height": 800,
-    "sizes": [
-      400,
-      800
-    ],
-    "format": "webp",
-    "files": {
-      "400": "alta-crudo-1-400-5c070c17.webp",
-      "800": "alta-crudo-1-800-5c070c17.webp"
-    }
-  },
-  "alta-crudo-2": {
-    "type": "product",
-    "width": 800,
-    "height": 800,
-    "sizes": [
-      400,
-      800
-    ],
-    "format": "webp",
-    "files": {
-      "400": "alta-crudo-2-400-dc036d0c.webp",
-      "800": "alta-crudo-2-800-dc036d0c.webp"
-    }
-  },
   "alta-escalones-nogal-1": {
     "type": "product",
     "width": 1200,
@@ -485,7 +457,7 @@
       "400": "banquito-3-400-17ef27d7.webp"
     }
   },
-  "bebe-pino-1": {
+  "barra-roble-1": {
     "type": "product",
     "width": 1200,
     "height": 1200,
@@ -496,12 +468,12 @@
     ],
     "format": "webp",
     "files": {
-      "400": "bebe-pino-1-400-a4c12a11.webp",
-      "800": "bebe-pino-1-800-a4c12a11.webp",
-      "1200": "bebe-pino-1-1200-a4c12a11.webp"
+      "400": "barra-roble-1-400-c29269ae.webp",
+      "800": "barra-roble-1-800-c29269ae.webp",
+      "1200": "barra-roble-1-1200-c29269ae.webp"
     }
   },
-  "bebe-pino-3": {
+  "barra-roble-2": {
     "type": "product",
     "width": 1200,
     "height": 1200,
@@ -512,89 +484,9 @@
     ],
     "format": "webp",
     "files": {
-      "400": "bebe-pino-3-400-05ee94df.webp",
-      "800": "bebe-pino-3-800-05ee94df.webp",
-      "1200": "bebe-pino-3-1200-05ee94df.webp"
-    }
-  },
-  "bebe-pino-4": {
-    "type": "product",
-    "width": 1200,
-    "height": 1200,
-    "sizes": [
-      400,
-      800,
-      1200
-    ],
-    "format": "webp",
-    "files": {
-      "400": "bebe-pino-4-400-c3476259.webp",
-      "800": "bebe-pino-4-800-c3476259.webp",
-      "1200": "bebe-pino-4-1200-c3476259.webp"
-    }
-  },
-  "bebe-pino-5": {
-    "type": "product",
-    "width": 1200,
-    "height": 1200,
-    "sizes": [
-      400,
-      800,
-      1200
-    ],
-    "format": "webp",
-    "files": {
-      "400": "bebe-pino-5-400-d20adee2.webp",
-      "800": "bebe-pino-5-800-d20adee2.webp",
-      "1200": "bebe-pino-5-1200-d20adee2.webp"
-    }
-  },
-  "bebe-pino-6": {
-    "type": "product",
-    "width": 1200,
-    "height": 1200,
-    "sizes": [
-      400,
-      800,
-      1200
-    ],
-    "format": "webp",
-    "files": {
-      "400": "bebe-pino-6-400-7bf47332.webp",
-      "800": "bebe-pino-6-800-7bf47332.webp",
-      "1200": "bebe-pino-6-1200-7bf47332.webp"
-    }
-  },
-  "bebe-pino-7": {
-    "type": "product",
-    "width": 1200,
-    "height": 1200,
-    "sizes": [
-      400,
-      800,
-      1200
-    ],
-    "format": "webp",
-    "files": {
-      "400": "bebe-pino-7-400-327a2387.webp",
-      "800": "bebe-pino-7-800-327a2387.webp",
-      "1200": "bebe-pino-7-1200-327a2387.webp"
-    }
-  },
-  "bebe-pino-8": {
-    "type": "product",
-    "width": 1200,
-    "height": 1200,
-    "sizes": [
-      400,
-      800,
-      1200
-    ],
-    "format": "webp",
-    "files": {
-      "400": "bebe-pino-8-400-a6dce21c.webp",
-      "800": "bebe-pino-8-800-a6dce21c.webp",
-      "1200": "bebe-pino-8-1200-a6dce21c.webp"
+      "400": "barra-roble-2-400-24ac892d.webp",
+      "800": "barra-roble-2-800-24ac892d.webp",
+      "1200": "barra-roble-2-1200-24ac892d.webp"
     }
   },
   "bebe-roble-1": {
@@ -875,34 +767,6 @@
     "format": "webp",
     "files": {
       "400": "evolutiva-blanco-3-400-a8c3a746.webp"
-    }
-  },
-  "evolutiva-crudo-1": {
-    "type": "product",
-    "width": 800,
-    "height": 800,
-    "sizes": [
-      400,
-      800
-    ],
-    "format": "webp",
-    "files": {
-      "400": "evolutiva-crudo-1-400-b0944362.webp",
-      "800": "evolutiva-crudo-1-800-b0944362.webp"
-    }
-  },
-  "evolutiva-crudo-5": {
-    "type": "product",
-    "width": 800,
-    "height": 800,
-    "sizes": [
-      400,
-      800
-    ],
-    "format": "webp",
-    "files": {
-      "400": "evolutiva-crudo-5-400-bce4327a.webp",
-      "800": "evolutiva-crudo-5-800-bce4327a.webp"
     }
   },
   "evolutiva-nogal-1": {
@@ -1747,6 +1611,18 @@
     "format": "jpeg",
     "files": {
       "1200": "og-set-mesa-sillas-1200-b69f5316.jpg"
+    }
+  },
+  "og-silla-alta-barra": {
+    "type": "og",
+    "width": 1200,
+    "height": 630,
+    "sizes": [
+      1200
+    ],
+    "format": "jpeg",
+    "files": {
+      "1200": "og-silla-alta-barra-1200-142330b0.jpg"
     }
   },
   "og-silla-alta-dos-escalones": {

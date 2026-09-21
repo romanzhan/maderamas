@@ -2,34 +2,13 @@
   {
     "id": "nosotros",
     "slug": "nosotros",
-    "title": "Somos un taller, no una fábrica",
-    "lead": "Madera Más nació en Buenos Aires con una idea simple: que una sola silla acompañe al chico durante años, en vez de tres muebles que se usan una temporada y se guardan.",
-    "body": "Empezamos haciendo una silla para un hijo propio. No encontrábamos ninguna que sirviera a los dos años y también a los seis: las de bebé quedaban chicas enseguida y en las de adulto las piernas quedaban colgando. Así que la hicimos, y después la hicieron los vecinos, y después dejó de ser un favor y pasó a ser el trabajo.\n\nHoy fabricamos en nuestro propio taller y vendemos directo, sin intermediarios. Eso es lo que nos permite cuidar cada pieza y sostener el precio: el mismo mueble en una cadena cuesta el doble y viene de otro lado.\n\nNo tenemos catálogo infinito ni temporadas. Tenemos pocos modelos, pensados de verdad, que se regulan y duran.",
-    "sections": [
-      {
-        "id": "diseno",
-        "title": "Diseño y corte",
-        "body": "Cada modelo se dibuja a medida real y se corta en MDF de 18 mm. Las medidas no salen de un catálogo: salen de probar la silla con chicos de distintas edades hasta que el apoyapiés queda donde tiene que quedar."
-      },
-      {
-        "id": "lijado",
-        "title": "Lijado y cantos",
-        "body": "Todas las aristas se redondean a mano. Es la etapa más lenta y la que más se nota después: no queda ni un canto vivo donde el chico apoya las manos."
-      },
-      {
-        "id": "terminacion",
-        "title": "Terminación",
-        "body": "La terminación se aplica en capas finas, con secado entre una y otra. La superficie queda pareja, se limpia con un paño apenas húmedo y aguanta la comida, los marcadores y el uso de todos los días."
-      },
-      {
-        "id": "control",
-        "title": "Control y embalaje",
-        "body": "Antes de salir, cada silla se arma completa en el taller para revisar que todo calce. Después se desarma, se embala con los herrajes y las instrucciones, y recién ahí se despacha."
-      }
-    ],
+    "title": "Sobre nosotros",
+    "lead": "Madera Más es mobiliario y objetos para el hogar creados con especial atención al diseño, la funcionalidad y la vida cotidiana.",
+    "body": "Creamos productos pensados para ser realmente útiles todos los días. Para nosotros es importante que un mueble no solo sea lindo, sino también práctico, resistente y capaz de acompañar el hogar durante muchos años.\n\nHoy, una parte importante de nuestra colección está dedicada al mobiliario infantil. Conocemos especialmente este mundo porque también somos padres y sabemos lo importantes que son para una familia la seguridad, la estabilidad, la comodidad y la posibilidad de adaptar los muebles a medida que los chicos crecen. Así nacieron nuestras sillas evolutivas, torres de aprendizaje y otros productos pensados para acompañar su autonomía.\n\nPero Madera Más es mucho más que mobiliario infantil.\n\nEstamos desarrollando y ampliando nuestra propuesta, incorporando poco a poco muebles y objetos funcionales para distintos espacios del hogar. Todos comparten una misma filosofía: diseño pensado, buenos materiales, formas simples y atención a cada detalle.\n\nNo buscamos crear objetos para una sola temporada. Nos gustan los muebles que se integran naturalmente a los espacios, resisten el uso cotidiano y mantienen su vigencia con el paso del tiempo.\n\nCada uno de nuestros productos recorre un camino que comienza con una idea y los primeros diseños, y continúa con su fabricación en nuestro taller. Mejoramos constantemente nuestros modelos, exploramos materiales y desarrollamos nuevas propuestas.\n\nMadera Más — objetos que se convierten en parte de tu hogar y crecen junto a tu familia.",
+    "sections": [],
     "seo": {
       "title": null,
-      "description": "Fabricamos sillas evolutivas de madera en Buenos Aires: una sola silla que acompaña al chico durante años, en vez de tres muebles de una temporada."
+      "description": "Muebles y objetos para el hogar con diseño y fabricación propia: sillas evolutivas, torres de aprendizaje y más, pensados para acompañar a la familia."
     }
   },
   {
