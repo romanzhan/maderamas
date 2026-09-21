@@ -4,9 +4,9 @@
     "slug": "silla-evolutiva",
     "name": "Silla Evolutiva",
     "shortDescription": "La silla que crece con tu hijo: se adapta a cada etapa, de 1 a 15 años.",
-    "description": "Silla evolutiva infantil que acompaña el crecimiento de tu hijo. Se adapta fácilmente a cada etapa y sostiene una postura correcta, cómoda y segura.\n\nMide 85 cm de alto, 49 cm de largo y 47 cm de ancho, así que entra sin problema en cualquier espacio de la casa: la habitación, el escritorio, el rincón de juegos o la mesa a la hora de comer.\n\nFabricada en MDF de 18 mm: resistente, durable y pensada para el uso diario.\n\nSe entrega desarmada.",
+    "description": "Silla evolutiva infantil que acompaña el crecimiento de tu hijo. Se adapta fácilmente a cada etapa y sostiene una postura correcta, cómoda y segura.\n\nMide 85 cm de alto, 49 cm de largo y 47 cm de ancho, así que entra sin problema en cualquier espacio de la casa: la habitación, el escritorio, el rincón de juegos o la mesa a la hora de comer.\n\nFabricada en madera multilaminada teñida y laqueada.\n\nSe entrega desarmada.",
     "categoryId": "sillas",
-    "price": 110000,
+    "price": 130000,
     "oldPrice": null,
     "currency": "ARS",
     "inStock": true,
@@ -29,7 +29,7 @@
     "dimensionsImage": "medidas-silla-evolutiva",
     "ogImage": null,
     "attributes": {
-      "material": "MDF 18 mm",
+      "material": "Madera multilaminada teñida y laqueada",
       "dimensions": {
         "width": 47,
         "depth": 49,
@@ -46,7 +46,7 @@
           "id": "roble",
           "name": "Roble americano",
           "swatch": "#C69C6D",
-          "priceDelta": 20000,
+          "priceDelta": 0,
           "inStock": true,
           "images": [
             "evolutiva-roble-1",
@@ -66,7 +66,7 @@
           "id": "nogal",
           "name": "Nogal",
           "swatch": "#5E3D28",
-          "priceDelta": 40000,
+          "priceDelta": 20000,
           "inStock": true,
           "images": [
             "evolutiva-nogal-1",
@@ -86,17 +86,9 @@
           "id": "blanco",
           "name": "Blanco",
           "swatch": "#F2EFE9",
-          "priceDelta": 20000,
-          "inStock": true,
-          "images": ["evolutiva-blanco-1", "evolutiva-blanco-2", "evolutiva-blanco-3"]
-        },
-        {
-          "id": "crudo",
-          "name": "Crudo",
-          "swatch": "#DCC9A8",
           "priceDelta": 0,
           "inStock": true,
-          "images": ["evolutiva-crudo-1", "evolutiva-crudo-5"]
+          "images": ["evolutiva-blanco-1", "evolutiva-blanco-2", "evolutiva-blanco-3"]
         }
       ]
     },
@@ -111,11 +103,11 @@
   {
     "id": "silla-alta",
     "slug": "silla-alta",
-    "name": "Silla Alta de Comer Evolutiva",
+    "name": "Silla Alta Evolutiva",
     "shortDescription": "Silla alta que acompaña el crecimiento: para la mesa de casa, el bar o el restaurante.",
-    "description": "La Silla Alta de Comer Evolutiva acompaña el crecimiento de tus pequeños. Diseñada para chicos desde 1 año, se adapta a las distintas etapas y mantiene la comodidad y la seguridad en cada uso.\n\nSu estructura de MDF da estabilidad y resistencia: soporta hasta 80 kg. Con 75 cm de altura máxima y medidas de 49 cm de ancho por 47 cm de profundidad, queda cómoda con distintos tipos de mesa, tanto en casa como en un bar o un restaurante.\n\nSe entrega desarmada.",
+    "description": "La Silla Alta Evolutiva acompaña el crecimiento de tus pequeños. Diseñada para chicos desde el año y medio, se adapta a las distintas etapas y mantiene la comodidad y la seguridad en cada uso.\n\nSu estructura de madera multilaminada teñida y laqueada es firme y estable: soporta hasta 80 kg. Con 75 cm de altura máxima y medidas de 49 cm de ancho por 47 cm de profundidad, queda cómoda con distintos tipos de mesa, tanto en casa como en un bar o un restaurante.\n\nSe entrega desarmada.",
     "categoryId": "sillas",
-    "price": 110000,
+    "price": 130000,
     "oldPrice": null,
     "currency": "ARS",
     "inStock": true,
@@ -126,7 +118,7 @@
     "dimensionsImage": "medidas-silla-alta",
     "ogImage": null,
     "attributes": {
-      "material": "MDF laminado 18 mm",
+      "material": "Madera multilaminada teñida y laqueada",
       "dimensions": {
         "width": 49,
         "depth": 47,
@@ -134,7 +126,7 @@
         "unit": "cm"
       },
       "weight": 7,
-      "ageRange": "1 – 15 años",
+      "ageRange": "18 meses – 15 años",
       "maxLoad": 80
     },
     "options": {
@@ -143,7 +135,7 @@
           "id": "roble",
           "name": "Roble americano",
           "swatch": "#C69C6D",
-          "priceDelta": 20000,
+          "priceDelta": 0,
           "inStock": true,
           "images": ["alta-roble-1", "alta-roble-3", "alta-roble-5"]
         },
@@ -151,7 +143,7 @@
           "id": "nogal",
           "name": "Nogal",
           "swatch": "#5E3D28",
-          "priceDelta": 40000,
+          "priceDelta": 20000,
           "inStock": true,
           "images": ["alta-2-1", "alta-2-3", "alta-2-5"]
         },
@@ -159,16 +151,8 @@
           "id": "blanco",
           "name": "Blanco",
           "swatch": "#F2EFE9",
-          "priceDelta": 20000,
-          "inStock": true
-        },
-        {
-          "id": "crudo",
-          "name": "Crudo",
-          "swatch": "#DCC9A8",
           "priceDelta": 0,
-          "inStock": true,
-          "images": ["alta-crudo-1", "alta-crudo-2"]
+          "inStock": true
         }
       ]
     },
@@ -181,11 +165,55 @@
     }
   },
   {
+    "id": "silla-alta-barra",
+    "slug": "silla-alta-barra",
+    "name": "Silla Alta para Barra e Islas",
+    "shortDescription": "A la altura de la barra y de la isla de cocina: el chico come con toda la familia.",
+    "description": "Silla alta evolutiva pensada para barras, mesadas altas e islas de cocina. El asiento y el apoyapiés se regulan en varias posiciones, así que acompaña el crecimiento del chico y lo deja a la altura de la mesa alta de casa.\n\nMide 90 cm de alto, con el asiento regulable hasta 70 cm y 47 cm de ancho. Estructura firme y estable, fácil de limpiar. No es plegable.\n\nTambién es ideal para bares, cafeterías y restaurantes con mesas o barras altas que quieren ofrecer un lugar cómodo a las familias con chicos.\n\nAntes de comprar, medí la altura de tu barra o isla para confirmar que este modelo sea el adecuado.\n\nSe entrega desarmada.",
+    "categoryId": "sillas",
+    "price": 189150,
+    "oldPrice": null,
+    "currency": "ARS",
+    "inStock": true,
+    "createdAt": "2026-09-15",
+    "order": 25,
+    "featured": true,
+    "images": ["barra-roble-1", "barra-roble-2"],
+    "dimensionsImage": null,
+    "ogImage": null,
+    "attributes": {
+      "material": "Madera multilaminada teñida y laqueada",
+      "dimensions": null,
+      "weight": 7.9,
+      "ageRange": "18 meses – 15 años",
+      "maxLoad": 80
+    },
+    "options": {
+      "woodColor": [
+        {
+          "id": "roble",
+          "name": "Roble americano",
+          "swatch": "#C69C6D",
+          "priceDelta": 0,
+          "inStock": true,
+          "images": ["barra-roble-1", "barra-roble-2"]
+        }
+      ]
+    },
+    "accessories": [],
+    "related": ["silla-alta", "silla-alta-dos-escalones"],
+    "sku": null,
+    "seo": {
+      "title": null,
+      "description": null
+    }
+  },
+  {
     "id": "silla-alta-dos-escalones",
     "slug": "silla-alta-dos-escalones",
-    "name": "Silla Alta de Comer con dos escalones",
+    "name": "Silla Alta con dos escalones",
     "shortDescription": "La versión con dos escalones: el chico sube y baja solo, sin ayuda.",
-    "description": "Silla alta de comer con dos escalones: el chico sube y baja por sus propios medios, gana autonomía y vos ganás tranquilidad.\n\nEstructura de MDF laminado de 18 mm, altura máxima de 75 cm y medidas de 49 cm de ancho por 47 cm de profundidad. Soporta hasta 90 kg.\n\nSe entrega desarmada.",
+    "description": "Silla alta con dos escalones: el chico sube y baja por sus propios medios, gana autonomía y vos ganás tranquilidad.\n\nEstructura de madera multilaminada teñida y laqueada, altura máxima de 75 cm y medidas de 49 cm de ancho por 47 cm de profundidad. Soporta hasta 90 kg.\n\nSe entrega desarmada.",
     "categoryId": "sillas",
     "price": 199850,
     "oldPrice": null,
@@ -207,7 +235,7 @@
     "dimensionsImage": "medidas-silla-alta-dos-escalones",
     "ogImage": null,
     "attributes": {
-      "material": "MDF laminado 18 mm",
+      "material": "Madera multilaminada teñida y laqueada",
       "dimensions": {
         "width": 49,
         "depth": 47,
@@ -269,7 +297,7 @@
   {
     "id": "silla-para-bebe",
     "slug": "silla-para-bebe",
-    "name": "Silla Infantil para Comer",
+    "name": "Silla Infantil",
     "shortDescription": "Para los más chiquitos: arnés de tres puntos, respaldo alto y apoyapiés.",
     "description": "Silla infantil pensada para la seguridad del bebé y la comodidad del uso diario.\n\nTiene arnés de seguridad de tres puntos, respaldo alto y apoyabrazos que dan contención y ayudan a prevenir caídas. Las patas llevan una inclinación especial que da estabilidad y reduce el riesgo de vuelco, incluso si el chico se mueve o se hamaca.\n\nEl asiento tiene recortes ergonómicos para una mejor postura y suma apoyapiés. Incluye bandeja extraíble.\n\nSe entrega desarmada.",
     "categoryId": "sillas",
@@ -297,7 +325,7 @@
     "dimensionsImage": null,
     "ogImage": null,
     "attributes": {
-      "material": "MDF",
+      "material": "Madera multilaminada teñida y laqueada",
       "dimensions": {
         "width": 38,
         "depth": 50,
@@ -330,22 +358,6 @@
             "bebe-roble-uso-3",
             "bebe-roble-uso-4"
           ]
-        },
-        {
-          "id": "pino",
-          "name": "Pino",
-          "swatch": "#DAC5A5",
-          "priceDelta": 0,
-          "inStock": true,
-          "images": [
-            "bebe-pino-1",
-            "bebe-pino-3",
-            "bebe-pino-4",
-            "bebe-pino-5",
-            "bebe-pino-6",
-            "bebe-pino-7",
-            "bebe-pino-8"
-          ]
         }
       ]
     },
@@ -362,7 +374,7 @@
     "slug": "torre-de-aprendizaje",
     "name": "Torre de Aprendizaje plegable",
     "shortDescription": "Para cocinar y participar a tu altura. Plegable, ocupa poco cuando no se usa.",
-    "description": "Torre de aprendizaje plegable: el chico llega a la mesada y participa de lo que pasa en casa con seguridad.\n\nFabricada en MDF de 15 mm. Se pliega cuando no se usa, así que ocupa poco lugar. Requiere ensamblado.",
+    "description": "Torre de aprendizaje plegable: el chico llega a la mesada y participa de lo que pasa en casa con seguridad.\n\nFabricada en madera multilaminada teñida y laqueada. Se pliega cuando no se usa, así que ocupa poco lugar. Requiere ensamblado.",
     "categoryId": "accesorios",
     "price": 199900,
     "oldPrice": null,
@@ -375,7 +387,7 @@
     "dimensionsImage": null,
     "ogImage": null,
     "attributes": {
-      "material": "MDF 15 mm",
+      "material": "Madera multilaminada teñida y laqueada",
       "dimensions": null,
       "weight": null,
       "ageRange": "2 – 4 años",
@@ -408,7 +420,7 @@
     "dimensionsImage": "medidas-set-mesa",
     "ogImage": null,
     "attributes": {
-      "material": "MDF",
+      "material": "Madera multilaminada teñida y laqueada",
       "dimensions": {
         "width": 60,
         "depth": 40,
@@ -446,7 +458,7 @@
     "dimensionsImage": "medidas-banquito",
     "ogImage": null,
     "attributes": {
-      "material": "MDF",
+      "material": "Madera multilaminada teñida y laqueada",
       "dimensions": null,
       "weight": null,
       "ageRange": null,
@@ -466,7 +478,7 @@
     "slug": "equilibristas",
     "name": "Equilibristas apilables x20",
     "shortDescription": "Veinte piezas de madera para apilar: concentración, equilibrio y motricidad fina.",
-    "description": "Juego Montessori de veinte piezas apilables de 6 × 6 cm en MDF.\n\nEstimula la concentración, la coordinación, el equilibrio y la motricidad fina. Desde 1 año y medio.",
+    "description": "Juego Montessori de veinte piezas apilables de 6 × 6 cm en madera multilaminada.\n\nEstimula la concentración, la coordinación, el equilibrio y la motricidad fina. Desde 1 año y medio.",
     "categoryId": "accesorios",
     "price": 20000,
     "oldPrice": null,
@@ -479,7 +491,7 @@
     "dimensionsImage": null,
     "ogImage": null,
     "attributes": {
-      "material": "MDF",
+      "material": "Madera multilaminada teñida y laqueada",
       "dimensions": null,
       "weight": null,
       "ageRange": "Desde 1,5 años",
@@ -574,7 +586,7 @@
     "dimensionsImage": null,
     "ogImage": null,
     "attributes": {
-      "material": "MDF",
+      "material": "Madera multilaminada teñida y laqueada",
       "dimensions": null,
       "weight": null,
       "ageRange": "Desde 1 año",

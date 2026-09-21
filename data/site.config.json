@@ -48,7 +48,7 @@
     "phone": "+54 9 11 2791-5729",
     "email": "madera.mas.arg@gmail.com",
     "instagram": "https://instagram.com/madera.mas.arg",
-    "address": "Aráoz 942, Villa Crespo, CABA",
+    "address": null,
     "hours": null
   },
   "shipping": {
@@ -57,12 +57,13 @@
   "seo": {
     "siteUrl": "https://www.maderamas.com.ar",
     "defaultOgImage": "og-brand",
-    "homeTitle": "Madera Más — Sillas evolutivas de madera",
-    "homeDescription": "Sillas evolutivas de madera que se regulan en altura y profundidad y acompañan al chico durante años. Fabricación propia en Buenos Aires y envíos a todo el país."
+    "homeTitle": "Madera Más — Muebles y objetos para el hogar, hechos en Argentina",
+    "homeDescription": "Muebles y objetos para el hogar con diseño y fabricación propia: sillas evolutivas que se regulan en altura y profundidad, torre de aprendizaje y accesorios. Envíos a todo el país."
   },
   "legal": {
     "cuit": "27-96400620-8",
     "razonSocial": "PETROV SERGEI",
+    "domicilio": "Aráoz 942, Villa Crespo, CABA",
     "dataFiscalUrl": "https://qr.afip.gob.ar/?qr=-h538ARTUUKJ2zSmwdV-HQ,,",
     "ivaRate": 21
   }
