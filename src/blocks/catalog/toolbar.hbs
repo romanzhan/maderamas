@@ -11,16 +11,7 @@
       <nav aria-label="{{t "catalog.allSections"}}">
         <ul class="flex flex-wrap gap-2">
           {{#each catalog.sections}}
-            <li>
-              <a
-                href="{{href}}"
-                class="flex h-11 items-center gap-2 rounded-full border border-border px-4
-                  transition-colors duration-150 hover:bg-sand-hover"
-              >
-                {{label}}
-                {{> icon ../empty name="arrow-right" class="size-4 text-clay"}}
-              </a>
-            </li>
+            <li>{{> pill-link ../empty href=href text=label}}</li>
           {{/each}}
         </ul>
       </nav>

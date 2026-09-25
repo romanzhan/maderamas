@@ -7,6 +7,9 @@
 const SORTS = ['relevancia', 'precio-asc', 'precio-desc', 'nuevos']
 const DEFAULT_SORT = 'relevancia'
 
+// Части карточки, которые меняются вместе с цветом (product-card.hbs, data-card-slot)
+const CARD_PARTS = ['photo', 'badges', 'price', 'action']
+
 function readItems(grid) {
   return [...grid.querySelectorAll('[data-catalog-item]')].map((el, index) => ({
     el,
@@ -22,15 +25,15 @@ function readItems(grid) {
         view,
       ]),
     ),
-    shownView: '',
+    // Сервер отрисовал исходный вид — ключ тот же, что у viewFor без выбранных цветов,
+    // иначе первый же apply() пересобрал бы каждую карточку впустую
+    shownView: `:${CARD_PARTS.length}`,
   }))
 }
 
-const CARD_PARTS = ['photo', 'price', 'action']
-
 /**
  * Какой вид карточки показать при выбранных цветах (решение владельца 25.09.2026).
- * Один цвет — карточка целиком в нём: фото, цена, ссылка и кнопка, которая кладёт
+ * Один цвет — карточка целиком в нём: фото, бейджи, цена, ссылка и кнопка, которая кладёт
  * в корзину сразу этот цвет. Несколько — меняется только фото (первый выбранный
  * цвет, который у товара есть): цена остаётся «от», кнопка — «Elegir color».
  */
@@ -64,14 +67,18 @@ function showView(item, colors) {
   if (link) link.href = (parts.length === CARD_PARTS.length ? chosen : base).dataset.href
 }
 
-/** Цена для сортировки: при одном выбранном цвете — цена этого цвета, как на карточке */
-function priceOf(item, colors) {
+/**
+ * Цена и наличие для сортировки и фильтра «Solo con stock»: при одном выбранном цвете —
+ * этого цвета, как их показывает карточка. Распроданный цвет уходит вниз, как товар
+ */
+function shownAs(item, colors) {
   const view = colors.length === 1 ? item.views.get(colors[0]) : null
-  return view ? Number(view.dataset.price) : item.price
+  if (!view) return { price: item.price, inStock: item.inStock }
+  return { price: Number(view.dataset.price), inStock: view.dataset.stock === '1' }
 }
 
 // Нет в наличии всегда внизу — при любом порядке (состояния-экранов.md п. 2).
-// price — цена, которую карточка показывает сейчас (см. priceOf)
+// price и inStock — те, что карточка показывает сейчас (см. shownAs)
 const COMPARE = {
   relevancia: (a, b) => a.index - b.index,
   'precio-asc': (a, b) => a.price - b.price,
@@ -153,7 +160,7 @@ export function catalogStore(Alpine) {
       const known = new Set(this.items.flatMap((item) => item.colors))
       this.colors = (params.get('color') ?? '').split(',').filter((color) => known.has(color))
 
-      this.inStockOnly = params.get('disponible') === '1'
+      this.inStockOnly = this.texts.stockFilter === '1' && params.get('disponible') === '1'
       this.syncDraft()
     },
 
@@ -170,20 +177,20 @@ export function catalogStore(Alpine) {
     },
 
     matches(item, colors = this.colors, inStockOnly = this.inStockOnly) {
-      if (inStockOnly && !item.inStock) return false
+      if (inStockOnly && !shownAs(item, colors).inStock) return false
       if (!colors.length) return true
       return item.colors.some((color) => colors.includes(color))
     },
 
     apply() {
       const shown = this.items.filter((item) => this.matches(item))
-      const priced = new Map(
-        shown.map((item) => [item, { ...item, price: priceOf(item, this.colors) }]),
+      const current = new Map(
+        shown.map((item) => [item, { ...item, ...shownAs(item, this.colors) }]),
       )
-      shown.sort(
-        (a, b) =>
-          Number(b.inStock) - Number(a.inStock) || COMPARE[this.sort](priced.get(a), priced.get(b)),
-      )
+      shown.sort((a, b) => {
+        const [x, y] = [current.get(a), current.get(b)]
+        return Number(y.inStock) - Number(x.inStock) || COMPARE[this.sort](x, y)
+      })
       for (const item of shown) showView(item, this.colors)
 
       const inShown = new Set(shown.map((item) => item.el))

@@ -12,8 +12,11 @@
       виды карточки по цветам дерева, только в каталоге (см. шаблоны в конце).
       Вся карточка — ссылка: её растягивает псевдоэлемент у названия, поэтому кнопки
       внутри остаются отдельными целями и фокус-кольцо одно на карточку. --}}
-{{!-- Три части карточки, которые меняются вместе с цветом дерева: фото, цена
-      и кнопка. Описаны один раз и вызываются и для обычного вида, и для каждого цвета --}}
+{{!-- Четыре части карточки, которые меняются вместе с цветом дерева: фото, бейджи,
+      цена и кнопка. Описаны один раз и вызываются и для обычного вида, и для каждого
+      цвета. Список частей один на три места — CARD_PARTS в src/scripts/catalog.js,
+      data-card-slot на карточке и data-part в шаблонах внизу: новая часть добавляется
+      во все три, иначе переключение цвета упадёт на недостающей --}}
 {{#*inline "card-photo"}}
   {{!-- Два вызова, а не один с условием внутри класса: внутри значения параметра
         шаблонизатор подстановок не считает, и условие уехало бы в разметку
@@ -42,6 +45,14 @@
       </span>
     {{/if}}
   {{/if}}
+{{/inline}}
+
+{{!-- Бейджи — тоже часть цвета: процент скидки считается от цены цвета, и у ногала
+      с доплатой он другой, чем у базового --}}
+{{#*inline "card-badges"}}
+  {{#if discount}}{{> badge empty discount=true text=discount}}{{/if}}
+  {{#unless inStock}}{{> badge empty status=true label="badge.noStock"}}{{/unless}}
+  {{#if isNew}}{{#if inStock}}{{> badge empty isNew=true label="badge.new"}}{{/if}}{{/if}}
 {{/inline}}
 
 {{#*inline "card-price"}}
@@ -120,10 +131,8 @@
     </div>
 
     {{!-- Больше двух бейджей не вешаем: скидка → статус → инфо --}}
-    <div class="absolute top-2 left-2 z-10 flex flex-wrap gap-2">
-      {{#if discount}}{{> badge empty discount=true text=discount}}{{/if}}
-      {{#unless inStock}}{{> badge empty status=true label="badge.noStock"}}{{/unless}}
-      {{#if isNew}}{{#if inStock}}{{> badge empty isNew=true label="badge.new"}}{{/if}}{{/if}}
+    <div class="absolute top-2 left-2 z-10 flex flex-wrap gap-2" data-card-slot="badges">
+      {{> card-badges}}
     </div>
 
     {{!-- Кружок-подложка отодвинут от края кадра: вплотную к углу он читался заплаткой
@@ -201,22 +210,25 @@
   </div>
 
   {{!-- Карточка в каждом цвете дерева — только в каталоге (colorViews из page-context).
-        Фильтр по цвету подставляет вид из шаблона в три места и меняет ссылку
+        Фильтр по цвету подставляет вид из шаблона в четыре места и меняет ссылку
         (src/scripts/catalog.js). Шаблон инертен: пока цвет не выбран, его фото
         не грузятся. Исходный вид — тоже шаблон, чтобы вернуть его без следов --}}
   {{#if colorViews.length}}
-    <template data-card-view="" data-href="{{href}}" data-price="{{price}}">
+    <template data-card-view="" data-href="{{href}}" data-price="{{price}}"
+      data-stock="{{#if inStock}}1{{else}}0{{/if}}">
       <div data-part="photo">{{> card-photo}}</div>
+      <div data-part="badges">{{> card-badges}}</div>
       <div data-part="price">{{> card-price}}</div>
       <div data-part="action">{{> card-action}}</div>
     </template>
     {{#each colorViews}}
-      <template data-card-view="{{color}}" data-href="{{href}}" data-price="{{price}}">
-        <div data-part="photo">{{> card-photo name=../name inStock=../inStock}}</div>
-        <div data-part="price">{{> card-price inStock=../inStock}}</div>
-        <div data-part="action">
-          {{> card-action id=../id name=../name inStock=../inStock}}
-        </div>
+      {{!-- inStock здесь свой, у цвета: распроданный цвет выглядит распроданным --}}
+      <template data-card-view="{{color}}" data-href="{{href}}" data-price="{{price}}"
+        data-stock="{{#if inStock}}1{{else}}0{{/if}}">
+        <div data-part="photo">{{> card-photo name=../name}}</div>
+        <div data-part="badges">{{> card-badges isNew=../isNew}}</div>
+        <div data-part="price">{{> card-price}}</div>
+        <div data-part="action">{{> card-action id=../id name=notifyName}}</div>
       </template>
     {{/each}}
   {{/if}}

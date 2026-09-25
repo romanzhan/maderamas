@@ -11,6 +11,9 @@
   data-t-apply="{{t "catalog.applyFiltersN" n="{n}"}}"
   data-t-count-one="{{t "catalog.productCountOne"}}"
   data-t-count-many="{{t "catalog.productCount" n="{n}"}}"
+  {{!-- Есть ли на странице фильтр наличия: без него ?disponible=1 из чужой ссылки
+        спрятал бы товары, а снять фильтр было бы нечем («Todos los productos») --}}
+  data-stock-filter="{{#if catalog.hasStockFilter}}1{{/if}}"
 >
   {{> breadcrumbs empty items=breadcrumbs.items plain=breadcrumbs.plain}}
 
