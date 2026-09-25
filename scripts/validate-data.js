@@ -539,6 +539,11 @@ function validate() {
           fail(`${optionWhere}: priceDelta должна быть целым числом`)
         }
         checkImages(option.images ?? [], optionWhere, images)
+        // Фильтр по цвету показывает на карточке фото этого цвета (25.09.2026).
+        // Своих фото нет — карточка покажет общие, то есть другой цвет
+        if (axis === 'woodColor' && !option.images?.length) {
+          warnings.push(`${optionWhere}: нет своих фото — в каталоге при фильтре по этому цвету карточка покажет общие`)
+        }
       }
     }
 
@@ -640,12 +645,15 @@ function buildCatalog({ site, products, categories, articles }) {
       options: Object.fromEntries(
         Object.entries(product.options ?? {}).map(([axis, options]) => [
           axis,
-          options.map(({ id, name, swatch, inStock, priceDelta }) => ({
+          options.map(({ id, name, swatch, inStock, priceDelta, images: photos }) => ({
             id,
             name,
             swatch,
             inStock,
             priceDelta,
+            // Фото цвета для строки корзины: иначе «Nogal» стоял бы рядом со светлым
+            // стулом (25.09.2026). Нет своих фото — поле не пишется, строка берёт общее
+            ...(photos?.length ? { photo: image(imageIds(photos)[0]) } : {}),
           })),
         ]),
       ),

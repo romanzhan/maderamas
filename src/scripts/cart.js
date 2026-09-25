@@ -26,6 +26,8 @@ function variantOf(product, variantId) {
     // Кружок цвета рядом с названием: одним текстом цвет не читается (замечание
     // владельца 28.08.2026). Берём у первой оси — цвет дерева всегда первый
     swatch: options[0]?.swatch ?? null,
+    // Фото выбранного цвета, если у него есть свои (catalog.json)
+    photo: options.find((option) => option.photo)?.photo ?? null,
     inStock: product.inStock && options.every((option) => option.inStock),
   }
 }
@@ -112,8 +114,8 @@ export function cartView(maxQty, shippingCost) {
             ...item,
             name: product.name,
             href: product.href,
-            photo: product.photo,
             ...variant,
+            photo: variant.photo ?? product.photo,
             sum: variant.price * item.qty,
             atMax: item.qty >= maxQty,
           }
