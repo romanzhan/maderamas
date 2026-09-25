@@ -8,9 +8,97 @@
       нет — встаёт заглушка бренда той же геометрии), imageIdHover (второе фото: под
       курсором карточка показывает его), old (старая цена), discount (текст бейджа),
       isNew, inStock=false, inCart, wishlisted, rating + reviewsCount, variant (подпись
-      материала), priceFrom (цена «от» — у товара есть варианты дороже).
+      материала), priceFrom (цена «от» — у товара есть варианты дороже), colorViews —
+      виды карточки по цветам дерева, только в каталоге (см. шаблоны в конце).
       Вся карточка — ссылка: её растягивает псевдоэлемент у названия, поэтому кнопки
       внутри остаются отдельными целями и фокус-кольцо одно на карточку. --}}
+{{!-- Три части карточки, которые меняются вместе с цветом дерева: фото, цена
+      и кнопка. Описаны один раз и вызываются и для обычного вида, и для каждого цвета --}}
+{{#*inline "card-photo"}}
+  {{!-- Два вызова, а не один с условием внутри класса: внутри значения параметра
+        шаблонизатор подстановок не считает, и условие уехало бы в разметку
+        дословно (поймано ревью 29.08.2026). Заглушку бренда приглушение не задевает
+        в любом случае: класс достаётся снимку, а у заглушки своя разметка --}}
+  {{#if inStock}}
+    {{> picture empty id=imageId alt=name sizes="(min-width: 1024px) 25vw, 50vw"
+        class="aspect-square w-full object-cover"}}
+  {{else}}
+    {{> picture empty id=imageId alt=name sizes="(min-width: 1024px) 25vw, 50vw"
+        class="aspect-square w-full object-cover opacity-45"}}
+  {{/if}}
+
+  {{!-- Второе фото по наведению (компоненты.md 3.6, состояние 2). Только там, где
+        указатель есть: на телефоне наведения не бывает, и вариант hover Tailwind
+        сам это учитывает --}}
+  {{#if imageIdHover}}
+    {{#if inStock}}
+      <span
+        class="pointer-events-none absolute inset-0 opacity-0 transition-opacity
+          duration-200 group-hover/card:opacity-100"
+        aria-hidden="true"
+      >
+        {{> picture empty id=imageIdHover alt="" sizes="(min-width: 1024px) 25vw, 50vw"
+            class="aspect-square w-full object-cover"}}
+      </span>
+    {{/if}}
+  {{/if}}
+{{/inline}}
+
+{{#*inline "card-price"}}
+  {{#if inStock}}
+    {{> price empty value=price old=old compact=true from=priceFrom}}
+  {{else}}
+    {{> price empty value=price old=old compact=true from=priceFrom muted=true}}
+  {{/if}}
+{{/inline}}
+
+{{!-- variantId — комбинация, которую кнопка кладёт в корзину: у товара без вариантов
+      пустая, у вида одного цвета — id этого цвета --}}
+{{#*inline "card-action"}}
+  {{#unless inStock}}
+    {{!-- Название лежит в атрибуте: его читает store, см. notify.ask --}}
+    <span data-notify="{{name}}">
+      {{> button empty secondary=true sizeMd=true fullWidth=true label="stock.notifyCta"
+          onClick="$store.notify.ask($el)"}}
+    </span>
+  {{/unless}}
+
+  {{#if inStock}}
+    {{#if preview}}
+      {{#if inCart}}
+        {{> button empty secondary=true sizeMd=true fullWidth=true icon="check"
+            label="product.inCart" href=cartHref}}
+      {{else}}
+        {{> button empty primary=true sizeMd=true fullWidth=true
+            label="product.addToCartShort"}}
+      {{/if}}
+    {{else}}
+      {{#if hasOptions}}
+        {{!-- Есть из чего выбирать — кладём не мы, а сам покупатель на странице
+              товара: цена на карточке показана «от», и положить наугад дорогой
+              вариант значило бы обмануть (решение 27.08.2026) --}}
+        {{> button empty primary=true sizeMd=true fullWidth=true label="product.choose"
+            href=href}}
+      {{else}}
+        {{!-- Короткая подпись: в карточке на 360 px полная занимала три строки.
+              Полная живёт на странице товара, где места достаточно.
+              Выражение собирается concat: внутри значения параметра шаблонизатор
+              подстановки не считает, и `{{id}}` уехал бы в корзину буквально
+              (поймано в браузере 28.08.2026) --}}
+        <span x-show="!$store.cart.has('{{id}}', '{{variantId}}')">
+          {{> button empty primary=true sizeMd=true fullWidth=true
+              label="product.addToCartShort"
+              onClick=(concat "$store.cart.add('" id "', '" variantId "', 1); $store.overlay.open('cart')")}}
+        </span>
+        <span x-show="$store.cart.has('{{id}}', '{{variantId}}')" x-cloak>
+          {{> button empty secondary=true sizeMd=true fullWidth=true icon="check"
+              label="product.inCart" href="/carrito/"}}
+        </span>
+      {{/if}}
+    {{/if}}
+  {{/if}}
+{{/inline}}
+
 {{!-- Кольцо фокуса рисуется по всей карточке, а не по тексту названия: у растянутой
       ссылки собственное кольцо снято --}}
 {{!-- isolate — свой слой карточки: без него её внутренние z-10 (сердце, кнопка) спорят
@@ -27,34 +115,8 @@
           а карточка сразу видна как недоступная (визуальная-система §2.1). Приглушение
           лежит на самом снимке, а не на коробке: заглушка бренда и без того почти
           не видна, и второе приглушение стирало бы её совсем --}}
-    <div class="relative overflow-hidden rounded-lg bg-sand">
-      {{!-- Два вызова, а не один с условием внутри класса: внутри значения параметра
-            шаблонизатор подстановок не считает, и условие уехало бы в разметку
-            дословно (поймано ревью 29.08.2026). Заглушку бренда приглушение не задевает
-            в любом случае: класс достаётся снимку, а у заглушки своя разметка --}}
-      {{#if inStock}}
-        {{> picture empty id=imageId alt=name sizes="(min-width: 1024px) 25vw, 50vw"
-            class="aspect-square w-full object-cover"}}
-      {{else}}
-        {{> picture empty id=imageId alt=name sizes="(min-width: 1024px) 25vw, 50vw"
-            class="aspect-square w-full object-cover opacity-45"}}
-      {{/if}}
-
-      {{!-- Второе фото по наведению (компоненты.md 3.6, состояние 2). Только там, где
-            указатель есть: на телефоне наведения не бывает, и вариант hover Tailwind
-            сам это учитывает --}}
-      {{#if imageIdHover}}
-        {{#if inStock}}
-          <span
-            class="pointer-events-none absolute inset-0 opacity-0 transition-opacity
-              duration-200 group-hover/card:opacity-100"
-            aria-hidden="true"
-          >
-            {{> picture empty id=imageIdHover alt="" sizes="(min-width: 1024px) 25vw, 50vw"
-                class="aspect-square w-full object-cover"}}
-          </span>
-        {{/if}}
-      {{/if}}
+    <div class="relative overflow-hidden rounded-lg bg-sand" data-card-slot="photo">
+      {{> card-photo}}
     </div>
 
     {{!-- Больше двух бейджей не вешаем: скидка → статус → инфо --}}
@@ -120,65 +182,42 @@
         (замечание владельца 28.08.2026). Воздух остаётся между группами --}}
   <div class="flex flex-col gap-1">
     <h3 class="line-clamp-2 text-body" title="{{name}}">
-      <a href="{{href}}" class="after:absolute after:inset-0 focus-visible:outline-none">{{name}}</a>
+      <a href="{{href}}" class="after:absolute after:inset-0 focus-visible:outline-none"
+        data-card-link>{{name}}</a>
     </h3>
 
     {{#if variant}}<p class="text-small text-charcoal/70">{{variant}}</p>{{/if}}
 
     {{#if rating}}{{> rating empty value=rating count=reviewsCount starClass="size-4"}}{{/if}}
 
-    {{#if inStock}}
-      {{> price empty value=price old=old compact=true from=priceFrom}}
-    {{else}}
-      {{> price empty value=price old=old compact=true from=priceFrom muted=true}}
-    {{/if}}
+    <div data-card-slot="price">{{> card-price}}</div>
   </div>
 
   {{!-- Кнопка видна всегда, в том числе на компьютере: реестр предлагает показывать её
         по наведению, но тогда состояние «в корзине» перестаёт быть видимым сигналом.
         Развилка вынесена владельцу (журнал, открытый вопрос) --}}
-  <div class="relative z-10 mt-auto">
-    {{#unless inStock}}
-      {{!-- Название лежит в атрибуте: его читает store, см. notify.ask --}}
-      <span data-notify="{{name}}">
-        {{> button empty secondary=true sizeMd=true fullWidth=true label="stock.notifyCta"
-            onClick="$store.notify.ask($el)"}}
-      </span>
-    {{/unless}}
-
-    {{#if inStock}}
-      {{#if preview}}
-        {{#if inCart}}
-          {{> button empty secondary=true sizeMd=true fullWidth=true icon="check"
-              label="product.inCart" href=cartHref}}
-        {{else}}
-          {{> button empty primary=true sizeMd=true fullWidth=true
-              label="product.addToCartShort"}}
-        {{/if}}
-      {{else}}
-        {{#if hasOptions}}
-          {{!-- Есть из чего выбирать — кладём не мы, а сам покупатель на странице
-                товара: цена на карточке показана «от», и положить наугад дорогой
-                вариант значило бы обмануть (решение 27.08.2026) --}}
-          {{> button empty primary=true sizeMd=true fullWidth=true label="product.choose"
-              href=href}}
-        {{else}}
-          {{!-- Короткая подпись: в карточке на 360 px полная занимала три строки.
-                Полная живёт на странице товара, где места достаточно.
-                Выражение собирается concat: внутри значения параметра шаблонизатор
-                подстановки не считает, и `{{id}}` уехал бы в корзину буквально
-                (поймано в браузере 28.08.2026) --}}
-          <span x-show="!$store.cart.has('{{id}}', '')">
-            {{> button empty primary=true sizeMd=true fullWidth=true
-                label="product.addToCartShort"
-                onClick=(concat "$store.cart.add('" id "', '', 1); $store.overlay.open('cart')")}}
-          </span>
-          <span x-show="$store.cart.has('{{id}}', '')" x-cloak>
-            {{> button empty secondary=true sizeMd=true fullWidth=true icon="check"
-                label="product.inCart" href="/carrito/"}}
-          </span>
-        {{/if}}
-      {{/if}}
-    {{/if}}
+  <div class="relative z-10 mt-auto" data-card-slot="action">
+    {{> card-action}}
   </div>
+
+  {{!-- Карточка в каждом цвете дерева — только в каталоге (colorViews из page-context).
+        Фильтр по цвету подставляет вид из шаблона в три места и меняет ссылку
+        (src/scripts/catalog.js). Шаблон инертен: пока цвет не выбран, его фото
+        не грузятся. Исходный вид — тоже шаблон, чтобы вернуть его без следов --}}
+  {{#if colorViews.length}}
+    <template data-card-view="" data-href="{{href}}" data-price="{{price}}">
+      <div data-part="photo">{{> card-photo}}</div>
+      <div data-part="price">{{> card-price}}</div>
+      <div data-part="action">{{> card-action}}</div>
+    </template>
+    {{#each colorViews}}
+      <template data-card-view="{{color}}" data-href="{{href}}" data-price="{{price}}">
+        <div data-part="photo">{{> card-photo name=../name inStock=../inStock}}</div>
+        <div data-part="price">{{> card-price inStock=../inStock}}</div>
+        <div data-part="action">
+          {{> card-action id=../id name=../name inStock=../inStock}}
+        </div>
+      </template>
+    {{/each}}
+  {{/if}}
 </article>

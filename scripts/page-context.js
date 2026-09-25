@@ -600,11 +600,52 @@ function categoryPage(category, products, withCard, categories, dictionary) {
     hasFilters: woodColors.length > 0 || filterable.some((product) => !product.inStock),
     // Карточка собирается той же функцией, что на главной и в поиске: в каталоге
     // к ней добавляется только список цветов, по которому фильтрует скрипт
-    products: items.map((product) => ({
-      ...withCard(product),
-      colorIds: (product.options?.woodColor ?? []).map((color) => color.id).join(' '),
-    })),
+    products: items.map((product) => {
+      const card = withCard(product)
+      return {
+        ...card,
+        colorIds: (product.options?.woodColor ?? []).map((color) => color.id).join(' '),
+        colorViews: colorViews(product, card),
+      }
+    }),
   }
+}
+
+/**
+ * Карточка каталога в каждом цвете дерева (решение владельца 25.09.2026): при фильтре
+ * по одному цвету она показывает фото, цену и ссылку этого цвета, а если выбирать
+ * больше нечего — кладёт в корзину сразу его. Считается здесь тем же listPrice, что
+ * и обычная карточка, только с одной опцией дерева: цена цвета не может разойтись
+ * с ценой на странице товара.
+ */
+function colorViews(product, card) {
+  const woods = product.options?.woodColor ?? []
+  const otherAxes = Object.keys(product.options ?? {}).filter((key) => key !== 'woodColor')
+
+  return woods.map((option) => {
+    const own = imageIds(option.images ?? [])
+    // Своих фото у цвета нет — общие: пустая рамка хуже чужого цвета, а о пропуске
+    // предупреждает сборка
+    const photos = own.length ? own : [card.imageId, card.imageIdHover]
+    const priced = listPrice({ ...product, options: { ...product.options, woodColor: [option] } })
+    // Сразу в корзину — только когда цвет и есть весь выбор, и он в наличии.
+    // Иначе кнопка ведёт на страницу товара с уже отмеченным цветом
+    const direct = otherAxes.length === 0 && option.inStock
+
+    return {
+      color: option.id,
+      ...priced,
+      // «Desde» остаётся, только если цену ещё двигают другие оси: цвет уже выбран
+      priceFrom: otherAxes.some((key) =>
+        product.options[key].some((other) => (other.priceDelta ?? 0) !== 0),
+      ),
+      hasOptions: !direct,
+      variantId: direct ? option.id : '',
+      href: `${card.href}?${AXIS_PARAM.woodColor}=${option.id}`,
+      imageId: photos[0],
+      imageIdHover: photos[1],
+    }
+  })
 }
 
 /**

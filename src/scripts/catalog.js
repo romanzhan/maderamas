@@ -15,10 +15,63 @@ function readItems(grid) {
     created: el.dataset.created,
     inStock: el.dataset.stock === '1',
     colors: el.dataset.colors ? el.dataset.colors.split(' ') : [],
+    // Виды карточки по цветам дерева (product-card.hbs): '' — исходный
+    views: new Map(
+      [...el.querySelectorAll('template[data-card-view]')].map((view) => [
+        view.dataset.cardView,
+        view,
+      ]),
+    ),
+    shownView: '',
   }))
 }
 
-// Нет в наличии всегда внизу — при любом порядке (состояния-экранов.md п. 2)
+const CARD_PARTS = ['photo', 'price', 'action']
+
+/**
+ * Какой вид карточки показать при выбранных цветах (решение владельца 25.09.2026).
+ * Один цвет — карточка целиком в нём: фото, цена, ссылка и кнопка, которая кладёт
+ * в корзину сразу этот цвет. Несколько — меняется только фото (первый выбранный
+ * цвет, который у товара есть): цена остаётся «от», кнопка — «Elegir color».
+ */
+function viewFor(item, colors) {
+  if (colors.length === 1 && item.views.has(colors[0])) {
+    return { color: colors[0], parts: CARD_PARTS }
+  }
+  const color = colors.find((known) => item.views.has(known))
+  return color ? { color, parts: ['photo'] } : { color: '', parts: CARD_PARTS }
+}
+
+/** Части подставляются из шаблона свежими копиями: Alpine сам поднимает новые узлы */
+function showView(item, colors) {
+  if (!item.views.size) return
+
+  const { color, parts } = viewFor(item, colors)
+  const key = `${color}:${parts.length}`
+  if (key === item.shownView) return
+  item.shownView = key
+
+  const base = item.views.get('')
+  const chosen = item.views.get(color)
+  for (const part of CARD_PARTS) {
+    const source = parts.includes(part) ? chosen : base
+    const slot = item.el.querySelector(`[data-card-slot="${part}"]`)
+    const fresh = source.content.querySelector(`[data-part="${part}"]`).cloneNode(true)
+    slot?.replaceChildren(...fresh.childNodes)
+  }
+
+  const link = item.el.querySelector('[data-card-link]')
+  if (link) link.href = (parts.length === CARD_PARTS.length ? chosen : base).dataset.href
+}
+
+/** Цена для сортировки: при одном выбранном цвете — цена этого цвета, как на карточке */
+function priceOf(item, colors) {
+  const view = colors.length === 1 ? item.views.get(colors[0]) : null
+  return view ? Number(view.dataset.price) : item.price
+}
+
+// Нет в наличии всегда внизу — при любом порядке (состояния-экранов.md п. 2).
+// price — цена, которую карточка показывает сейчас (см. priceOf)
 const COMPARE = {
   relevancia: (a, b) => a.index - b.index,
   'precio-asc': (a, b) => a.price - b.price,
@@ -124,7 +177,14 @@ export function catalogStore(Alpine) {
 
     apply() {
       const shown = this.items.filter((item) => this.matches(item))
-      shown.sort((a, b) => Number(b.inStock) - Number(a.inStock) || COMPARE[this.sort](a, b))
+      const priced = new Map(
+        shown.map((item) => [item, { ...item, price: priceOf(item, this.colors) }]),
+      )
+      shown.sort(
+        (a, b) =>
+          Number(b.inStock) - Number(a.inStock) || COMPARE[this.sort](priced.get(a), priced.get(b)),
+      )
+      for (const item of shown) showView(item, this.colors)
 
       const inShown = new Set(shown.map((item) => item.el))
       for (const item of this.items) item.el.hidden = !inShown.has(item.el)
