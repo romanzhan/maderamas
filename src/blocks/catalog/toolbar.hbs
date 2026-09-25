@@ -4,7 +4,28 @@
       выглядела бы пустой. Многоэтажной машинерии здесь не строим (принцип 4).
       Телефон: кнопка «Filtrar (n)» открывает нижнюю панель, рядом сортировка. --}}
 <div class="mt-6 flex flex-col gap-4 lg:mt-8">
-  <div class="flex items-center gap-3">
+  <div class="flex flex-wrap items-center gap-3">
+    {{!-- Разделы — только на «Todos los productos», где фильтров нет: одна строка
+          «куда перейти + как упорядочить». Это переходы, поэтому стрелка --}}
+    {{#if catalog.sections.length}}
+      <nav aria-label="{{t "catalog.allSections"}}">
+        <ul class="flex flex-wrap gap-2">
+          {{#each catalog.sections}}
+            <li>
+              <a
+                href="{{href}}"
+                class="flex h-11 items-center gap-2 rounded-full border border-border px-4
+                  transition-colors duration-150 hover:bg-sand-hover"
+              >
+                {{label}}
+                {{> icon ../empty name="arrow-right" class="size-4 text-clay"}}
+              </a>
+            </li>
+          {{/each}}
+        </ul>
+      </nav>
+    {{/if}}
+
     {{#if catalog.hasFilters}}
       <div class="flex-1 lg:hidden">
         {{> button empty secondary=true sizeMd=true fullWidth=true
