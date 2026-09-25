@@ -56,7 +56,16 @@
           (стандарты-размеров.md п. 3), а не высота строки надписи --}}
     <a href="/" class="flex min-h-11 items-center">{{> wordmark empty}}</a>
 
-    <nav class="ml-8 hidden lg:block" aria-label="{{t "nav.main"}}">
+    {{!-- «Ver todo» — акцентом перед разделами (решение владельца 25.09.2026): сначала
+          «всё», затем «по разделам». Акцент у одной кнопки, чтобы она не спорила
+          с меню, а вела его --}}
+    <nav class="ml-8 hidden items-center gap-4 lg:flex" aria-label="{{t "nav.main"}}">
+      {{!-- На 1024 строка шапки тесная, и без запрета переноса подпись ломалась
+            на две строки: ужимать кнопку нельзя, ужимается расстояние --}}
+      <div class="shrink-0 whitespace-nowrap">
+        {{> button empty primary=true sizeSm=true icon="layout-grid" label="nav.all"
+            href=nav.all.href}}
+      </div>
       <ul class="flex items-center gap-2">
         {{#each nav.main}}
           <li>

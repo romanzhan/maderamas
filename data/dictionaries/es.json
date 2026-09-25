@@ -2,6 +2,8 @@
   "nav": {
     "home": "Inicio",
     "main": "Menú principal",
+    "all": "Ver todo",
+    "allMenu": "Ver todo el catálogo",
     "sillas": "Sillas",
     "accesorios": "Accesorios",
     "nosotros": "Nosotros",
@@ -134,6 +136,10 @@
     "instagram": "Seguinos en Instagram"
   },
   "catalog": {
+    "allTitle": "Todos los productos",
+    "allDescription": "Todas nuestras sillas y accesorios de madera, en un solo lugar.",
+    "allSeoTitle": "Todos los productos de madera | Madera Más",
+    "allSections": "Secciones del catálogo",
     "sortBy": "Ordenar por",
     "sortRelevance": "Más relevantes",
     "sortPriceAsc": "Menor precio",

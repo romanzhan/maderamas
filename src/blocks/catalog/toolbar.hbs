@@ -14,20 +14,20 @@
             onClick="$store.overlay.open('filtros')"}}
       </div>
 
-      {{!-- Компьютер: значения фильтра стоят прямо в строке, открывать нечего --}}
-      <div class="hidden items-center gap-3 lg:flex">
+      {{!-- Компьютер: значения фильтра стоят прямо в строке таблетками, открывать нечего --}}
+      <div class="hidden items-center gap-4 lg:flex">
         {{#if catalog.woodColors.length}}
           <span class="text-small font-medium">{{t "catalog.filterWood"}}</span>
-          <div class="flex flex-wrap items-center gap-4">
+          <div class="flex flex-wrap items-center gap-2">
             {{#each catalog.woodColors}}
-              {{> checkbox ../empty value=id xModel="$store.catalog.colors"
+              {{> checkbox ../empty chip=true value=id xModel="$store.catalog.colors"
                   onChange="$store.catalog.commit()" swatch=swatch text=name}}
             {{/each}}
           </div>
         {{/if}}
 
         {{#if catalog.hasStockFilter}}
-          {{> checkbox empty xModel="$store.catalog.inStockOnly"
+          {{> checkbox empty chip=true xModel="$store.catalog.inStockOnly"
               onChange="$store.catalog.commit()" label="catalog.filterInStock"}}
         {{/if}}
       </div>
@@ -35,9 +35,11 @@
 
     {{!-- Сортировка есть всегда: она не фильтр и работает даже без них --}}
     {{!-- Список сортировки отдаёт значение обычным change — он всплывает сюда
-          из спрятанного нативного select (компоненты.md ч. 2) --}}
+          из спрятанного нативного select (компоненты.md ч. 2).
+          На компьютере ширина под самый длинный пункт «Más relevantes»: в 176 он
+          обрезался многоточием, а места в строке хватает --}}
     <div
-      class="w-44 shrink-0 lg:ml-auto"
+      class="w-44 shrink-0 lg:ml-auto lg:w-52"
       x-on:change="$store.catalog.setSort($event.target.value)"
     >
       {{> select empty compact=true id="orden" name="orden" label="catalog.sortBy"

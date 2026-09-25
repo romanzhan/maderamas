@@ -62,6 +62,10 @@ const VIDEO = {
   out: 'public/video',
   extensions: new Set(['.mp4']),
   budgetKb: 3000,
+  // Видеоинструкция по сборке идёт почти пять минут, в 3 МБ она не влезет ни в каком
+  // качестве. Владелец 25.09.2026 решил держать её у себя, а не на YouTube; грузится
+  // она только по нажатию, так что вес платит лишь тот, кто смотрит
+  budgetKbById: { 'armado-silla-evolutiva': 30000 },
 }
 
 const SOURCE_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.webp'])
@@ -234,8 +238,9 @@ function processVideo() {
     if (!existsSync(target)) writeFileSync(target, source)
 
     const weightKb = Math.round(source.length / 1024)
-    if (weightKb > VIDEO.budgetKb) {
-      warnings.push(`${name}: ${weightKb} КБ при бюджете ${VIDEO.budgetKb} КБ — сожмите ролик`)
+    const budgetKb = VIDEO.budgetKbById[id] ?? VIDEO.budgetKb
+    if (weightKb > budgetKb) {
+      warnings.push(`${name}: ${weightKb} КБ при бюджете ${budgetKb} КБ — сожмите ролик`)
     }
 
     manifest[id] = { type: 'video', format: 'mp4', files: { original: name } }

@@ -26,6 +26,27 @@
     {{#if catalog.category.description}}
       <p class="max-w-prose text-lead text-charcoal/70">{{catalog.category.description}}</p>
     {{/if}}
+
+    {{!-- Разделы — только на «Todos los productos». Это переходы, а не фильтры,
+          поэтому стрелка: таблетки фильтров ниже включаются на месте и её не носят --}}
+    {{#if catalog.sections.length}}
+      <nav aria-label="{{t "catalog.allSections"}}" class="mt-1">
+        <ul class="flex flex-wrap gap-2">
+          {{#each catalog.sections}}
+            <li>
+              <a
+                href="{{href}}"
+                class="flex h-11 items-center gap-2 rounded-full border border-border px-4
+                  transition-colors duration-150 hover:bg-sand-hover"
+              >
+                {{label}}
+                {{> icon ../empty name="arrow-right" class="size-4 text-clay"}}
+              </a>
+            </li>
+          {{/each}}
+        </ul>
+      </nav>
+    {{/if}}
   </div>
 
   {{> catalog/toolbar}}

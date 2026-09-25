@@ -2,10 +2,16 @@
       область нажатия — вся строка, не меньше 44. Промежуточное состояние не используется.
       Опции для фильтров каталога: value + xModel (значение живёт в store, а не в форме),
       onChange, text — готовая подпись вместо ключа словаря, swatch — кружок цвета
-      перед подписью. Второй разметки чекбокса в проекте быть не должно (принцип 16). --}}
-<label class="flex min-h-11 items-start gap-3
+      перед подписью. Второй разметки чекбокса в проекте быть не должно (принцип 16).
+      chip — вид «таблетки» для строки фильтров каталога на компьютере (25.09.2026):
+      квадратик, кружок и подпись вразбивку читались там кашей. Input тот же, меняется
+      только оболочка: отмеченная таблетка получает рамку акцента и галочку. --}}
+<label class="{{#if chip}}flex h-11 items-center gap-2 rounded-full border border-border px-4
+  transition-colors duration-150 hover:bg-sand-hover has-checked:border-clay has-checked:bg-sand
+  has-focus-visible:outline-2 has-focus-visible:outline-offset-2
+  has-focus-visible:outline-clay{{else}}flex min-h-11 items-start gap-3{{/if}}
   {{#if disabled}}cursor-default opacity-45{{else}}cursor-pointer{{/if}}">
-  <span class="relative mt-1 flex size-6 shrink-0 items-center justify-center lg:size-5">
+  {{#unless chip}}<span class="relative mt-1 flex size-6 shrink-0 items-center justify-center lg:size-5">{{/unless}}
     <input
       type="checkbox"
       {{#if name}}name="{{name}}"{{/if}}
@@ -14,20 +20,28 @@
       {{#if onChange}}x-on:change="{{onChange}}"{{/if}}
       {{#if checked}}checked{{/if}}
       {{#if disabled}}disabled{{/if}}
-      class="peer size-full appearance-none rounded-sm border border-border bg-sand
-        checked:border-clay checked:bg-clay disabled:cursor-default"
+      class="peer {{#if chip}}sr-only{{else}}size-full appearance-none rounded-sm border border-border
+        bg-sand checked:border-clay checked:bg-clay disabled:cursor-default{{/if}}"
     />
+  {{#unless chip}}
     <span class="pointer-events-none absolute text-cream opacity-0 peer-checked:opacity-100">
       {{> icon empty name="check" class="size-4"}}
     </span>
   </span>
+  {{/unless}}
   {{#if swatch}}
     <span
-      class="mt-1 size-5 shrink-0 rounded-full border border-border"
+      class="{{#unless chip}}mt-1 {{/unless}}size-5 shrink-0 rounded-full border border-border"
       style="background-color: {{swatch}}"
       aria-hidden="true"
     ></span>
   {{/if}}
 
   <span class="text-body">{{#if text}}{{text}}{{else}}{{t label}}{{/if}}</span>
+
+  {{#if chip}}
+    <span class="hidden text-clay peer-checked:block" aria-hidden="true">
+      {{> icon empty name="check" class="size-4"}}
+    </span>
+  {{/if}}
 </label>
