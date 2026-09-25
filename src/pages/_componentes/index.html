@@ -212,6 +212,17 @@
           {{> checkbox name="c1" label="catalog.filterInStock"}}
           {{> checkbox name="c2" label="product.accessory" checked=true}}
           {{> checkbox name="c3" label="badge.noStock" disabled=true}}
+          <span class="mt-2 text-caption text-charcoal/70">Чекбокс-таблетка (фильтры каталога, компьютер)</span>
+          <div class="flex flex-wrap gap-2">
+            {{#each showcase.woodColors}}
+              {{> checkbox chip=true name="c4" value=id swatch=swatch text=name checked=@first}}
+            {{/each}}
+            {{> checkbox chip=true name="c6" label="catalog.filterInStock"}}
+          </div>
+          <span class="mt-2 text-caption text-charcoal/70">Ссылка-таблетка раздела («Todos los productos»)</span>
+          <div class="flex flex-wrap gap-2">
+            {{> pill-link href="/sillas/" text=(t "nav.sillas")}}
+          </div>
           {{> textarea id="f-note-off" label="checkout.note" max=500 disabled=true}}
         </div>
         <div class="flex flex-col gap-2">

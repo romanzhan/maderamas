@@ -37,7 +37,7 @@
         {{!-- «Весь каталог» первой строкой и акцентом, как в шапке компьютера:
               в самой шапке телефона на 360 для неё места нет --}}
         {{> button empty primary=true sizeMd=true fullWidth=true icon="layout-grid"
-            label="nav.allMenu" href=nav.all.href}}
+            label="nav.allMenu" href=nav.all.href current=nav.all.current}}
         <p class="mt-6 text-caption text-charcoal/70 uppercase">{{t "footer.tienda"}}</p>
         <ul class="-mx-3 mt-2 flex flex-col">
           {{#each nav.main}}

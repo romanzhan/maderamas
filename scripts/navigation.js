@@ -50,8 +50,9 @@ export function navigation(currentPath) {
       .sort((a, b) => a.order - b.order)
       .map((category) => ({ ...item(category.name, `/${category.slug}/`), id: category.id })),
     catalogHref: catalog[0]?.href ?? '/',
-    // Кнопка «Ver todo» в шапке и первой строкой бургер-меню. Подсвечивается только
-    // на самой странице: адреса товаров с неё не начинаются
+    // Кнопка «Ver todo» в шапке и первой строкой бургер-меню. Отмечена открытой
+    // (aria-current) только на самой странице: адреса товаров с неё не начинаются.
+    // Видимой подсветки нет — кнопка акцентная всегда
     all: item(t('nav.all'), ALL_PRODUCTS_PATH),
     // Адрес второй категории: он тоже из данных, а не строкой по месту
     accesoriosHref: catalog[1]?.href ?? catalog[0]?.href ?? '/',

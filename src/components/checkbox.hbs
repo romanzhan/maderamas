@@ -6,8 +6,7 @@
       chip — вид «таблетки» для строки фильтров каталога на компьютере (25.09.2026):
       квадратик, кружок и подпись вразбивку читались там кашей. Input тот же, меняется
       только оболочка: отмеченная таблетка получает рамку акцента и галочку. --}}
-<label class="{{#if chip}}flex h-11 items-center gap-2 rounded-full border border-border px-4
-  transition-colors duration-150 hover:bg-sand-hover has-checked:border-clay has-checked:bg-sand
+<label class="{{#if chip}}{{> pill-class}} has-checked:border-clay has-checked:bg-sand
   has-focus-visible:outline-2 has-focus-visible:outline-offset-2
   has-focus-visible:outline-clay{{else}}flex min-h-11 items-start gap-3{{/if}}
   {{#if disabled}}cursor-default opacity-45{{else}}cursor-pointer{{/if}}">

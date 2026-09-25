@@ -359,6 +359,10 @@ function checkArticleVideo(video, where, images) {
 
   if (!video.poster) fail(`${where}: у ролика нет заставки poster`)
   checkImages([video.poster], where, images)
+  // Ролик вместо картинки в poster плеер не покажет, и он молча пропал бы из статьи
+  if (images[video.poster]?.type === 'video') {
+    fail(`${where}: poster "${video.poster}" — это ролик, а нужна картинка`)
+  }
 
   if (typeof video.caption !== 'string' || !video.caption.trim()) {
     fail(`${where}: у ролика нет подписи caption`)
@@ -542,7 +546,9 @@ function validate() {
         // Фильтр по цвету показывает на карточке фото этого цвета (25.09.2026).
         // Своих фото нет — карточка покажет общие, то есть другой цвет
         if (axis === 'woodColor' && !option.images?.length) {
-          warnings.push(`${optionWhere}: нет своих фото — в каталоге при фильтре по этому цвету карточка покажет общие`)
+          warnings.push(
+            `${optionWhere}: нет своих фото — в каталоге при фильтре по этому цвету карточка покажет общие`,
+          )
         }
       }
     }

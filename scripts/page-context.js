@@ -470,7 +470,8 @@ function articleVideo({ id, poster, caption }) {
 
   return {
     src: clip.src,
-    // Плеер в статье не шире 384 CSS-пикселей: 800 закрывает и двойную плотность экрана
+    // Плеер в статье не шире 384 CSS-пикселей: просим 800 под двойную плотность экрана,
+    // а у кадра 720 px imageAt отдаст самый крупный — его и хватает
     poster: imageAt(poster, 800),
     width: frame.width,
     height: frame.height,
@@ -594,14 +595,19 @@ function categoryPage(category, products, withCard, categories, dictionary) {
       { code: 'precio-desc', name: t('catalog.sortPriceDesc') },
       { code: 'nuevos', name: t('catalog.sortNewest') },
     ],
-    // Фильтр наличия появляется, только когда есть чего фильтровать
+    // Фильтр наличия появляется, только когда есть чего фильтровать. Распроданный
+    // цвет у товара в наличии его не включает: без выбранного цвета такой фильтр
+    // ничего бы не прятал, а при выбранном карточка и так стоит внизу «Sin stock»
     hasStockFilter: filterable.some((product) => !product.inStock),
     woodColors,
     hasFilters: woodColors.length > 0 || filterable.some((product) => !product.inStock),
     // Карточка собирается той же функцией, что на главной и в поиске: в каталоге
-    // к ней добавляется только список цветов, по которому фильтрует скрипт
+    // к ней добавляется список цветов, по которому фильтрует скрипт, и виды по цветам.
+    // На «Todos los productos» фильтра нет — нет и цветов: иначе ссылка с ?color=
+    // включала бы там фильтр, который нечем снять
     products: items.map((product) => {
       const card = withCard(product)
+      if (category.all) return card
       return {
         ...card,
         colorIds: (product.options?.woodColor ?? []).map((color) => color.id).join(' '),
@@ -628,13 +634,20 @@ function colorViews(product, card) {
     // предупреждает сборка
     const photos = own.length ? own : [card.imageId, card.imageIdHover]
     const priced = listPrice({ ...product, options: { ...product.options, woodColor: [option] } })
-    // Сразу в корзину — только когда цвет и есть весь выбор, и он в наличии.
-    // Иначе кнопка ведёт на страницу товара с уже отмеченным цветом
-    const direct = otherAxes.length === 0 && option.inStock
+    // Распроданный цвет у товара в наличии — для карточки этого цвета товара нет:
+    // фото приглушено, бейдж «Sin stock», кнопка «Avisarme», место внизу списка
+    const inStock = product.inStock && option.inStock
+    // Сразу в корзину — только когда цвет и есть весь выбор. Иначе кнопка ведёт
+    // на страницу товара с уже отмеченным цветом
+    const direct = otherAxes.length === 0
 
     return {
       color: option.id,
+      // Имя для «Avisame»: заявка по распроданному цвету без цвета не сказала бы
+      // владельцу, какой именно ждёт покупатель
+      notifyName: `${product.name} · ${option.name}`,
       ...priced,
+      inStock,
       // «Desde» остаётся, только если цену ещё двигают другие оси: цвет уже выбран
       priceFrom: otherAxes.some((key) =>
         product.options[key].some((other) => (other.priceDelta ?? 0) !== 0),

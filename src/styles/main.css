@@ -331,7 +331,7 @@
    и поиска, с 640 — целиком за правым краем. Ширина прописана здесь, а не вариантом
    в x-transition: адаптивные классы в переходе Alpine не снимает (cart-panel.hbs) */
 @utility sheet-from {
-  translate: 0 16px;
+  translate: 0 --spacing(4);
   opacity: 0;
 
   @variant sm {
