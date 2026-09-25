@@ -197,10 +197,10 @@
     "id": "montessori-en-casa",
     "slug": "montessori-en-casa-sin-comprar-de-mas",
     "title": "Montessori en casa sin comprar de más",
-    "excerpt": "No hace falta llenar la casa de objetos: tres muebles bien elegidos alcanzan para que el chico participe solo.",
+    "excerpt": "No hace falta llenar la casa de objetos: dos muebles bien elegidos alcanzan para que el chico participe solo.",
     "cover": "blog-montessori",
     "date": "2026-06-18",
-    "body": "«Montessori» se volvió una etiqueta de venta. Hay estantes Montessori, torres Montessori, camas Montessori y una cantidad de objetos de madera clara que prometen autonomía.\n\nLa idea original es bastante más barata que todo eso: que el chico pueda hacer solo lo que quiere hacer. No necesita muebles especiales, necesita muebles a su medida y al alcance de su mano. Con tres alcanza.",
+    "body": "«Montessori» se volvió una etiqueta de venta. Hay estantes Montessori, torres Montessori, camas Montessori y una cantidad de objetos de madera clara que prometen autonomía.\n\nLa idea original es bastante más barata que todo eso: que el chico pueda hacer solo lo que quiere hacer. No necesita muebles especiales, necesita muebles a su medida y al alcance de su mano. Con dos alcanza.",
     "sections": [
       {
         "id": "la-idea",
@@ -220,45 +220,13 @@
       {
         "id": "la-mesa",
         "title": "En la mesa: que se siente y se levante solo",
-        "body": "El segundo lugar donde pasa la vida es la mesa. Si el chico depende de que lo suban, la comida empieza y termina cuando el adulto decide.\n\nPara eso sirven dos cosas distintas: una silla a su altura en la mesa familiar —una [silla evolutiva](/sillas/silla-evolutiva/), o la [versión con dos escalones](/sillas/silla-alta-dos-escalones/) si querés que suba sin ayuda— y, para dibujar o merendar aparte, un [set de mesa y sillas](/accesorios/set-mesa-y-sillas/) a su escala."
-      },
-      {
-        "id": "el-tercero",
-        "title": "El tercero: algo bajo, liviano y suyo",
-        "body": "El tercer mueble es el que casi nadie compra y el que más se usa: un asiento liviano que el chico pueda mover él mismo. Sirve para ponerse las zapatillas, para llegar al interruptor, para acercarse a la ventana.\n\nEl [banquito La Estrella](/accesorios/banquito-la-estrella/) pesa poco justamente por eso: la idea es que lo arrastre él, no vos."
-      },
-      {
-        "id": "lo-que-no-hace-falta",
-        "title": "Lo que no hace falta comprar",
-        "body": "Esta parte ahorra más plata que cualquier oferta.",
-        "items": [
-          "**Una cama especial.** Un colchón bajo hace lo mismo.",
-          "**Estantes de marca.** Cualquier estante a 60 cm del piso ya está a su alcance.",
-          "**Juguetes «Montessori» de plástico.** Lo que sostiene la atención suele ser más simple: apilar, encajar, trasvasar. Veinte [piezas de madera](/accesorios/equilibristas/) dan más juego que una caja llena de luces.",
-          "**Todo junto.** Es más útil un mueble por vez, cuando el chico lo empieza a necesitar."
-        ]
-      },
-      {
-        "id": "por-donde-empezar",
-        "title": "Por dónde empezar",
-        "body": "Si tuvieras que hacer una sola cosa este mes, sería esta.",
-        "ordered": true,
-        "items": [
-          "**Mirá dónde le decís «esperá» diez veces por día.** Ese es el lugar.",
-          "**Resolvé la altura ahí primero**, aunque sea con un solo mueble.",
-          "**Dejá pasar un mes** antes de comprar el siguiente. Vas a ver si de verdad hacía falta."
-        ]
+        "body": "El segundo lugar donde pasa la vida es la mesa. Si el chico depende de que lo suban, la comida empieza y termina cuando el adulto decide.\n\nPara eso sirve una silla a su altura en la mesa familiar: una [silla evolutiva](/sillas/silla-evolutiva/), o la [versión con dos escalones](/sillas/silla-alta-dos-escalones/) si querés que suba sin ayuda."
       }
     ],
-    "relatedProducts": [
-      "torre-aprendizaje",
-      "banquito-estrella",
-      "set-mesa-sillas",
-      "equilibristas"
-    ],
+    "relatedProducts": ["torre-aprendizaje", "silla-evolutiva", "silla-alta-dos-escalones"],
     "seo": {
       "title": null,
-      "description": "Montessori en casa con tres muebles, no con treinta objetos. Qué resolver primero en la cocina y en la mesa, y qué no hace falta comprar."
+      "description": "Montessori en casa con dos muebles, no con treinta objetos. Qué resolver primero en la cocina y en la mesa."
     }
   },
   {
@@ -267,6 +235,11 @@
     "title": "Cómo armar la silla en casa",
     "excerpt": "Viene desarmada y con todos los herrajes. Qué tener a mano, en qué orden conviene armarla y el error que casi todos cometemos.",
     "cover": "blog-armado",
+    "video": {
+      "id": "armado-silla-evolutiva",
+      "poster": "armado-silla-evolutiva-poster",
+      "caption": "Video: cómo armar la Silla Evolutiva, paso a paso."
+    },
     "date": "2026-05-30",
     "body": "La silla llega en una caja plana porque así viaja mejor y llega sin golpes. Antes de salir del taller se arma completa para revisar que todo calce, y recién después se desarma y se embala con los herrajes y las instrucciones adentro.\n\nArmarla en casa no tiene ciencia, pero hay un orden que hace la diferencia entre veinte minutos tranquilos y una hora peleando con un tornillo que no entra.",
     "sections": [
@@ -288,10 +261,10 @@
         "ordered": true,
         "items": [
           "**Separá las piezas grandes**: las dos laterales, el asiento, el apoyapiés y los travesaños.",
-          "**Armá primero la estructura**, laterales y travesaños. Es lo que da la forma y sostiene todo lo demás.",
-          "**Colocá el asiento y el apoyapiés** en la altura que calculaste para tu mesa, sin ajustar del todo.",
-          "**Parala sobre el piso** y comprobá que apoye pareja, sin hamacarse.",
-          "**Recién ahí apretá todos los tornillos**, en cruz: un poco cada uno, dando vueltas, hasta que queden firmes."
+          "**Armá primero la estructura**, laterales y travesaños. Es lo que da la forma y sostiene todo lo demás. No aprietes los tornillos del todo: la estructura tiene que quedar con juego.",
+          "**Colocá el asiento y el apoyapiés** en la altura que calculaste para tu mesa, también sin apretar los tornillos del todo.",
+          "**Parala sobre una superficie plana** y hacé un poco de presión para que la estructura se asiente.",
+          "**Recién ahí apretá todos los tornillos**, en cruz y de arriba hacia abajo."
         ]
       },
       {
@@ -304,20 +277,6 @@
         "id": "la-altura",
         "title": "Dejarla en su altura desde el primer día",
         "body": "Aprovechá el armado para dejar el asiento y el apoyapiés donde van, en vez de armarla en cualquier paso y regularla después. Es el mismo trabajo hecho una sola vez.\n\nEl método está en [¿A qué altura tiene que estar la silla?](/blog/a-que-altura-tiene-que-estar-la-silla/): codos a la altura de la mesa, rodillas en ángulo recto y pies apoyados enteros."
-      },
-      {
-        "id": "la-caja",
-        "title": "Guardá la caja hasta que esté en su lugar",
-        "body": "Hasta que la silla esté armada, regulada y probada en tu mesa, la caja ocupa poco y conviene tenerla. Es plana y entra detrás de un placard.\n\nSi algo no te cierra, el embalaje original es la forma más segura de que el paquete vuelva bien. Qué se puede devolver y en qué plazo está en [Cambios y devoluciones](/cambios-y-devoluciones/)."
-      },
-      {
-        "id": "repaso",
-        "title": "Un repaso cada tanto",
-        "body": "La madera trabaja con la humedad y los tornillos se acomodan con el uso. Dos veces al año, tocá cada tornillo y ajustá el que quedó flojo: la silla queda firme y sin ruidos, y no hace falta desarmar nada.",
-        "note": {
-          "title": "Si algo no calza",
-          "text": "No fuerces. Escribinos con una foto y lo resolvemos: si es una pieza con falla, la reemplazamos sin cargo. Las condiciones están en [Cambios y devoluciones](/cambios-y-devoluciones/)."
-        }
       }
     ],
     "relatedProducts": ["silla-evolutiva", "silla-alta", "silla-alta-dos-escalones"],
@@ -368,21 +327,6 @@
         "id": "almohadon",
         "title": "El almohadón, aparte",
         "body": "Si usás [almohadón](/accesorios/almohadon/), esa parte es la fácil: sale, se lava a máquina a 30° y vuelve. Conviene sacarlo cuando la comida fue especialmente ambiciosa, en vez de limpiarlo encima de la silla.\n\nLavarlo cada tanto también le saca a la madera la mitad del trabajo: casi todo lo que cae, cae ahí."
-      },
-      {
-        "id": "revision",
-        "title": "Una revisión dos veces al año",
-        "body": "Aprovechá para pasar la mano por los cantos y tocar los tornillos. La madera trabaja con la humedad y alguno se afloja: ajustarlo lleva un minuto y evita el ruido que después se confunde con «la silla se está rompiendo».\n\nSi además la vas a regular porque el chico creció, es el mismo momento: el paso a paso está en [¿A qué altura tiene que estar la silla?](/blog/a-que-altura-tiene-que-estar-la-silla/).",
-        "note": {
-          "title": "Si aparece una marca que no sale",
-          "text": "Escribinos con una foto antes de intentar lijar. Muchas marcas se resuelven con el paño correcto, y si se trata de un defecto de fabricación entra en la garantía legal. Está explicado en [Cambios y devoluciones](/cambios-y-devoluciones/)."
-        }
-      },
-      {
-        "id": "segunda-vida",
-        "title": "Cuando le toca al hermano",
-        "body": "Una silla que se regula no se termina cuando el chico creció: baja de altura y empieza de nuevo con el que sigue. Antes de ese pase conviene hacer tres cosas: lavar el almohadón, repasar todos los tornillos y pasar la mano por los cantos.\n\nSi querés dejarla como nueva, se desarma entera y se vuelve a armar sin problema. El orden está en [Cómo armar la silla en casa](/blog/como-armar-la-silla-en-casa/): es el mismo mueble con veinte minutos de trabajo.",
-        "quote": "El mejor argumento de una silla evolutiva no es que dure: es que sirva dos veces."
       }
     ],
     "relatedProducts": ["silla-evolutiva", "almohadon"],

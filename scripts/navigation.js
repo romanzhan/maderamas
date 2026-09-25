@@ -6,9 +6,13 @@ import { loadData, t } from './data.js'
 // В меню пункт короче названия категории («Sillas» против «Sillas evolutivas»), поэтому
 // подпись берётся из словаря по id категории. У новой категории ключа может не быть —
 // тогда работает её собственное название, а не падение сборки.
-function categoryLabel(category, dictionary) {
+export function categoryLabel(category, dictionary) {
   return dictionary.nav[category.id] ?? category.name
 }
+
+// Общая страница всех товаров (кнопка «Ver todo»). Адрес как у магазинов на Tiendanube —
+// аргентинскому покупателю он привычен, и на www у бренда стоит тот же движок
+export const ALL_PRODUCTS_PATH = '/productos/'
 
 export function navigation(currentPath) {
   const { site, categories, dictionary } = loadData()
@@ -39,12 +43,16 @@ export function navigation(currentPath) {
     // (решение владельца 27.08.2026), а в найденном та же категория приходит из
     // catalog.json — коротких подписей меню там нет, и один список назывался бы
     // по-разному в двух состояниях одной панели.
-    // «Ver catálogo» ведёт в первую категорию — отдельной страницы каталога нет
+    // «Ver catálogo» ведёт в первую категорию: так было до общей страницы /productos/
+    // (25.09.2026), и подписи этих кнопок («Ver sillas») говорят именно о стульях
     // id нужен странице результатов поиска: она прячет несовпавшие пункты по нему
     categories: [...categories]
       .sort((a, b) => a.order - b.order)
       .map((category) => ({ ...item(category.name, `/${category.slug}/`), id: category.id })),
     catalogHref: catalog[0]?.href ?? '/',
+    // Кнопка «Ver todo» в шапке и первой строкой бургер-меню. Подсвечивается только
+    // на самой странице: адреса товаров с неё не начинаются
+    all: item(t('nav.all'), ALL_PRODUCTS_PATH),
     // Адрес второй категории: он тоже из данных, а не строкой по месту
     accesoriosHref: catalog[1]?.href ?? catalog[0]?.href ?? '/',
     help,

@@ -345,6 +345,27 @@ function checkImages(ids, where, manifest) {
 }
 
 /**
+ * Ролик в статье (данные.md §4). Заставка обязательна: ролик грузится только по нажатию,
+ * и без неё на месте плеера до нажатия был бы пустой прямоугольник. Подпись тоже:
+ * по ней видно, что это за ролик, ещё до запуска.
+ */
+function checkArticleVideo(video, where, images) {
+  const clip = images[video.id]
+  if (!clip) {
+    fail(`${where}: ролика "${video.id}" нет в манифесте — запустите npm run images`)
+  } else if (clip.type !== 'video') {
+    fail(`${where}: "${video.id}" — это картинка, а не ролик`)
+  }
+
+  if (!video.poster) fail(`${where}: у ролика нет заставки poster`)
+  checkImages([video.poster], where, images)
+
+  if (typeof video.caption !== 'string' || !video.caption.trim()) {
+    fail(`${where}: у ролика нет подписи caption`)
+  }
+}
+
+/**
  * Посты Instagram (данные.md §4а). Кадр обязателен всегда, ролик необязателен;
  * вид плитки нигде не хранится — он выводится из кадров, поэтому и проверять его нечего.
  */
@@ -541,6 +562,7 @@ function validate() {
     const where = `Статья "${article.id}"`
     checkDate(article.date, where)
     checkImages([article.cover], where, images)
+    if (article.video) checkArticleVideo(article.video, where, images)
     for (const link of article.relatedProducts ?? []) {
       if (!productIds.has(link)) fail(`${where}: ссылка на несуществующий товар "${link}"`)
     }

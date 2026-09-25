@@ -17,7 +17,7 @@ import {
   video,
 } from './data.js'
 import { MESSAGE_FIELD_LABELS, MESSAGE_TYPE_LABELS } from './message-fields.js'
-import { navigation } from './navigation.js'
+import { ALL_PRODUCTS_PATH, categoryLabel, navigation } from './navigation.js'
 import { AXIS_PARAM, CONTENT_PAGES, SERVICE_PAGES, SHOWCASE } from './page-types.js'
 import { seoMeta } from './seo-meta.js'
 
@@ -209,8 +209,12 @@ export function pageContext(pagePath) {
 
   // Страница категории собирается здесь по адресу: файл страницы тонкий и знать
   // о своей категории не обязан (страницы.md §2)
-  const category = categories.find((item) => currentPath === `/${item.slug}/`) ?? null
-  const catalog = category ? categoryPage(category, products, withCard) : null
+  const category =
+    categories.find((item) => currentPath === `/${item.slug}/`) ??
+    (currentPath === ALL_PRODUCTS_PATH ? allProductsCategory() : null)
+  const catalog = category
+    ? categoryPage(category, products, withCard, categories, dictionary)
+    : null
 
   // Инфостраница — тем же способом: адрес знает, какая это запись pages.json.
   // Тело и разделы разбираются здесь: разбирать текст в шаблоне нечем (данные.md §6)
@@ -443,6 +447,7 @@ function articlePage(article, byDate, products, withCard) {
     ...article,
     body: paragraphs(article.body),
     sections,
+    video: article.video && articleVideo(article.video),
     readingMinutes: readingMinutes(article),
     related: (article.relatedProducts ?? [])
       .map((id) => products.find((item) => item.id === id))
@@ -450,6 +455,26 @@ function articlePage(article, byDate, products, withCard) {
       .map(withCard),
     // Соседние статьи: ближайшие по списку, а не «похожие» — похожесть нам считать нечем
     more: others.slice(0, 3),
+  }
+}
+
+/**
+ * Ролик в статье: адрес, заставка одним файлом и размеры кадра. Размеры берутся
+ * у заставки — она снята с того же ролика, а у плеера по ним браузер заранее держит
+ * место, и текст под роликом не прыгает при загрузке.
+ */
+function articleVideo({ id, poster, caption }) {
+  const clip = video(id)
+  const frame = image(poster)
+  if (!clip || !frame) return null
+
+  return {
+    src: clip.src,
+    // Плеер в статье не шире 384 CSS-пикселей: 800 закрывает и двойную плотность экрана
+    poster: imageAt(poster, 800),
+    width: frame.width,
+    height: frame.height,
+    caption,
   }
 }
 
@@ -507,13 +532,35 @@ function markBreadcrumbs(items, { plain = false } = {}) {
 }
 
 /**
+ * «Todos los productos» (решение владельца 25.09.2026): кнопка «Ver todo» в шапке ведёт
+ * сюда. Своей записи в categories.json у страницы нет — это не раздел, а все разделы
+ * сразу, и в данных она дала бы лишнюю категорию товару, в меню и в поиске. Поэтому
+ * запись собирается здесь, по форме настоящей категории: блок каталога тот же.
+ */
+function allProductsCategory() {
+  return {
+    id: 'todos',
+    all: true,
+    slug: ALL_PRODUCTS_PATH.slice(1, -1),
+    name: t('catalog.allTitle'),
+    description: t('catalog.allDescription'),
+    longDescription: null,
+    seo: { title: t('catalog.allSeoTitle'), description: null },
+  }
+}
+
+/**
  * Каталог категории (страницы.md §2). Товары и наборы значений для фильтров считаются
  * здесь: шаблон только раскладывает готовое.
  */
-function categoryPage(category, products, withCard) {
+function categoryPage(category, products, withCard, categories, dictionary) {
+  const categoryOrder = (product) =>
+    categories.find((item) => item.id === product.categoryId)?.order ?? 0
+  // На «Todos los productos» порядок — сначала по разделу, внутри раздела свой:
+  // order у товара считается внутри категории и в общий список сам не складывается
   const items = products
-    .filter((product) => product.categoryId === category.id)
-    .sort((a, b) => a.order - b.order)
+    .filter((product) => category.all || product.categoryId === category.id)
+    .sort((a, b) => categoryOrder(a) - categoryOrder(b) || a.order - b.order)
 
   // Цвета дерева — только те, что действительно есть у товаров этой категории:
   // фильтр с пунктом, который ничего не находит, хуже отсутствующего фильтра
@@ -528,6 +575,13 @@ function categoryPage(category, products, withCard) {
 
   return {
     category,
+    // Разделы таблетками под заголовком — только на общей странице: там они сужают
+    // выбор, а на странице раздела вели бы на соседний, для этого есть меню
+    sections: category.all
+      ? [...categories]
+          .sort((a, b) => a.order - b.order)
+          .map((item) => ({ label: categoryLabel(item, dictionary), href: `/${item.slug}/` }))
+      : [],
     // Порядки сортировки (страницы.md §2). Список здесь, а не в шаблоне: те же коды
     // читает скрипт из адреса страницы
     sortOptions: [

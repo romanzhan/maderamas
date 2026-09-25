@@ -43,6 +43,27 @@
           {{> prose empty paragraphs=article.body}}
         </div>
 
+        {{!-- Ролик стоит сразу под вводом, до разделов: на статью ведёт QR с коробки,
+              и человек с деталями на полу пришёл за видео, а не за текстом.
+              Кадр вертикальный, поэтому ширина ограничена — иначе на широком экране
+              плеер уходил бы за высоту окна. Грузится только по нажатию (картинки.md §6) --}}
+        {{#if article.video}}
+          <figure class="mt-8 max-w-sm">
+            <video
+              controls
+              preload="none"
+              playsinline
+              poster="{{article.video.poster}}"
+              width="{{article.video.width}}"
+              height="{{article.video.height}}"
+              class="h-auto w-full rounded-2xl bg-sand"
+            >
+              <source src="{{article.video.src}}" type="video/mp4" />
+            </video>
+            <figcaption class="mt-3 text-small text-charcoal/70">{{article.video.caption}}</figcaption>
+          </figure>
+        {{/if}}
+
         {{!-- Разделы статьи. Порядок внутри раздела закреплён: абзацы → список →
               вынесенная фраза → врезка. Разнообразие даёт не перестановка, а то, что
               у каждого раздела свой набор: где-то только текст, где-то шаги списком.
