@@ -563,9 +563,13 @@ function categoryPage(category, products, withCard, categories, dictionary) {
     .sort((a, b) => categoryOrder(a) - categoryOrder(b) || a.order - b.order)
 
   // Цвета дерева — только те, что действительно есть у товаров этой категории:
-  // фильтр с пунктом, который ничего не находит, хуже отсутствующего фильтра
+  // фильтр с пунктом, который ничего не находит, хуже отсутствующего фильтра.
+  // На «Todos los productos» фильтров нет вовсе (владелец 25.09.2026): рядом
+  // с таблетками разделов вторая строка таблеток читалась шумом, а цвет дерева
+  // есть только у стульев — ищут его в разделе стульев
   const woodColors = []
-  for (const product of items) {
+  const filterable = category.all ? [] : items
+  for (const product of filterable) {
     for (const color of product.options?.woodColor ?? []) {
       if (!woodColors.some((known) => known.id === color.id)) {
         woodColors.push({ id: color.id, name: color.name, swatch: color.swatch })
@@ -575,8 +579,8 @@ function categoryPage(category, products, withCard, categories, dictionary) {
 
   return {
     category,
-    // Разделы таблетками под заголовком — только на общей странице: там они сужают
-    // выбор, а на странице раздела вели бы на соседний, для этого есть меню
+    // Разделы таблетками в строке сортировки — только на общей странице: там они
+    // сужают выбор, а на странице раздела вели бы на соседний, для этого есть меню
     sections: category.all
       ? [...categories]
           .sort((a, b) => a.order - b.order)
@@ -591,9 +595,9 @@ function categoryPage(category, products, withCard, categories, dictionary) {
       { code: 'nuevos', name: t('catalog.sortNewest') },
     ],
     // Фильтр наличия появляется, только когда есть чего фильтровать
-    hasStockFilter: items.some((product) => !product.inStock),
+    hasStockFilter: filterable.some((product) => !product.inStock),
     woodColors,
-    hasFilters: woodColors.length > 0 || items.some((product) => !product.inStock),
+    hasFilters: woodColors.length > 0 || filterable.some((product) => !product.inStock),
     // Карточка собирается той же функцией, что на главной и в поиске: в каталоге
     // к ней добавляется только список цветов, по которому фильтрует скрипт
     products: items.map((product) => ({
