@@ -21,6 +21,8 @@ const NOINDEX = 'name="robots" content="noindex"'
 
 const { site, articles } = loadData()
 const siteUrl = site.seo.siteUrl.replace(/\/$/, '')
+// Хост магазина как шаблон для правила сервера: точка в нём — «любой символ»
+const canonicalHostPattern = new URL(siteUrl).host.replaceAll('.', '\\.')
 
 const toUrl = (file) => `/${file.replaceAll(sep, '/').replace(/index\.html$/, '')}`
 
@@ -114,6 +116,16 @@ ${
 </IfModule>
 `
     : `
+# Один адрес магазина (seo.md п. 3): голый домен и http ведут на адрес из seo.siteUrl
+# той же страницей, иначе поисковик видит две копии сайта, а покупатель — предупреждение
+# браузера. Правило стоит первым: остальные должны видеть уже итоговый адрес
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTPS} off [OR]
+  RewriteCond %{HTTP_HOST} !^${canonicalHostPattern}$ [NC]
+  RewriteRule ^ ${siteUrl}%{REQUEST_URI} [L,R=301]
+</IfModule>
+
 # Список заказов владельца (бэкенд.md §13): robots.txt запрещает обход, поэтому meta
 # noindex на странице робот не прочтёт — попадание в индекс по внешней ссылке
 # запрещает заголовок, как у превью
