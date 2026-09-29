@@ -18,7 +18,9 @@
     "og": "node scripts/og-products.js",
     "format": "prettier --write .",
     "pages": "node scripts/generate-pages.js",
-    "deploy": "node scripts/deploy.js"
+    "deploy": "node scripts/deploy.js",
+    "deploy:prod": "node scripts/deploy.js prod",
+    "launch": "node scripts/launch.js"
   },
   "dependencies": {
     "alpinejs": "^3.15.0",
