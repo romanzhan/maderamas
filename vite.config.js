@@ -5,6 +5,7 @@ import tailwindcss from '@tailwindcss/vite'
 import handlebars from 'vite-plugin-handlebars'
 import { pageContext } from './scripts/page-context.js'
 import {
+  activityUrl,
   articleUrl,
   concat,
   date,
@@ -84,6 +85,7 @@ export default ({ command }) => {
           mapUrl,
           productUrl,
           articleUrl,
+          activityUrl,
           concat,
           formPattern,
           date,

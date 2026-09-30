@@ -1,0 +1,48 @@
+{{!-- Pequeños ayudantes en la cocina: карточки рецептов (страницы.md §14б). У каждого
+      шага пометка, чей он: ребёнка или взрослого — ради неё страница и существует.
+      Одни и те же карточки на экране и на бумаге; на A4 рецепт встаёт на свой лист —
+      два целиком не помещаются, а рвать рецепт посередине нельзя. --}}
+<section class="page-container mt-10 lg:mt-12" data-print-sheet>
+  <h2 class="font-display text-h2 print:hidden lg:text-h2-lg">{{t "families.recipes.cardsTitle"}}</h2>
+  <p class="hidden font-display text-h3 print:block">{{activity.name}}</p>
+
+  <div class="mt-4">{{> families/print-button}}</div>
+
+  <div class="mt-6 grid gap-4 lg:grid-cols-2 lg:gap-6">
+    {{#each activity.recipes}}
+      <article id="{{id}}" class="flex flex-col gap-4 rounded-2xl bg-sand p-5 break-inside-avoid lg:p-6
+        print:rounded-none print:border print:border-line print:bg-transparent">
+        <div>
+          <h3 class="font-display text-h3 lg:text-h3-lg">{{title}}</h3>
+          <p class="mt-1 text-small text-charcoal/70">{{t "families.recipes.time" time=time}}</p>
+        </div>
+
+        <div>
+          <h4 class="text-h4 lg:text-h4-lg">{{t "families.recipes.ingredients"}}</h4>
+          <ul class="mt-2 flex list-disc flex-col gap-1 pl-5 marker:text-clay">
+            {{#each ingredients}}<li>{{this}}</li>{{/each}}
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="text-h4 lg:text-h4-lg">{{t "families.recipes.steps"}}</h4>
+          <ol class="mt-2 flex list-decimal flex-col gap-3 pl-5 marker:font-medium marker:text-clay">
+            {{#each steps}}
+              <li>
+                <span>{{text}}</span>
+                <span class="mt-1 flex items-center gap-1 text-caption font-medium
+                  {{#if kid}}text-charcoal{{else}}text-charcoal/70{{/if}}">
+                  {{#if kid}}
+                    {{> icon @root.empty name="hand" class="size-4"}}{{t "families.recipes.kid"}}
+                  {{else}}
+                    {{> icon @root.empty name="users" class="size-4"}}{{t "families.recipes.adult"}}
+                  {{/if}}
+                </span>
+              </li>
+            {{/each}}
+          </ol>
+        </div>
+      </article>
+    {{/each}}
+  </div>
+</section>

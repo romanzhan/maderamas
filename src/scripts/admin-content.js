@@ -329,6 +329,11 @@ export const adminContent = {
   },
 
   /** Варианты выпадающего списка: из схемы, из другого раздела или из тем вопросов */
+  /** Условие показа поля из схемы: when: { kind: 'memotest' } */
+  visible(model, field) {
+    return Object.entries(field.when ?? {}).every(([key, value]) => getPath(model, key) === value)
+  },
+
   selectOptions(field) {
     if (field.options)
       return field.options.map((option) => ({ ...option, value: String(option.value) }))

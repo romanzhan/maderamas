@@ -1,0 +1,29 @@
+{{!-- Búsqueda del tesoro: карточки подсказок (страницы.md §14б). Одни и те же карточки
+      и на экране, и на бумаге — второй разметки для печати нет. На каждой мелко написано,
+      куда её спрятать: это место, куда ведёт предыдущая загадка (считает page-context).
+      Первую читают вслух, поэтому места у неё нет. --}}
+<section class="page-container mt-10 lg:mt-12" data-print-sheet>
+  <h2 class="font-display text-h2 print:hidden lg:text-h2-lg">{{t "families.treasure.cardsTitle"}}</h2>
+  <p class="hidden font-display text-h3 print:block">{{activity.name}}</p>
+
+  <div class="mt-4">{{> families/print-button}}</div>
+
+  <ol class="mt-6 grid gap-4 sm:grid-cols-2 lg:gap-6 print:grid-cols-2 print:gap-0">
+    {{#each activity.clues}}
+      <li class="flex flex-col gap-3 rounded-xl border border-dashed border-border p-5 break-inside-avoid
+        lg:p-6 print:rounded-none">
+        <p class="text-small font-medium text-charcoal/70">{{t "families.treasure.clue" n=number}}</p>
+        <p class="font-display text-h4 lg:text-h4-lg">{{text}}</p>
+        {{#if hideAt}}
+          <p class="mt-auto text-caption text-charcoal/70">{{t "families.treasure.hideAt" place=hideAt}}</p>
+        {{/if}}
+      </li>
+    {{/each}}
+  </ol>
+
+  {{#if activity.treasureAt}}
+    <p class="mt-6 max-w-prose rounded-xl bg-sand p-4 font-medium print:bg-transparent print:px-0">
+      {{t "families.treasure.treasureAt" place=activity.treasureAt}}
+    </p>
+  {{/if}}
+</section>

@@ -14,7 +14,18 @@ const VARIES_BY = { woodColor: 'material', cushionColor: 'color' }
  * Всё, что уходит в <head> текущей страницы.
  * Возвращает готовые строки и список блоков микроразметки — в шаблоне логики не бывает.
  */
-export function seoMeta({ site, currentPath, category, catalog, product, page, article, faq }) {
+export function seoMeta({
+  site,
+  currentPath,
+  category,
+  catalog,
+  product,
+  page,
+  article,
+  families,
+  activity,
+  faq,
+}) {
   const siteUrl = site.seo.siteUrl.replace(/\/$/, '')
   const absolute = (path) => (path ? `${siteUrl}${path}` : null)
   // Размеры баннера идут из манифеста, а не числами: og-поток даёт 1200×630, но
@@ -74,6 +85,13 @@ export function seoMeta({ site, currentPath, category, catalog, product, page, a
   } else if (page) {
     meta.title = page.seo.title ?? t('seo.titlePage', { title: page.heading })
     meta.description = page.seo.description ?? page.lead
+  } else if (families) {
+    meta.title = t('seo.titlePage', { title: t('families.title') })
+    meta.description = t('seo.descFamilies')
+  } else if (activity) {
+    // Своих снимков у игр нет — превью брендовое (defaultOgImage), как у инфостраниц
+    meta.title = activity.seo?.title ?? t('seo.titleActivity', { title: activity.name })
+    meta.description = activity.seo?.description ?? activity.excerpt
   } else if (CONTENT_PAGES[currentPath]) {
     const [title, description] = CONTENT_PAGES[currentPath]
     meta.title = t('seo.titlePage', { title: t(title) })

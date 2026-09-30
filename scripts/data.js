@@ -47,6 +47,7 @@ export function loadData() {
     products: read('products.json', 'list'),
     categories: read('categories.json', 'list'),
     articles: read('articles.json', 'list'),
+    activities: read('activities.json', 'list'),
     reviews: read('reviews.json', 'list'),
     faq: read('faq.json', 'list'),
     pages: read('pages.json', 'list'),
@@ -205,6 +206,14 @@ export function mapUrl(address) {
 /** Адрес статьи знает только это место — остальные его спрашивают, а не собирают сами */
 export function articleUrl(article) {
   return `/blog/${article.slug}/`
+}
+
+/** Раздел игр и занятий для детей (страницы.md §14б) */
+export const FAMILIES_PATH = '/para-familias/'
+
+/** Адрес игры — так же одним местом, как у статьи */
+export function activityUrl(activity) {
+  return `${FAMILIES_PATH}${activity.slug}/`
 }
 
 /**

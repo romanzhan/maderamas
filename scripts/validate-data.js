@@ -23,6 +23,7 @@ const RESERVED_SLUGS = new Set([
   'gracias',
   'pedidos',
   'admin',
+  'para-familias',
   '404',
 ])
 
@@ -396,6 +397,101 @@ function checkContentImages(media, manifest) {
   }
 }
 
+// Игры раздела Para familias (данные.md §4б). Вид игры задаёт, что лежит в game и какая
+// разметка её выводит; неизвестный вид страница не нарисовала бы вовсе
+const ACTIVITY_KINDS = ['memotest', 'shapes', 'treasure', 'chart', 'recipes']
+const ACTIVITY_FORMATS = ['online', 'print', 'kitchen']
+const PROMO_TONES = ['blue', 'pink', 'yellow', 'green', 'orange']
+
+const iconExists = (name) =>
+  typeof name === 'string' && existsSync(resolve(projectRoot, `src/icons/source/${name}.svg`))
+
+function checkActivities(activities, productIds) {
+  checkRequiredText(activities, 'Игра', ['name', 'title', 'excerpt', 'body', 'ages', 'duration'])
+
+  for (const activity of activities) {
+    const where = `Игра "${activity.id}"`
+    const game = activity.game ?? {}
+    const list = (value) => (Array.isArray(value) ? value : [])
+    const needList = (value, field, min) => {
+      if (list(value).length < min) fail(`${where}: в ${field} нужно минимум ${min}`)
+      return list(value)
+    }
+    const needText = (value, field) => {
+      if (typeof value !== 'string' || !value.trim()) fail(`${where}: пустое поле ${field}`)
+    }
+    const needIcon = (name, field) => {
+      if (!iconExists(name)) {
+        fail(`${where}: ${field} — иконки "${name}" нет; имена лежат в src/icons/source`)
+      }
+    }
+
+    if (!ACTIVITY_KINDS.includes(activity.kind)) {
+      fail(`${where}: вид "${activity.kind}" — бывает ${ACTIVITY_KINDS.join(', ')}`)
+    }
+    if (!ACTIVITY_FORMATS.includes(activity.format)) {
+      fail(`${where}: формат "${activity.format}" — бывает ${ACTIVITY_FORMATS.join(', ')}`)
+    }
+    if (!PROMO_TONES.includes(activity.tone)) {
+      fail(`${where}: тон "${activity.tone}" — бывает ${PROMO_TONES.join(', ')}`)
+    }
+    if (!Number.isInteger(activity.order)) fail(`${where}: order должен быть целым числом`)
+    needIcon(activity.icon, 'icon')
+    for (const step of needList(activity.steps, 'steps', 1)) needText(step, 'в steps')
+    for (const item of list(activity.materials)) needText(item, 'в materials')
+    for (const link of list(activity.relatedProducts)) {
+      if (!productIds.has(link)) fail(`${where}: ссылка на несуществующий товар "${link}"`)
+    }
+
+    if (activity.kind === 'memotest') {
+      // Меньше четырёх пар — не игра, а совпадение с первого хода
+      const cards = needList(game.cards, 'game.cards', 4)
+      for (const card of cards) {
+        needIcon(card.icon, 'карта')
+        needText(card.name, 'имя карты')
+      }
+      if (new Set(cards.map((card) => card.icon)).size !== cards.length) {
+        fail(`${where}: в колоде две карты с одной иконкой — пары перепутаются`)
+      }
+    }
+    if (activity.kind === 'shapes') {
+      for (const shape of needList(game.shapes, 'game.shapes', 2)) {
+        needIcon(shape.icon, 'фигура')
+        needText(shape.name, 'имя фигуры')
+      }
+      for (const color of needList(game.colors, 'game.colors', 2)) {
+        if (!PROMO_TONES.includes(color.tone)) fail(`${where}: цвет "${color.tone}" не из палитры`)
+        needText(color.name, 'имя цвета')
+      }
+      for (const counter of needList(game.counters, 'game.counters', 1)) {
+        needIcon(counter.icon, 'предмет для счёта')
+        needText(counter.question, 'вопрос счёта')
+      }
+    }
+    if (activity.kind === 'treasure') {
+      for (const clue of needList(game.clues, 'game.clues', 2)) {
+        needText(clue.text, 'текст подсказки')
+        needText(clue.place, 'место подсказки')
+      }
+    }
+    if (activity.kind === 'chart') {
+      for (const habit of needList(game.habits, 'game.habits', 1)) {
+        needIcon(habit.icon, 'привычка')
+        needText(habit.name, 'название привычки')
+      }
+    }
+    if (activity.kind === 'recipes') {
+      for (const recipe of needList(game.recipes, 'game.recipes', 1)) {
+        if (!SLUG.test(recipe.id ?? '')) fail(`${where}: у рецепта неверный id "${recipe.id}"`)
+        needText(recipe.title, 'название рецепта')
+        needText(recipe.time, 'время рецепта')
+        for (const item of needList(recipe.ingredients, 'ингредиентах', 1)) needText(item, 'ингредиент')
+        for (const step of needList(recipe.steps, 'шагах рецепта', 1)) needText(step, 'шаг рецепта')
+      }
+    }
+  }
+}
+
 function validate() {
   const {
     site,
@@ -403,6 +499,7 @@ function validate() {
     products,
     categories,
     articles,
+    activities,
     reviews,
     faq,
     pages,
@@ -423,6 +520,7 @@ function validate() {
   checkIdAndSlug(pages, 'Инфостраница', { seenSlugs: rootSlugs })
   checkIdAndSlug(products, 'Товар')
   checkIdAndSlug(articles, 'Статья')
+  checkIdAndSlug(activities, 'Игра')
   checkIdAndSlug(faq, 'FAQ', { hasSlug: false })
   checkIdAndSlug(reviews, 'Отзыв', { hasSlug: false })
 
@@ -444,6 +542,7 @@ function validate() {
   checkInstagram(instagram, images)
   checkSections(pages, 'Инфостраница')
   checkSections(articles, 'Статья')
+  checkSections(activities, 'Игра')
   checkTextLinks(articles, 'Статья')
   checkTextLinks(pages, 'Инфостраница')
   checkTextLinks(products, 'Товар')
@@ -454,6 +553,7 @@ function validate() {
   checkSeoBlock(products, 'Товар')
   checkSeoBlock(categories, 'Категория')
   checkSeoBlock(articles, 'Статья')
+  checkSeoBlock(activities, 'Игра')
   checkSeoBlock(pages, 'Инфостраница')
 
   // Раздел вопросов подписывается ключом faqTopics.{topic}; без него в заголовке
@@ -541,6 +641,8 @@ function validate() {
       if (!productIds.has(link)) fail(`${where}: ссылка на несуществующий товар "${link}"`)
     }
   }
+
+  checkActivities(activities, productIds)
 
   for (const review of reviews) {
     const where = `Отзыв "${review.id}"`

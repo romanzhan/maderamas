@@ -370,6 +370,751 @@
         }
       ]
     },
+    "activities": {
+      "title": "Игры (Para familias)",
+      "item": "игру",
+      "titleField": "name",
+      "orderField": "order",
+      "urlPrefix": "para-familias",
+      "new": {
+        "name": "Nuevo juego",
+        "title": "",
+        "kind": "treasure",
+        "format": "print",
+        "tone": "blue",
+        "icon": "puzzle",
+        "excerpt": "",
+        "ages": "",
+        "duration": "",
+        "body": "",
+        "steps": [],
+        "materials": [],
+        "sections": [],
+        "game": {
+          "cards": [],
+          "shapes": [],
+          "colors": [],
+          "counters": [],
+          "clues": [],
+          "habits": [],
+          "recipes": []
+        },
+        "relatedProducts": [],
+        "seo": {
+          "title": null,
+          "description": null
+        }
+      },
+      "fields": [
+        {
+          "key": "name",
+          "type": "text",
+          "label": "Короткое название",
+          "required": true,
+          "hint": "В плитке, крошках и списке игр."
+        },
+        {
+          "key": "title",
+          "type": "text",
+          "label": "Заголовок страницы",
+          "required": true,
+          "hint": "Крупно вверху страницы игры."
+        },
+        {
+          "key": "slug",
+          "type": "slug",
+          "label": "Адрес игры",
+          "hint": "Латиница через дефис. После публикации не меняйте."
+        },
+        {
+          "key": "kind",
+          "type": "select",
+          "label": "Вид игры",
+          "required": true,
+          "hint": "Вид задаёт, что стоит на странице. Поля самой игры ниже меняются вместе с ним.",
+          "options": [
+            {
+              "value": "memotest",
+              "label": "Memotest (на экране + печать)"
+            },
+            {
+              "value": "shapes",
+              "label": "Цвета, формы и числа (на экране)"
+            },
+            {
+              "value": "treasure",
+              "label": "Поиск сокровищ (подсказки для печати)"
+            },
+            {
+              "value": "chart",
+              "label": "Таблица привычек (печать)"
+            },
+            {
+              "value": "recipes",
+              "label": "Рецепты (печать)"
+            }
+          ]
+        },
+        {
+          "key": "format",
+          "type": "select",
+          "label": "Формат",
+          "required": true,
+          "options": [
+            {
+              "value": "online",
+              "label": "Para jugar en pantalla"
+            },
+            {
+              "value": "print",
+              "label": "Para imprimir"
+            },
+            {
+              "value": "kitchen",
+              "label": "Para la cocina"
+            }
+          ]
+        },
+        {
+          "key": "icon",
+          "type": "select",
+          "label": "Значок",
+          "required": true,
+          "options": [
+            {
+              "value": "paw-print",
+              "label": "Лапка"
+            },
+            {
+              "value": "shapes",
+              "label": "Фигуры"
+            },
+            {
+              "value": "map",
+              "label": "Карта"
+            },
+            {
+              "value": "trophy",
+              "label": "Кубок"
+            },
+            {
+              "value": "chef-hat",
+              "label": "Колпак повара"
+            },
+            {
+              "value": "puzzle",
+              "label": "Пазл"
+            },
+            {
+              "value": "gift",
+              "label": "Подарок"
+            },
+            {
+              "value": "party-popper",
+              "label": "Хлопушка"
+            },
+            {
+              "value": "book-open",
+              "label": "Книга"
+            },
+            {
+              "value": "star",
+              "label": "Звезда"
+            }
+          ]
+        },
+        {
+          "key": "tone",
+          "type": "select",
+          "label": "Цвет значка",
+          "required": true,
+          "options": [
+            {
+              "value": "blue",
+              "label": "Синий"
+            },
+            {
+              "value": "pink",
+              "label": "Малиновый"
+            },
+            {
+              "value": "yellow",
+              "label": "Жёлтый"
+            },
+            {
+              "value": "green",
+              "label": "Зелёный"
+            },
+            {
+              "value": "orange",
+              "label": "Оранжевый"
+            }
+          ]
+        },
+        {
+          "key": "excerpt",
+          "type": "textarea",
+          "rows": 3,
+          "label": "Лид",
+          "required": true,
+          "hint": "Под заголовком, в плитке и в описании для Google."
+        },
+        {
+          "key": "ages",
+          "type": "text",
+          "label": "Возраст",
+          "required": true,
+          "hint": "Например: De 3 a 7 años"
+        },
+        {
+          "key": "duration",
+          "type": "text",
+          "label": "Длительность",
+          "required": true,
+          "hint": "Например: 10 minutos"
+        },
+        {
+          "key": "body",
+          "type": "textarea",
+          "rows": 6,
+          "label": "Вступление",
+          "hint": "Абзацы — через пустую строку."
+        },
+        {
+          "type": "heading",
+          "label": "Карты memotest",
+          "when": {
+            "kind": "memotest"
+          }
+        },
+        {
+          "key": "game.cards",
+          "type": "list",
+          "label": "Карты",
+          "item": "карту",
+          "titleField": "name",
+          "when": {
+            "kind": "memotest"
+          },
+          "hint": "Минимум 4. Каждая карта на экране и на листе встанет парой.",
+          "new": {
+            "icon": "cat",
+            "name": ""
+          },
+          "fields": [
+            {
+              "key": "icon",
+              "type": "select",
+              "label": "Рисунок",
+              "options": [
+                {
+                  "value": "cat",
+                  "label": "Кот"
+                },
+                {
+                  "value": "dog",
+                  "label": "Собака"
+                },
+                {
+                  "value": "bird",
+                  "label": "Птица"
+                },
+                {
+                  "value": "fish",
+                  "label": "Рыба"
+                },
+                {
+                  "value": "rabbit",
+                  "label": "Кролик"
+                },
+                {
+                  "value": "turtle",
+                  "label": "Черепаха"
+                },
+                {
+                  "value": "snail",
+                  "label": "Улитка"
+                },
+                {
+                  "value": "squirrel",
+                  "label": "Белка"
+                },
+                {
+                  "value": "panda",
+                  "label": "Панда"
+                },
+                {
+                  "value": "bug",
+                  "label": "Жук"
+                },
+                {
+                  "value": "rat",
+                  "label": "Мышь"
+                },
+                {
+                  "value": "shrimp",
+                  "label": "Креветка"
+                }
+              ]
+            },
+            {
+              "key": "name",
+              "type": "text",
+              "label": "Название",
+              "required": true
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "label": "Фигуры, цвета и счёт",
+          "when": {
+            "kind": "shapes"
+          }
+        },
+        {
+          "key": "game.shapes",
+          "type": "list",
+          "label": "Фигуры",
+          "item": "фигуру",
+          "titleField": "name",
+          "when": {
+            "kind": "shapes"
+          },
+          "new": {
+            "icon": "circle",
+            "name": ""
+          },
+          "fields": [
+            {
+              "key": "icon",
+              "type": "select",
+              "label": "Фигура",
+              "options": [
+                {
+                  "value": "circle",
+                  "label": "Круг"
+                },
+                {
+                  "value": "square",
+                  "label": "Квадрат"
+                },
+                {
+                  "value": "triangle",
+                  "label": "Треугольник"
+                },
+                {
+                  "value": "star",
+                  "label": "Звезда"
+                },
+                {
+                  "value": "heart",
+                  "label": "Сердце"
+                },
+                {
+                  "value": "diamond",
+                  "label": "Ромб"
+                },
+                {
+                  "value": "hexagon",
+                  "label": "Шестиугольник"
+                }
+              ]
+            },
+            {
+              "key": "name",
+              "type": "text",
+              "label": "Название с артиклем",
+              "required": true,
+              "hint": "el círculo, la estrella"
+            },
+            {
+              "key": "feminine",
+              "type": "bool",
+              "label": "Женский род (la …)"
+            }
+          ]
+        },
+        {
+          "key": "game.colors",
+          "type": "list",
+          "label": "Цвета",
+          "item": "цвет",
+          "titleField": "name",
+          "when": {
+            "kind": "shapes"
+          },
+          "new": {
+            "tone": "blue",
+            "name": ""
+          },
+          "fields": [
+            {
+              "key": "tone",
+              "type": "select",
+              "label": "Цвет",
+              "options": [
+                {
+                  "value": "blue",
+                  "label": "Синий"
+                },
+                {
+                  "value": "pink",
+                  "label": "Малиновый"
+                },
+                {
+                  "value": "yellow",
+                  "label": "Жёлтый"
+                },
+                {
+                  "value": "green",
+                  "label": "Зелёный"
+                },
+                {
+                  "value": "orange",
+                  "label": "Оранжевый"
+                }
+              ]
+            },
+            {
+              "key": "name",
+              "type": "text",
+              "label": "Название",
+              "required": true,
+              "hint": "azul, amarillo"
+            },
+            {
+              "key": "feminineName",
+              "type": "text",
+              "nullable": true,
+              "label": "Для женского рода",
+              "hint": "Только если отличается: amarilla"
+            }
+          ]
+        },
+        {
+          "key": "game.counters",
+          "type": "list",
+          "label": "Что считать",
+          "item": "предмет",
+          "titleField": "question",
+          "when": {
+            "kind": "shapes"
+          },
+          "new": {
+            "icon": "apple",
+            "question": ""
+          },
+          "fields": [
+            {
+              "key": "icon",
+              "type": "select",
+              "label": "Предмет",
+              "options": [
+                {
+                  "value": "apple",
+                  "label": "Яблоко"
+                },
+                {
+                  "value": "carrot",
+                  "label": "Морковь"
+                },
+                {
+                  "value": "cookie",
+                  "label": "Печенье"
+                },
+                {
+                  "value": "egg",
+                  "label": "Яйцо"
+                },
+                {
+                  "value": "banana",
+                  "label": "Банан"
+                },
+                {
+                  "value": "fish",
+                  "label": "Рыба"
+                },
+                {
+                  "value": "star",
+                  "label": "Звезда"
+                },
+                {
+                  "value": "heart",
+                  "label": "Сердце"
+                }
+              ]
+            },
+            {
+              "key": "question",
+              "type": "text",
+              "label": "Вопрос",
+              "required": true,
+              "hint": "¿Cuántas manzanas hay?"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "label": "Подсказки",
+          "when": {
+            "kind": "treasure"
+          }
+        },
+        {
+          "key": "game.clues",
+          "type": "list",
+          "label": "Подсказки по порядку",
+          "item": "подсказку",
+          "titleField": "text",
+          "when": {
+            "kind": "treasure"
+          },
+          "hint": "Каждая загадка ведёт к месту следующей; место последней — там, где спрятано сокровище.",
+          "new": {
+            "text": "",
+            "place": ""
+          },
+          "fields": [
+            {
+              "key": "text",
+              "type": "textarea",
+              "rows": 2,
+              "label": "Загадка",
+              "required": true
+            },
+            {
+              "key": "place",
+              "type": "text",
+              "label": "Отгадка — место",
+              "required": true
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "label": "Привычки",
+          "when": {
+            "kind": "chart"
+          }
+        },
+        {
+          "key": "game.habits",
+          "type": "list",
+          "label": "Строки таблицы",
+          "item": "привычку",
+          "titleField": "name",
+          "when": {
+            "kind": "chart"
+          },
+          "new": {
+            "icon": "sun",
+            "name": ""
+          },
+          "fields": [
+            {
+              "key": "icon",
+              "type": "select",
+              "label": "Значок",
+              "options": [
+                {
+                  "value": "sun",
+                  "label": "Солнце (утро)"
+                },
+                {
+                  "value": "moon",
+                  "label": "Луна (ночь)"
+                },
+                {
+                  "value": "droplets",
+                  "label": "Капли (умыться)"
+                },
+                {
+                  "value": "hand",
+                  "label": "Ладонь"
+                },
+                {
+                  "value": "bath",
+                  "label": "Ванна"
+                },
+                {
+                  "value": "shirt",
+                  "label": "Одежда"
+                },
+                {
+                  "value": "bed",
+                  "label": "Кровать"
+                },
+                {
+                  "value": "salad",
+                  "label": "Еда"
+                },
+                {
+                  "value": "toy-brick",
+                  "label": "Игрушки"
+                },
+                {
+                  "value": "book-open",
+                  "label": "Книга"
+                },
+                {
+                  "value": "sprout",
+                  "label": "Росток"
+                },
+                {
+                  "value": "heart",
+                  "label": "Сердце"
+                }
+              ]
+            },
+            {
+              "key": "name",
+              "type": "text",
+              "label": "Привычка",
+              "required": true
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "label": "Рецепты",
+          "when": {
+            "kind": "recipes"
+          }
+        },
+        {
+          "key": "game.recipes",
+          "type": "list",
+          "label": "Рецепты",
+          "item": "рецепт",
+          "titleField": "title",
+          "when": {
+            "kind": "recipes"
+          },
+          "new": {
+            "id": "",
+            "title": "",
+            "time": "",
+            "ingredients": [],
+            "steps": []
+          },
+          "fields": [
+            {
+              "key": "title",
+              "type": "text",
+              "label": "Название",
+              "required": true
+            },
+            {
+              "key": "time",
+              "type": "text",
+              "label": "Время",
+              "hint": "15 minutos"
+            },
+            {
+              "key": "ingredients",
+              "type": "strings",
+              "label": "Ингредиенты"
+            },
+            {
+              "key": "steps",
+              "type": "strings",
+              "label": "Шаги",
+              "hint": "Шаг взрослого начните со слова «Adulto:» — на сайте он получит пометку «Lo hace un adulto»."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "label": "Как играть"
+        },
+        {
+          "key": "steps",
+          "type": "strings",
+          "label": "Шаги «Cómo se juega»"
+        },
+        {
+          "key": "materials",
+          "type": "strings",
+          "label": "Что понадобится"
+        },
+        {
+          "type": "heading",
+          "label": "Советы"
+        },
+        {
+          "key": "sections",
+          "type": "list",
+          "label": "Разделы",
+          "item": "раздел",
+          "titleField": "title",
+          "new": {
+            "id": "",
+            "title": "",
+            "body": ""
+          },
+          "fields": [
+            {
+              "key": "title",
+              "type": "text",
+              "label": "Подзаголовок",
+              "required": true
+            },
+            {
+              "key": "body",
+              "type": "textarea",
+              "rows": 5,
+              "label": "Текст"
+            },
+            {
+              "key": "items",
+              "type": "strings",
+              "label": "Список пунктов"
+            },
+            {
+              "key": "note.title",
+              "type": "text",
+              "nullable": true,
+              "label": "Врезка: заголовок"
+            },
+            {
+              "key": "note.text",
+              "type": "textarea",
+              "rows": 3,
+              "nullable": true,
+              "label": "Врезка: текст"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "label": "Товары под игрой"
+        },
+        {
+          "key": "relatedProducts",
+          "type": "refs",
+          "collection": "products",
+          "label": "Товары"
+        },
+        {
+          "type": "heading",
+          "label": "Для поиска Google"
+        },
+        {
+          "key": "seo.title",
+          "type": "text",
+          "nullable": true,
+          "label": "Заголовок вкладки"
+        },
+        {
+          "key": "seo.description",
+          "type": "textarea",
+          "rows": 3,
+          "nullable": true,
+          "label": "Описание в поиске"
+        }
+      ]
+    },
     "pages": {
       "title": "Текстовые страницы",
       "item": "страницу",
@@ -845,6 +1590,13 @@
       "url": "/blog/",
       "note": "Статьи, их фото и видео — в разделе «Статьи».",
       "texts": ["blog", "article"]
+    },
+    {
+      "id": "families",
+      "title": "Para familias (игры)",
+      "url": "/para-familias/",
+      "note": "Сами игры, их тексты и карты — в разделе «Игры (Para familias)».",
+      "texts": ["families"]
     },
     {
       "id": "catalog",

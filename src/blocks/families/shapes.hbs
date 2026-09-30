@@ -1,0 +1,94 @@
+{{!-- Colores, formas y números: игра только на экране (страницы.md §14б), листа для
+      печати у неё нет — её смысл в нажатии и ответе. Механика — src/scripts/games.js
+      (shapesGame). Цвета фигур — промо-тона: здесь цвет и есть содержание игры
+      (визуальная-система.md §2.3). Фигура залита тоном и обведена тёмным контуром —
+      жёлтая на светлом фоне без контура пропала бы. --}}
+<section class="page-container mt-10 lg:mt-12">
+  <h2 class="font-display text-h2 lg:text-h2-lg">{{t "families.playTitle"}}</h2>
+
+  <div
+    x-data="shapesGame"
+    data-game
+    data-t-ask-shape="{{t "families.shapes.askShape" shape="{shape}" color="{color}"}}"
+    data-t-option-shape="{{t "families.shapes.optionShape" shape="{shape}" color="{color}"}}"
+    data-t-right="{{t "families.shapes.right"}}"
+    data-t-wrong="{{t "families.shapes.wrong"}}"
+    data-t-score="{{t "families.shapes.score" n="{n}"}}"
+    class="mt-6 max-w-3xl rounded-2xl bg-sand p-4 lg:p-8"
+  >
+    <script type="application/json">{{{activity.gameJson}}}</script>
+
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      <fieldset>
+        <legend class="text-small font-medium">{{t "families.shapes.modesLabel"}}</legend>
+        <div class="mt-2 flex flex-wrap gap-2">
+          <label class="{{> pill-class}} has-checked:border-clay has-checked:bg-cream">
+            <input type="radio" name="juego-modo" value="shapes" class="sr-only" checked
+              x-on:change="setMode('shapes')" />
+            <span class="text-small font-medium">{{t "families.shapes.modeShapes"}}</span>
+          </label>
+          <label class="{{> pill-class}} has-checked:border-clay has-checked:bg-cream">
+            <input type="radio" name="juego-modo" value="numbers" class="sr-only"
+              x-on:change="setMode('numbers')" />
+            <span class="text-small font-medium">{{t "families.shapes.modeNumbers"}}</span>
+          </label>
+        </div>
+      </fieldset>
+      <p class="text-small text-charcoal/70 tabular-nums" x-text="scoreLabel"></p>
+    </div>
+
+    <p class="mt-8 font-display text-h3 lg:text-h3-lg" aria-live="polite" x-text="round?.prompt"></p>
+
+    {{!-- Счёт: столько же предметов, сколько просят сосчитать. Подпись для чтения с
+          экрана не нужна — вопрос уже прочитан, а число — ответ, который ищут --}}
+    <template x-if="mode === 'numbers' && round">
+      <div class="mt-6 flex flex-wrap gap-3" aria-hidden="true">
+        <template x-for="item in round.items" x-bind:key="item">
+          <svg class="icon-stroke size-12 fill-none text-charcoal"><use x-bind:href="'#icon-' + round.icon"></use></svg>
+        </template>
+      </div>
+    </template>
+
+    <ul
+      class="mt-6 grid gap-3"
+      x-bind:class="mode === 'numbers' ? 'grid-cols-3' : 'grid-cols-2 sm:grid-cols-4'"
+    >
+      <template x-for="option in round?.options ?? []" x-bind:key="option.key">
+        <li>
+          <button
+            type="button"
+            x-on:click="pick(option)"
+            x-bind:aria-label="option.label"
+            x-bind:disabled="isWrong(option)"
+            x-bind:class="state === 'right' && option.correct
+              ? 'border-success bg-success-bg'
+              : 'border-line bg-cream hover:bg-sand-hover'"
+            class="flex min-h-24 w-full items-center justify-center rounded-xl border-2 p-3
+              transition-colors duration-150 disabled:opacity-45"
+          >
+            <template x-if="option.icon">
+              <svg class="icon-stroke size-12 text-charcoal" x-bind:class="fills[option.tone]" aria-hidden="true"><use x-bind:href="'#icon-' + option.icon"></use></svg>
+            </template>
+            <template x-if="!option.icon">
+              <span class="font-display text-h2 tabular-nums lg:text-h2-lg" aria-hidden="true" x-text="option.label"></span>
+            </template>
+          </button>
+        </li>
+      </template>
+    </ul>
+
+    <div class="mt-6 flex min-h-12 flex-wrap items-center gap-4">
+      <p
+        class="font-medium"
+        x-bind:class="state === 'wrong' ? 'text-error' : 'text-success'"
+        role="status"
+        aria-live="polite"
+        x-text="state === 'right' ? texts.tRight : state === 'wrong' ? texts.tWrong : ''"
+      ></p>
+      <template x-if="state === 'right'">
+        {{> button empty primary=true sizeMd=true iconRight="arrow-right"
+            label="families.shapes.next" onClick="next()"}}
+      </template>
+    </div>
+  </div>
+</section>

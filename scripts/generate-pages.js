@@ -27,6 +27,14 @@ const ARTICLE_TEMPLATE = `{{!-- Статья блога. Файл создан �
 {{/layout}}
 `
 
+const ACTIVITY_TEMPLATE = `{{!-- Игра раздела Para familias. Файл создан скриптом (scripts/generate-pages.js) —
+      руками не правится: правится общий блок families/activity.
+      Заголовок и «голова» страницы считаются по её адресу (scripts/seo-meta.js). --}}
+{{#> layout}}
+  {{> families/activity}}
+{{/layout}}
+`
+
 // Разделы каталога и инфостраницы, заведённые в админке (бэкенд.md §15), тоже получают
 // файл сами. Существующие файлы первого уровня писал человек — их скрипт не трогает;
 // свои он узнаёт по метке и убирает, когда запись удалили
@@ -38,7 +46,7 @@ const topTemplate = (block, what) => `{{!-- ${what}. ${GENERATED_MARK} из да
 {{/layout}}
 `
 
-const { site, products, categories, articles, pages } = loadData()
+const { site, products, categories, articles, activities, pages } = loadData()
 const slugById = new Map(categories.map((category) => [category.id, category.slug]))
 
 // Ключ — путь папки внутри src/pages, значение — содержимое index.html
@@ -55,8 +63,10 @@ if (site.features.blog) {
   for (const article of articles) wanted.set(`blog/${article.slug}`, ARTICLE_TEMPLATE)
 }
 
+for (const activity of activities) wanted.set(`para-familias/${activity.slug}`, ACTIVITY_TEMPLATE)
+
 // Сущность убрали из данных — её страница должна исчезнуть, а не остаться сиротой
-for (const parent of [...new Set(slugById.values()), 'blog']) {
+for (const parent of [...new Set(slugById.values()), 'blog', 'para-familias']) {
   const parentDir = resolve(pagesRoot, parent)
   let existing = []
   try {

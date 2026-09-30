@@ -1,0 +1,387 @@
+[
+  {
+    "id": "memotest-de-animales",
+    "name": "Memotest de animales",
+    "slug": "memotest-de-animales",
+    "kind": "memotest",
+    "order": 1,
+    "title": "Memotest de animales para jugar en familia",
+    "excerpt": "Un memotest de animales para jugar en el celular o la compu, o para imprimir y recortar. Sirve desde los 3 años y se juega en diez minutos.",
+    "ages": "De 3 a 7 años",
+    "duration": "10 minutos",
+    "format": "online",
+    "icon": "paw-print",
+    "tone": "blue",
+    "body": "El memotest es de esos juegos que no pasan de moda: pocas reglas, partidas cortas y un desafío que crece con el chico. A los 3 años alcanza con encontrar dos gatos iguales; a los 6 ya se acuerdan de dónde quedó cada carta y te ganan sin piedad.\n\nAcá podés jugarlo en la pantalla, eligiendo cuántos pares querés, o imprimir las cartas y jugar en la mesa, que para los más chicos es todavía mejor: tocar, dar vuelta y ordenar las cartas también es parte del juego.",
+    "steps": [
+      "Mezclá las cartas y ponelas boca abajo formando filas.",
+      "Por turno, cada jugador da vuelta dos cartas.",
+      "Si son iguales, se las queda y vuelve a jugar. Si no, las da vuelta de nuevo y sigue el próximo.",
+      "Gana quien junta más pares cuando no quedan cartas en la mesa."
+    ],
+    "materials": [
+      "Para jugar en papel: una impresora, tijera y, si querés que duren, cartulina.",
+      "Para jugar en pantalla: nada más que esta página."
+    ],
+    "sections": [
+      {
+        "id": "por-edad",
+        "title": "Cómo adaptarlo a cada edad",
+        "body": "Con los más chicos conviene empezar con pocas cartas y todas a la vista durante unos segundos antes de darlas vuelta. A medida que ganan confianza, sumá pares.",
+        "items": [
+          "**3 a 4 años:** 4 a 6 pares, jugando juntos y nombrando cada animal en voz alta.",
+          "**5 a 6 años:** 8 pares y turnos de verdad, con uno que gana y otro que pierde.",
+          "**7 años o más:** 12 pares, o el desafío de encontrarlos todos en la menor cantidad de intentos."
+        ]
+      },
+      {
+        "id": "que-trabaja",
+        "title": "Qué se practica mientras juegan",
+        "body": "Memoria, atención y paciencia, claro. Pero también esperar el turno, perder sin enojarse y aprender los nombres de los animales. Si juegan en la mesa, sentados cómodos y a la altura justa, la partida dura más y termina mejor.",
+        "note": {
+          "title": "Un truco",
+          "text": "Pedile que imite el sonido de cada animal que da vuelta. Los más chicos se acuerdan mucho mejor de dónde estaba el perro si lo ladraron."
+        }
+      }
+    ],
+    "game": {
+      "cards": [
+        { "icon": "cat", "name": "Gato" },
+        { "icon": "dog", "name": "Perro" },
+        { "icon": "bird", "name": "Pájaro" },
+        { "icon": "fish", "name": "Pez" },
+        { "icon": "rabbit", "name": "Conejo" },
+        { "icon": "turtle", "name": "Tortuga" },
+        { "icon": "snail", "name": "Caracol" },
+        { "icon": "squirrel", "name": "Ardilla" },
+        { "icon": "panda", "name": "Panda" },
+        { "icon": "bug", "name": "Escarabajo" },
+        { "icon": "rat", "name": "Ratón" },
+        { "icon": "shrimp", "name": "Camarón" }
+      ]
+    },
+    "relatedProducts": ["silla-evolutiva", "set-mesa-sillas", "mesa-silla-evolutiva"],
+    "seo": {
+      "title": "Memotest de animales para chicos: jugá online o imprimilo gratis | Madera Más",
+      "description": null
+    }
+  },
+  {
+    "id": "colores-formas-y-numeros",
+    "name": "Colores, formas y números",
+    "slug": "colores-formas-y-numeros",
+    "kind": "shapes",
+    "order": 2,
+    "title": "Juego de colores, formas y números para chicos",
+    "excerpt": "Un juego corto para aprender colores, formas y a contar hasta seis, pensado para los más chicos y para jugar de a dos con un adulto al lado.",
+    "ages": "De 2 a 5 años",
+    "duration": "5 a 10 minutos",
+    "format": "online",
+    "icon": "shapes",
+    "tone": "green",
+    "body": "Entre los 2 y los 5 años los chicos aprenden a nombrar colores, a distinguir un círculo de un cuadrado y a contar objetos uno por uno. Este juego junta las tres cosas en rondas muy cortas: una consigna, pocas opciones y la respuesta enseguida.\n\nFunciona mejor con un adulto al lado que lea la consigna en voz alta y festeje cada acierto. No hay tiempo ni puntaje que pierda: si se equivoca, prueba de nuevo.",
+    "steps": [
+      "Elegí el juego: colores y formas, o números.",
+      "Leé la consigna en voz alta: «Tocá el círculo azul» o «¿Cuántas manzanas hay?».",
+      "El chico toca la respuesta. Si acierta, pasan a la siguiente ronda; si no, prueba otra vez.",
+      "Jueguen un rato corto y paren antes de que se aburra: mejor cinco rondas con ganas que veinte a la fuerza."
+    ],
+    "materials": [],
+    "sections": [
+      {
+        "id": "fuera-de-la-pantalla",
+        "title": "Seguir jugando sin pantalla",
+        "body": "Lo que aprenden en el juego se practica todo el día en casa. Unas ideas para después:",
+        "items": [
+          "Buscar en la cocina tres cosas rojas, o algo redondo y algo cuadrado.",
+          "Contar los escalones, las cucharas de la mesa o los botones del abrigo.",
+          "Ordenar los juguetes por color antes de guardarlos."
+        ]
+      },
+      {
+        "id": "a-que-edad",
+        "title": "¿A qué edad reconocen colores y formas?",
+        "body": "Cada chico tiene su ritmo. En general, alrededor de los 2 años empiezan a nombrar algunos colores y formas simples, y entre los 3 y los 4 cuentan objetos de a uno. Si todavía confunde el azul con el verde, no pasa nada: se aprende jugando, no corrigiendo."
+      }
+    ],
+    "game": {
+      "shapes": [
+        { "icon": "circle", "name": "el círculo" },
+        { "icon": "square", "name": "el cuadrado" },
+        { "icon": "triangle", "name": "el triángulo" },
+        { "icon": "star", "name": "la estrella", "feminine": true },
+        { "icon": "heart", "name": "el corazón" }
+      ],
+      "colors": [
+        { "tone": "blue", "name": "azul" },
+        { "tone": "pink", "name": "rosa" },
+        { "tone": "yellow", "name": "amarillo", "feminineName": "amarilla" },
+        { "tone": "green", "name": "verde" },
+        { "tone": "orange", "name": "naranja" }
+      ],
+      "counters": [
+        { "icon": "apple", "question": "¿Cuántas manzanas hay?" },
+        { "icon": "carrot", "question": "¿Cuántas zanahorias hay?" },
+        { "icon": "cookie", "question": "¿Cuántas galletitas hay?" },
+        { "icon": "egg", "question": "¿Cuántos huevos hay?" }
+      ]
+    },
+    "relatedProducts": ["silla-evolutiva", "equilibristas", "set-mesa-sillas"],
+    "seo": {
+      "title": "Juego de colores, formas y números para chicos de 2 a 5 años | Madera Más",
+      "description": null
+    }
+  },
+  {
+    "id": "busqueda-del-tesoro",
+    "name": "Búsqueda del tesoro",
+    "slug": "busqueda-del-tesoro-para-cumpleanos",
+    "kind": "treasure",
+    "order": 3,
+    "title": "Búsqueda del tesoro para cumpleaños: pistas para imprimir",
+    "excerpt": "Ocho pistas con rima listas para imprimir y esconder en casa, más todo lo que hace falta para armar una búsqueda del tesoro en un cumpleaños infantil.",
+    "ages": "De 4 a 8 años",
+    "duration": "20 a 30 minutos",
+    "format": "print",
+    "icon": "map",
+    "tone": "yellow",
+    "body": "La búsqueda del tesoro es de los juegos que más se recuerdan de un cumpleaños: los chicos corren, leen (o les leen) una pista, adivinan dónde está la próxima y al final encuentran el premio todos juntos.\n\nAcá tenés ocho pistas con rima pensadas para una casa o un departamento. Imprimilas, recortalas y escondé cada una en el lugar que adivina la anterior. La última lleva al tesoro.",
+    "steps": [
+      "Imprimí y recortá las pistas. Cada tarjeta dice, en letra chica, dónde esconderla.",
+      "Escondé las pistas de la 2 a la 8 en su lugar y el tesoro al final del recorrido.",
+      "Leé en voz alta la pista 1 para arrancar el juego.",
+      "Cada pista encontrada lleva a la siguiente. Si se traban, ayudalos con una seña, no con la respuesta.",
+      "Cuando encuentren el tesoro, que alcance para todos: la gracia es festejar en equipo."
+    ],
+    "materials": [
+      "Las pistas impresas y una tijera.",
+      "Un tesoro: una caja con golosinas, stickers o sorpresitas, una para cada chico."
+    ],
+    "sections": [
+      {
+        "id": "consejos",
+        "title": "Consejos para que salga bien",
+        "body": "Una búsqueda del tesoro funciona cuando todos participan y nadie se queda afuera. Tres cosas ayudan mucho:",
+        "items": [
+          "Con chicos que todavía no leen, formá equipos con un chico más grande o un adulto que lea las pistas.",
+          "Si son muchos, turnate quién abre cada pista: así no la encuentra siempre el más rápido.",
+          "Dejá los lugares peligrosos afuera del recorrido: nada de hornallas, escaleras sin baranda ni estantes altos."
+        ]
+      },
+      {
+        "id": "cambiar-las-pistas",
+        "title": "Si en tu casa no hay alguno de estos lugares",
+        "body": "Cambiá el lugar por otro parecido: si no tenés maceta, sirve una planta del balcón; si no hay bañadera, la ducha. Lo importante es que la rima tenga sentido para los chicos que juegan."
+      }
+    ],
+    "game": {
+      "clues": [
+        { "text": "Para empezar esta aventura, buscá donde el frío dura.", "place": "La heladera" },
+        {
+          "text": "De noche me usás para soñar y de día me tenés que ordenar.",
+          "place": "La cama"
+        },
+        {
+          "text": "Tengo agua y jabón: acá se baña el campeón.",
+          "place": "La bañadera o la ducha"
+        },
+        {
+          "text": "Tengo hojas y no soy un libro: me regás y así vivo.",
+          "place": "Una maceta o planta"
+        },
+        { "text": "Siempre andan de a dos y salen a pasear con vos.", "place": "Los zapatos" },
+        {
+          "text": "Tengo cuentos y dibujos: abrime y encontrá tu lujo.",
+          "place": "Un libro del estante"
+        },
+        {
+          "text": "Acá nos sentamos a comer: mirá bien y lo vas a ver.",
+          "place": "Debajo de la mesa o de una silla"
+        },
+        {
+          "text": "¡Última pista! Donde guardás tus juguetes está el tesoro que merecés.",
+          "place": "La caja o el cajón de juguetes"
+        }
+      ]
+    },
+    "relatedProducts": ["set-mesa-sillas", "equilibristas", "banquito-estrella"],
+    "seo": {
+      "title": "Búsqueda del tesoro para cumpleaños infantil: pistas con rima para imprimir | Madera Más",
+      "description": null
+    }
+  },
+  {
+    "id": "mis-pequenos-logros",
+    "name": "Mis pequeños logros",
+    "slug": "mis-pequenos-logros",
+    "kind": "chart",
+    "order": 4,
+    "title": "Mis pequeños logros: tabla de hábitos para imprimir",
+    "excerpt": "Una tabla semanal para imprimir con siete hábitos del día a día, para que los chicos marquen lo que hicieron solos y vean cuánto crecen.",
+    "ages": "De 3 a 7 años",
+    "duration": "Toda la semana",
+    "format": "print",
+    "icon": "trophy",
+    "tone": "pink",
+    "body": "A los chicos les encanta hacer cosas solos: vestirse, poner la mesa, lavarse los dientes. Una tabla en la heladera los ayuda a ver todo lo que ya pueden hacer y convierte las rutinas de todos los días en pequeños logros.\n\nImprimí la tabla, pegala a su altura y dejá que cada noche marque con una cruz, un dibujo o un sticker lo que hizo en el día.",
+    "steps": [
+      "Imprimí la tabla y pegala donde el chico la vea y la alcance.",
+      "Leé juntos los hábitos de la semana.",
+      "Cada noche, que marque lo que hizo ese día: con un sticker, una estrella o un dibujo.",
+      "El domingo, miren la tabla juntos y festejen lo que salió bien."
+    ],
+    "materials": ["La tabla impresa.", "Stickers, crayones o marcadores."],
+    "sections": [
+      {
+        "id": "sin-premios",
+        "title": "¿Y si no llena la tabla?",
+        "body": "La tabla no es un examen. Si un día no marcó nada, no hace falta retarlo: al día siguiente hay otro casillero. Funciona mejor cuando se festeja lo que hizo que cuando se remarca lo que faltó.",
+        "note": {
+          "title": "Una idea",
+          "text": "Elegí dos o tres hábitos para empezar y sumá el resto cuando ya salgan solos. Siete cosas nuevas a la vez es mucho para cualquiera."
+        }
+      },
+      {
+        "id": "autonomia",
+        "title": "Hacer solos, a su altura",
+        "body": "Buena parte de la autonomía depende de que las cosas estén a su alcance: la ropa en un cajón bajo, un banquito para llegar al lavatorio, una silla que le permita sentarse a la mesa sin ayuda. Cuando pueden hacerlo solos, quieren hacerlo."
+      }
+    ],
+    "game": {
+      "habits": [
+        { "icon": "sun", "name": "Me levanté y me vestí" },
+        { "icon": "droplets", "name": "Me lavé los dientes" },
+        { "icon": "hand", "name": "Me lavé las manos antes de comer" },
+        { "icon": "salad", "name": "Ayudé a poner la mesa" },
+        { "icon": "toy-brick", "name": "Guardé mis juguetes" },
+        { "icon": "book-open", "name": "Leímos un cuento" },
+        { "icon": "moon", "name": "Me fui a dormir a horario" }
+      ]
+    },
+    "relatedProducts": ["torre-aprendizaje", "silla-evolutiva", "banquito-estrella"],
+    "seo": {
+      "title": "Tabla de hábitos para chicos para imprimir: mis pequeños logros | Madera Más",
+      "description": null
+    }
+  },
+  {
+    "id": "pequenos-ayudantes-en-la-cocina",
+    "name": "Pequeños ayudantes en la cocina",
+    "slug": "recetas-para-cocinar-con-chicos",
+    "kind": "recipes",
+    "order": 5,
+    "title": "Pequeños ayudantes en la cocina: recetas para cocinar con chicos",
+    "excerpt": "Cuatro recetas simples para cocinar con chicos desde los 2 años, con las tareas que pueden hacer ellos marcadas paso a paso.",
+    "ages": "De 2 a 8 años",
+    "duration": "15 a 40 minutos",
+    "format": "kitchen",
+    "icon": "chef-hat",
+    "tone": "orange",
+    "body": "Cocinar juntos es de los mejores planes de fin de semana: los chicos lavan, mezclan, cortan con cuchillo de untar y, sobre todo, se comen lo que prepararon. Ayuda a que prueben cosas nuevas y a que se sientan parte de la casa.\n\nEstas recetas están pensadas para que el chico haga la mayor parte. En cada paso marcamos qué puede hacer él y qué le toca al adulto.",
+    "steps": [
+      "Elegí la receta según el tiempo que tengan y la edad del chico.",
+      "Juntá todos los ingredientes antes de empezar, así nadie espera.",
+      "Lavense las manos y pongan al chico a la altura de la mesada, seguro y estable.",
+      "Seguí los pasos: los marcados son para él; el horno y los cuchillos filosos, para el adulto."
+    ],
+    "materials": [
+      "Los ingredientes de cada receta.",
+      "Un bol, una cuchara de madera y un cuchillo de untar para el chico."
+    ],
+    "sections": [
+      {
+        "id": "a-la-altura",
+        "title": "A la altura de la mesada",
+        "body": "Para que ayude de verdad, el chico tiene que ver lo que pasa arriba de la mesada y tener las manos libres. Una silla común o un banquito se mueven y no tienen de dónde agarrarse; por eso existen las torres de aprendizaje, con barandas alrededor y la plataforma a la altura justa.",
+        "note": {
+          "title": "Siempre con un adulto",
+          "text": "Aunque esté a la altura de la mesada, el chico cocina acompañado. El horno, las hornallas y los cuchillos filosos quedan a cargo del adulto."
+        }
+      },
+      {
+        "id": "por-edad",
+        "title": "Qué puede hacer según la edad",
+        "body": "Cada chico es distinto, pero como guía:",
+        "items": [
+          "**2 a 3 años:** lavar frutas y verduras, echar ingredientes ya medidos, mezclar.",
+          "**4 a 5 años:** pelar bananas, cortar frutas blandas con cuchillo de untar, pisar, amasar.",
+          "**6 años o más:** medir con tazas y cucharas, romper huevos, armar platos solos."
+        ]
+      }
+    ],
+    "game": {
+      "recipes": [
+        {
+          "id": "brochetas-de-fruta",
+          "title": "Brochetas de fruta",
+          "time": "15 minutos",
+          "ingredients": [
+            "2 bananas",
+            "Frutillas",
+            "Uvas sin semilla",
+            "1 manzana",
+            "Palitos de brochette sin punta"
+          ],
+          "steps": [
+            "Lavar las frutillas, las uvas y la manzana.",
+            "Adulto: Cortar la manzana en cubos.",
+            "Pelar las bananas y cortarlas en rodajas con cuchillo de untar.",
+            "Pinchar la fruta en los palitos, alternando colores."
+          ]
+        },
+        {
+          "id": "galletitas-de-avena-y-banana",
+          "title": "Galletitas de avena y banana",
+          "time": "35 minutos",
+          "ingredients": [
+            "2 bananas bien maduras",
+            "1 taza de avena",
+            "Un puñado de pasas o chips de chocolate (opcional)"
+          ],
+          "steps": [
+            "Adulto: Prender el horno a temperatura media y forrar una placa.",
+            "Pisar las bananas con un tenedor en un bol.",
+            "Sumar la avena y las pasas, y mezclar bien.",
+            "Armar bolitas con las manos, ponerlas en la placa y aplastarlas un poco.",
+            "Adulto: Hornear unos 15 minutos, hasta que estén doradas, y dejar enfriar."
+          ]
+        },
+        {
+          "id": "ensalada-de-colores",
+          "title": "Ensalada de colores",
+          "time": "20 minutos",
+          "ingredients": [
+            "Tomates cherry",
+            "1 zanahoria",
+            "1 pepino",
+            "Choclo cocido",
+            "Aceite, sal y limón"
+          ],
+          "steps": [
+            "Lavar los tomates y el pepino.",
+            "Adulto: Rallar la zanahoria.",
+            "Cortar los tomates por la mitad con cuchillo de untar.",
+            "Juntar todo en un bol, condimentar y mezclar."
+          ]
+        },
+        {
+          "id": "tostadas-con-palta",
+          "title": "Tostadas con palta",
+          "time": "10 minutos",
+          "ingredients": ["Pan para tostar", "1 palta madura", "Sal y unas gotas de limón"],
+          "steps": [
+            "Adulto: Tostar el pan.",
+            "Sacar la pulpa de la palta con una cuchara y ponerla en un bol.",
+            "Pisarla con un tenedor y sumar sal y limón.",
+            "Untar las tostadas."
+          ]
+        }
+      ]
+    },
+    "relatedProducts": ["torre-aprendizaje", "silla-alta", "silla-alta-dos-escalones"],
+    "seo": {
+      "title": "Recetas para cocinar con chicos: pequeños ayudantes en la cocina | Madera Más",
+      "description": null
+    }
+  }
+]

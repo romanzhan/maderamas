@@ -1,7 +1,7 @@
 // Состав навигации собирается здесь один раз и расходится в шапку, бургер-меню и подвал
 // (`страницы.md`, раздел «Навигация сайта»). Пункт, добавленный сюда, появляется везде;
 // выключённый флаг убирает его отовсюду.
-import { loadData, t } from './data.js'
+import { FAMILIES_PATH, loadData, t } from './data.js'
 
 // В меню пункт короче названия категории («Sillas» против «Sillas evolutivas»), поэтому
 // подпись берётся из словаря по id категории. У новой категории ключа может не быть —
@@ -27,6 +27,10 @@ export function navigation(currentPath) {
 
   const blog = site.features.blog ? [item(t('nav.blog'), '/blog/')] : []
   const nosotros = item(t('nav.nosotros'), '/nosotros/')
+  // Игры и занятия для детей — пунктом меню по решению владельца 30.09.2026. В шапке
+  // с 1280: на 1024 строка вмещает ровно пять пунктов, и шестой выталкивал корзину
+  // за край экрана. Там он остаётся в подвале, в бургере он есть на всех ширинах
+  const familias = { ...item(t('nav.familias'), FAMILIES_PATH), wide: true }
   const contacto = item(t('nav.contacto'), '/contacto/')
 
   // Второй уровень бургер-меню и колонка «Ayuda» в подвале — один список;
@@ -38,7 +42,7 @@ export function navigation(currentPath) {
   ]
 
   return {
-    main: [...catalog, nosotros, ...blog, contacto],
+    main: [...catalog, nosotros, ...blog, familias, contacto],
     // Только категории и полными именами: пустое поле поиска показывает их списком
     // (решение владельца 27.08.2026), а в найденном та же категория приходит из
     // catalog.json — коротких подписей меню там нет, и один список назывался бы
@@ -58,7 +62,13 @@ export function navigation(currentPath) {
     accesoriosHref: catalog[1]?.href ?? catalog[0]?.href ?? '/',
     help,
     helpFooter: [...help, contacto],
-    shop: [...catalog, item(t('howItWorks.title'), '/como-funciona/'), nosotros, ...blog],
+    shop: [
+      ...catalog,
+      item(t('howItWorks.title'), '/como-funciona/'),
+      nosotros,
+      ...blog,
+      familias,
+    ],
     // Data Fiscal текстовой строкой здесь больше нет: RG AFIP 4042-E требует
     // официальный знак «Formulario 960/D», и с 07.09.2026 он стоит картинкой
     // в нижней полосе подвала (footer.hbs)

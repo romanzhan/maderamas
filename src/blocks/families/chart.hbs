@@ -1,0 +1,51 @@
+{{!-- Mis pequeños logros: недельная таблица привычек (страницы.md §14б). Та же таблица
+      и на экране, и на бумаге. На телефоне она шире экрана и прокручивается вбок внутри
+      своей рамки — страница при этом не ездит. Клетки пустые: в них клеят наклейки
+      и рисуют крестики. --}}
+<section class="page-container mt-10 lg:mt-12" data-print-sheet>
+  <h2 class="font-display text-h2 print:hidden lg:text-h2-lg">{{t "families.chart.tableTitle"}}</h2>
+
+  <div class="mt-4">{{> families/print-button}}</div>
+
+  <div class="mt-6 rounded-2xl border border-line p-4 lg:p-6 print:border-0 print:p-0">
+    <p class="font-display text-h3 lg:text-h3-lg">{{t "families.chart.heading"}}</p>
+    <div class="mt-4 flex flex-wrap gap-x-8 gap-y-3 text-small">
+      <p class="flex min-w-48 flex-1 items-end gap-2">
+        <span class="font-medium">{{t "families.chart.name"}}</span>
+        <span class="h-6 flex-1 border-b border-border" aria-hidden="true"></span>
+      </p>
+      <p class="flex min-w-48 flex-1 items-end gap-2">
+        <span class="font-medium">{{t "families.chart.week"}}</span>
+        <span class="h-6 flex-1 border-b border-border" aria-hidden="true"></span>
+      </p>
+    </div>
+
+    <div class="scrollbar-soft mt-6 overflow-x-auto print:overflow-visible">
+      <table class="w-full min-w-xl border-collapse text-small">
+        <thead>
+          <tr>
+            <th scope="col" class="border border-line p-2 text-left font-medium">{{t "families.chart.habit"}}</th>
+            {{#each activity.days}}
+              <th scope="col" class="w-12 border border-line p-2 text-center font-medium">{{this}}</th>
+            {{/each}}
+          </tr>
+        </thead>
+        <tbody>
+          {{#each activity.habits}}
+            <tr>
+              <th scope="row" class="border border-line p-2 text-left font-normal">
+                <span class="flex items-center gap-2">
+                  {{> icon ../empty name=icon class="size-5"}}
+                  <span>{{name}}</span>
+                </span>
+              </th>
+              {{#each ../activity.days}}
+                <td class="h-12 border border-line"></td>
+              {{/each}}
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>

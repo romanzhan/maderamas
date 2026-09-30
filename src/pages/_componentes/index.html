@@ -351,6 +351,24 @@
         {{> tile empty href="#" title=(t "nav.accesorios")}}
       </div>
 
+      <p class="mt-8 text-caption text-charcoal/70">Плитка игры (Para familias): значок в круге тона, строка формата</p>
+      <div class="mt-2 grid gap-4 sm:grid-cols-3">
+        {{> tile empty href="#" icon="paw-print" accent="bg-promo-blue text-cream"
+            title=(t "nav.familias") text=(t "families.lead") meta=(t "families.formatOnline")}}
+        {{> tile empty href="#" icon="map" accent="bg-promo-yellow text-charcoal"
+            title=(t "families.printTitle") meta=(t "families.formatPrint")}}
+      </div>
+
+      <p class="mt-8 text-caption text-charcoal/70">Полоса вкладок со стрелками (не помещается — листается)</p>
+      <div class="mt-2 max-w-sm">
+        {{#> scroll-strip label="nav.main" stripClass="gap-2"}}
+          {{#each nav.main}}
+            <button type="button" role="tab" aria-selected="false" tabindex="-1"
+              class="min-h-11 shrink-0 px-3 font-medium whitespace-nowrap">{{label}}</button>
+          {{/each}}
+        {{/scroll-strip}}
+      </div>
+
       <p class="mt-8 text-caption text-charcoal/70">
         Отзыв (с пометкой источника) и карточка статьи (фото ещё нет — заглушка)
       </p>
