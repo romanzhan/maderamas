@@ -1,0 +1,47 @@
+{{!-- Полоса вкладок с прокруткой вбок (компоненты.md 4.4). Полосы прокрутки нет
+      (владелец 30.09.2026: «бесит»), вместо неё у края, за которым есть ещё вкладки,
+      встаёт стрелка на затухании фона. Стрелки — для мыши: клавиатура ходит по
+      вкладкам стрелками ← →, а фокус сам прокручивает полосу, поэтому из порядка
+      обхода и для чтения с экрана стрелки убраны.
+      Параметры: label — ключ подписи tablist; class — обёртке (поля, граница);
+      stripClass — самой полосе (отступы, зазор). Вкладки — блоком вызова. --}}
+<div x-data="scrollStrip" class="relative {{class}}">
+  <div
+    x-ref="strip"
+    role="tablist"
+    aria-label="{{t label}}"
+    class="scrollbar-none flex overflow-x-auto overflow-y-hidden {{stripClass}}"
+  >
+    {{> @partial-block}}
+  </div>
+  <button
+    type="button"
+    x-show="!atStart"
+    x-cloak
+    x-on:click="go(-1)"
+    tabindex="-1"
+    aria-hidden="true"
+    class="absolute inset-y-0 left-0 flex w-14 items-center justify-start bg-gradient-to-r
+      from-cream via-cream to-transparent"
+  >
+    <span
+      class="flex size-9 items-center justify-center rounded-full border border-line bg-cream
+        text-charcoal transition-colors duration-150 hover:bg-sand-hover"
+    >{{> icon empty name="chevron-left" class="size-4"}}</span>
+  </button>
+  <button
+    type="button"
+    x-show="!atEnd"
+    x-cloak
+    x-on:click="go(1)"
+    tabindex="-1"
+    aria-hidden="true"
+    class="absolute inset-y-0 right-0 flex w-14 items-center justify-end bg-gradient-to-l
+      from-cream via-cream to-transparent"
+  >
+    <span
+      class="flex size-9 items-center justify-center rounded-full border border-line bg-cream
+        text-charcoal transition-colors duration-150 hover:bg-sand-hover"
+    >{{> icon empty name="chevron-right" class="size-4"}}</span>
+  </button>
+</div>

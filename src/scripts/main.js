@@ -19,6 +19,7 @@ import { siteForm } from './form.js'
 import { searchResults } from './search-page.js'
 import { cart, notify, syncStores, wishlist } from './store.js'
 import { admin } from './admin.js'
+import { scrollStrip } from './scroll-strip.js'
 
 // Всё, что Alpine должен знать, регистрируется до старта (сложные-узлы.md п. 14)
 document.addEventListener('alpine:init', () => {
@@ -34,6 +35,7 @@ document.addEventListener('alpine:init', () => {
   Alpine.store('admin', admin)
 
   Alpine.data('selectField', selectField)
+  Alpine.data('scrollStrip', scrollStrip)
   Alpine.data('quantity', quantity)
   Alpine.data('siteHeader', siteHeader)
   Alpine.data('offlineNotice', offlineNotice)
