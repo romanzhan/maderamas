@@ -1,0 +1,19 @@
+{{!-- Карточка страницы в списке «Страниц»: название, что это за страница, адрес.
+      Ждёт page — описание страницы из sitePages схемы — и c. --}}
+<button
+  type="button"
+  x-on:click="c.openPage(page.id)"
+  class="flex h-full w-full flex-col gap-2 rounded-xl border border-line bg-cream p-4 text-left
+    transition-colors duration-150 hover:bg-sand-hover"
+>
+  <span class="flex items-center gap-2 font-medium">
+    {{> icon empty name="file-text" class="size-5 text-clay"}}
+    <span class="min-w-0 flex-1" x-text="page.title"></span>
+    <span x-show="c.pageChanges(page)" class="flex shrink-0 items-center">
+      <span class="size-2 rounded-full bg-warning" aria-hidden="true"></span>
+      <span class="sr-only">{{t "admin.unsavedDot"}}</span>
+    </span>
+  </span>
+  <span class="line-clamp-3 text-small text-charcoal/70" x-text="page.summary"></span>
+  <span x-show="page.url" class="mt-auto text-small text-clay" x-text="page.url"></span>
+</button>

@@ -2,6 +2,9 @@
   "collections": {
     "products": {
       "title": "Товары",
+      "icon": "package",
+      "hint": "Всё о каждом товаре: название, цена, цвета, фото. Порядок в списке — порядок в каталоге.",
+      "addLabel": "Добавить товар",
       "item": "товар",
       "titleField": "name",
       "imageField": "images",
@@ -30,22 +33,28 @@
         "accessories": [],
         "related": [],
         "sku": null,
-        "seo": { "title": null, "description": null }
+        "seo": {
+          "title": null,
+          "description": null
+        }
       },
       "fields": [
-        { "type": "heading", "label": "Основное" },
-        { "key": "name", "type": "text", "label": "Название", "required": true },
         {
-          "key": "slug",
-          "type": "slug",
-          "label": "Адрес страницы",
-          "hint": "Латиница через дефис, например silla-evolutiva. После публикации не меняйте: старые ссылки перестанут работать."
+          "type": "heading",
+          "label": "Основное",
+          "hint": "Название и описание — то, что покупатель читает на странице товара."
+        },
+        {
+          "key": "name",
+          "type": "text",
+          "label": "Название товара",
+          "required": true
         },
         {
           "key": "categoryId",
           "type": "ref",
           "collection": "categories",
-          "label": "Раздел каталога",
+          "label": "В каком разделе каталога",
           "required": true
         },
         {
@@ -53,71 +62,213 @@
           "type": "textarea",
           "rows": 2,
           "label": "Короткое описание",
-          "hint": "Одна-две фразы под названием и в поиске."
+          "hint": "Одна-две фразы: видны под названием товара и в результатах поиска."
         },
         {
           "key": "description",
           "type": "textarea",
           "rows": 12,
-          "label": "Описание",
-          "hint": "Абзацы — через пустую строку. **Жирный** — двумя звёздочками. Ссылка: [текст](/sillas/)."
+          "label": "Полное описание",
+          "hint": "Абзацы разделяйте пустой строкой. **Жирный текст** — между двумя звёздочками. Ссылка: [текст ссылки](/sillas/)."
         },
-        { "type": "heading", "label": "Цена и наличие" },
-        { "key": "price", "type": "money", "label": "Цена, песо", "required": true },
+        {
+          "key": "slug",
+          "type": "slug",
+          "advanced": true,
+          "label": "Адрес страницы товара",
+          "hint": "Латиница через дефис, например silla-evolutiva. У опубликованного товара не меняйте: старые ссылки перестанут открываться."
+        },
+        {
+          "type": "heading",
+          "label": "Цена и наличие",
+          "hint": "Цена — за товар в основном цвете. Доплата за другой цвет задаётся в самом цвете ниже."
+        },
+        {
+          "key": "price",
+          "type": "money",
+          "label": "Цена",
+          "required": true
+        },
         {
           "key": "oldPrice",
           "type": "money",
           "nullable": true,
-          "label": "Старая цена",
-          "hint": "Только для скидки: зачёркнутая цена, обязательно больше цены. Пусто — без скидки."
+          "label": "Старая цена (для скидки)",
+          "hint": "Заполняйте, только если товар правда подешевел: сайт покажет её зачёркнутой рядом с ценой. Должна быть больше цены. Пусто — скидки нет."
         },
-        { "key": "inStock", "type": "bool", "label": "В наличии" },
-        { "key": "featured", "type": "bool", "label": "Показывать на главной" },
+        {
+          "key": "inStock",
+          "type": "bool",
+          "label": "Есть в наличии",
+          "hint": "Выключите — на сайте появится «Sin stock», положить товар в корзину будет нельзя."
+        },
+        {
+          "key": "featured",
+          "type": "bool",
+          "label": "Показывать на главной",
+          "hint": "Товар попадёт в ленту товаров на главной странице."
+        },
         {
           "key": "createdAt",
           "type": "date",
-          "label": "Дата появления",
-          "hint": "От неё считается бейдж «Nuevo»."
+          "label": "Дата появления в магазине",
+          "hint": "Пока товар новый (срок — в «Настройках» → «Магазин»), на нём горит значок «Nuevo»."
         },
-        { "type": "heading", "label": "Фото" },
+        {
+          "type": "heading",
+          "label": "Цвета и фото",
+          "hint": "Если товар бывает разных цветов дерева — у каждого цвета свои фото: покупатель нажимает на цвет, и фото меняются. Первый цвет в списке — основной: его фото стоят в каталоге и открываются первыми. Порядок меняют стрелки."
+        },
+        {
+          "key": "options.woodColor",
+          "type": "list",
+          "label": "Цвета дерева",
+          "item": "цвет дерева",
+          "titleField": "name",
+          "hint": "Товар одного цвета — цвета можно не добавлять вовсе, тогда фото загружаются ниже.",
+          "new": {
+            "id": "",
+            "name": "",
+            "swatch": "#C69C6D",
+            "priceDelta": 0,
+            "inStock": true,
+            "images": []
+          },
+          "fields": [
+            {
+              "key": "name",
+              "type": "text",
+              "label": "Название цвета",
+              "required": true,
+              "hint": "Как его видит покупатель, например Roble."
+            },
+            {
+              "key": "images",
+              "type": "images",
+              "flow": "product",
+              "label": "Фото в этом цвете",
+              "hint": "Первое фото — главное. Квадратные или вертикальные: на сайте обрезаются до квадрата по центру."
+            },
+            {
+              "key": "swatch",
+              "type": "color",
+              "label": "Цвет кружка для выбора"
+            },
+            {
+              "key": "priceDelta",
+              "type": "money",
+              "label": "Доплата за этот цвет",
+              "hint": "0 — цена как у товара. Например, 20000 — этот цвет на 20 000 дороже."
+            },
+            {
+              "key": "inStock",
+              "type": "bool",
+              "label": "Этот цвет есть в наличии"
+            },
+            {
+              "key": "id",
+              "type": "slug",
+              "advanced": true,
+              "label": "Код цвета в ссылке",
+              "hint": "Латиница, например roble. Попадает в ссылку вида ?madera=roble. У опубликованного цвета не меняйте."
+            }
+          ]
+        },
         {
           "key": "images",
           "type": "images",
           "flow": "product",
+          "unless": "options.woodColor",
           "label": "Фото товара",
-          "hint": "Первое — в карточке каталога, второе — при наведении мышью. Квадрат или вертикаль: обрезается до квадрата по центру."
+          "hint": "Первое фото — в каталоге, второе — появляется при наведении мышью. Квадратные или вертикальные: на сайте обрезаются до квадрата по центру."
         },
         {
           "key": "dimensionsImage",
           "type": "image",
           "flow": "content",
           "nullable": true,
-          "label": "Схема размеров"
+          "label": "Картинка с размерами",
+          "hint": "Чертёж с размерами — в разделе «Medidas» на странице товара. Нет картинки — там будет только таблица."
         },
         {
-          "key": "ogImage",
-          "type": "image",
-          "flow": "og",
-          "nullable": true,
-          "label": "Картинка для WhatsApp",
-          "hint": "1200 × 630. Пусто — соберётся сама из первого фото."
+          "type": "heading",
+          "label": "Цвета подушки",
+          "hint": "Только для товаров, у которых покупатель выбирает цвет подушки (например, Almohadón). Своих фото у цветов подушки нет — показываются фото товара."
         },
-        { "type": "heading", "label": "Характеристики" },
-        { "key": "attributes.material", "type": "text", "label": "Материал" },
+        {
+          "key": "options.cushionColor",
+          "type": "list",
+          "label": "Цвета подушки",
+          "item": "цвет подушки",
+          "titleField": "name",
+          "new": {
+            "id": "",
+            "name": "",
+            "swatch": "#9DB8D2",
+            "priceDelta": 0,
+            "inStock": true
+          },
+          "fields": [
+            {
+              "key": "name",
+              "type": "text",
+              "label": "Название цвета",
+              "required": true
+            },
+            {
+              "key": "swatch",
+              "type": "color",
+              "label": "Цвет кружка для выбора"
+            },
+            {
+              "key": "priceDelta",
+              "type": "money",
+              "label": "Доплата за этот цвет",
+              "hint": "0 — цена как у товара."
+            },
+            {
+              "key": "inStock",
+              "type": "bool",
+              "label": "Этот цвет есть в наличии"
+            },
+            {
+              "key": "id",
+              "type": "slug",
+              "advanced": true,
+              "label": "Код цвета в ссылке",
+              "hint": "Латиница, например celeste. Попадает в ссылку вида ?almohadon=celeste."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "label": "Характеристики",
+          "hint": "Таблица «Características» на странице товара. Пустые строки на сайте не показываются."
+        },
+        {
+          "key": "attributes.material",
+          "type": "text",
+          "label": "Материал"
+        },
         {
           "key": "attributes.ageRange",
           "type": "text",
           "nullable": true,
-          "label": "Возраст",
-          "hint": "Например: 1 a 15 años"
+          "label": "Для какого возраста",
+          "hint": "По-испански, например: 1 – 15 años"
         },
         {
           "key": "attributes.maxLoad",
           "type": "number",
           "nullable": true,
-          "label": "Максимальная нагрузка, кг"
+          "label": "Выдерживает до, кг"
         },
-        { "key": "attributes.weight", "type": "number", "nullable": true, "label": "Вес, кг" },
+        {
+          "key": "attributes.weight",
+          "type": "number",
+          "nullable": true,
+          "label": "Вес, кг"
+        },
         {
           "key": "attributes.dimensions.width",
           "type": "number",
@@ -136,85 +287,60 @@
           "nullable": true,
           "label": "Высота, см"
         },
-        { "type": "heading", "label": "Цвета дерева" },
         {
-          "key": "options.woodColor",
-          "type": "list",
-          "label": "Цвета дерева",
-          "item": "цвет",
-          "titleField": "name",
-          "hint": "Доплата прибавляется к цене товара. Свои фото цвета показываются на странице товара и в каталоге при фильтре.",
-          "new": {
-            "id": "",
-            "name": "",
-            "swatch": "#C69C6D",
-            "priceDelta": 0,
-            "inStock": true,
-            "images": []
-          },
-          "fields": [
-            { "key": "name", "type": "text", "label": "Название", "required": true },
-            {
-              "key": "id",
-              "type": "slug",
-              "label": "Код в адресе",
-              "hint": "Латиница, например roble. Попадает в ссылку ?madera=…"
-            },
-            { "key": "swatch", "type": "color", "label": "Цвет кружка" },
-            { "key": "priceDelta", "type": "money", "label": "Доплата, песо" },
-            { "key": "inStock", "type": "bool", "label": "В наличии" },
-            { "key": "images", "type": "images", "flow": "product", "label": "Фото этого цвета" }
-          ]
+          "type": "heading",
+          "label": "Другие товары рядом",
+          "hint": "Что сайт предлагает на странице этого товара."
         },
-        { "type": "heading", "label": "Цвета подушки" },
-        {
-          "key": "options.cushionColor",
-          "type": "list",
-          "label": "Цвета подушки",
-          "item": "цвет",
-          "titleField": "name",
-          "new": { "id": "", "name": "", "swatch": "#9DB8D2", "priceDelta": 0, "inStock": true },
-          "fields": [
-            { "key": "name", "type": "text", "label": "Название", "required": true },
-            {
-              "key": "id",
-              "type": "slug",
-              "label": "Код в адресе",
-              "hint": "Латиница, например celeste. Попадает в ссылку ?almohadon=…"
-            },
-            { "key": "swatch", "type": "color", "label": "Цвет кружка" },
-            { "key": "priceDelta", "type": "money", "label": "Доплата, песо" },
-            { "key": "inStock", "type": "bool", "label": "В наличии" }
-          ]
-        },
-        { "type": "heading", "label": "Связанные товары" },
         {
           "key": "accessories",
           "type": "refs",
           "collection": "products",
-          "label": "Предлагать вместе (допродажа)"
+          "label": "Предложить добавить к покупке",
+          "hint": "Галочка «добавить к заказу» рядом с кнопкой покупки. Показывается первый из отмеченных товаров, который есть в наличии."
         },
-        { "key": "related", "type": "refs", "collection": "products", "label": "Похожие товары" },
-        { "type": "heading", "label": "Для поиска Google" },
+        {
+          "key": "related",
+          "type": "refs",
+          "collection": "products",
+          "label": "Похожие товары",
+          "hint": "Лента внизу страницы товара."
+        },
+        {
+          "type": "heading",
+          "label": "Google и WhatsApp",
+          "hint": "Как товар выглядит в поиске Google и в превью ссылки в мессенджерах. Можно ничего не заполнять — сайт соберёт всё сам."
+        },
         {
           "key": "seo.title",
           "type": "text",
           "nullable": true,
-          "label": "Заголовок вкладки",
-          "hint": "Пусто — соберётся из названия."
+          "label": "Заголовок в Google",
+          "hint": "Пусто — сайт возьмёт название товара."
         },
         {
           "key": "seo.description",
           "type": "textarea",
           "rows": 3,
           "nullable": true,
-          "label": "Описание в поиске",
-          "hint": "Пусто — возьмётся короткое описание."
+          "label": "Описание в Google",
+          "hint": "Пусто — сайт возьмёт короткое описание."
+        },
+        {
+          "key": "ogImage",
+          "type": "image",
+          "flow": "og",
+          "nullable": true,
+          "label": "Картинка для превью ссылки",
+          "hint": "Размер 1200 × 630. Пусто — сайт соберёт её сам из главного фото."
         }
       ]
     },
     "categories": {
       "title": "Разделы каталога",
+      "icon": "folder",
+      "hint": "Разделы каталога в меню сайта: например, «Sillas» и «Accesorios». Товары выбирают свой раздел в карточке товара.",
+      "addLabel": "Добавить раздел",
       "item": "раздел",
       "titleField": "name",
       "orderField": "order",
@@ -224,7 +350,10 @@
         "description": "",
         "longDescription": null,
         "image": null,
-        "seo": { "title": null, "description": null }
+        "seo": {
+          "title": null,
+          "description": null
+        }
       },
       "fields": [
         {
@@ -237,10 +366,16 @@
         {
           "key": "slug",
           "type": "slug",
+          "advanced": true,
           "label": "Адрес страницы",
           "hint": "Латиница через дефис. После публикации не меняйте."
         },
-        { "key": "description", "type": "textarea", "rows": 3, "label": "Описание под заголовком" },
+        {
+          "key": "description",
+          "type": "textarea",
+          "rows": 3,
+          "label": "Описание под заголовком"
+        },
         {
           "key": "longDescription",
           "type": "textarea",
@@ -256,8 +391,16 @@
           "nullable": true,
           "label": "Картинка плитки на главной"
         },
-        { "type": "heading", "label": "Для поиска Google" },
-        { "key": "seo.title", "type": "text", "nullable": true, "label": "Заголовок вкладки" },
+        {
+          "type": "heading",
+          "label": "Для поиска Google"
+        },
+        {
+          "key": "seo.title",
+          "type": "text",
+          "nullable": true,
+          "label": "Заголовок вкладки"
+        },
         {
           "key": "seo.description",
           "type": "textarea",
@@ -269,6 +412,9 @@
     },
     "articles": {
       "title": "Блог",
+      "icon": "newspaper",
+      "hint": "Статьи блога. Новые статьи сайт показывает первыми (по дате).",
+      "addLabel": "Добавить статью",
       "item": "статью",
       "titleField": "title",
       "imageField": "cover",
@@ -280,17 +426,30 @@
         "body": "",
         "sections": [],
         "relatedProducts": [],
-        "seo": { "title": null, "description": null }
+        "seo": {
+          "title": null,
+          "description": null
+        }
       },
       "fields": [
-        { "key": "title", "type": "text", "label": "Заголовок", "required": true },
+        {
+          "key": "title",
+          "type": "text",
+          "label": "Заголовок",
+          "required": true
+        },
         {
           "key": "slug",
           "type": "slug",
+          "advanced": true,
           "label": "Адрес статьи",
           "hint": "Латиница через дефис. После публикации не меняйте."
         },
-        { "key": "date", "type": "date", "label": "Дата" },
+        {
+          "key": "date",
+          "type": "date",
+          "label": "Дата"
+        },
         {
           "key": "excerpt",
           "type": "textarea",
@@ -312,7 +471,10 @@
           "label": "Вступление",
           "hint": "Абзацы — через пустую строку."
         },
-        { "type": "heading", "label": "Видео (необязательно)" },
+        {
+          "type": "heading",
+          "label": "Видео (необязательно)"
+        },
         {
           "key": "video.id",
           "type": "image",
@@ -333,21 +495,56 @@
           "nullable": true,
           "label": "Подпись под роликом"
         },
-        { "type": "heading", "label": "Разделы статьи" },
+        {
+          "type": "heading",
+          "label": "Разделы статьи"
+        },
         {
           "key": "sections",
           "type": "list",
           "label": "Разделы",
           "item": "раздел",
           "titleField": "title",
-          "new": { "id": "", "title": "", "body": "" },
+          "new": {
+            "id": "",
+            "title": "",
+            "body": ""
+          },
           "fields": [
-            { "key": "title", "type": "text", "label": "Подзаголовок", "required": true },
-            { "key": "body", "type": "textarea", "rows": 5, "label": "Текст" },
-            { "key": "items", "type": "strings", "label": "Список пунктов" },
-            { "key": "ordered", "type": "bool", "label": "Пункты нумерованные" },
-            { "key": "quote", "type": "text", "nullable": true, "label": "Вынесенная фраза" },
-            { "key": "note.title", "type": "text", "nullable": true, "label": "Врезка: заголовок" },
+            {
+              "key": "title",
+              "type": "text",
+              "label": "Подзаголовок",
+              "required": true
+            },
+            {
+              "key": "body",
+              "type": "textarea",
+              "rows": 5,
+              "label": "Текст"
+            },
+            {
+              "key": "items",
+              "type": "strings",
+              "label": "Список пунктов"
+            },
+            {
+              "key": "ordered",
+              "type": "bool",
+              "label": "Пункты нумерованные"
+            },
+            {
+              "key": "quote",
+              "type": "text",
+              "nullable": true,
+              "label": "Вынесенная фраза"
+            },
+            {
+              "key": "note.title",
+              "type": "text",
+              "nullable": true,
+              "label": "Врезка: заголовок"
+            },
             {
               "key": "note.text",
               "type": "textarea",
@@ -357,10 +554,26 @@
             }
           ]
         },
-        { "type": "heading", "label": "Товары под статьёй" },
-        { "key": "relatedProducts", "type": "refs", "collection": "products", "label": "Товары" },
-        { "type": "heading", "label": "Для поиска Google" },
-        { "key": "seo.title", "type": "text", "nullable": true, "label": "Заголовок вкладки" },
+        {
+          "type": "heading",
+          "label": "Товары под статьёй"
+        },
+        {
+          "key": "relatedProducts",
+          "type": "refs",
+          "collection": "products",
+          "label": "Товары"
+        },
+        {
+          "type": "heading",
+          "label": "Для поиска Google"
+        },
+        {
+          "key": "seo.title",
+          "type": "text",
+          "nullable": true,
+          "label": "Заголовок вкладки"
+        },
         {
           "key": "seo.description",
           "type": "textarea",
@@ -372,6 +585,9 @@
     },
     "activities": {
       "title": "Игры (Para familias)",
+      "icon": "puzzle",
+      "hint": "Игры для детей в разделе «Para familias». Порядок в списке — порядок плиток на сайте.",
+      "addLabel": "Добавить игру",
       "item": "игру",
       "titleField": "name",
       "orderField": "order",
@@ -424,6 +640,7 @@
         {
           "key": "slug",
           "type": "slug",
+          "advanced": true,
           "label": "Адрес игры",
           "hint": "Латиница через дефис. После публикации не меняйте."
         },
@@ -1044,7 +1261,9 @@
         {
           "type": "heading",
           "label": "Листы раскраски",
-          "when": { "kind": "coloring" }
+          "when": {
+            "kind": "coloring"
+          }
         },
         {
           "key": "game.sheets",
@@ -1053,12 +1272,27 @@
           "label": "Листы",
           "item": "лист",
           "titleField": "name",
-          "when": { "kind": "coloring" },
+          "when": {
+            "kind": "coloring"
+          },
           "hint": "Чёрно-белый рисунок, вертикальный лист. Новые рисует scripts/coloring.js.",
-          "new": { "image": "", "name": "" },
+          "new": {
+            "image": "",
+            "name": ""
+          },
           "fields": [
-            { "key": "image", "type": "image", "flow": "content", "label": "Рисунок" },
-            { "key": "name", "type": "text", "label": "Название", "required": true }
+            {
+              "key": "image",
+              "type": "image",
+              "flow": "content",
+              "label": "Рисунок"
+            },
+            {
+              "key": "name",
+              "type": "text",
+              "label": "Название",
+              "required": true
+            }
           ]
         },
         {
@@ -1155,6 +1389,9 @@
     },
     "pages": {
       "title": "Текстовые страницы",
+      "icon": "file-text",
+      "hint": "Страницы из одного текста: доставка, возврат, условия, приватность, о нас.",
+      "addLabel": "Добавить страницу",
       "item": "страницу",
       "titleField": "title",
       "urlPrefix": "",
@@ -1163,17 +1400,31 @@
         "lead": "",
         "body": "",
         "sections": [],
-        "seo": { "title": null, "description": null }
+        "seo": {
+          "title": null,
+          "description": null
+        }
       },
       "fields": [
-        { "key": "title", "type": "text", "label": "Заголовок", "required": true },
+        {
+          "key": "title",
+          "type": "text",
+          "label": "Заголовок",
+          "required": true
+        },
         {
           "key": "slug",
           "type": "slug",
+          "advanced": true,
           "label": "Адрес страницы",
           "hint": "Латиница через дефис. После публикации не меняйте."
         },
-        { "key": "lead", "type": "textarea", "rows": 3, "label": "Лид" },
+        {
+          "key": "lead",
+          "type": "textarea",
+          "rows": 3,
+          "label": "Лид"
+        },
         {
           "key": "body",
           "type": "textarea",
@@ -1187,15 +1438,41 @@
           "label": "Разделы",
           "item": "раздел",
           "titleField": "title",
-          "new": { "id": "", "title": "", "body": "" },
+          "new": {
+            "id": "",
+            "title": "",
+            "body": ""
+          },
           "fields": [
-            { "key": "title", "type": "text", "label": "Подзаголовок", "required": true },
-            { "key": "body", "type": "textarea", "rows": 5, "label": "Текст" },
-            { "key": "items", "type": "strings", "label": "Список пунктов" }
+            {
+              "key": "title",
+              "type": "text",
+              "label": "Подзаголовок",
+              "required": true
+            },
+            {
+              "key": "body",
+              "type": "textarea",
+              "rows": 5,
+              "label": "Текст"
+            },
+            {
+              "key": "items",
+              "type": "strings",
+              "label": "Список пунктов"
+            }
           ]
         },
-        { "type": "heading", "label": "Для поиска Google" },
-        { "key": "seo.title", "type": "text", "nullable": true, "label": "Заголовок вкладки" },
+        {
+          "type": "heading",
+          "label": "Для поиска Google"
+        },
+        {
+          "key": "seo.title",
+          "type": "text",
+          "nullable": true,
+          "label": "Заголовок вкладки"
+        },
         {
           "key": "seo.description",
           "type": "textarea",
@@ -1207,10 +1484,17 @@
     },
     "faq": {
       "title": "Вопросы и ответы",
+      "icon": "circle-help",
+      "hint": "Вопросы и ответы: на странице «Preguntas frecuentes», на главной и в товарах. Порядок в списке — порядок на сайте.",
+      "addLabel": "Добавить вопрос",
       "item": "вопрос",
       "titleField": "question",
       "orderField": "order",
-      "new": { "topic": "", "question": "", "answer": "" },
+      "new": {
+        "topic": "",
+        "question": "",
+        "answer": ""
+      },
       "fields": [
         {
           "key": "topic",
@@ -1220,12 +1504,26 @@
           "required": true,
           "hint": "Названия тем — в «Страницах сайта» → Вопросы."
         },
-        { "key": "question", "type": "text", "label": "Вопрос", "required": true },
-        { "key": "answer", "type": "textarea", "rows": 6, "label": "Ответ", "required": true }
+        {
+          "key": "question",
+          "type": "text",
+          "label": "Вопрос",
+          "required": true
+        },
+        {
+          "key": "answer",
+          "type": "textarea",
+          "rows": 6,
+          "label": "Ответ",
+          "required": true
+        }
       ]
     },
     "reviews": {
       "title": "Отзывы",
+      "icon": "star",
+      "hint": "Отзывы покупателей: на главной и на странице товара. Отзыв, присланный через сайт, сначала появится в «Сообщениях».",
+      "addLabel": "Добавить отзыв",
       "item": "отзыв",
       "titleField": "author",
       "new": {
@@ -1239,7 +1537,12 @@
         "incentivized": false
       },
       "fields": [
-        { "key": "author", "type": "text", "label": "Имя покупателя", "required": true },
+        {
+          "key": "author",
+          "type": "text",
+          "label": "Имя покупателя",
+          "required": true
+        },
         {
           "key": "productId",
           "type": "ref",
@@ -1252,27 +1555,66 @@
           "type": "select",
           "label": "Оценка",
           "options": [
-            { "value": 5, "label": "5" },
-            { "value": 4, "label": "4" },
-            { "value": 3, "label": "3" },
-            { "value": 2, "label": "2" },
-            { "value": 1, "label": "1" }
+            {
+              "value": 5,
+              "label": "5"
+            },
+            {
+              "value": 4,
+              "label": "4"
+            },
+            {
+              "value": 3,
+              "label": "3"
+            },
+            {
+              "value": 2,
+              "label": "2"
+            },
+            {
+              "value": 1,
+              "label": "1"
+            }
           ]
         },
-        { "key": "text", "type": "textarea", "rows": 5, "label": "Текст отзыва", "required": true },
-        { "key": "date", "type": "date", "label": "Дата" },
+        {
+          "key": "text",
+          "type": "textarea",
+          "rows": 5,
+          "label": "Текст отзыва",
+          "required": true
+        },
+        {
+          "key": "date",
+          "type": "date",
+          "label": "Дата"
+        },
         {
           "key": "source",
           "type": "select",
           "label": "Откуда отзыв",
           "hint": "Только отзывы с сайта попадают в разметку для Google.",
           "options": [
-            { "value": "site", "label": "С сайта" },
-            { "value": "mercadolibre", "label": "Mercado Libre" },
-            { "value": "whatsapp", "label": "WhatsApp" }
+            {
+              "value": "site",
+              "label": "С сайта"
+            },
+            {
+              "value": "mercadolibre",
+              "label": "Mercado Libre"
+            },
+            {
+              "value": "whatsapp",
+              "label": "WhatsApp"
+            }
           ]
         },
-        { "key": "sourceUrl", "type": "text", "nullable": true, "label": "Ссылка на отзыв" },
+        {
+          "key": "sourceUrl",
+          "type": "text",
+          "nullable": true,
+          "label": "Ссылка на отзыв"
+        },
         {
           "key": "image",
           "type": "image",
@@ -1289,11 +1631,24 @@
     },
     "instagram": {
       "title": "Instagram",
+      "icon": "instagram",
+      "iconFilled": true,
+      "hint": "Посты в ленте Instagram на главной. Порядок в списке — порядок на сайте; видны первые 12, новый пост встаёт первым.",
+      "addLabel": "Добавить пост",
       "item": "пост",
       "titleField": "alt",
-      "new": { "url": "https://www.instagram.com/", "alt": "", "frames": [] },
+      "new": {
+        "url": "https://www.instagram.com/",
+        "alt": "",
+        "frames": []
+      },
       "fields": [
-        { "key": "url", "type": "text", "label": "Ссылка на пост", "required": true },
+        {
+          "key": "url",
+          "type": "text",
+          "label": "Ссылка на пост",
+          "required": true
+        },
         {
           "key": "alt",
           "type": "text",
@@ -1307,7 +1662,10 @@
           "item": "кадр",
           "titleField": "image",
           "hint": "Один кадр — фото, несколько — карусель, кадр с роликом — рилс.",
-          "new": { "image": "", "video": null },
+          "new": {
+            "image": "",
+            "video": null
+          },
           "fields": [
             {
               "key": "image",
@@ -1329,137 +1687,153 @@
     },
     "site": {
       "title": "Настройки",
+      "icon": "settings",
+      "hint": "Общие настройки магазина: контакты, реквизиты, что включено на сайте.",
       "object": true,
       "fields": [
-        { "type": "heading", "label": "Что включено на сайте" },
-        { "key": "features.blog", "type": "bool", "label": "Блог" },
-        { "key": "features.wishlist", "type": "bool", "label": "Избранное (сердечки)" },
-        { "key": "features.reviews", "type": "bool", "label": "Отзывы покупателей" },
         {
-          "key": "features.cuotas",
-          "type": "bool",
-          "label": "Строка про рассрочку под ценой",
-          "hint": "Включайте, только когда рассрочка так и настроена в Mercado Pago."
+          "type": "heading",
+          "label": "Контакты",
+          "hint": "Показываются в подвале, на странице «Контакты», в кнопке WhatsApp и в письмах покупателям."
         },
-        { "key": "cuotas.count", "type": "number", "label": "Рассрочка: число платежей" },
-        { "key": "cuotas.interestFree", "type": "bool", "label": "Рассрочка без процентов" },
-        { "type": "heading", "label": "Полоса вверху сайта" },
-        { "key": "announcement.enabled", "type": "bool", "label": "Показывать полосу" },
-        { "key": "announcement.text", "type": "text", "label": "Текст" },
-        { "key": "announcement.textShort", "type": "text", "label": "Короткий текст (телефон)" },
-        { "key": "announcement.cta", "type": "text", "nullable": true, "label": "Кнопка" },
-        { "key": "announcement.url", "type": "text", "nullable": true, "label": "Ссылка" },
-        { "type": "heading", "label": "Баннер акции на главной" },
-        { "key": "promo.enabled", "type": "bool", "label": "Показывать баннер" },
-        { "key": "promo.title", "type": "text", "label": "Заголовок" },
-        { "key": "promo.text", "type": "textarea", "rows": 2, "label": "Текст" },
-        { "key": "promo.url", "type": "text", "nullable": true, "label": "Ссылка" },
-        {
-          "key": "promo.image",
-          "type": "image",
-          "flow": "content",
-          "nullable": true,
-          "label": "Картинка"
-        },
-        { "type": "heading", "label": "Контакты" },
         {
           "key": "contacts.whatsapp",
           "type": "text",
-          "label": "WhatsApp (только цифры с кодом страны)",
-          "hint": "Например 5491127915729"
+          "label": "Номер WhatsApp",
+          "hint": "Только цифры, с кодом страны и без пробелов, например 5491127915729. На него ведёт зелёная кнопка на сайте."
         },
-        { "key": "contacts.phone", "type": "text", "label": "Телефон для показа" },
-        { "key": "contacts.email", "type": "text", "label": "Email" },
-        { "key": "contacts.instagram", "type": "text", "label": "Instagram (ссылка)" },
+        {
+          "key": "contacts.phone",
+          "type": "text",
+          "label": "Телефон, как его показывать",
+          "hint": "Например +54 9 11 2791-5729."
+        },
+        {
+          "key": "contacts.email",
+          "type": "text",
+          "label": "Почта для покупателей"
+        },
+        {
+          "key": "contacts.instagram",
+          "type": "text",
+          "label": "Ссылка на Instagram",
+          "hint": "Полностью, начиная с https://"
+        },
         {
           "key": "contacts.address",
           "type": "text",
           "nullable": true,
           "label": "Адрес для посетителей",
-          "hint": "Пусто — адрес на сайте не показывается."
+          "hint": "Пусто — адреса и карты на сайте нет."
         },
-        { "key": "contacts.hours", "type": "text", "nullable": true, "label": "Часы работы" },
-        { "type": "heading", "label": "Магазин" },
+        {
+          "key": "contacts.hours",
+          "type": "text",
+          "nullable": true,
+          "label": "Часы работы"
+        },
+        {
+          "type": "heading",
+          "label": "Магазин",
+          "hint": "Доставка, корзина и значок «Nuevo»."
+        },
         {
           "key": "shipping.cost",
           "type": "money",
-          "label": "Стоимость доставки, песо",
-          "hint": "0 — сайт доставку не считает: «No incluido», стоимость согласуется после покупки."
+          "label": "Стоимость доставки",
+          "hint": "0 — сайт доставку не считает и пишет «No incluido»: стоимость согласуете с покупателем после покупки."
         },
         {
           "key": "cart.maxQtyPerItem",
           "type": "number",
-          "label": "Максимум штук одного товара в корзине"
+          "label": "Сколько штук одного товара можно положить в корзину"
         },
         {
           "key": "cart.paymentLinkDays",
           "type": "number",
-          "label": "Сколько дней живёт ссылка на оплату"
-        },
-        { "key": "catalog.newBadgeDays", "type": "number", "label": "Сколько дней товар «Nuevo»" },
-        { "type": "heading", "label": "Поиск Google" },
-        { "key": "seo.homeTitle", "type": "text", "label": "Заголовок главной" },
-        {
-          "key": "seo.homeDescription",
-          "type": "textarea",
-          "rows": 3,
-          "label": "Описание главной в поиске"
+          "label": "Сколько дней действует ссылка на оплату",
+          "hint": "Ссылка приходит покупателю в письме, если он не оплатил заказ сразу."
         },
         {
-          "key": "seo.defaultOgImage",
-          "type": "image",
-          "flow": "og",
-          "label": "Картинка для WhatsApp по умолчанию"
+          "key": "catalog.newBadgeDays",
+          "type": "number",
+          "label": "Сколько дней новый товар отмечен значком «Nuevo»",
+          "hint": "Отсчёт — от даты появления в карточке товара."
         },
-        { "type": "heading", "label": "Реквизиты (подвал, обязательны по закону)" },
-        { "key": "legal.razonSocial", "type": "text", "label": "Razón social" },
-        { "key": "legal.cuit", "type": "text", "label": "CUIT" },
-        { "key": "legal.domicilio", "type": "text", "label": "Юридический адрес (Data Fiscal)" },
-        { "key": "legal.dataFiscalUrl", "type": "text", "label": "Ссылка Data Fiscal" },
-        { "key": "legal.ivaRate", "type": "number", "label": "IVA, %" }
+        {
+          "type": "heading",
+          "label": "Рассрочка",
+          "hint": "Строка вида «6 cuotas sin interés» под ценой товара."
+        },
+        {
+          "key": "features.cuotas",
+          "type": "bool",
+          "label": "Показывать строку про рассрочку",
+          "hint": "Включайте, только когда рассрочка так и настроена в кабинете Mercado Pago: иначе сайт пообещает то, чего нет."
+        },
+        {
+          "key": "cuotas.count",
+          "type": "number",
+          "label": "На сколько платежей"
+        },
+        {
+          "key": "cuotas.interestFree",
+          "type": "bool",
+          "label": "Без процентов"
+        },
+        {
+          "type": "heading",
+          "label": "Что включено на сайте",
+          "hint": "Выключенный раздел исчезает с сайта целиком, вместе с пунктами меню."
+        },
+        {
+          "key": "features.blog",
+          "type": "bool",
+          "label": "Блог"
+        },
+        {
+          "key": "features.wishlist",
+          "type": "bool",
+          "label": "Избранное (сердечки на товарах)"
+        },
+        {
+          "key": "features.reviews",
+          "type": "bool",
+          "label": "Отзывы покупателей"
+        },
+        {
+          "type": "heading",
+          "label": "Реквизиты",
+          "hint": "Строка в самом низу сайта. По закону Аргентины обязательна для интернет-магазина."
+        },
+        {
+          "key": "legal.razonSocial",
+          "type": "text",
+          "label": "Razón social (название по документам)"
+        },
+        {
+          "key": "legal.cuit",
+          "type": "text",
+          "label": "CUIT"
+        },
+        {
+          "key": "legal.domicilio",
+          "type": "text",
+          "label": "Юридический адрес (как в Data Fiscal)"
+        },
+        {
+          "key": "legal.dataFiscalUrl",
+          "type": "text",
+          "label": "Ссылка на Data Fiscal",
+          "hint": "Ссылка из QR-кода Data Fiscal в кабинете ARCA."
+        },
+        {
+          "key": "legal.ivaRate",
+          "type": "number",
+          "label": "НДС (IVA), %",
+          "hint": "Из него сайт считает строку «Precio sin impuestos nacionales» под ценой."
+        }
       ]
-    }
-  },
-  "texts": {
-    "sections": {
-      "nav": "Навигация и меню",
-      "footer": "Подвал",
-      "common": "Общие кнопки",
-      "home": "Главная",
-      "howItWorks": "Как это работает",
-      "whatsapp": "Кнопка WhatsApp",
-      "social": "Соцсети",
-      "catalog": "Каталог",
-      "product": "Страница товара",
-      "spec": "Характеристики",
-      "badge": "Бейджи",
-      "price": "Цена",
-      "qty": "Количество",
-      "stock": "Наличие",
-      "gallery": "Галерея",
-      "carousel": "Ленты",
-      "search": "Поиск",
-      "cart": "Корзина",
-      "checkout": "Оформление заказа",
-      "fields": "Поля форм",
-      "forms": "Формы",
-      "errors": "Сообщения об ошибках",
-      "wishlist": "Избранное",
-      "reviews": "Отзывы",
-      "thanks": "Страница «Gracias»",
-      "email": "Письма",
-      "messageLabels": "Подписи в письмах владельцу",
-      "notFound": "Страница 404",
-      "article": "Статья",
-      "legal": "Юридическое",
-      "faqTopics": "Темы вопросов",
-      "faq": "Страница вопросов",
-      "about": "Nosotros",
-      "contact": "Контакты",
-      "arrepentimiento": "Кнопка отказа",
-      "quejas": "Книга жалоб",
-      "blog": "Блог",
-      "seo": "Поиск Google"
     }
   },
   "sitePages": [
@@ -1467,213 +1841,3351 @@
       "id": "home",
       "title": "Главная",
       "url": "/",
-      "note": "Товары, отзывы, вопросы, Instagram и статьи на главной берутся из своих разделов. Баннер акции и полоса вверху — в «Настройках».",
-      "fields": [
-        { "type": "heading", "label": "Первый экран" },
+      "summary": "Первая страница сайта: сюда попадает покупатель, когда открывает магазин.",
+      "blocks": [
         {
-          "key": "media.homeHero.wide",
-          "type": "image",
-          "flow": "content",
-          "label": "Фото для компьютера (панорама)",
-          "hint": "Один и тот же снимок в трёх обрезках: панорама, 16:9 и вертикаль 4:5. Стул — справа, слева место под текст."
+          "title": "Первый экран",
+          "hint": "Самый верх страницы: большое фото во всю ширину, на нём заголовок и две кнопки.",
+          "fields": [
+            {
+              "text": "home.heroBadge",
+              "label": "Цветная надпись над заголовком"
+            },
+            {
+              "text": "home.heroTitle",
+              "label": "Заголовок"
+            },
+            {
+              "text": "home.heroText",
+              "label": "Текст под заголовком",
+              "hint": "На телефоне не показывается — только на планшете и компьютере."
+            },
+            {
+              "text": "home.heroCta",
+              "label": "Главная кнопка",
+              "hint": "Ведёт в каталог стульев. Та же надпись — на кнопке внизу страницы «О нас» и в конце каждой статьи блога."
+            },
+            {
+              "text": "home.heroCtaSecondary",
+              "label": "Вторая кнопка",
+              "hint": "Ведёт на страницу «Как это работает»."
+            },
+            {
+              "key": "media.homeHero.wide",
+              "type": "image",
+              "flow": "content",
+              "label": "Фото для компьютера",
+              "hint": "Один и тот же снимок в трёх обрезках: широкая, 16:9 и вертикальная 4:5. Стул — справа, слева место под текст."
+            },
+            {
+              "key": "media.homeHero.mid",
+              "type": "image",
+              "flow": "content",
+              "label": "Фото для планшета (16:9)"
+            },
+            {
+              "key": "media.homeHero.narrow",
+              "type": "image",
+              "flow": "content",
+              "label": "Фото для телефона (вертикальное 4:5)"
+            },
+            {
+              "text": "home.heroImageAlt",
+              "label": "Что изображено на фото",
+              "sr": true
+            }
+          ]
         },
         {
-          "key": "media.homeHero.mid",
-          "type": "image",
-          "flow": "content",
-          "label": "Фото для планшета (16:9)"
+          "title": "Четыре цветные плитки",
+          "hint": "Сразу под первым экраном: четыре яркие плитки-ссылки, на телефоне по две в ряд.",
+          "fields": [
+            {
+              "text": "home.promoSillasTitle",
+              "label": "Синяя плитка: заголовок",
+              "hint": "Ведёт в каталог стульев."
+            },
+            {
+              "text": "home.promoSillasText",
+              "label": "Синяя плитка: текст",
+              "hint": "{price} — сайт подставит самую низкую цену среди стульев."
+            },
+            {
+              "text": "home.promoAccesoriosTitle",
+              "label": "Розовая плитка: заголовок",
+              "hint": "Ведёт в раздел аксессуаров."
+            },
+            {
+              "text": "home.promoAccesoriosText",
+              "label": "Розовая плитка: текст"
+            },
+            {
+              "text": "home.promoEnvioTitle",
+              "label": "Жёлтая плитка: заголовок",
+              "hint": "Ведёт на страницу о доставке и оплате."
+            },
+            {
+              "text": "home.promoEnvioText",
+              "label": "Жёлтая плитка: текст"
+            },
+            {
+              "text": "home.promoTallerTitle",
+              "label": "Зелёная плитка: заголовок",
+              "hint": "Ведёт на страницу «О нас»."
+            },
+            {
+              "text": "home.promoTallerText",
+              "label": "Зелёная плитка: текст"
+            }
+          ]
         },
         {
-          "key": "media.homeHero.narrow",
-          "type": "image",
-          "flow": "content",
-          "label": "Фото для телефона (вертикаль 4:5)"
-        },
-        { "type": "heading", "label": "Подбор по возрасту" },
-        {
-          "key": "media.homePicker.baby",
-          "type": "image",
-          "flow": "product",
-          "label": "Плитка «для малыша»"
-        },
-        {
-          "key": "media.homePicker.kid",
-          "type": "image",
-          "flow": "product",
-          "label": "Плитка «для ребёнка»"
+          "title": "Лента товаров",
+          "hint": "Ряд карточек товаров, листается вбок. Сами товары правятся в разделе «Товары».",
+          "goto": "products",
+          "fields": [
+            {
+              "text": "home.productsTitle",
+              "label": "Заголовок"
+            },
+            {
+              "text": "home.viewAllFem",
+              "label": "Ссылка справа от заголовка",
+              "hint": "Ведёт в каталог стульев. Та же надпись — у лент товаров в блоге, каталоге, играх и на странице товара."
+            }
+          ]
         },
         {
-          "key": "media.homePicker.helper",
-          "type": "image",
-          "flow": "content",
-          "label": "Плитка «помощник на кухне»"
+          "title": "Подбор по возрасту",
+          "hint": "Бежевая полоса с тремя цветными плитками: какой стул нужен ребёнку сейчас. Цены и ссылки плиток берутся из товаров.",
+          "fields": [
+            {
+              "text": "home.pickerTitle",
+              "label": "Заголовок"
+            },
+            {
+              "text": "home.pickerBabyTitle",
+              "label": "Первая плитка (синяя): заголовок",
+              "hint": "Ведёт на стул для малышей. Этой же фразой описано фото плитки для незрячих."
+            },
+            {
+              "text": "home.pickerBabyText",
+              "label": "Первая плитка: текст"
+            },
+            {
+              "key": "media.homePicker.baby",
+              "type": "image",
+              "flow": "product",
+              "label": "Фото первой плитки"
+            },
+            {
+              "text": "home.pickerKidTitle",
+              "label": "Вторая плитка (зелёная): заголовок",
+              "hint": "Ведёт на растущий стул (Silla Evolutiva)."
+            },
+            {
+              "text": "home.pickerKidText",
+              "label": "Вторая плитка: текст"
+            },
+            {
+              "key": "media.homePicker.kid",
+              "type": "image",
+              "flow": "product",
+              "label": "Фото второй плитки"
+            },
+            {
+              "text": "home.pickerHelperTitle",
+              "label": "Третья плитка (жёлтая): заголовок",
+              "hint": "Ведёт на башню для кухни."
+            },
+            {
+              "text": "home.pickerHelperText",
+              "label": "Третья плитка: текст"
+            },
+            {
+              "key": "media.homePicker.helper",
+              "type": "image",
+              "flow": "content",
+              "label": "Фото третьей плитки"
+            }
+          ]
         },
-        { "type": "heading", "label": "Разворот главного товара" },
         {
-          "key": "media.homeFlagship",
-          "type": "image",
-          "flow": "product",
-          "label": "Фото разворота",
-          "hint": "Стул виден целиком и в интерьере."
+          "title": "Главный стул",
+          "hint": "Тёмно-коричневая полоса: слева фото, справа название стула, четыре характеристики со значками, кнопка и цена. Название, описание и цена берутся из товара в разделе «Товары».",
+          "goto": "products",
+          "fields": [
+            {
+              "text": "home.flagshipEyebrow",
+              "label": "Мелкая надпись над названием"
+            },
+            {
+              "text": "home.specAge",
+              "label": "Характеристика 1: возраст"
+            },
+            {
+              "text": "home.specLoad",
+              "label": "Характеристика 2: нагрузка"
+            },
+            {
+              "text": "home.specAdjust",
+              "label": "Характеристика 3: регулировка"
+            },
+            {
+              "text": "home.specMaterial",
+              "label": "Характеристика 4: материал"
+            },
+            {
+              "text": "home.flagshipCta",
+              "label": "Надпись на кнопке",
+              "hint": "Ведёт на страницу этого стула."
+            },
+            {
+              "key": "media.homeFlagship",
+              "type": "image",
+              "flow": "product",
+              "label": "Фото",
+              "hint": "Стул виден целиком и в интерьере."
+            }
+          ]
         },
-        { "type": "heading", "label": "Как растёт стул" },
         {
-          "key": "media.adjustFrames.0",
-          "type": "image",
-          "flow": "content",
-          "label": "Кадр регулировки 1",
-          "hint": "Три кадра листаются по кругу; те же кадры — на главной и на «Как это работает»."
+          "title": "Как регулируется стул",
+          "hint": "Заголовок, текст и три пункта со значками; рядом листаются кадры регулировки.",
+          "fields": [
+            {
+              "text": "home.stepsTitle",
+              "label": "Заголовок"
+            },
+            {
+              "text": "home.stepsText",
+              "label": "Текст под заголовком"
+            },
+            {
+              "text": "home.step1Title",
+              "label": "Пункт 1: заголовок"
+            },
+            {
+              "text": "home.step1Text",
+              "label": "Пункт 1: текст"
+            },
+            {
+              "text": "home.step2Title",
+              "label": "Пункт 2: заголовок"
+            },
+            {
+              "text": "home.step2Text",
+              "label": "Пункт 2: текст"
+            },
+            {
+              "text": "home.step3Title",
+              "label": "Пункт 3: заголовок"
+            },
+            {
+              "text": "home.step3Text",
+              "label": "Пункт 3: текст"
+            },
+            {
+              "text": "home.stepsCta",
+              "label": "Надпись на кнопке",
+              "hint": "Ведёт на страницу главного стула."
+            },
+            {
+              "key": "media.adjustFrames.0",
+              "type": "image",
+              "flow": "content",
+              "label": "Кадр 1",
+              "hint": "Три кадра листаются по кругу. Те же кадры стоят на странице «Как это работает»."
+            },
+            {
+              "key": "media.adjustFrames.1",
+              "type": "image",
+              "flow": "content",
+              "label": "Кадр 2"
+            },
+            {
+              "key": "media.adjustFrames.2",
+              "type": "image",
+              "flow": "content",
+              "label": "Кадр 3"
+            },
+            {
+              "text": "home.stepsFrameAlt",
+              "label": "Что изображено на кадрах",
+              "sr": true
+            }
+          ]
         },
         {
-          "key": "media.adjustFrames.1",
-          "type": "image",
-          "flow": "content",
-          "label": "Кадр регулировки 2"
+          "title": "Фото во всю ширину",
+          "hint": "Большое фото без текста между рассказом о регулировке и блоком безопасности.",
+          "fields": [
+            {
+              "key": "media.homeAtmosphere",
+              "type": "image",
+              "flow": "content",
+              "label": "Фото во всю ширину"
+            }
+          ]
         },
         {
-          "key": "media.adjustFrames.2",
-          "type": "image",
-          "flow": "content",
-          "label": "Кадр регулировки 3"
+          "title": "Безопасность",
+          "hint": "Бежевая полоса с четырьмя пунктами в цветных кружках. Сами четыре пункта — общие со страницей товара и правятся там.",
+          "fields": [
+            {
+              "text": "home.safetyTitle",
+              "label": "Заголовок"
+            }
+          ]
         },
-        { "type": "heading", "label": "Широкий кадр атмосферы" },
         {
-          "key": "media.homeAtmosphere",
-          "type": "image",
-          "flow": "content",
-          "label": "Фото во всю ширину"
+          "title": "Отзывы покупателей",
+          "hint": "Ряд карточек с отзывами, листается вбок. Сами отзывы добавляются в разделе «Отзывы».",
+          "goto": "reviews",
+          "fields": [
+            {
+              "text": "home.reviewsTitle",
+              "label": "Заголовок"
+            },
+            {
+              "text": "home.reviewsFromMl",
+              "label": "Подпись под заголовком",
+              "hint": "Также под отзывом на странице «О нас»."
+            }
+          ]
+        },
+        {
+          "title": "Instagram",
+          "hint": "Бежевая полоса с постами из Instagram, листается вбок. Сами посты добавляются в разделе «Instagram».",
+          "goto": "instagram",
+          "fields": [
+            {
+              "text": "home.instagramTitle",
+              "label": "Заголовок"
+            },
+            {
+              "text": "home.instagramCta",
+              "label": "Ссылка справа от заголовка",
+              "hint": "Ведёт на страницу магазина в Instagram."
+            },
+            {
+              "text": "home.instagramOpen",
+              "label": "Подпись ссылки на пост",
+              "sr": true,
+              "hint": "Озвучивается на каждом посте: открыть его в Instagram."
+            },
+            {
+              "text": "home.instagramPlay",
+              "label": "Подпись кнопки запуска видео",
+              "sr": true
+            }
+          ]
+        },
+        {
+          "title": "Частые вопросы",
+          "hint": "Слева заголовок, справа раскрывающиеся вопросы. Сами вопросы правятся в разделе «Вопросы и ответы».",
+          "goto": "faq",
+          "fields": [
+            {
+              "text": "home.faqTitle",
+              "label": "Заголовок"
+            }
+          ]
+        },
+        {
+          "title": "Почему покупать просто",
+          "hint": "Бежевая полоса с четырьмя пунктами в цветных кружках: производство, доставка, оплата, сборка.",
+          "fields": [
+            {
+              "text": "home.trustTitle",
+              "label": "Заголовок"
+            },
+            {
+              "text": "home.trustMade",
+              "label": "Пункт 1: заголовок"
+            },
+            {
+              "text": "home.trustMadeText",
+              "label": "Пункт 1: текст"
+            },
+            {
+              "text": "home.trustShipping",
+              "label": "Пункт 2: заголовок"
+            },
+            {
+              "text": "home.trustShippingText",
+              "label": "Пункт 2: текст"
+            },
+            {
+              "text": "home.trustPayment",
+              "label": "Пункт 3: заголовок"
+            },
+            {
+              "text": "home.trustPaymentText",
+              "label": "Пункт 3: текст"
+            },
+            {
+              "text": "home.trustAssembly",
+              "label": "Пункт 4: заголовок"
+            },
+            {
+              "text": "home.trustAssemblyText",
+              "label": "Пункт 4: текст"
+            }
+          ]
+        },
+        {
+          "title": "Статьи блога",
+          "hint": "Ряд карточек статей, листается вбок; виден, только когда блог включён. Сами статьи пишутся в разделе «Блог».",
+          "goto": "articles",
+          "fields": [
+            {
+              "text": "home.blogTitle",
+              "label": "Заголовок"
+            },
+            {
+              "text": "catalog.viewAll",
+              "label": "Надпись на последней карточке ленты"
+            }
+          ]
+        },
+        {
+          "title": "Текст внизу страницы",
+          "hint": "Тёмно-коричневая полоса перед самым низом сайта: заголовок, абзац и две колонки текста. Пишется в первую очередь для поиска Google.",
+          "fields": [
+            {
+              "text": "home.seoTitle",
+              "label": "Заголовок"
+            },
+            {
+              "text": "home.seoLead",
+              "label": "Абзац под заголовком"
+            },
+            {
+              "text": "home.seoColOneTitle",
+              "label": "Левая колонка: заголовок"
+            },
+            {
+              "text": "home.seoColOneText",
+              "label": "Левая колонка: текст"
+            },
+            {
+              "text": "home.seoColTwoTitle",
+              "label": "Правая колонка: заголовок"
+            },
+            {
+              "text": "home.seoColTwoText",
+              "label": "Правая колонка: текст"
+            }
+          ]
         }
-      ],
-      "texts": ["home"]
+      ]
+    },
+    {
+      "id": "layout",
+      "title": "Шапка, меню и подвал",
+      "summary": "То, что стоит на всех страницах сайта: полоса вверху, шапка с меню и поиском, меню на телефоне, кнопка WhatsApp и подвал.",
+      "blocks": [
+        {
+          "title": "Полоса вверху сайта",
+          "hint": "Синяя узкая полоса над шапкой с объявлением и жёлтой кнопкой; покупатель может закрыть её крестиком.",
+          "fields": [
+            {
+              "key": "announcement.enabled",
+              "type": "bool",
+              "label": "Показывать полосу"
+            },
+            {
+              "key": "announcement.text",
+              "type": "text",
+              "label": "Текст"
+            },
+            {
+              "key": "announcement.textShort",
+              "type": "text",
+              "label": "Короткий текст для телефона"
+            },
+            {
+              "key": "announcement.cta",
+              "type": "text",
+              "nullable": true,
+              "label": "Надпись ссылки"
+            },
+            {
+              "key": "announcement.url",
+              "type": "text",
+              "nullable": true,
+              "label": "Куда ведёт (ссылка)"
+            }
+          ]
+        },
+        {
+          "title": "Шапка и меню",
+          "hint": "Верхняя строка на каждой странице: логотип, пункты меню, лупа, сердечко и сумка корзины.",
+          "fields": [
+            {
+              "text": "nav.all",
+              "label": "Кнопка «Весь каталог» в шапке",
+              "hint": "Видна на компьютере, стоит перед пунктами меню."
+            },
+            {
+              "text": "nav.sillas",
+              "label": "Пункт меню: стулья",
+              "hint": "Короткое название раздела для меню. Также в меню на телефоне, в подвале и на странице «Все товары»."
+            },
+            {
+              "text": "nav.accesorios",
+              "label": "Пункт меню: аксессуары",
+              "hint": "Короткое название раздела для меню. Также в меню на телефоне, в подвале и на странице «Все товары»."
+            },
+            {
+              "text": "nav.nosotros",
+              "label": "Пункт меню: о нас",
+              "hint": "Также в меню на телефоне и в подвале."
+            },
+            {
+              "text": "nav.blog",
+              "label": "Пункт меню: блог",
+              "hint": "Также в меню на телефоне, в подвале и в пути над заголовком статьи."
+            },
+            {
+              "text": "nav.familias",
+              "label": "Пункт меню: для семей",
+              "hint": "В шапке виден только на широком экране. Также в меню на телефоне и в подвале."
+            },
+            {
+              "text": "nav.contacto",
+              "label": "Пункт меню: контакты",
+              "hint": "Также заголовок колонки контактов в подвале."
+            },
+            {
+              "text": "nav.main",
+              "label": "Название главного меню",
+              "sr": true
+            },
+            {
+              "text": "nav.openMenu",
+              "label": "Кнопка с тремя полосками (открыть меню)",
+              "sr": true,
+              "hint": "Видна только на телефоне и планшете."
+            },
+            {
+              "text": "nav.closeMenu",
+              "label": "Та же кнопка, когда меню открыто (закрыть меню)",
+              "sr": true
+            },
+            {
+              "text": "nav.openCart",
+              "label": "Значок сумки (открыть корзину)",
+              "sr": true
+            }
+          ]
+        },
+        {
+          "title": "Меню на телефоне",
+          "hint": "Выезжает под шапкой, если на телефоне нажать кнопку с тремя полосками.",
+          "fields": [
+            {
+              "text": "nav.allMenu",
+              "label": "Большая кнопка вверху меню",
+              "hint": "Ведёт на страницу всех товаров."
+            },
+            {
+              "text": "social.email",
+              "label": "Значок письма внизу меню",
+              "sr": true
+            },
+            {
+              "text": "social.instagram",
+              "label": "Значок Instagram внизу меню",
+              "sr": true
+            }
+          ]
+        },
+        {
+          "title": "Путь над заголовком страницы",
+          "hint": "Мелкая строка «Inicio / раздел / страница» над заголовком на всех страницах, кроме главной.",
+          "fields": [
+            {
+              "text": "nav.home",
+              "label": "Первое звено пути (главная)"
+            },
+            {
+              "text": "nav.breadcrumbs",
+              "label": "Название строки пути",
+              "sr": true
+            }
+          ]
+        },
+        {
+          "title": "Поиск",
+          "hint": "Панель, которая раскрывается под шапкой, если нажать на лупу.",
+          "fields": [
+            {
+              "text": "nav.openSearch",
+              "label": "Заголовок над строкой поиска",
+              "hint": "Также невидимая подпись лупы в шапке и заголовок страницы поиска, пока ничего не набрано."
+            },
+            {
+              "text": "search.placeholder",
+              "label": "Серая подсказка в пустой строке поиска",
+              "hint": "Также на странице поиска и на странице «не найдено»."
+            },
+            {
+              "text": "search.groupCategories",
+              "label": "Заголовок списка разделов",
+              "hint": "Показывается, пока ничего не набрано, и над найденными разделами. Также на странице поиска."
+            },
+            {
+              "text": "search.minChars",
+              "label": "Подсказка, если набрана одна буква",
+              "hint": "Также на странице поиска."
+            },
+            {
+              "text": "search.groupProducts",
+              "label": "Заголовок найденных товаров",
+              "hint": "Также на странице поиска."
+            },
+            {
+              "text": "search.groupArticles",
+              "label": "Заголовок найденных статей блога",
+              "hint": "Также на странице поиска."
+            },
+            {
+              "text": "search.viewAllResults",
+              "label": "Ссылка внизу списка «все результаты»",
+              "hint": "Ведёт на страницу поиска со всеми найденными."
+            },
+            {
+              "text": "search.empty",
+              "label": "Сообщение, если ничего не найдено",
+              "hint": "{query} — сайт подставит то, что набрал покупатель. Также на странице поиска."
+            },
+            {
+              "text": "search.emptyCta",
+              "label": "Кнопка под сообщением «ничего не найдено»",
+              "hint": "Ведёт в каталог. Также на странице поиска."
+            },
+            {
+              "text": "search.clear",
+              "label": "Крестик внутри строки (стереть набранное)",
+              "sr": true
+            },
+            {
+              "text": "nav.closeSearch",
+              "label": "Крестик справа от строки (закрыть поиск)",
+              "sr": true
+            },
+            {
+              "text": "search.resultsOne",
+              "label": "Сколько найдено — если один результат",
+              "sr": true,
+              "hint": "Также на странице поиска."
+            },
+            {
+              "text": "search.resultsMany",
+              "label": "Сколько найдено — если несколько",
+              "sr": true,
+              "hint": "{count} — сайт подставит число найденного. Также на странице поиска."
+            }
+          ]
+        },
+        {
+          "title": "Страница поиска",
+          "hint": "Отдельная страница /buscar/: открывается, если в поиске нажать Enter или «все результаты».",
+          "fields": [
+            {
+              "text": "search.resultsTitle",
+              "label": "Заголовок страницы с результатами",
+              "hint": "{query} — сайт подставит то, что искали."
+            },
+            {
+              "text": "search.pageLead",
+              "label": "Текст-приглашение под строкой поиска",
+              "hint": "Показывается, пока ничего не набрано."
+            },
+            {
+              "text": "search.submit",
+              "label": "Кнопка рядом со строкой поиска",
+              "hint": "Также на странице «не найдено»."
+            },
+            {
+              "text": "search.pageLabel",
+              "label": "Название строки поиска",
+              "sr": true
+            }
+          ]
+        },
+        {
+          "title": "Ленты с карточками",
+          "hint": "Ряды карточек, которые листаются вбок стрелками и точками: отзывы, товары, статьи на главной и на странице товара.",
+          "fields": [
+            {
+              "text": "common.prev",
+              "label": "Стрелка влево",
+              "sr": true
+            },
+            {
+              "text": "common.next",
+              "label": "Стрелка вправо",
+              "sr": true
+            },
+            {
+              "text": "carousel.goTo",
+              "label": "Точка под лентой (перейти к карточке)",
+              "sr": true,
+              "hint": "{n} — сайт подставит номер карточки."
+            },
+            {
+              "text": "carousel.slideOf",
+              "label": "Какая по счёту карточка",
+              "sr": true,
+              "hint": "{n} — номер карточки, {total} — сколько их всего."
+            },
+            {
+              "text": "carousel.first",
+              "label": "Сообщение: это первая карточка",
+              "sr": true
+            },
+            {
+              "text": "carousel.last",
+              "label": "Сообщение: это последняя карточка",
+              "sr": true
+            }
+          ]
+        },
+        {
+          "title": "Общие кнопки и фразы",
+          "hint": "Мелкие надписи, которые повторяются в разных местах сайта.",
+          "fields": [
+            {
+              "text": "common.readMore",
+              "label": "Ссылка «читать дальше»",
+              "hint": "Под длинным описанием товара и раздела, в длинных отзывах."
+            },
+            {
+              "text": "common.readLess",
+              "label": "Ссылка «свернуть»",
+              "hint": "Появляется вместо «читать дальше», когда текст раскрыт."
+            },
+            {
+              "text": "common.retry",
+              "label": "Кнопка «попробовать ещё раз»",
+              "hint": "Показывается, когда что-то не загрузилось: поиск, корзина, оплата."
+            },
+            {
+              "text": "common.stillLoading",
+              "label": "Подпись при долгой загрузке",
+              "hint": "Появляется, если поиск или страница после оплаты грузятся дольше обычного."
+            },
+            {
+              "text": "common.goHome",
+              "label": "Кнопка «на главную»",
+              "hint": "На странице «не найдено» и на юридических страницах."
+            },
+            {
+              "text": "common.back",
+              "label": "Кнопка «назад»",
+              "hint": "Сейчас на страницах магазина не встречается — только в служебной витрине."
+            },
+            {
+              "text": "common.close",
+              "label": "Крестик «закрыть»",
+              "sr": true,
+              "hint": "У полосы вверху, корзины, фильтров и всплывающих окон."
+            },
+            {
+              "text": "common.skipToContent",
+              "label": "Ссылка «сразу к содержимому»",
+              "sr": true,
+              "hint": "Появляется в самом верху только при переходе клавишей Tab."
+            }
+          ]
+        },
+        {
+          "title": "Кнопка WhatsApp",
+          "hint": "Круглая кнопка с значком WhatsApp в правом нижнем углу экрана.",
+          "fields": [
+            {
+              "text": "whatsapp.cta",
+              "label": "Подпись кнопки WhatsApp",
+              "hint": "На круглой кнопке и в меню на телефоне её не видно — там она озвучивается для незрячих; видимой надписью стоит на кнопках на странице «Контакты» и в блоке помощи внизу страниц."
+            }
+          ]
+        },
+        {
+          "title": "Подвал",
+          "hint": "Тёмный низ каждой страницы: четыре колонки ссылок и строка с правами и реквизитами.",
+          "fields": [
+            {
+              "text": "footer.tienda",
+              "label": "Колонка 1: заголовок «Магазин»",
+              "hint": "Также заголовок раздела в меню на телефоне."
+            },
+            {
+              "text": "nav.ayuda",
+              "label": "Колонка 2: заголовок «Помощь»",
+              "hint": "Также заголовок раздела в меню на телефоне."
+            },
+            {
+              "text": "footer.envios",
+              "label": "Колонка 2: ссылка «Доставка и оплата»",
+              "hint": "Также в меню на телефоне."
+            },
+            {
+              "text": "footer.devoluciones",
+              "label": "Колонка 2: ссылка «Обмен и возврат»",
+              "hint": "Также в меню на телефоне и на странице кнопки отказа от покупки."
+            },
+            {
+              "text": "footer.faq",
+              "label": "Колонка 2: ссылка «Частые вопросы»",
+              "hint": "Также в меню на телефоне и заголовком самой страницы вопросов."
+            },
+            {
+              "text": "footer.legal",
+              "label": "Колонка 3: заголовок «Юридическое»"
+            },
+            {
+              "text": "footer.terminos",
+              "label": "Колонка 3: ссылка «Условия»"
+            },
+            {
+              "text": "footer.privacidad",
+              "label": "Колонка 3: ссылка «Конфиденциальность»"
+            },
+            {
+              "text": "footer.quejas",
+              "label": "Колонка 3: ссылка «Книга жалоб»",
+              "hint": "Также заголовок самой страницы книги жалоб."
+            },
+            {
+              "text": "footer.rights",
+              "label": "Строка про права внизу",
+              "hint": "{year} — сайт подставит текущий год."
+            },
+            {
+              "text": "footer.requisites",
+              "label": "Строка с реквизитами продавца",
+              "hint": "{name} — название фирмы, {cuit} — CUIT, {address} — адрес; берутся из «Настроек». Строки нет, пока там не заполнены название и CUIT."
+            },
+            {
+              "text": "footer.dataFiscal",
+              "label": "Описание значка налоговой (Data Fiscal)",
+              "sr": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "catalog",
+      "title": "Каталог и разделы",
+      "url": "/productos/",
+      "summary": "Страницы со всеми товарами: «Все товары» и разделы «Стулья» и «Аксессуары» — сетка карточек с фильтрами и сортировкой.",
+      "blocks": [
+        {
+          "title": "Заголовок страницы",
+          "hint": "Самый верх: название, сколько товаров и короткое описание. У разделов «Стулья» и «Аксессуары» название и описание правятся в «Разделах каталога».",
+          "goto": "categories",
+          "fields": [
+            {
+              "text": "catalog.allTitle",
+              "label": "Заголовок страницы «Все товары»"
+            },
+            {
+              "text": "catalog.productCount",
+              "label": "Сколько товаров (несколько)",
+              "hint": "{n} — сайт подставит число товаров. На всех страницах каталога."
+            },
+            {
+              "text": "catalog.productCountOne",
+              "label": "Сколько товаров (если один)"
+            },
+            {
+              "text": "catalog.allDescription",
+              "label": "Описание под заголовком «Все товары»"
+            },
+            {
+              "text": "catalog.allSeoTitle",
+              "label": "Название страницы «Все товары» во вкладке браузера и в Google",
+              "sr": true
+            },
+            {
+              "text": "catalog.allSeoDescription",
+              "label": "Описание страницы «Все товары» в Google",
+              "sr": true
+            }
+          ]
+        },
+        {
+          "title": "Строка фильтров и сортировки",
+          "hint": "Над карточками: кнопки разделов или фильтры по цвету и наличию, справа — выбор порядка.",
+          "fields": [
+            {
+              "text": "catalog.filter",
+              "label": "Кнопка «Фильтры» на телефоне"
+            },
+            {
+              "text": "catalog.filterN",
+              "label": "Та же кнопка, когда фильтры выбраны",
+              "hint": "{n} — сайт подставит, сколько фильтров выбрано."
+            },
+            {
+              "text": "catalog.filterWood",
+              "label": "Фильтр: подпись «цвет дерева»",
+              "hint": "Также в панели фильтров на телефоне."
+            },
+            {
+              "text": "catalog.filterInStock",
+              "label": "Фильтр: «только в наличии»",
+              "hint": "Показывается, только если в разделе есть товары без наличия. Также в панели фильтров на телефоне."
+            },
+            {
+              "text": "catalog.sortBy",
+              "label": "Подпись выбора порядка"
+            },
+            {
+              "text": "catalog.sortRelevance",
+              "label": "Порядок 1: сначала главные"
+            },
+            {
+              "text": "catalog.sortPriceAsc",
+              "label": "Порядок 2: сначала дешёвые"
+            },
+            {
+              "text": "catalog.sortPriceDesc",
+              "label": "Порядок 3: сначала дорогие"
+            },
+            {
+              "text": "catalog.sortNewest",
+              "label": "Порядок 4: сначала новые"
+            },
+            {
+              "text": "catalog.clearFilters",
+              "label": "Ссылка «сбросить фильтры»",
+              "hint": "Появляется, когда выбран хоть один фильтр. Также кнопкой, если по фильтрам ничего не нашлось."
+            },
+            {
+              "text": "catalog.allSections",
+              "label": "Название ряда кнопок разделов",
+              "sr": true,
+              "hint": "Ряд виден только на странице «Все товары»."
+            }
+          ]
+        },
+        {
+          "title": "Карточка товара",
+          "hint": "Каждая карточка в сетке: фото, сердечко, значки, название, цена и кнопка. Сами товары — в разделе «Товары».",
+          "goto": "products",
+          "fields": [
+            {
+              "text": "badge.new",
+              "label": "Значок «Новинка» на фото"
+            },
+            {
+              "text": "badge.noStock",
+              "label": "Значок «Нет в наличии» на фото",
+              "hint": "Также во всплывающей подсказке у распроданного цвета на странице товара."
+            },
+            {
+              "text": "price.from",
+              "label": "Слово перед ценой «от»",
+              "hint": "Когда у товара есть варианты дороже. На всём сайте."
+            },
+            {
+              "text": "product.choose",
+              "label": "Кнопка, если у товара есть цвета на выбор",
+              "hint": "Ведёт на страницу товара."
+            },
+            {
+              "text": "product.addToCartShort",
+              "label": "Кнопка «в корзину» (коротко)",
+              "hint": "У товара без цветов. Также на полосе внизу экрана на странице товара."
+            },
+            {
+              "text": "product.inCart",
+              "label": "Кнопка, когда товар уже в корзине",
+              "hint": "Также на странице товара."
+            },
+            {
+              "text": "stock.notifyCta",
+              "label": "Кнопка «сообщить, когда появится»",
+              "hint": "Вместо кнопки корзины, когда товара нет. Также на странице товара и заголовком окна ниже."
+            },
+            {
+              "text": "wishlist.added",
+              "label": "Сообщение после нажатия на сердечко",
+              "hint": "Всплывает внизу экрана на несколько секунд."
+            },
+            {
+              "text": "wishlist.removed",
+              "label": "Сообщение после повторного нажатия на сердечко",
+              "hint": "Всплывает внизу экрана с возможностью вернуть."
+            },
+            {
+              "text": "wishlist.add",
+              "label": "Сердечко на фото (добавить в избранное)",
+              "sr": true
+            },
+            {
+              "text": "wishlist.remove",
+              "label": "Закрашенное сердечко (убрать из избранного)",
+              "sr": true
+            },
+            {
+              "text": "catalog.gridTitle",
+              "label": "Название сетки карточек",
+              "sr": true,
+              "hint": "Также на странице «Избранное»."
+            }
+          ]
+        },
+        {
+          "title": "Окно «Сообщить о поступлении»",
+          "hint": "Окно посреди экрана, если нажать «сообщить, когда появится» у товара без наличия.",
+          "fields": [
+            {
+              "text": "stock.notifyText",
+              "label": "Текст в окне",
+              "hint": "Сразу за ним сайт допишет название товара."
+            },
+            {
+              "text": "stock.notifySubmit",
+              "label": "Кнопка отправки"
+            },
+            {
+              "text": "stock.notifySuccess",
+              "label": "Сообщение после отправки",
+              "hint": "Всплывает внизу экрана, окно закрывается."
+            }
+          ]
+        },
+        {
+          "title": "Если товаров не нашлось",
+          "hint": "Появляется вместо карточек.",
+          "fields": [
+            {
+              "text": "catalog.noFilterResults",
+              "label": "Сообщение, если по фильтрам ничего нет"
+            },
+            {
+              "text": "catalog.empty",
+              "label": "Сообщение, если в разделе пока нет товаров"
+            }
+          ]
+        },
+        {
+          "title": "Панель фильтров на телефоне",
+          "hint": "Выезжает снизу экрана, если на телефоне нажать кнопку «Фильтры».",
+          "fields": [
+            {
+              "text": "catalog.filters",
+              "label": "Заголовок панели"
+            },
+            {
+              "text": "catalog.applyFilters",
+              "label": "Кнопка внизу панели «показать»"
+            },
+            {
+              "text": "catalog.applyFiltersN",
+              "label": "Та же кнопка с числом товаров",
+              "hint": "{n} — сайт подставит, сколько товаров останется."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "product",
+      "title": "Страница товара",
+      "summary": "Общая для всех товаров страница: фото, цена, выбор цвета, кнопка корзины, описание, размеры и отзывы. Сами товары — в разделе «Товары».",
+      "blocks": [
+        {
+          "title": "Фотографии товара",
+          "hint": "Большое фото слева (на телефоне — сверху) и маленькие под ним. Сами фото — в разделе «Товары».",
+          "goto": "products",
+          "fields": [
+            {
+              "text": "gallery.error",
+              "label": "Сообщение, если фото не загрузилось",
+              "hint": "Показывается в увеличенном просмотре фото."
+            },
+            {
+              "text": "product.galleryOpen",
+              "label": "Нажатие на большое фото (открыть крупно)",
+              "sr": true
+            },
+            {
+              "text": "product.galleryAlt",
+              "label": "Описание фото товара",
+              "sr": true,
+              "hint": "{name} — название товара, {n} — номер фото. Используется, если у фото нет своего описания."
+            },
+            {
+              "text": "product.galleryAltVariant",
+              "label": "Описание фото товара в выбранном цвете",
+              "sr": true,
+              "hint": "{name} — название товара, {variant} — цвет, {n} — номер фото."
+            },
+            {
+              "text": "product.galleryThumb",
+              "label": "Маленькое фото под большим",
+              "sr": true,
+              "hint": "{n} — номер фото."
+            },
+            {
+              "text": "gallery.zoom",
+              "label": "Кнопка «увеличить» в просмотре",
+              "sr": true
+            },
+            {
+              "text": "gallery.close",
+              "label": "Крестик в просмотре фото",
+              "sr": true
+            },
+            {
+              "text": "gallery.prev",
+              "label": "Стрелка к предыдущему фото",
+              "sr": true
+            },
+            {
+              "text": "gallery.next",
+              "label": "Стрелка к следующему фото",
+              "sr": true
+            },
+            {
+              "text": "gallery.goTo",
+              "label": "Переход к фото по номеру",
+              "sr": true,
+              "hint": "{n} — номер фото."
+            },
+            {
+              "text": "gallery.imageOf",
+              "label": "Какое по счёту фото",
+              "sr": true,
+              "hint": "{n} — номер фото, {total} — сколько их всего."
+            },
+            {
+              "text": "gallery.first",
+              "label": "Сообщение: это первое фото",
+              "sr": true
+            },
+            {
+              "text": "gallery.last",
+              "label": "Сообщение: это последнее фото",
+              "sr": true
+            }
+          ]
+        },
+        {
+          "title": "Покупка",
+          "hint": "Справа от фото (на телефоне — под ним): название, звёзды, цена, выбор цвета, количество и кнопка корзины. Название и цены — в разделе «Товары».",
+          "goto": "products",
+          "fields": [
+            {
+              "text": "legal.priceNoTaxes",
+              "label": "Цена без государственных налогов",
+              "hint": "{amount} — сайт подставит сумму без налогов."
+            },
+            {
+              "text": "reviews.ratingAria",
+              "label": "Звёзды оценки",
+              "sr": true,
+              "hint": "{rating} — сайт подставит среднюю оценку. Также у звёзд в карточках и отзывах."
+            },
+            {
+              "text": "product.woodColor",
+              "label": "Подпись над кружками «цвет дерева»"
+            },
+            {
+              "text": "product.cushionColor",
+              "label": "Подпись над кружками «цвет подушки»",
+              "hint": "У подушек и у подушки, предложенной к стулу."
+            },
+            {
+              "text": "product.inStock",
+              "label": "Строка «есть в наличии»"
+            },
+            {
+              "text": "product.noStock",
+              "label": "Строка «нет в наличии»",
+              "hint": "Показывается, когда выбранного цвета нет."
+            },
+            {
+              "text": "qty.label",
+              "label": "Подпись «Количество»",
+              "hint": "Также в корзине (там не видна)."
+            },
+            {
+              "text": "qty.max",
+              "label": "Подсказка о наибольшем количестве",
+              "hint": "{n} — сайт подставит предел из «Настроек». Появляется, когда достигнут предел. Также в корзине."
+            },
+            {
+              "text": "qty.decrease",
+              "label": "Кнопка «минус»",
+              "sr": true
+            },
+            {
+              "text": "qty.increase",
+              "label": "Кнопка «плюс»",
+              "sr": true
+            },
+            {
+              "text": "product.accessory",
+              "label": "Заголовок предложения добавить аксессуар",
+              "hint": "Рамка с галочкой над кнопкой корзины. Какой аксессуар предлагать — в разделе «Товары»."
+            },
+            {
+              "text": "product.addToCart",
+              "label": "Главная кнопка «Добавить в корзину»"
+            }
+          ]
+        },
+        {
+          "title": "Описание и размеры",
+          "hint": "Под фото и кнопкой покупки: текст о товаре, таблица размеров и картинка с размерами. Сами тексты и цифры — в разделе «Товары».",
+          "goto": "products",
+          "fields": [
+            {
+              "text": "product.tabDescription",
+              "label": "Заголовок «Описание»"
+            },
+            {
+              "text": "product.tabSpecs",
+              "label": "Заголовок «Размеры и материалы»"
+            },
+            {
+              "text": "spec.material",
+              "label": "Строка таблицы: материал"
+            },
+            {
+              "text": "spec.dimensions",
+              "label": "Строка таблицы: размеры"
+            },
+            {
+              "text": "spec.dimensionsValue",
+              "label": "Как записаны размеры",
+              "hint": "{w} — ширина, {d} — глубина, {h} — высота, {unit} — единица (см)."
+            },
+            {
+              "text": "spec.age",
+              "label": "Строка таблицы: возраст"
+            },
+            {
+              "text": "spec.load",
+              "label": "Строка таблицы: наибольшая нагрузка"
+            },
+            {
+              "text": "spec.loadValue",
+              "label": "Как записана нагрузка",
+              "hint": "{n} — сайт подставит число килограммов."
+            },
+            {
+              "text": "spec.weight",
+              "label": "Строка таблицы: вес"
+            },
+            {
+              "text": "spec.weightValue",
+              "label": "Как записан вес",
+              "hint": "{n} — сайт подставит число килограммов."
+            },
+            {
+              "text": "product.dimensionsAlt",
+              "label": "Описание картинки с размерами",
+              "sr": true,
+              "hint": "{name} — название товара."
+            }
+          ]
+        },
+        {
+          "title": "Безопасность для детей",
+          "hint": "Четыре пункта со значками под размерами.",
+          "fields": [
+            {
+              "text": "product.safetyTitle",
+              "label": "Заголовок"
+            },
+            {
+              "text": "product.safetyCorners",
+              "label": "Пункт 1: заголовок",
+              "hint": "Все четыре пункта также на главной."
+            },
+            {
+              "text": "product.safetyCornersText",
+              "label": "Пункт 1: текст"
+            },
+            {
+              "text": "product.safetyStable",
+              "label": "Пункт 2: заголовок"
+            },
+            {
+              "text": "product.safetyStableText",
+              "label": "Пункт 2: текст"
+            },
+            {
+              "text": "product.safetyHardware",
+              "label": "Пункт 3: заголовок"
+            },
+            {
+              "text": "product.safetyHardwareText",
+              "label": "Пункт 3: текст"
+            },
+            {
+              "text": "product.safetyPosture",
+              "label": "Пункт 4: заголовок"
+            },
+            {
+              "text": "product.safetyPostureText",
+              "label": "Пункт 4: текст"
+            }
+          ]
+        },
+        {
+          "title": "Отзывы покупателей",
+          "hint": "Лента карточек с отзывами о товаре. Сами отзывы добавляются в разделе «Отзывы».",
+          "goto": "reviews",
+          "fields": [
+            {
+              "text": "product.tabReviews",
+              "label": "Заголовок «Отзывы»"
+            },
+            {
+              "text": "reviews.empty",
+              "label": "Сообщение, если отзывов ещё нет"
+            },
+            {
+              "text": "reviews.incentivized",
+              "label": "Пометка под отзывом за вознаграждение",
+              "hint": "Видна только у отзывов, где это отмечено."
+            }
+          ]
+        },
+        {
+          "title": "Форма «Оставить отзыв»",
+          "hint": "Под отзывами: звёзды для оценки, имя, текст и кнопка.",
+          "fields": [
+            {
+              "text": "reviews.formTitle",
+              "label": "Заголовок формы"
+            },
+            {
+              "text": "reviews.moderation",
+              "label": "Текст под заголовком: отзыв появится после проверки",
+              "hint": "Также повторяется после отправки."
+            },
+            {
+              "text": "reviews.rating",
+              "label": "Подпись над звёздами"
+            },
+            {
+              "text": "reviews.ratingValue",
+              "label": "Выбранная оценка рядом со звёздами",
+              "hint": "{rating} — сайт подставит число звёзд."
+            },
+            {
+              "text": "reviews.text",
+              "label": "Подпись поля для текста отзыва"
+            },
+            {
+              "text": "reviews.textHint",
+              "label": "Подсказка под полем текста"
+            },
+            {
+              "text": "reviews.submit",
+              "label": "Кнопка отправки"
+            },
+            {
+              "text": "reviews.successTitle",
+              "label": "Заголовок после отправки",
+              "hint": "Появляется вместо формы, когда отзыв отправлен."
+            }
+          ]
+        },
+        {
+          "title": "Похожие товары",
+          "hint": "Ряд карточек внизу страницы. Какие товары показывать — в разделе «Товары».",
+          "goto": "products",
+          "fields": [
+            {
+              "text": "product.related",
+              "label": "Заголовок",
+              "hint": "Также над товарами в статье блога."
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "how",
       "title": "Как это работает",
       "url": "/como-funciona/",
-      "note": "Картинка с размерами берётся у главного товара («Товары» → Silla Evolutiva).",
-      "fields": [
-        { "type": "heading", "label": "Фото страницы" },
-        { "key": "media.howPhoto", "type": "image", "flow": "content", "label": "Широкий кадр" },
-        { "type": "heading", "label": "Кадры регулировки" },
+      "summary": "Страница-объяснение: как регулируется растущий стул, его размеры, материалы и сборка. На неё ведёт вторая кнопка первого экрана главной.",
+      "blocks": [
         {
-          "key": "media.adjustFrames.0",
-          "type": "image",
-          "flow": "content",
-          "label": "Кадр регулировки 1",
-          "hint": "Три кадра листаются по кругу; те же кадры — на главной и на «Как это работает»."
+          "title": "Верх страницы",
+          "hint": "Заголовок страницы и абзац под ним.",
+          "fields": [
+            {
+              "text": "howItWorks.title",
+              "label": "Заголовок страницы",
+              "hint": "Этой же фразой описано широкое фото ниже для незрячих."
+            },
+            {
+              "text": "howItWorks.lead",
+              "label": "Текст под заголовком"
+            }
+          ]
         },
         {
-          "key": "media.adjustFrames.1",
-          "type": "image",
-          "flow": "content",
-          "label": "Кадр регулировки 2"
+          "title": "Как регулируется",
+          "hint": "Слева заголовок и три пункта со значками, справа листаются кадры регулировки.",
+          "fields": [
+            {
+              "text": "howItWorks.adjustTitle",
+              "label": "Заголовок"
+            },
+            {
+              "text": "howItWorks.adjustLead",
+              "label": "Текст под заголовком"
+            },
+            {
+              "text": "howItWorks.adjustSeat",
+              "label": "Пункт 1: заголовок"
+            },
+            {
+              "text": "howItWorks.adjustSeatText",
+              "label": "Пункт 1: текст"
+            },
+            {
+              "text": "howItWorks.adjustFeet",
+              "label": "Пункт 2: заголовок"
+            },
+            {
+              "text": "howItWorks.adjustFeetText",
+              "label": "Пункт 2: текст"
+            },
+            {
+              "text": "howItWorks.adjustDepth",
+              "label": "Пункт 3: заголовок"
+            },
+            {
+              "text": "howItWorks.adjustDepthText",
+              "label": "Пункт 3: текст"
+            },
+            {
+              "key": "media.adjustFrames.0",
+              "type": "image",
+              "flow": "content",
+              "label": "Кадр 1",
+              "hint": "Те же кадры — на главной"
+            },
+            {
+              "key": "media.adjustFrames.1",
+              "type": "image",
+              "flow": "content",
+              "label": "Кадр 2"
+            },
+            {
+              "key": "media.adjustFrames.2",
+              "type": "image",
+              "flow": "content",
+              "label": "Кадр 3"
+            },
+            {
+              "text": "howItWorks.frameAlt",
+              "label": "Что изображено на кадрах",
+              "sr": true
+            }
+          ]
         },
         {
-          "key": "media.adjustFrames.2",
-          "type": "image",
-          "flow": "content",
-          "label": "Кадр регулировки 3"
+          "title": "Широкое фото",
+          "hint": "Фото во всю ширину страницы после рассказа о регулировке.",
+          "fields": [
+            {
+              "key": "media.howPhoto",
+              "type": "image",
+              "flow": "content",
+              "label": "Широкое фото"
+            }
+          ]
+        },
+        {
+          "title": "Размеры и возраст",
+          "hint": "Заголовок и таблица размеров. Цифры в таблице берутся из главного стула в разделе «Товары».",
+          "goto": "products",
+          "fields": [
+            {
+              "text": "howItWorks.sizeTitle",
+              "label": "Заголовок",
+              "hint": "Этой же фразой описан чертёж размеров для незрячих."
+            },
+            {
+              "text": "howItWorks.sizeLead",
+              "label": "Текст под заголовком"
+            }
+          ]
+        },
+        {
+          "title": "Из чего сделан",
+          "hint": "Заголовок и четыре пункта со значками. Сами пункты — общие со страницей товара и правятся там.",
+          "fields": [
+            {
+              "text": "howItWorks.materialTitle",
+              "label": "Заголовок"
+            },
+            {
+              "text": "howItWorks.materialLead",
+              "label": "Текст под заголовком"
+            }
+          ]
+        },
+        {
+          "title": "Доставка и сборка",
+          "hint": "Бежевая плашка с заголовком и абзацем.",
+          "fields": [
+            {
+              "text": "howItWorks.assemblyTitle",
+              "label": "Заголовок"
+            },
+            {
+              "text": "howItWorks.assemblyText",
+              "label": "Текст"
+            }
+          ]
+        },
+        {
+          "title": "Частые вопросы",
+          "hint": "Слева заголовок, справа раскрывающиеся вопросы — те же, что на главной. Сами вопросы правятся в разделе «Вопросы и ответы».",
+          "goto": "faq",
+          "fields": [
+            {
+              "text": "howItWorks.faqTitle",
+              "label": "Заголовок"
+            }
+          ]
+        },
+        {
+          "title": "Кнопка внизу",
+          "hint": "Одна кнопка по центру в самом конце страницы.",
+          "fields": [
+            {
+              "text": "howItWorks.cta",
+              "label": "Надпись на кнопке",
+              "hint": "Ведёт в каталог стульев."
+            }
+          ]
         }
-      ],
-      "texts": ["howItWorks"]
+      ]
     },
     {
       "id": "about",
-      "title": "Nosotros",
+      "title": "О нас (Nosotros)",
       "url": "/nosotros/",
-      "note": "Основной текст страницы — в «Текстовых страницах» → Nosotros.",
-      "fields": [
-        { "type": "heading", "label": "Фото страницы" },
+      "summary": "Страница о мастерской: кто делает стулья, как и из чего. Заголовок, вступление, рассказ и этапы работы правятся в «Текстовых страницах» → Nosotros.",
+      "blocks": [
         {
-          "key": "media.aboutWorkshop",
-          "type": "image",
-          "flow": "content",
-          "label": "Широкий кадр мастерской"
+          "title": "Заголовок и рассказ",
+          "hint": "Верх страницы: заголовок, вступление, широкое фото мастерской, затем рассказ с фото рядом. Заголовок и тексты правятся в разделе «Текстовые страницы» → Nosotros.",
+          "goto": "pages",
+          "fields": [
+            {
+              "key": "media.aboutWorkshop",
+              "type": "image",
+              "flow": "content",
+              "label": "Широкое фото мастерской"
+            },
+            {
+              "text": "about.workshopAlt",
+              "label": "Что изображено на широком фото",
+              "sr": true
+            },
+            {
+              "key": "media.aboutProcess",
+              "type": "image",
+              "flow": "content",
+              "label": "Фото рядом с рассказом"
+            },
+            {
+              "text": "about.storyAlt",
+              "label": "Что изображено на фото рядом с рассказом",
+              "sr": true
+            }
+          ]
         },
         {
-          "key": "media.aboutProcess",
-          "type": "image",
-          "flow": "content",
-          "label": "Фото рядом с рассказом"
+          "title": "Как рождается стул",
+          "hint": "Заголовок и пронумерованные этапы работы. Сами этапы правятся в разделе «Текстовые страницы» → Nosotros.",
+          "goto": "pages",
+          "fields": [
+            {
+              "text": "about.processTitle",
+              "label": "Заголовок"
+            },
+            {
+              "text": "about.processLead",
+              "label": "Текст под заголовком"
+            }
+          ]
+        },
+        {
+          "title": "Материалы",
+          "hint": "Бежевая полоса с четырьмя пунктами со значками. Сами пункты — общие со страницей товара и правятся там.",
+          "fields": [
+            {
+              "text": "about.materialsTitle",
+              "label": "Заголовок"
+            },
+            {
+              "text": "about.materialsLead",
+              "label": "Текст под заголовком"
+            }
+          ]
+        },
+        {
+          "title": "Почему растущий стул",
+          "hint": "Заголовок и абзац без картинок.",
+          "fields": [
+            {
+              "text": "about.whyTitle",
+              "label": "Заголовок"
+            },
+            {
+              "text": "about.whyText",
+              "label": "Текст"
+            }
+          ]
+        },
+        {
+          "title": "Отзыв покупателя",
+          "hint": "Тёмно-коричневая полоса с крупной цитатой — самым свежим отзывом. Сами отзывы добавляются в разделе «Отзывы».",
+          "goto": "reviews",
+          "fields": []
         }
-      ],
-      "texts": ["about"]
+      ]
     },
     {
       "id": "contact",
       "title": "Контакты",
       "url": "/contacto/",
-      "fields": [
-        { "type": "heading", "label": "Фото страницы" },
+      "summary": "Страница, где покупатель пишет магазину: кнопка WhatsApp, форма сообщения и другие способы связи.",
+      "blocks": [
         {
-          "key": "media.contactMap",
-          "type": "image",
-          "flow": "content",
-          "label": "Картинка карты",
-          "hint": "Видна, только когда в «Настройках» указан адрес."
+          "title": "Верх страницы",
+          "hint": "Заголовок страницы и абзац под ним.",
+          "fields": [
+            {
+              "text": "contact.title",
+              "label": "Заголовок страницы",
+              "hint": "Также надпись на кнопке «Контакты» в плашке «Не нашли ответ» внизу вопросов, блога и текстовых страниц."
+            },
+            {
+              "text": "contact.lead",
+              "label": "Текст под заголовком"
+            }
+          ]
+        },
+        {
+          "title": "WhatsApp",
+          "hint": "Бежевая плашка: слева заголовок и текст, справа кнопка WhatsApp.",
+          "fields": [
+            {
+              "text": "contact.whatsappTitle",
+              "label": "Заголовок"
+            },
+            {
+              "text": "contact.whatsappText",
+              "label": "Текст"
+            }
+          ]
+        },
+        {
+          "title": "Форма сообщения",
+          "hint": "Большая колонка слева: заголовок, поля «имя», «email», «сообщение» и кнопка отправки.",
+          "fields": [
+            {
+              "text": "contact.formTitle",
+              "label": "Заголовок"
+            },
+            {
+              "text": "contact.formLead",
+              "label": "Текст под заголовком"
+            },
+            {
+              "text": "contact.messageHint",
+              "label": "Подсказка под полем «Сообщение»"
+            },
+            {
+              "text": "contact.submit",
+              "label": "Надпись на кнопке отправки"
+            },
+            {
+              "text": "contact.successTitle",
+              "label": "Сообщение об успехе: заголовок",
+              "hint": "Появляется вместо формы после отправки."
+            },
+            {
+              "text": "contact.successText",
+              "label": "Сообщение об успехе: текст"
+            },
+            {
+              "text": "contact.sendAnother",
+              "label": "Кнопка «написать ещё»",
+              "hint": "Под сообщением об успехе; снова открывает пустую форму."
+            }
+          ]
+        },
+        {
+          "title": "Другие способы связи",
+          "hint": "Правая колонка: список телефонов и соцсетей. Сами контакты правятся в разделе «Настройки».",
+          "goto": "site",
+          "fields": [
+            {
+              "text": "contact.channelsTitle",
+              "label": "Заголовок"
+            }
+          ]
+        },
+        {
+          "title": "Где мы находимся",
+          "hint": "Под списком контактов: адрес, часы работы и картинка карты. Виден, только когда в «Настройках» указан адрес.",
+          "goto": "site",
+          "fields": [
+            {
+              "text": "contact.addressTitle",
+              "label": "Заголовок"
+            },
+            {
+              "key": "media.contactMap",
+              "type": "image",
+              "flow": "content",
+              "label": "Картинка карты",
+              "hint": "Видна, только когда в «Настройках» указан адрес."
+            },
+            {
+              "text": "contact.mapCta",
+              "label": "Ссылка под картой",
+              "hint": "Открывает адрес в Google Картах."
+            },
+            {
+              "text": "contact.mapAlt",
+              "label": "Что изображено на карте",
+              "sr": true
+            }
+          ]
         }
-      ],
-      "texts": ["contact"]
+      ]
     },
     {
       "id": "faq",
-      "title": "Вопросы",
+      "title": "Вопросы и ответы",
       "url": "/preguntas-frecuentes/",
-      "note": "Сами вопросы — в разделе «Вопросы».",
-      "texts": ["faq", "faqTopics"]
+      "summary": "Страница со всеми частыми вопросами покупателей, разложенными по темам. Сами вопросы и ответы правятся в разделе «Вопросы и ответы».",
+      "blocks": [
+        {
+          "title": "Верх страницы",
+          "hint": "Заголовок страницы и абзац под ним. Заголовок общий со ссылкой в самом низу сайта.",
+          "fields": [
+            {
+              "text": "faq.lead",
+              "label": "Текст под заголовком"
+            }
+          ]
+        },
+        {
+          "title": "Вопросы по темам",
+          "hint": "Вопросы идут группами; слева у каждой группы — название темы. Сами вопросы правятся в разделе «Вопросы и ответы».",
+          "goto": "faq",
+          "fields": [
+            {
+              "text": "faqTopics.envio",
+              "label": "Тема «Доставка»: название"
+            },
+            {
+              "text": "faqTopics.producto",
+              "label": "Тема «О стуле»: название"
+            },
+            {
+              "text": "faqTopics.cuidado",
+              "label": "Тема «Уход»: название"
+            },
+            {
+              "text": "faqTopics.cambios",
+              "label": "Тема «Обмен и возврат»: название"
+            }
+          ]
+        },
+        {
+          "title": "Не нашли ответ",
+          "hint": "Бежевая плашка в самом низу: заголовок, текст и кнопки WhatsApp и «Контакты».",
+          "fields": [
+            {
+              "text": "faq.helpTitle",
+              "label": "Заголовок",
+              "hint": "Также внизу блога и текстовых страниц."
+            },
+            {
+              "text": "faq.helpText",
+              "label": "Текст",
+              "hint": "Также внизу блога и текстовых страниц."
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "blog",
-      "title": "Блог и статьи",
+      "title": "Блог",
       "url": "/blog/",
-      "note": "Статьи, их фото и видео — в разделе «Статьи».",
-      "texts": ["blog", "article"]
+      "summary": "Список статей для родителей и страница каждой статьи.",
+      "blocks": [
+        {
+          "title": "Заголовок блога",
+          "hint": "Верх страницы со списком статей.",
+          "fields": [
+            {
+              "text": "blog.title",
+              "label": "Заголовок"
+            },
+            {
+              "text": "blog.lead",
+              "label": "Текст под заголовком"
+            }
+          ]
+        },
+        {
+          "title": "Список статей",
+          "hint": "Сетка карточек статей. Сами статьи пишутся в разделе «Блог».",
+          "goto": "articles",
+          "fields": [
+            {
+              "text": "blog.empty",
+              "label": "Сообщение, если статей ещё нет"
+            },
+            {
+              "text": "blog.gridTitle",
+              "label": "Название сетки статей",
+              "sr": true
+            }
+          ]
+        },
+        {
+          "title": "Страница статьи: под заголовком",
+          "hint": "Мелкая строка с датой и временем чтения под заголовком статьи.",
+          "goto": "articles",
+          "fields": [
+            {
+              "text": "blog.readingTime",
+              "label": "Время чтения",
+              "hint": "{min} — сайт подставит число минут."
+            }
+          ]
+        },
+        {
+          "title": "Страница статьи: приглашение в каталог",
+          "hint": "Бежевая плашка с кнопкой сразу после текста статьи.",
+          "fields": [
+            {
+              "text": "article.cta",
+              "label": "Заголовок плашки"
+            },
+            {
+              "text": "blog.ctaText",
+              "label": "Текст плашки"
+            }
+          ]
+        },
+        {
+          "title": "Страница статьи: низ",
+          "hint": "Другие статьи и ссылка назад к списку в самом конце статьи.",
+          "fields": [
+            {
+              "text": "blog.moreTitle",
+              "label": "Заголовок других статей"
+            },
+            {
+              "text": "blog.backToList",
+              "label": "Ссылка назад к списку статей"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "families",
       "title": "Para familias (игры)",
       "url": "/para-familias/",
-      "note": "Сами игры, их тексты и карты — в разделе «Игры (Para familias)».",
-      "texts": ["families"]
+      "summary": "Раздел с бесплатными играми для детей: страница-список всех игр и страница каждой игры (на экране, для печати или для кухни).",
+      "blocks": [
+        {
+          "title": "Заголовок страницы",
+          "hint": "Самый верх страницы со списком игр: крупный заголовок и текст под ним.",
+          "fields": [
+            {
+              "text": "families.title",
+              "label": "Заголовок",
+              "hint": "Также в названии вкладки браузера."
+            },
+            {
+              "text": "families.lead",
+              "label": "Текст под заголовком"
+            }
+          ]
+        },
+        {
+          "title": "Плитки игр",
+          "hint": "Сетка плиток под заголовком — по одной на игру. Сами игры (названия, описания, возраст) правятся в разделе «Игры».",
+          "goto": "activities",
+          "fields": [
+            {
+              "text": "families.formatOnline",
+              "label": "Вид игры: на экране",
+              "hint": "Мелкая надпись на плитке игры. Также на странице игры, в карточке «Формат»."
+            },
+            {
+              "text": "families.formatPrint",
+              "label": "Вид игры: для печати",
+              "hint": "Мелкая надпись на плитке игры. Также на странице игры, в карточке «Формат»."
+            },
+            {
+              "text": "families.formatKitchen",
+              "label": "Вид игры: для кухни",
+              "hint": "Мелкая надпись на плитке игры. Также на странице игры, в карточке «Формат»."
+            },
+            {
+              "text": "families.empty",
+              "label": "Сообщение, если игр ещё нет",
+              "hint": "Показывается вместо плиток, пока не опубликовано ни одной игры."
+            },
+            {
+              "text": "families.gridTitle",
+              "label": "Заголовок над плитками для программ чтения экрана",
+              "sr": true
+            }
+          ]
+        },
+        {
+          "title": "Приглашение поделиться в Instagram",
+          "hint": "Песочная плашка под плитками игр с кнопкой, ведущей в Instagram.",
+          "fields": [
+            {
+              "text": "families.shareTitle",
+              "label": "Заголовок",
+              "hint": "Также внизу страницы каждой игры."
+            },
+            {
+              "text": "families.shareText",
+              "label": "Текст",
+              "hint": "{handle} — сайт подставит название аккаунта Instagram из настроек. Также внизу страницы каждой игры."
+            },
+            {
+              "text": "families.shareCta",
+              "label": "Надпись на кнопке",
+              "hint": "Ведёт в Instagram магазина. Также внизу страницы каждой игры."
+            }
+          ]
+        },
+        {
+          "title": "Ссылка на блог",
+          "hint": "Самый низ страницы со списком игр: заголовок, короткий текст и ссылка. Видна, только когда блог включён.",
+          "fields": [
+            {
+              "text": "families.blogTitle",
+              "label": "Заголовок"
+            },
+            {
+              "text": "families.blogText",
+              "label": "Текст"
+            },
+            {
+              "text": "families.blogCta",
+              "label": "Надпись на ссылке"
+            }
+          ]
+        },
+        {
+          "title": "Общее для страниц игр",
+          "hint": "Подписи, одинаковые на странице каждой игры: три карточки под заголовком, кнопка печати, правила и низ страницы. Название, описание, правила и материалы самой игры правятся в разделе «Игры».",
+          "goto": "activities",
+          "fields": [
+            {
+              "text": "families.agesLabel",
+              "label": "Карточка 1: подпись «возраст»",
+              "hint": "Три песочные карточки под заголовком игры."
+            },
+            {
+              "text": "families.durationLabel",
+              "label": "Карточка 2: подпись «длительность»"
+            },
+            {
+              "text": "families.formatLabel",
+              "label": "Карточка 3: подпись «формат»"
+            },
+            {
+              "text": "families.print",
+              "label": "Надпись на кнопке печати",
+              "hint": "На играх, которые можно распечатать."
+            },
+            {
+              "text": "families.printHint",
+              "label": "Подсказка под кнопкой печати"
+            },
+            {
+              "text": "families.howTo",
+              "label": "Заголовок над правилами игры"
+            },
+            {
+              "text": "families.materials",
+              "label": "Заголовок над списком «что понадобится»",
+              "hint": "Показывается, если у игры указаны материалы."
+            },
+            {
+              "text": "families.relatedTitle",
+              "label": "Заголовок над товарами к игре",
+              "hint": "Показывается, если к игре привязаны товары."
+            },
+            {
+              "text": "families.moreTitle",
+              "label": "Заголовок над другими играми"
+            },
+            {
+              "text": "families.backToList",
+              "label": "Ссылка «назад к списку игр»",
+              "hint": "Самый низ страницы игры."
+            }
+          ]
+        },
+        {
+          "title": "Игра «Memotest de animales»",
+          "hint": "Поле с карточками-животными, которые переворачивают и ищут пары; под ним — кнопка печати листа с карточками.",
+          "fields": [
+            {
+              "text": "families.playTitle",
+              "label": "Заголовок над игрой",
+              "hint": "Также на игре «Colores, formas y números»."
+            },
+            {
+              "text": "families.memotest.pairsLabel",
+              "label": "Подпись над выбором числа пар"
+            },
+            {
+              "text": "families.memotest.pairs",
+              "label": "Вариант числа пар",
+              "hint": "{n} — сайт подставит число: 4, 6, 8 и т. д."
+            },
+            {
+              "text": "families.memotest.restart",
+              "label": "Кнопка «перемешать заново»"
+            },
+            {
+              "text": "families.memotest.moves",
+              "label": "Счётчик попыток",
+              "hint": "{n} — сайт подставит число попыток."
+            },
+            {
+              "text": "families.memotest.found",
+              "label": "Счётчик найденных пар",
+              "hint": "{found} — сайт подставит, сколько пар найдено, {total} — сколько всего."
+            },
+            {
+              "text": "families.memotest.match",
+              "label": "Сообщение, когда пара найдена",
+              "hint": "Появляется под карточками. {name} — сайт подставит название животного."
+            },
+            {
+              "text": "families.memotest.noMatch",
+              "label": "Сообщение, когда карточки не совпали",
+              "hint": "Появляется под карточками. {first} и {second} — сайт подставит названия двух открытых животных."
+            },
+            {
+              "text": "families.memotest.won",
+              "label": "Сообщение о победе",
+              "hint": "Появляется, когда найдены все пары. {n} — сайт подставит число попыток."
+            },
+            {
+              "text": "families.memotest.playAgain",
+              "label": "Кнопка «играть снова»",
+              "hint": "Появляется после победы."
+            },
+            {
+              "text": "families.printTitle",
+              "label": "Заголовок над кнопкой печати"
+            },
+            {
+              "text": "families.memotest.cutHint",
+              "label": "Подсказка на распечатке",
+              "hint": "Видна только на бумаге, над карточками для вырезания."
+            },
+            {
+              "text": "families.memotest.cardHidden",
+              "label": "Озвучка закрытой карточки",
+              "hint": "{n} — сайт подставит номер карточки.",
+              "sr": true
+            }
+          ]
+        },
+        {
+          "title": "Игра «Colores, formas y números»",
+          "hint": "Поле с цветными фигурами или предметами для счёта: вверху вопрос, ниже варианты ответа.",
+          "fields": [
+            {
+              "text": "families.shapes.modesLabel",
+              "label": "Подпись над выбором режима"
+            },
+            {
+              "text": "families.shapes.modeShapes",
+              "label": "Режим 1: цвета и формы"
+            },
+            {
+              "text": "families.shapes.modeNumbers",
+              "label": "Режим 2: числа"
+            },
+            {
+              "text": "families.shapes.score",
+              "label": "Счётчик верных ответов",
+              "hint": "{n} — сайт подставит число верных ответов."
+            },
+            {
+              "text": "families.shapes.askShape",
+              "label": "Вопрос в режиме цветов и форм",
+              "hint": "{shape} — сайт подставит фигуру, {color} — цвет."
+            },
+            {
+              "text": "families.shapes.right",
+              "label": "Сообщение при верном ответе"
+            },
+            {
+              "text": "families.shapes.wrong",
+              "label": "Сообщение при ошибке"
+            },
+            {
+              "text": "families.shapes.next",
+              "label": "Кнопка «дальше»",
+              "hint": "Появляется после верного ответа."
+            },
+            {
+              "text": "families.shapes.optionShape",
+              "label": "Озвучка фигуры-варианта",
+              "hint": "{shape} — сайт подставит фигуру, {color} — цвет.",
+              "sr": true
+            }
+          ]
+        },
+        {
+          "title": "Игра «Búsqueda del tesoro»",
+          "hint": "Карточки-загадки в пунктирной рамке, которые распечатывают и прячут по дому.",
+          "fields": [
+            {
+              "text": "families.treasure.cardsTitle",
+              "label": "Заголовок над карточками"
+            },
+            {
+              "text": "families.treasure.clue",
+              "label": "Номер подсказки на карточке",
+              "hint": "{n} — сайт подставит номер."
+            },
+            {
+              "text": "families.treasure.hideAt",
+              "label": "Мелкая строка «где спрятать»",
+              "hint": "Внизу карточки. {place} — сайт подставит место из данных игры."
+            },
+            {
+              "text": "families.treasure.treasureAt",
+              "label": "Где спрятать сам клад",
+              "hint": "Плашка под карточками. {place} — сайт подставит место из данных игры."
+            }
+          ]
+        },
+        {
+          "title": "Игра «Mis pequeños logros»",
+          "hint": "Таблица привычек на неделю с пустыми клетками для наклеек.",
+          "fields": [
+            {
+              "text": "families.chart.tableTitle",
+              "label": "Заголовок над таблицей"
+            },
+            {
+              "text": "families.chart.name",
+              "label": "Строка для имени"
+            },
+            {
+              "text": "families.chart.week",
+              "label": "Строка для недели"
+            },
+            {
+              "text": "families.chart.habit",
+              "label": "Заголовок первого столбца",
+              "hint": "Над списком привычек."
+            },
+            {
+              "text": "families.chart.mon",
+              "label": "День 1: понедельник"
+            },
+            {
+              "text": "families.chart.tue",
+              "label": "День 2: вторник"
+            },
+            {
+              "text": "families.chart.wed",
+              "label": "День 3: среда"
+            },
+            {
+              "text": "families.chart.thu",
+              "label": "День 4: четверг"
+            },
+            {
+              "text": "families.chart.fri",
+              "label": "День 5: пятница"
+            },
+            {
+              "text": "families.chart.sat",
+              "label": "День 6: суббота"
+            },
+            {
+              "text": "families.chart.sun",
+              "label": "День 7: воскресенье"
+            }
+          ]
+        },
+        {
+          "title": "Игра «Pequeños ayudantes en la cocina»",
+          "hint": "Песочные карточки рецептов: время, ингредиенты и шаги с пометкой, кто их делает.",
+          "fields": [
+            {
+              "text": "families.recipes.cardsTitle",
+              "label": "Заголовок над рецептами"
+            },
+            {
+              "text": "families.recipes.time",
+              "label": "Время приготовления",
+              "hint": "Под названием рецепта. {time} — сайт подставит время из рецепта."
+            },
+            {
+              "text": "families.recipes.ingredients",
+              "label": "Заголовок списка ингредиентов"
+            },
+            {
+              "text": "families.recipes.steps",
+              "label": "Заголовок шагов"
+            },
+            {
+              "text": "families.recipes.kid",
+              "label": "Пометка шага: делает ребёнок"
+            },
+            {
+              "text": "families.recipes.adult",
+              "label": "Пометка шага: делает взрослый"
+            }
+          ]
+        },
+        {
+          "title": "Игра «Láminas para colorear»",
+          "hint": "Сетка раскрасок, у каждой снизу название и значок принтера.",
+          "fields": [
+            {
+              "text": "families.coloring.cardsTitle",
+              "label": "Заголовок над раскрасками"
+            },
+            {
+              "text": "families.coloring.printOne",
+              "label": "Озвучка значка принтера у раскраски",
+              "hint": "{name} — сайт подставит название раскраски.",
+              "sr": true
+            }
+          ]
+        }
+      ]
     },
     {
-      "id": "catalog",
-      "title": "Каталог",
-      "url": "/productos/",
-      "texts": ["catalog", "badge", "price", "stock"]
+      "id": "wishlist",
+      "title": "Избранное",
+      "url": "/favoritos/",
+      "summary": "Страница с товарами, которые покупатель отметил сердечком; открывается сердечком в шапке.",
+      "blocks": [
+        {
+          "title": "Заголовок и отмеченные товары",
+          "hint": "Заголовок и сетка карточек отмеченных товаров. Сами товары — в разделе «Товары».",
+          "goto": "products",
+          "fields": [
+            {
+              "text": "wishlist.title",
+              "label": "Заголовок",
+              "hint": "Также невидимая подпись сердечка в шапке."
+            }
+          ]
+        },
+        {
+          "title": "Если ничего не отмечено",
+          "hint": "Сердечко, текст и кнопка вместо карточек.",
+          "fields": [
+            {
+              "text": "wishlist.empty",
+              "label": "Сообщение, если избранное пусто"
+            },
+            {
+              "text": "wishlist.emptyCta",
+              "label": "Кнопка под сообщением",
+              "hint": "Ведёт в каталог."
+            }
+          ]
+        }
+      ]
     },
     {
-      "id": "product",
-      "title": "Страница товара",
-      "texts": ["product", "spec", "gallery", "qty", "reviews"]
-    },
-    {
-      "id": "order",
-      "title": "Корзина и заказ",
+      "id": "cart",
+      "title": "Корзина",
       "url": "/carrito/",
-      "texts": ["cart", "checkout", "thanks", "email"]
+      "summary": "Список выбранных товаров с итогом — отдельная страница и выезжающая панель, которая открывается по значку корзины в шапке.",
+      "blocks": [
+        {
+          "title": "Заголовок корзины",
+          "hint": "Крупная надпись вверху страницы корзины и вверху выезжающей панели.",
+          "fields": [
+            {
+              "text": "cart.title",
+              "label": "Заголовок",
+              "hint": "Также в названии вкладки браузера и в строке «где я» над заголовком."
+            }
+          ]
+        },
+        {
+          "title": "Товары в корзине",
+          "hint": "Список строк с фото, названием, количеством и ценой каждого товара.",
+          "goto": "products",
+          "fields": [
+            {
+              "text": "cart.itemNoStock",
+              "label": "Предупреждение, что товар закончился",
+              "hint": "Появляется под названием товара, если его больше нет в наличии; такой товар не входит в итог."
+            },
+            {
+              "text": "cart.removeItem",
+              "label": "Кнопка-корзинка «удалить товар»",
+              "sr": true
+            }
+          ]
+        },
+        {
+          "title": "Итог и кнопки оформления",
+          "hint": "Под списком товаров (на компьютере — справа): суммы и большая кнопка перехода к оформлению.",
+          "fields": [
+            {
+              "text": "cart.subtotal",
+              "label": "Строка «сумма товаров»",
+              "hint": "Также в итоге на странице оформления заказа."
+            },
+            {
+              "text": "cart.shipping",
+              "label": "Строка «доставка»",
+              "hint": "Также в итоге на странице оформления и в письмах о заказе."
+            },
+            {
+              "text": "cart.shippingNotIncluded",
+              "label": "Пояснение, что доставка не входит в цену",
+              "hint": "Стоит напротив строки «доставка», пока в настройках не задана стоимость доставки."
+            },
+            {
+              "text": "cart.total",
+              "label": "Строка «итого»",
+              "hint": "Также в итоге и в нижней полосе на странице оформления заказа."
+            },
+            {
+              "text": "cart.checkout",
+              "label": "Надпись на кнопке оформления заказа",
+              "hint": "Также заголовок страницы оформления заказа и название её вкладки."
+            },
+            {
+              "text": "cart.viewCart",
+              "label": "Ссылка «открыть корзину целиком»",
+              "hint": "Только в выезжающей панели, под главной кнопкой. Также на странице оформления, если товар закончился."
+            }
+          ]
+        },
+        {
+          "title": "Пустая корзина",
+          "hint": "Показывается вместо списка, когда в корзине ничего нет: значок сумки, фраза и кнопка.",
+          "fields": [
+            {
+              "text": "cart.empty",
+              "label": "Сообщение, если корзина пуста"
+            },
+            {
+              "text": "cart.emptyCta",
+              "label": "Надпись на кнопке",
+              "hint": "Ведёт в каталог стульев."
+            }
+          ]
+        },
+        {
+          "title": "Сообщение об удалении товара",
+          "hint": "Всплывает внизу экрана на несколько секунд после удаления товара из корзины.",
+          "fields": [
+            {
+              "text": "cart.removed",
+              "label": "Текст сообщения",
+              "hint": "Также на странице оформления заказа."
+            },
+            {
+              "text": "cart.undo",
+              "label": "Кнопка «вернуть»",
+              "hint": "Также в сообщении после удаления из избранного."
+            }
+          ]
+        }
+      ]
     },
     {
-      "id": "layout",
-      "title": "Шапка, меню и подвал",
-      "texts": ["nav", "footer", "common", "search", "wishlist", "whatsapp", "social"]
+      "id": "checkout",
+      "title": "Оформление заказа",
+      "url": "/checkout/",
+      "summary": "Страница, где покупатель вводит контакты и адрес и подтверждает заказ перед оплатой в Mercado Pago.",
+      "blocks": [
+        {
+          "title": "Упрощённая шапка",
+          "hint": "Самый верх страницы: логотип слева и ссылка назад справа.",
+          "fields": [
+            {
+              "text": "checkout.backToCart",
+              "label": "Ссылка назад в корзину"
+            }
+          ]
+        },
+        {
+          "title": "Свёрнутый итог на телефоне",
+          "hint": "Только на телефоне, под заголовком: полоска с суммой, которая раскрывает список товаров.",
+          "fields": [
+            {
+              "text": "checkout.summaryToggle",
+              "label": "Надпись на полоске"
+            }
+          ]
+        },
+        {
+          "title": "Контакты покупателя",
+          "hint": "Первая часть формы: имя, фамилия, email и телефон.",
+          "fields": [
+            {
+              "text": "checkout.contact",
+              "label": "Заголовок части",
+              "hint": "Подписи самих полей — на странице «Поля форм и ошибки»."
+            }
+          ]
+        },
+        {
+          "title": "Доставка",
+          "hint": "Вторая часть формы: плашка со значком грузовика и поля адреса.",
+          "fields": [
+            {
+              "text": "checkout.delivery",
+              "label": "Заголовок части"
+            },
+            {
+              "text": "checkout.shipHome",
+              "label": "Способ доставки на плашке"
+            },
+            {
+              "text": "checkout.shipNote",
+              "label": "Пояснение о стоимости доставки",
+              "hint": "Показывается под способом доставки, пока в настройках не задана её стоимость."
+            }
+          ]
+        },
+        {
+          "title": "Оплата",
+          "hint": "Третья часть формы: рамка с единственным выбранным способом оплаты.",
+          "fields": [
+            {
+              "text": "checkout.payment",
+              "label": "Заголовок части"
+            },
+            {
+              "text": "checkout.mercadoPago",
+              "label": "Название способа оплаты"
+            },
+            {
+              "text": "checkout.mercadoPagoText",
+              "label": "Пояснение под способом оплаты"
+            }
+          ]
+        },
+        {
+          "title": "Комментарий к заказу",
+          "hint": "Последняя часть формы: большое поле для свободного текста.",
+          "fields": [
+            {
+              "text": "checkout.note",
+              "label": "Заголовок части и подпись поля"
+            },
+            {
+              "text": "checkout.noteHint",
+              "label": "Подсказка под полем"
+            }
+          ]
+        },
+        {
+          "title": "Итог заказа и кнопка подтверждения",
+          "hint": "На компьютере — рамка справа, которая едет вместе со страницей; на телефоне — полоса с суммой внизу экрана.",
+          "fields": [
+            {
+              "text": "checkout.summary",
+              "label": "Заголовок рамки с итогом",
+              "hint": "Только на компьютере."
+            },
+            {
+              "text": "checkout.submit",
+              "label": "Надпись на кнопке подтверждения"
+            },
+            {
+              "text": "checkout.stockChanged",
+              "label": "Предупреждение, что товар закончился",
+              "hint": "Появляется над кнопкой, если пока покупатель заполнял форму, товар кончился; рядом ссылка в корзину."
+            }
+          ]
+        }
+      ]
     },
     {
-      "id": "legal",
-      "title": "Отказ от покупки и жалобы",
+      "id": "thanks",
+      "title": "Спасибо за заказ",
+      "summary": "Страница, на которую покупатель попадает после оплаты в Mercado Pago; заголовок и текст меняются в зависимости от того, что с оплатой.",
+      "blocks": [
+        {
+          "title": "Пока сайт узнаёт статус заказа",
+          "hint": "Первые секунды после перехода: вместо текста видны светлые заглушки.",
+          "fields": [
+            {
+              "text": "thanks.loading",
+              "label": "Сообщение «ищем заказ»",
+              "sr": true
+            }
+          ]
+        },
+        {
+          "title": "Оплата прошла",
+          "hint": "Зелёный кружок с галочкой, заголовок и текст под ним — когда деньги получены.",
+          "fields": [
+            {
+              "text": "thanks.title",
+              "label": "Заголовок",
+              "hint": "Также в названии вкладки браузера."
+            },
+            {
+              "text": "thanks.lead",
+              "label": "Текст под заголовком"
+            }
+          ]
+        },
+        {
+          "title": "Оплата ещё подтверждается",
+          "hint": "Жёлтый кружок — покупатель заплатил, но Mercado Pago ещё не подтвердил платёж (например, наличными).",
+          "fields": [
+            {
+              "text": "thanks.pendingTitle",
+              "label": "Заголовок"
+            },
+            {
+              "text": "thanks.pendingLead",
+              "label": "Текст под заголовком"
+            }
+          ]
+        },
+        {
+          "title": "Заказ записан, но не оплачен",
+          "hint": "Жёлтый кружок с восклицательным знаком — покупатель вернулся, не заплатив; под номером кнопка оплаты.",
+          "fields": [
+            {
+              "text": "thanks.createdTitle",
+              "label": "Заголовок"
+            },
+            {
+              "text": "thanks.createdLead",
+              "label": "Текст под заголовком"
+            },
+            {
+              "text": "thanks.pay",
+              "label": "Надпись на кнопке оплаты",
+              "hint": "Также когда оплата ещё подтверждается."
+            }
+          ]
+        },
+        {
+          "title": "Оплата не прошла",
+          "hint": "Жёлтый кружок с восклицательным знаком — банк или Mercado Pago отклонил платёж.",
+          "fields": [
+            {
+              "text": "thanks.rejectedTitle",
+              "label": "Заголовок"
+            },
+            {
+              "text": "thanks.rejectedLead",
+              "label": "Текст под заголовком"
+            },
+            {
+              "text": "thanks.retryPay",
+              "label": "Надпись на кнопке повторной оплаты"
+            }
+          ]
+        },
+        {
+          "title": "Заказ отменён",
+          "hint": "Серый кружок с крестиком — заказ отменён и больше не действует.",
+          "fields": [
+            {
+              "text": "thanks.cancelledTitle",
+              "label": "Заголовок"
+            },
+            {
+              "text": "thanks.cancelledLead",
+              "label": "Текст под заголовком"
+            }
+          ]
+        },
+        {
+          "title": "Деньги возвращены",
+          "hint": "Серый кружок со стрелкой — оплату вернули покупателю.",
+          "fields": [
+            {
+              "text": "thanks.refundedTitle",
+              "label": "Заголовок"
+            },
+            {
+              "text": "thanks.refundedLead",
+              "label": "Текст под заголовком"
+            }
+          ]
+        },
+        {
+          "title": "Номер заказа",
+          "hint": "Бежевая плашка с номером под заголовком — при любом статусе.",
+          "fields": [
+            {
+              "text": "thanks.order",
+              "label": "Надпись с номером заказа",
+              "hint": "{n} — сайт подставит номер заказа. Также в письмах о заказе."
+            }
+          ]
+        },
+        {
+          "title": "Что дальше",
+          "hint": "Два пункта со значками грузовика и WhatsApp — только когда оплата прошла или подтверждается.",
+          "fields": [
+            {
+              "text": "thanks.nextTitle",
+              "label": "Заголовок"
+            },
+            {
+              "text": "thanks.nextPrepare",
+              "label": "Пункт 1: подготовка и отправка",
+              "hint": "Также в письмах покупателю об оплате."
+            },
+            {
+              "text": "thanks.nextContact",
+              "label": "Пункт 2: связь по WhatsApp",
+              "hint": "Также в письмах покупателю об оплате."
+            }
+          ]
+        },
+        {
+          "title": "Нужна помощь",
+          "hint": "Заголовок и список способов связи. Сами телефон, email и ссылки меняются в разделе «Настройки».",
+          "goto": "site",
+          "fields": [
+            {
+              "text": "thanks.contactTitle",
+              "label": "Заголовок"
+            }
+          ]
+        },
+        {
+          "title": "Кнопка внизу",
+          "hint": "Последняя кнопка на странице.",
+          "fields": [
+            {
+              "text": "thanks.continue",
+              "label": "Надпись на кнопке",
+              "hint": "Ведёт в каталог стульев."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "arrepentimiento",
+      "title": "Отказ от покупки",
       "url": "/boton-de-arrepentimiento/",
-      "texts": ["legal", "arrepentimiento", "quejas"]
+      "summary": "Обязательная по закону страница с формой, через которую покупатель отказывается от покупки в течение 10 дней.",
+      "blocks": [
+        {
+          "title": "Заголовок и вступление",
+          "hint": "Верх страницы: крупный заголовок и абзац под ним.",
+          "fields": [
+            {
+              "text": "legal.arrepentimiento",
+              "label": "Заголовок",
+              "hint": "Также ссылка в подвале сайта и название вкладки браузера."
+            },
+            {
+              "text": "arrepentimiento.lead",
+              "label": "Текст под заголовком"
+            }
+          ]
+        },
+        {
+          "title": "Форма заявки",
+          "hint": "Поля имени, email, телефона, номера заказа и причины. Подписи полей — на странице «Поля форм и ошибки».",
+          "fields": [
+            {
+              "text": "arrepentimiento.orderHint",
+              "label": "Подсказка под номером заказа"
+            },
+            {
+              "text": "arrepentimiento.reasonHint",
+              "label": "Подсказка под причиной"
+            },
+            {
+              "text": "arrepentimiento.submit",
+              "label": "Надпись на кнопке отправки"
+            }
+          ]
+        },
+        {
+          "title": "Сообщение после отправки",
+          "hint": "Рамка с зелёной галочкой, которая появляется на месте формы после отправки.",
+          "fields": [
+            {
+              "text": "arrepentimiento.successTitle",
+              "label": "Заголовок"
+            },
+            {
+              "text": "arrepentimiento.successText",
+              "label": "Текст"
+            },
+            {
+              "text": "legal.requestCode",
+              "label": "Плашка с номером заявки",
+              "hint": "{code} — сайт подставит номер заявки. Также в книге жалоб и в письмах вам."
+            },
+            {
+              "text": "legal.requestCodeNote",
+              "label": "Строка под номером",
+              "hint": "Также в книге жалоб."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "quejas",
+      "title": "Книга жалоб",
+      "url": "/libro-de-quejas/",
+      "summary": "Обязательная по закону страница с формой для жалобы; покупатель получает копию и номер по email.",
+      "blocks": [
+        {
+          "title": "Заголовок и вступление",
+          "hint": "Верх страницы: крупный заголовок и абзац под ним.",
+          "fields": [
+            {
+              "text": "quejas.lead",
+              "label": "Текст под заголовком"
+            }
+          ]
+        },
+        {
+          "title": "Форма жалобы",
+          "hint": "Поля имени, номера документа, email, телефона и текста жалобы — все обязательные. Подписи полей — на странице «Поля форм и ошибки».",
+          "fields": [
+            {
+              "text": "quejas.complaintHint",
+              "label": "Подсказка под текстом жалобы"
+            },
+            {
+              "text": "quejas.submit",
+              "label": "Надпись на кнопке отправки"
+            }
+          ]
+        },
+        {
+          "title": "Сообщение после отправки",
+          "hint": "Рамка с зелёной галочкой и номером жалобы, которая появляется на месте формы после отправки.",
+          "fields": [
+            {
+              "text": "quejas.successTitle",
+              "label": "Заголовок"
+            },
+            {
+              "text": "quejas.successText",
+              "label": "Текст"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "emails",
+      "title": "Письма",
+      "service": true,
+      "summary": "Письма, которые сайт сам отправляет покупателю и вам: о заказе, оплате, отправке и о сообщениях из форм.",
+      "blocks": [
+        {
+          "title": "Покупателю: заказ оплачен",
+          "hint": "Уходит покупателю, как только Mercado Pago подтвердил оплату. Кроме этих строк в письме номер заказа, список товаров и пункты «что дальше» со страницы «Спасибо».",
+          "fields": [
+            {
+              "text": "email.subjectPaid",
+              "label": "Тема письма",
+              "hint": "{n} — сайт подставит номер заказа."
+            },
+            {
+              "text": "email.greeting",
+              "label": "Приветствие",
+              "hint": "{name} — сайт подставит имя покупателя. Также во всех остальных письмах покупателю."
+            },
+            {
+              "text": "email.paidIntro",
+              "label": "Первый абзац"
+            },
+            {
+              "text": "email.shippingNotIncluded",
+              "label": "Строка о доставке",
+              "hint": "Когда в настройках не задана стоимость доставки. Также в письмах вам."
+            },
+            {
+              "text": "email.total",
+              "label": "Строка «итого»",
+              "hint": "{amount} — сайт подставит сумму заказа. Также в письмах вам."
+            },
+            {
+              "text": "email.orderLink",
+              "label": "Ссылка на статус заказа",
+              "hint": "{url} — сайт подставит ссылку на страницу заказа. Также в других письмах о заказе."
+            },
+            {
+              "text": "email.questions",
+              "label": "Строка «есть вопросы?»",
+              "hint": "{phone} — сайт подставит ваш телефон из настроек. Также во всех письмах покупателю."
+            }
+          ]
+        },
+        {
+          "title": "Покупателю: ждём оплату",
+          "hint": "Уходит покупателю, когда заказ оформлен, но платёж ещё подтверждается. Остальное — как в письме об оплате.",
+          "fields": [
+            {
+              "text": "email.subjectPending",
+              "label": "Тема письма",
+              "hint": "{n} — сайт подставит номер заказа."
+            },
+            {
+              "text": "email.pendingIntro",
+              "label": "Первый абзац"
+            }
+          ]
+        },
+        {
+          "title": "Покупателю: заказ отправлен",
+          "hint": "Уходит, когда вы в админке отмечаете заказ как отправленный.",
+          "fields": [
+            {
+              "text": "email.subjectShipped",
+              "label": "Тема письма",
+              "hint": "{n} — сайт подставит номер заказа."
+            },
+            {
+              "text": "email.shippedIntro",
+              "label": "Первый абзац"
+            },
+            {
+              "text": "email.tracking",
+              "label": "Строка с номером отслеживания",
+              "hint": "{code} — сайт подставит номер, который вы ввели в админке; без номера строки нет."
+            }
+          ]
+        },
+        {
+          "title": "Вам: новый заказ",
+          "hint": "Уходит на ваш email при оплате, при ожидании оплаты и когда с платежом что-то не так.",
+          "fields": [
+            {
+              "text": "email.ownerSubjectPaid",
+              "label": "Тема: заказ оплачен",
+              "hint": "{n} — сайт подставит номер заказа."
+            },
+            {
+              "text": "email.ownerSubjectPending",
+              "label": "Тема: оплата ещё подтверждается",
+              "hint": "{n} — сайт подставит номер заказа."
+            },
+            {
+              "text": "email.ownerSubjectReview",
+              "label": "Тема: платёж надо проверить",
+              "hint": "{n} — сайт подставит номер заказа."
+            },
+            {
+              "text": "email.statusPaid",
+              "label": "Статус в первой строке: оплачен"
+            },
+            {
+              "text": "email.statusPending",
+              "label": "Статус в первой строке: ждём оплату"
+            },
+            {
+              "text": "email.statusReview",
+              "label": "Статус в первой строке: проверить платёж"
+            },
+            {
+              "text": "email.reviewAmount",
+              "label": "Причина проверки: сумма не совпала",
+              "hint": "Только в письме «платёж надо проверить»."
+            },
+            {
+              "text": "email.reviewCancelled",
+              "label": "Причина проверки: оплата за отменённый заказ",
+              "hint": "Только в письме «платёж надо проверить»."
+            },
+            {
+              "text": "email.reviewDuplicate",
+              "label": "Причина проверки: заплатили дважды",
+              "hint": "Только в письме «платёж надо проверить»."
+            },
+            {
+              "text": "email.customerTitle",
+              "label": "Заголовок части о покупателе"
+            },
+            {
+              "text": "email.dni",
+              "label": "Подпись перед номером документа"
+            },
+            {
+              "text": "email.deliveryTitle",
+              "label": "Заголовок части с адресом"
+            },
+            {
+              "text": "email.referencesTitle",
+              "label": "Заголовок части с ориентирами",
+              "hint": "Только если покупатель их написал."
+            },
+            {
+              "text": "email.notesTitle",
+              "label": "Заголовок части с комментарием к заказу",
+              "hint": "Только если покупатель его написал."
+            }
+          ]
+        },
+        {
+          "title": "Вам: новое сообщение с сайта",
+          "hint": "Уходит на ваш email после каждой отправленной формы: контакты, отказ от покупки, жалоба, отзыв, «сообщить о поступлении». Подписи полей в письме — те же, что в формах.",
+          "fields": [
+            {
+              "text": "email.ownerMessageSubject",
+              "label": "Тема письма",
+              "hint": "{type} — сайт подставит название формы из строк ниже."
+            },
+            {
+              "text": "messageLabels.typeContact",
+              "label": "Название формы: контакты"
+            },
+            {
+              "text": "messageLabels.typeArrepentimiento",
+              "label": "Название формы: отказ от покупки"
+            },
+            {
+              "text": "messageLabels.typeQuejas",
+              "label": "Название формы: книга жалоб"
+            },
+            {
+              "text": "messageLabels.typeReview",
+              "label": "Название формы: отзыв о товаре"
+            },
+            {
+              "text": "messageLabels.typeNotify",
+              "label": "Название формы: сообщить о поступлении"
+            },
+            {
+              "text": "messageLabels.product",
+              "label": "Подпись перед названием товара",
+              "hint": "В сообщениях с отзывом и с просьбой сообщить о поступлении."
+            }
+          ]
+        },
+        {
+          "title": "Покупателю: заявка на отказ от покупки принята",
+          "hint": "Уходит покупателю после отправки формы на странице «Отказ от покупки»; в конце — копия того, что он написал.",
+          "fields": [
+            {
+              "text": "email.arrepentimientoSubject",
+              "label": "Тема письма"
+            },
+            {
+              "text": "email.arrepentimientoBody",
+              "label": "Основной текст",
+              "hint": "{code} — сайт подставит номер заявки."
+            },
+            {
+              "text": "email.copyTitle",
+              "label": "Заголовок над копией заявки",
+              "hint": "Также в письме о жалобе."
+            }
+          ]
+        },
+        {
+          "title": "Покупателю: жалоба принята",
+          "hint": "Уходит покупателю после отправки формы на странице «Книга жалоб»; в конце — копия жалобы.",
+          "fields": [
+            {
+              "text": "email.quejasSubject",
+              "label": "Тема письма"
+            },
+            {
+              "text": "email.quejasBody",
+              "label": "Основной текст",
+              "hint": "{code} — сайт подставит номер жалобы."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "forms",
+      "title": "Поля форм и ошибки",
+      "service": true,
+      "summary": "Подписи полей и сообщения об ошибках — общие для оформления заказа, контактов, отказа от покупки, книги жалоб и остальных форм.",
+      "blocks": [
+        {
+          "title": "Подписи полей",
+          "hint": "Надписи над полями ввода во всех формах сайта.",
+          "fields": [
+            {
+              "text": "fields.name",
+              "label": "Имя",
+              "hint": "Также в письмах вам о сообщениях с сайта."
+            },
+            {
+              "text": "fields.lastName",
+              "label": "Фамилия"
+            },
+            {
+              "text": "fields.email",
+              "label": "Email",
+              "hint": "Также в письмах вам о сообщениях с сайта."
+            },
+            {
+              "text": "fields.phone",
+              "label": "Телефон",
+              "hint": "Также в письмах вам о сообщениях с сайта."
+            },
+            {
+              "text": "fields.phoneHint",
+              "label": "Подсказка под телефоном"
+            },
+            {
+              "text": "fields.street",
+              "label": "Улица и дом",
+              "hint": "Только при оформлении заказа."
+            },
+            {
+              "text": "fields.floor",
+              "label": "Этаж и квартира",
+              "hint": "Только при оформлении заказа."
+            },
+            {
+              "text": "fields.zip",
+              "label": "Почтовый индекс",
+              "hint": "Только при оформлении заказа."
+            },
+            {
+              "text": "fields.province",
+              "label": "Провинция",
+              "hint": "Только при оформлении заказа."
+            },
+            {
+              "text": "fields.provincePlaceholder",
+              "label": "Надпись в списке провинций, пока ничего не выбрано"
+            },
+            {
+              "text": "fields.city",
+              "label": "Город"
+            },
+            {
+              "text": "fields.cityCaba",
+              "label": "Район",
+              "hint": "Заменяет подпись «город», когда выбран Буэнос-Айрес (столица)."
+            },
+            {
+              "text": "fields.dni",
+              "label": "Номер документа (DNI)",
+              "hint": "Также в книге жалоб и в письмах вам."
+            },
+            {
+              "text": "fields.dniHint",
+              "label": "Подсказка под номером документа",
+              "hint": "Только при оформлении заказа."
+            },
+            {
+              "text": "fields.references",
+              "label": "Ориентиры для курьера",
+              "hint": "Только при оформлении заказа."
+            },
+            {
+              "text": "fields.optional",
+              "label": "Пометка «необязательно» рядом с подписью"
+            },
+            {
+              "text": "fields.message",
+              "label": "Сообщение",
+              "hint": "В форме на странице контактов."
+            },
+            {
+              "text": "fields.orderNumber",
+              "label": "Номер заказа",
+              "hint": "В форме отказа от покупки."
+            },
+            {
+              "text": "fields.reason",
+              "label": "Причина",
+              "hint": "В форме отказа от покупки."
+            },
+            {
+              "text": "fields.complaint",
+              "label": "Текст жалобы",
+              "hint": "В книге жалоб."
+            }
+          ]
+        },
+        {
+          "title": "Общие надписи у форм",
+          "hint": "Строка над полями и строка под кнопкой отправки — одинаковые у всех форм.",
+          "fields": [
+            {
+              "text": "forms.requiredLegend",
+              "label": "Пояснение про звёздочку над полями"
+            },
+            {
+              "text": "forms.privacyNote",
+              "label": "Строка о личных данных под кнопкой",
+              "hint": "За ней сразу идёт ссылка из строки ниже."
+            },
+            {
+              "text": "forms.privacyLink",
+              "label": "Ссылка на политику конфиденциальности"
+            }
+          ]
+        },
+        {
+          "title": "Ошибки под полями",
+          "hint": "Красная строка под полем, если в нём что-то не так.",
+          "fields": [
+            {
+              "text": "errors.required",
+              "label": "Поле не заполнено"
+            },
+            {
+              "text": "errors.emailFormat",
+              "label": "Email написан с ошибкой"
+            },
+            {
+              "text": "errors.emailSuggest",
+              "label": "Подсказка при опечатке в почте",
+              "hint": "{domain} — сайт подставит правильный вариант адреса, например gmail.com."
+            },
+            {
+              "text": "errors.nameFormat",
+              "label": "В имени есть не буквы"
+            },
+            {
+              "text": "errors.phoneFormat",
+              "label": "Телефон набран неверно"
+            },
+            {
+              "text": "errors.dniFormat",
+              "label": "Номер документа неверной длины"
+            },
+            {
+              "text": "errors.zipFormat",
+              "label": "Индекс набран неверно"
+            },
+            {
+              "text": "errors.tooShort",
+              "label": "Текст слишком короткий"
+            },
+            {
+              "text": "errors.check",
+              "label": "Общая ошибка «проверьте, что написали»"
+            }
+          ]
+        },
+        {
+          "title": "Ошибки отправки и связи",
+          "hint": "Красная плашка над кнопкой или на месте содержимого, когда пропал интернет или сервер не ответил.",
+          "fields": [
+            {
+              "text": "errors.submit",
+              "label": "Форма не отправилась",
+              "hint": "Над кнопкой отправки во всех формах и при оформлении заказа."
+            },
+            {
+              "text": "errors.network",
+              "label": "Не удалось загрузить часть страницы",
+              "hint": "В корзине, при оформлении заказа, на странице «Спасибо» и в поиске; рядом кнопка «попробовать ещё»."
+            },
+            {
+              "text": "errors.offline",
+              "label": "Нет интернета",
+              "hint": "Полоска, которая появляется на любой странице, когда пропадает связь."
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "notFound",
-      "title": "Страница 404",
-      "texts": ["notFound"]
+      "title": "Страница «не найдено» (404)",
+      "service": true,
+      "summary": "Показывается, когда покупатель открыл несуществующий адрес: объясняет это и предлагает поиск, разделы каталога и кнопку на главную.",
+      "blocks": [
+        {
+          "title": "Сообщение",
+          "hint": "По центру экрана под значком: заголовок и строка текста.",
+          "fields": [
+            {
+              "text": "notFound.title",
+              "label": "Заголовок",
+              "hint": "Также название этой страницы во вкладке браузера."
+            },
+            {
+              "text": "notFound.text",
+              "label": "Текст"
+            }
+          ]
+        },
+        {
+          "title": "Куда пойти дальше",
+          "hint": "Ниже по центру: строка поиска, затем кнопки разделов каталога и кнопка на главную. Названия разделов правятся в «Разделах каталога».",
+          "goto": "categories",
+          "fields": [
+            {
+              "text": "notFound.searchTitle",
+              "label": "Заголовок над поиском"
+            },
+            {
+              "text": "notFound.categoriesTitle",
+              "label": "Заголовок над разделами каталога"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "seo",
-      "title": "Поиск Google",
-      "note": "Заголовок и описание главной — в «Настройках».",
-      "texts": ["seo"]
+      "title": "Заголовки для Google",
+      "service": true,
+      "summary": "Этих фраз нет на самих страницах: так страницы называются в поиске Google, во вкладке браузера и в превью ссылки в WhatsApp.",
+      "blocks": [
+        {
+          "title": "Главная страница в Google",
+          "hint": "Как главная выглядит в поиске и в превью ссылки на сайт.",
+          "fields": [
+            {
+              "key": "seo.homeTitle",
+              "type": "text",
+              "label": "Заголовок главной в Google"
+            },
+            {
+              "key": "seo.homeDescription",
+              "type": "textarea",
+              "rows": 3,
+              "label": "Описание главной в Google"
+            },
+            {
+              "key": "seo.defaultOgImage",
+              "type": "image",
+              "flow": "og",
+              "label": "Картинка для превью ссылки в WhatsApp",
+              "hint": "Размер 1200 × 630. Показывается, когда ссылкой на сайт делятся в мессенджерах."
+            },
+            {
+              "text": "seo.siteName",
+              "label": "Название магазина",
+              "hint": "Показывается в превью ссылки и как название сайта, если его добавить на экран телефона."
+            },
+            {
+              "text": "seo.siteNameAlt",
+              "label": "Название магазина без ударения",
+              "hint": "Madera Mas — так магазин иногда ищут в Google; поисковик узнаёт его и в этом написании."
+            }
+          ]
+        },
+        {
+          "title": "Шаблоны заголовков",
+          "hint": "По ним сайт сам собирает заголовок страницы, если для неё не написан свой.",
+          "fields": [
+            {
+              "text": "seo.titlePage",
+              "label": "Обычная страница",
+              "hint": "{title} — сайт подставит название страницы."
+            },
+            {
+              "text": "seo.titleBlog",
+              "label": "Страница блога"
+            },
+            {
+              "text": "seo.titleCategory",
+              "label": "Раздел каталога",
+              "hint": "{name} — сайт подставит название раздела."
+            },
+            {
+              "text": "seo.titleProduct",
+              "label": "Товар",
+              "hint": "{name} — сайт подставит название товара, {category} — название его раздела."
+            },
+            {
+              "text": "seo.titleArticle",
+              "label": "Статья блога",
+              "hint": "{title} — сайт подставит название статьи."
+            },
+            {
+              "text": "seo.titleActivity",
+              "label": "Игра для детей",
+              "hint": "{title} — сайт подставит название игры."
+            }
+          ]
+        },
+        {
+          "title": "Описания страниц",
+          "hint": "Короткий текст под заголовком страницы в результатах поиска.",
+          "fields": [
+            {
+              "text": "seo.descHowItWorks",
+              "label": "Страница «Как это работает»"
+            },
+            {
+              "text": "seo.descContact",
+              "label": "Страница «Контакты»"
+            },
+            {
+              "text": "seo.descFaq",
+              "label": "Страница «Вопросы и ответы»"
+            },
+            {
+              "text": "seo.descBlog",
+              "label": "Блог"
+            },
+            {
+              "text": "seo.descFamilies",
+              "label": "Страница «Для семей» с играми"
+            },
+            {
+              "text": "seo.descArrepentimiento",
+              "label": "Страница «Кнопка отказа от покупки»"
+            },
+            {
+              "text": "seo.descQuejas",
+              "label": "Страница «Книга жалоб»"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

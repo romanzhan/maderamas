@@ -1,0 +1,61 @@
+{
+  "pages": [
+    { "from": "/linea-alta/", "to": "/sillas/" },
+    { "from": "/linea-evolutiva/", "to": "/sillas/" },
+    { "from": "/muebles-de-madera-para-ninos/", "to": "/sillas/" },
+    { "from": "/productos/silla-evolutiva-infantil1/", "to": "/sillas/silla-evolutiva/" },
+    {
+      "from": "/productos/silla-evolutiva-infantil-roble-americano-f7359/",
+      "to": "/sillas/silla-evolutiva/?madera=roble"
+    },
+    {
+      "from": "/productos/silla-evolutiva-infantil-nogal-3pkpz/",
+      "to": "/sillas/silla-evolutiva/?madera=nogal"
+    },
+    { "from": "/productos/silla-evolutiva-alta-t6jcv/", "to": "/sillas/silla-alta/?madera=roble" },
+    {
+      "from": "/productos/silla-alta-de-comer-evolutiva-lfbi9/",
+      "to": "/sillas/silla-alta/?madera=nogal"
+    },
+    {
+      "from": "/productos/silla-alta-de-comer-evolutiva-crudo-mxdse/",
+      "to": "/sillas/silla-alta/"
+    },
+    {
+      "from": "/productos/mesa-para-la-silla-evolutiva-cx1j1/",
+      "to": "/accesorios/mesa-silla-evolutiva/"
+    },
+    {
+      "from": "/productos/almohadones-para-silla-evolutiva-hxk5p/",
+      "to": "/accesorios/almohadon/"
+    },
+    { "from": "/productos/pata-pata-caminador-madera-montessori/", "to": "/accesorios/" }
+  ],
+  "sections": [
+    { "from": "/productos/page/", "to": "/productos/" },
+    { "from": "/search/", "to": "/buscar/", "keepQuery": true },
+    { "from": "/comprar/", "to": "/carrito/" },
+    { "from": "/checkout/", "to": "/carrito/" },
+    { "from": "/account/", "to": "/" }
+  ],
+  "queries": [
+    {
+      "from": "/contacto/",
+      "query": "order_cancellation_without_id=true",
+      "to": "/boton-de-arrepentimiento/"
+    }
+  ],
+  "productWords": [
+    { "words": ["mesa-para"], "to": "/accesorios/mesa-silla-evolutiva/" },
+    { "words": ["almohad"], "to": "/accesorios/almohadon/" },
+    { "words": ["escalon"], "to": "/sillas/silla-alta-dos-escalones/" },
+    { "words": ["barra", "isla"], "to": "/sillas/silla-alta-barra/" },
+    { "words": ["silla-alta", "evolutiva-alta"], "to": "/sillas/silla-alta/" },
+    { "words": ["silla-evolutiva"], "to": "/sillas/silla-evolutiva/" },
+    { "words": ["torre"], "to": "/accesorios/torre-de-aprendizaje/" },
+    { "words": ["banquito", "banco", "estrella"], "to": "/accesorios/banquito-la-estrella/" },
+    { "words": ["equilibrist", "apilable"], "to": "/accesorios/equilibristas/" },
+    { "words": ["set-mesa", "mesa-y-silla", "mesita"], "to": "/accesorios/set-mesa-y-sillas/" },
+    { "words": ["bebe"], "to": "/sillas/silla-para-bebe/" }
+  ]
+}

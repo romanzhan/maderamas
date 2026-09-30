@@ -1,5 +1,5 @@
 // Редактор контента в админке (бэкенд.md §15, страницы.md §17). Store, а не компонент:
-// раздел выбирается вкладками страницы админки (src/scripts/admin.js), а форма, окно
+// раздел выбирается меню страницы админки (src/scripts/admin.js), а форма, окно
 // выбора фото и полоса публикации делят одно состояние.
 //
 // Формы не написаны для каждого раздела отдельно: их описывает data/admin-schema.json
@@ -56,7 +56,7 @@ function uniqueId(base, taken) {
 }
 
 export const adminContent = {
-  schema: { collections: {}, texts: { sections: {} } },
+  schema: { collections: {}, sitePages: [] },
   texts: {},
   // Сводка сервера: версии разделов, картинки, публикация
   images: {},
@@ -81,12 +81,19 @@ export const adminContent = {
   history: null,
   historyState: 'idle',
 
-  // Окно выбора фото: для какого поля, какой поток, одиночный выбор или добавление в список
-  picker: { flow: null, apply: null, query: '', uploading: false, error: '', name: '' },
+  // Окно выбора фото: для какого поля, какой поток, одно фото или несколько в список
+  picker: { flow: null, multiple: false, apply: null, query: '', selected: [], base: '' },
+  // Загрузка идёт пачкой: сколько файлов из скольких уже на сервере
+  upload: { busy: false, done: 0, total: 0, error: '' },
+  // Только что загруженное фото сервер нарежет при публикации, а до тех пор превью —
+  // сам выбранный файл из памяти браузера
+  localPreviews: {},
 
-  textsSection: 'home',
   textsQuery: '',
-  sitePage: 'home',
+  // Открытая страница в «Страницах»; null — список страниц
+  sitePage: null,
+  // Запись или страница открыты с записью в истории браузера: «назад» закроет их
+  viewPushed: false,
 
   pollTimer: null,
 
@@ -95,6 +102,12 @@ export const adminContent = {
     this.texts = { ...root.dataset }
     const schema = document.getElementById('admin-schema')
     if (schema) this.schema = JSON.parse(schema.textContent)
+    this.textIndex = this.buildTextIndex()
+    const page = new URLSearchParams(location.search).get('p')
+    if (this.schema.sitePages?.some((entry) => entry.id === page)) {
+      this.sitePage = page
+      this.viewPushed = Boolean(history.state?.adminView)
+    }
     // Уход со страницы с несохранённым — браузер переспросит (формы-и-поля.md, черновики)
     window.addEventListener('beforeunload', (event) => {
       if (Object.keys(this.docs).some((name) => this.isDirty(name))) event.preventDefault()
@@ -132,21 +145,28 @@ export const adminContent = {
   },
 
   async open(name) {
+    // Страница из адреса (?p=) открывается только при первом входе; заход в «Страницы»
+    // из меню начинается со списка
+    if (this.col !== null) this.sitePage = null
     this.col = name
     this.itemIndex = null
+    this.viewPushed = false
     this.query = ''
     this.saveError = ''
     this.saved = false
     this.confirmDelete = null
     this.history = null
     if (this.indexState === 'idle') this.loadIndex()
-    // Страницы сайта — не свой файл, а два чужих: фото в настройках, фразы в словаре
-    if (name === 'sitePages') {
+    // Страницы сайта — не свой файл, а чужие: фото в настройках, фразы в словаре,
+    // текстовые страницы — своим разделом, который открывается отсюда же
+    if (name === 'sitePages' || name === 'texts') {
+      const parts = name === 'texts' ? ['texts'] : ['site', 'texts', 'pages']
       this.colState = 'loading'
-      await Promise.all(['site', 'texts'].filter((n) => !this.docs[n]).map((n) => this.load(n)))
-      if (this.col === name) this.colState = this.docs.site && this.docs.texts ? 'ready' : 'failed'
+      await Promise.all(parts.filter((n) => !this.docs[n]).map((n) => this.load(n)))
+      if (this.col === name) this.colState = parts.every((n) => this.docs[n]) ? 'ready' : 'failed'
       return
     }
+    this.colState = this.docs[name] ? 'ready' : 'loading'
     // Товарам, статьям и отзывам нужны списки товаров и разделов для выбора
     const needs = new Set([name, 'products', 'categories', 'texts'])
     await Promise.all([...needs].filter((n) => !this.docs[n]).map((n) => this.load(n)))
@@ -174,7 +194,7 @@ export const adminContent = {
   },
 
   isDirty(name = this.col) {
-    if (name === 'sitePages') return this.isDirty('site') || this.isDirty('texts')
+    if (name === 'sitePages') return ['site', 'texts', 'pages'].some((part) => this.isDirty(part))
     const doc = this.docs[name]
     return Boolean(doc) && JSON.stringify(doc.data) !== doc.saved
   },
@@ -202,7 +222,48 @@ export const adminContent = {
   },
 
   preview(id) {
-    return (id && this.images[id]?.preview) || null
+    return (id && (this.images[id]?.preview || this.localPreviews[id])) || null
+  },
+
+  /** Подробности под названием в списке: у товара цена и наличие, у статьи дата… */
+  rowMeta(item) {
+    const parts = []
+    if (this.col === 'products') {
+      const category = this.docs.categories?.data.find((entry) => entry.id === item.categoryId)
+      parts.push(this.money(item.price))
+      if (category) parts.push(category.name)
+      const colors = item.options?.woodColor?.length ?? 0
+      if (colors > 1) parts.push(this.texts.tColors.replace('{n}', colors))
+    } else if (this.col === 'articles' || this.col === 'reviews') {
+      if (this.col === 'reviews') {
+        const product = this.docs.products?.data.find((entry) => entry.id === item.productId)
+        parts.push('★'.repeat(item.rating ?? 0))
+        if (product) parts.push(product.name)
+      }
+      if (item.date) parts.push(this.day(item.date))
+    } else if (this.col === 'faq') {
+      parts.push(this.docs.texts?.data.faqTopics?.[item.topic] ?? item.topic)
+    } else {
+      const url = this.url(item)
+      if (url) parts.push(url)
+    }
+    return parts.join(' · ')
+  },
+
+  /** Плашки в строке списка: то, что стоит заметить, не открывая запись */
+  rowFlags(item) {
+    const flags = []
+    if (this.col === 'products') {
+      if (!item.inStock) flags.push({ kind: 'error', text: this.texts.tOutOfStock })
+      if (item.featured) flags.push({ kind: 'neutral', text: this.texts.tOnHome })
+    }
+    if (this.autoSlug.has(item.id)) flags.push({ kind: 'warning', text: this.texts.tNotSaved })
+    return flags
+  },
+
+  day(iso) {
+    const [year, month, date] = String(iso).split('-')
+    return date ? `${date}.${month}.${year}` : iso
   },
 
   /** Адрес записи на сайте — чтобы посмотреть результат после публикации */
@@ -221,11 +282,39 @@ export const adminContent = {
     this.itemIndex = index
     this.confirmDelete = null
     this.saved = false
+    this.pushView()
     window.scrollTo({ top: 0 })
   },
 
-  closeItem() {
+  // ——— Открытая запись или страница и «назад» ———
+
+  pushView() {
+    if (this.viewPushed) return
+    history.pushState({ adminView: true }, '', location.href)
+    this.viewPushed = true
+  },
+
+  /** Кнопка «назад» на экране: через историю, если запись её оставила, — тогда и «назад»
+   *  браузера, и кнопка ведут себя одинаково */
+  back() {
+    if (this.viewPushed) history.back()
+    else this.closeView()
+  },
+
+  /** Вернуться к списку раздела; текстовая страница возвращает к списку всех страниц */
+  closeView() {
+    this.viewPushed = false
+    this.confirmDelete = null
+    if (this.col === 'pages') {
+      this.itemIndex = null
+      Alpine.store('admin').setSection('sitePages')
+      return
+    }
     this.itemIndex = null
+    if (this.sitePage) {
+      this.sitePage = null
+      Alpine.store('admin').syncUrl()
+    }
   },
 
   get item() {
@@ -247,9 +336,12 @@ export const adminContent = {
     if (this.col === 'articles' || this.col === 'reviews') item.date = today()
     if (this.col === 'faq') item.topic = this.selectOptions({ source: 'faqTopics' })[0]?.value ?? ''
     if (this.col === 'reviews') item.productId = this.docs.products?.data[0]?.id ?? ''
-    list.push(item)
+    // Лента Instagram на сайте берёт первые 12 постов: новый, добавленный в конец,
+    // на сайт бы не попал
+    const at = this.col === 'instagram' ? 0 : list.length
+    list.splice(at, 0, item)
     this.autoSlug.add(item.id)
-    this.openItem(list.length - 1)
+    this.openItem(at)
   },
 
   duplicateItem(index) {
@@ -268,8 +360,8 @@ export const adminContent = {
       return
     }
     this.doc.data.splice(index, 1)
-    this.confirmDelete = null
     this.itemIndex = null
+    this.back()
   },
 
   move(list, index, step) {
@@ -330,7 +422,75 @@ export const adminContent = {
 
   /** Условие показа поля из схемы: when: { kind: 'memotest' } */
   visible(model, field) {
+    // unless — поле не нужно, когда в списке по этому пути есть записи со своими фото:
+    // у товара с цветами фото живут в самих цветах
+    const owners = field.unless ? getPath(model, field.unless) : null
+    if (Array.isArray(owners) && owners.some((entry) => entry?.images?.length)) return false
     return Object.entries(field.when ?? {}).every(([key, value]) => getPath(model, key) === value)
+  },
+
+  /**
+   * Поля записи карточками: заголовок группы в схеме открывает новую карточку.
+   * Поля «для опытных» (адреса, коды) собираются в конец карточки под раскрывашку —
+   * их почти никогда не меняют, а ошибка в них ломает ссылки
+   */
+  groups(fields, model) {
+    const groups = []
+    let group = null
+    for (const field of fields) {
+      if (field.type === 'heading') {
+        group = {
+          label: field.label,
+          hint: field.hint ?? '',
+          when: field.when,
+          fields: [],
+          advanced: [],
+        }
+        groups.push(group)
+        continue
+      }
+      if (!group) {
+        group = { label: this.texts.tMainGroup, hint: '', fields: [], advanced: [] }
+        groups.push(group)
+      }
+      group[field.advanced ? 'advanced' : 'fields'].push(field)
+    }
+    return groups
+      .map((entry, index) => ({ ...entry, id: `group-${index}` }))
+      .filter((entry) => this.visible(model, entry))
+  },
+
+  simple(fields) {
+    return fields.filter((field) => !field.advanced)
+  },
+
+  advanced(fields) {
+    return fields.filter((field) => field.advanced)
+  },
+
+  jump(id) {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  },
+
+  /** Подпись строки вложенного списка: у цвета — доплата, фото, наличие */
+  rowNote(row) {
+    const parts = []
+    if (row.priceDelta) parts.push(`+${this.money(row.priceDelta)}`)
+    if (Array.isArray(row.images)) {
+      parts.push(
+        row.images.length
+          ? this.texts.tPhotos.replace('{n}', row.images.length)
+          : this.texts.tNoPhotos,
+      )
+    }
+    if (row.inStock === false) parts.push(this.texts.tOutOfStock)
+    return parts.join(' · ')
+  },
+
+  rowThumb(row) {
+    const images = Array.isArray(row.images) ? row.images : row.image ? [row.image] : []
+    const first = images[0]
+    return this.preview(typeof first === 'object' && first ? first.id : first)
   },
 
   /** Варианты выпадающего списка: из схемы, из другого раздела или из тем вопросов */
@@ -346,6 +506,9 @@ export const adminContent = {
       return (this.docs[field.collection]?.data ?? []).map((entry) => ({
         value: entry.id,
         label: this.title(entry, conf),
+        thumb: conf?.imageField
+          ? this.rowThumb({ images: [getPath(entry, conf.imageField)].flat() })
+          : null,
       }))
     }
     return []
@@ -396,123 +559,245 @@ export const adminContent = {
     )
   },
 
+  /**
+   * Окно выбора фото. В поле «несколько фото» можно отметить несколько готовых или
+   * загрузить сразу несколько файлов — все встанут в конец списка по порядку.
+   * Имя новому файлу придумывает сама админка: латиница из имени файла или, если его
+   * не прочесть (IMG_0042, «фото.jpg»), из названия записи — человеку не нужно
+   * знать про имена и занятые имена вовсе
+   */
   choose(model, field) {
+    if (this.upload.busy) return
     const multiple = field.type === 'images'
+    const context = [
+      this.item ? this.title(this.item) : (this.sitePage ?? ''),
+      model !== this.item && typeof model?.name === 'string' ? model.name : '',
+    ]
     this.picker = {
       flow: field.flow,
+      multiple,
       query: '',
-      uploading: false,
-      error: '',
-      name: '',
-      taken: false,
-      apply: (id) => {
-        if (multiple) setPath(model, field.key, [...(getPath(model, field.key) ?? []), id])
-        else setPath(model, field.key, id)
-        Alpine.store('overlay').close()
+      selected: [],
+      base: slugify(context.filter(Boolean).join(' ')) || 'foto',
+      apply: (ids) => {
+        if (multiple) setPath(model, field.key, [...(getPath(model, field.key) ?? []), ...ids])
+        else setPath(model, field.key, ids[0])
       },
     }
+    this.upload = { busy: false, done: 0, total: 0, error: '' }
     Alpine.store('overlay').open('admin-picker')
   },
 
-  slug(text) {
-    return slugify(text)
-  },
-
   get pickerImages() {
-    const query = this.picker.query.trim().toLowerCase()
+    const query = slugify(this.picker.query)
     return Object.entries(this.images)
       .filter(([, image]) => image.type === this.picker.flow)
       .filter(([id]) => !query || id.includes(query))
       .map(([id, image]) => ({ id, ...image }))
   },
 
-  pickFile(event) {
-    const file = event.target.files?.[0]
-    if (file && !this.picker.name) this.picker.name = slugify(file.name.replace(/\.[^.]+$/, ''))
-    this.picker.taken = false
-  },
-
-  /** replace — после подтверждения: имя занято фото, которое может стоять у других записей */
-  async upload(form, replace = false) {
-    const file = form.elements.file.files?.[0]
-    const id = slugify(this.picker.name)
-    if (!file || !id) {
-      this.picker.error = this.texts.tUploadMissing
+  /** Готовое фото: одно — сразу в поле; в списке — отметить, добавит кнопка */
+  pickExisting(id) {
+    if (!this.picker.multiple) {
+      this.picker.apply([id])
+      Alpine.store('overlay').close()
       return
     }
-    this.picker.uploading = true
-    this.picker.error = ''
-    this.picker.taken = false
-    const body = new FormData()
-    body.append('flow', this.picker.flow)
-    body.append('id', id)
-    body.append('file', file)
-    if (replace) body.append('replace', '1')
-    try {
-      const response = await this.request('/uploads', { method: 'POST', body })
-      const result = await response.json().catch(() => ({}))
-      if (result.error === 'taken') {
-        this.picker.taken = true
-      } else if (!response.ok) {
-        this.picker.error = result.detail ?? this.texts.tUploadFailed
-      } else {
+    const at = this.picker.selected.indexOf(id)
+    if (at === -1) this.picker.selected.push(id)
+    else this.picker.selected.splice(at, 1)
+  },
+
+  pickSelected() {
+    this.picker.apply([...this.picker.selected])
+    Alpine.store('overlay').close()
+  },
+
+  /** Имя для нового файла: читаемое из имени файла, иначе из названия записи */
+  fileId(file, picker = this.picker) {
+    const own = slugify(file.name.replace(/\.[^.]+$/, ''))
+    const base =
+      /[a-z]{3}/.test(own) && !/^(img|dsc|pxl|image|foto|photo|screenshot)\b/.test(own)
+        ? own
+        : picker.base
+    return uniqueId(base.slice(0, 60).replace(/-+$/, ''), new Set(Object.keys(this.images)))
+  },
+
+  async uploadFiles(fileList) {
+    const files = [...(fileList ?? [])]
+    if (!files.length || this.upload.busy) return
+    // Поле, для которого начали загрузку, запоминается: окно могут закрыть на середине
+    const picker = this.picker
+    const chosen = picker.multiple ? files : files.slice(0, 1)
+    this.upload = { busy: true, done: 0, total: chosen.length, error: '' }
+    const ids = []
+    for (const file of chosen) {
+      const id = await this.uploadOne(file, picker)
+      if (!id) break
+      ids.push(id)
+      this.upload.done++
+    }
+    this.upload.busy = false
+    // Загруженные до сбоя фото уже в поле; окно остаётся открытым, пока видна ошибка
+    if (ids.length) picker.apply(ids)
+    if (this.upload.error && chosen.length > 1) {
+      this.upload.error += ` ${this.texts.tUploadPartial.replace('{done}', ids.length).replace('{total}', chosen.length)}`
+    }
+    const overlay = Alpine.store('overlay')
+    if (!this.upload.error && overlay.active === 'admin-picker') overlay.close()
+  },
+
+  async uploadOne(file, picker) {
+    // Имя могли занять в соседней вкладке — тогда берём следующее свободное
+    for (let attempt = 0; attempt < 3; attempt++) {
+      const id = this.fileId(file, picker)
+      const body = new FormData()
+      body.append('flow', picker.flow)
+      body.append('id', id)
+      body.append('file', file)
+      try {
+        const response = await this.request('/uploads', { method: 'POST', body })
+        const result = await response.json().catch(() => ({}))
+        if (response.status === 409) {
+          this.images[id] = { type: picker.flow, preview: null, ready: false }
+          continue
+        }
+        if (!response.ok) {
+          this.upload.error = `${file.name}: ${result.detail ?? this.texts.tUploadFailed}`
+          return null
+        }
         this.images = result.images
+        if (file.type.startsWith('image/'))
+          this.localPreviews[result.id] = URL.createObjectURL(file)
         this.setBuild(result.build)
-        this.picker.apply(result.id)
-      }
-    } catch {
-      this.picker.error = this.texts.tUploadFailed
-    }
-    this.picker.uploading = false
-  },
-
-  // ——— Тексты сайта ———
-
-  get textSections() {
-    const data = this.docs.texts?.data ?? {}
-    const names = this.schema.texts.sections
-    return Object.keys(data).map((id) => ({ id, label: names[id] ?? id }))
-  },
-
-  get textRows() {
-    const data = this.docs.texts?.data ?? {}
-    const query = this.textsQuery.trim().toLowerCase()
-    const rows = this.textRowsOf(query ? Object.keys(data) : [this.textsSection])
-    return query
-      ? rows.filter(
-          (row) =>
-            row.value.toLowerCase().includes(query) || row.path.toLowerCase().includes(query),
-        )
-      : rows
-  },
-
-  /** Фразы разделов словаря плоским списком: путь → текст */
-  textRowsOf(sections) {
-    const data = this.docs.texts?.data ?? {}
-    const rows = []
-    const walk = (node, path) => {
-      for (const [key, value] of Object.entries(node)) {
-        const full = path ? `${path}.${key}` : key
-        if (value && typeof value === 'object') walk(value, full)
-        else rows.push({ path: full, value })
+        return result.id
+      } catch {
+        this.upload.error = `${file.name}: ${this.texts.tUploadFailed}`
+        return null
       }
     }
-    for (const section of sections) if (data[section]) walk(data[section], section)
-    return rows
+    this.upload.error = `${file.name}: ${this.texts.tUploadFailed}`
+    return null
   },
 
-  // ——— Страницы сайта: фото страницы (site.media) и её тексты (словарь) в одном месте ———
+  // ——— Тексты: подпись каждой фразы по-русски — из описания страниц в схеме ———
 
-  get sitePageConf() {
-    return this.schema.sitePages?.find((page) => page.id === this.sitePage) ?? null
+  /** Путь фразы → где она на сайте и как называется: страница, блок, подпись */
+  buildTextIndex() {
+    const index = {}
+    for (const page of this.schema.sitePages ?? []) {
+      for (const block of page.blocks) {
+        for (const field of block.fields) {
+          if (field.text)
+            index[field.text] = {
+              ...field,
+              page: page.id,
+              pageTitle: page.title,
+              block: block.title,
+            }
+        }
+      }
+    }
+    return index
+  },
+
+  textValue(path) {
+    return getPath(this.docs.texts?.data, path) ?? ''
   },
 
   setText(path, value) {
     setPath(this.docs.texts.data, path, value)
   },
 
+  /** Фраза изменена и не сохранена — подсвечивается, чтобы правку было видно */
+  textChanged(path) {
+    return this.changedIn('texts', path)
+  },
+
+  /** Значение по пути отличается от сохранённого на сервере */
+  changedIn(name, path) {
+    const doc = this.docs[name]
+    if (!doc) return false
+    doc.savedData ??= { raw: null, data: null }
+    if (doc.savedData.raw !== doc.saved)
+      doc.savedData = { raw: doc.saved, data: JSON.parse(doc.saved) }
+    return getPath(doc.savedData.data, path) !== getPath(doc.data, path)
+  },
+
   placeholders(text) {
     return [...new Set(String(text).match(/\{\w+\}/g) ?? [])].join(' ')
+  },
+
+  /** Поиск по всем фразам сайта: по испанскому тексту и по русской подписи */
+  get textResults() {
+    const query = this.textsQuery.trim().toLowerCase()
+    if (query.length < 2) return []
+    return Object.values(this.textIndex)
+      .filter((entry) =>
+        [this.textValue(entry.text), entry.label, entry.block, entry.pageTitle].some((part) =>
+          String(part).toLowerCase().includes(query),
+        ),
+      )
+      .slice(0, 50)
+  },
+
+  // ——— Страницы сайта: блоки страницы сверху вниз, в каждом — фото и фразы ———
+
+  get sitePageConf() {
+    return this.schema.sitePages?.find((page) => page.id === this.sitePage) ?? null
+  },
+
+  get mainPages() {
+    return (this.schema.sitePages ?? []).filter((page) => !page.service)
+  },
+
+  get servicePages() {
+    return (this.schema.sitePages ?? []).filter((page) => page.service)
+  },
+
+  openPage(id) {
+    this.sitePage = id
+    this.saved = false
+    this.pushView()
+    Alpine.store('admin').syncUrl()
+    window.scrollTo({ top: 0 })
+  },
+
+  /** Текстовые страницы — записи своего раздела; открываются прямо из списка страниц */
+  openTextPage(index) {
+    Alpine.store('admin').setSection('pages')
+    this.openItem(index)
+  },
+
+  addTextPage() {
+    Alpine.store('admin').setSection('pages')
+    this.addItem()
+  },
+
+  /** Переход из блока страницы в раздел, где правится его содержимое */
+  goto(section) {
+    Alpine.store('admin').pickSection(section)
+  },
+
+  sectionTitle(section) {
+    return this.schema.collections[section]?.title ?? ''
+  },
+
+  blockSimple(block) {
+    return block.fields.filter((field) => !field.sr)
+  },
+
+  blockHidden(block) {
+    return block.fields.filter((field) => field.sr)
+  },
+
+  /** Сколько фраз на странице изменено — счётчик на карточке в списке страниц */
+  pageChanges(page) {
+    let count = 0
+    for (const block of page.blocks)
+      for (const field of block.fields)
+        if (field.text ? this.textChanged(field.text) : this.changedIn('site', field.key)) count++
+    return count
   },
 
   // ——— Сохранение ———
@@ -558,6 +843,11 @@ export const adminContent = {
           if (!product.options[axis]?.length) delete product.options[axis]
         }
         product.options ??= {}
+        // Товар с цветами: общие фото = фото первого цвета, у которого они есть. По ним
+        // строятся карточка каталога, превью ссылки и разметка для Google — вторым
+        // списком их больше не ведут руками (владелец 30.09.2026: «дублируются фотки»)
+        const colored = product.options.woodColor?.find((option) => option.images?.length)
+        if (colored) product.images = [...colored.images]
       }
     }
     if (name === 'articles') {
@@ -600,7 +890,7 @@ export const adminContent = {
   async save(name = this.col) {
     if (name === 'sitePages') {
       // Каждый файл — своим запросом со своей версией; споткнулся первый — второй ждёт
-      for (const part of ['site', 'texts']) {
+      for (const part of ['site', 'texts', 'pages']) {
         if (!this.isDirty(part)) continue
         await this.save(part)
         if (this.saveError) return
@@ -650,10 +940,12 @@ export const adminContent = {
 
   /** Отказаться от несохранённого — вернуть то, что лежит на сервере */
   async discard(name = this.col) {
-    this.itemIndex = null
     this.saveError = ''
-    const parts = name === 'sitePages' ? ['site', 'texts'] : [name]
+    const parts = name === 'sitePages' ? ['site', 'texts', 'pages'] : [name]
     await Promise.all(parts.map((part) => this.load(part)))
+    // Открытая запись остаётся открытой в прежнем виде; новой, несохранённой, больше нет
+    if (this.itemIndex !== null && !this.doc?.data[this.itemIndex]) this.back()
+    this.autoSlug.clear()
   },
 
   // ——— История ———
@@ -677,6 +969,7 @@ export const adminContent = {
       if (!response.ok) throw new Error(response.status)
       this.doc.data = (await response.json()).data
       this.itemIndex = null
+      this.back()
       this.history = null
     } catch {
       this.saveError = this.texts.tSaveFailed

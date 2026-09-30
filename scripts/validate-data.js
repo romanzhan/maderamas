@@ -341,8 +341,9 @@ function checkInstagram(posts, images) {
     }
 
     // Ссылка ведёт на сам пост: плитка без выхода в Instagram — тупик
-    if (!String(post.url ?? '').startsWith('https://instagram.com/')) {
-      fail(`${where}: url должен начинаться с https://instagram.com/`)
+    // Instagram сам копирует ссылку с www — её и вставляют в админке
+    if (!/^https:\/\/(www\.)?instagram\.com\//.test(String(post.url ?? ''))) {
+      fail(`${where}: url должен начинаться с https://instagram.com/ или https://www.instagram.com/`)
     }
 
     const frames = post.frames ?? []
@@ -689,11 +690,49 @@ function validate() {
   checkImages([site.seo.defaultOgImage, site.promo.image], 'Настройки сайта', images)
 
   if (site.features.secondLanguage) checkDictionaryParity(dictionary)
+  checkAdminLabels(dictionary)
   if (site.seo.siteUrl.includes('PLACEHOLDER')) {
     warnings.push('site.config.json: боевой домен ещё не задан (seo.siteUrl)')
   }
 
   return { site, products, categories, articles, provinces, dictionary }
+}
+
+/**
+ * Каждая фраза сайта подписана в админке по-русски и стоит на своей странице
+ * (data/admin-schema.json → sitePages, бэкенд.md §15). Фраза без подписи в админке
+ * не найдётся вовсе — владелец не сможет её поменять. Новый ключ в es.json = строка
+ * { "text": "раздел.ключ", "label": "…" } в блоке той страницы, где он виден
+ */
+function checkAdminLabels(dictionary) {
+  const schema = JSON.parse(readFileSync(resolve(projectRoot, 'data/admin-schema.json'), 'utf8'))
+  const labelled = new Map()
+  for (const page of schema.sitePages)
+    for (const block of page.blocks)
+      for (const field of block.fields)
+        if (field.text) labelled.set(field.text, (labelled.get(field.text) ?? 0) + 1)
+
+  const walk = (node, prefix) => {
+    for (const [key, value] of Object.entries(node)) {
+      const path = prefix ? `${prefix}.${key}` : key
+      if (value && typeof value === 'object') {
+        walk(value, path)
+        continue
+      }
+      if (!labelled.has(path)) {
+        fail(`admin-schema.json: у фразы "${path}" нет подписи в sitePages — в админке её не найти`)
+      } else if (labelled.get(path) > 1) {
+        fail(`admin-schema.json: фраза "${path}" подписана дважды`)
+      }
+      labelled.delete(path)
+    }
+  }
+  // Словарь самой админки (admin.ru.json) в ней не правится — он часть кода
+  const shop = { ...dictionary }
+  delete shop.admin
+  walk(shop, '')
+  for (const path of labelled.keys())
+    fail(`admin-schema.json: подпись несуществующей фразы "${path}"`)
 }
 
 function checkDictionaryParity(es) {
