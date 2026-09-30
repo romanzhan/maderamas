@@ -1,6 +1,6 @@
 {{!-- Админка владельца (страницы.md §17, бэкенд.md §13, §15) — по-русски (решение
       владельца 30.09.2026, словарь data/dictionaries/admin.ru.json). Вход по паролю →
-      разделы вкладками: заказы, сообщения и контент сайта. Состояние заказов живёт
+      меню разделов: заказы, сообщения и контент сайта. Состояние заказов живёт
       в store `admin` (src/scripts/admin.js), контента — в `adminContent`
       (src/scripts/admin-content.js): окна подтверждения лежат прямыми потомками body
       и делят его со страницей. Строки, которые скрипт подставляет сам (состояния,
@@ -12,11 +12,19 @@
   x-data="{ a: $store.admin }"
   x-init="a.start($el)"
   data-admin
+  data-sections="{{adminSectionIds}}"
   data-t-conflict="{{t "admin.conflict"}}"
   data-t-save-failed="{{t "admin.saveFailed"}}"
   data-t-required-field="{{t "admin.requiredField"}}"
   data-t-min-items="{{t "admin.minItems" n="{n}"}}"
-  data-t-upload-missing="{{t "admin.uploadMissing"}}"
+  data-t-main-group="{{t "admin.mainGroup"}}"
+  data-t-out-of-stock="{{t "admin.outOfStock"}}"
+  data-t-on-home="{{t "admin.onHome"}}"
+  data-t-not-saved="{{t "admin.notSaved"}}"
+  data-t-colors="{{t "admin.colors" n="{n}"}}"
+  data-t-photos="{{t "admin.photos" n="{n}"}}"
+  data-t-no-photos="{{t "admin.noPhotos"}}"
+  data-t-upload-partial="{{t "admin.uploadPartial" done="{done}" total="{total}"}}"
   data-t-upload-failed="{{t "admin.uploadFailed"}}"
   data-t-build-pending="{{t "admin.buildPending"}}"
   data-t-build-building="{{t "admin.buildBuilding"}}"
@@ -97,34 +105,28 @@
     </div>
   </form>
 
-  {{!-- Разделы: заказы и сообщения из форм (бэкенд.md §13–14) --}}
-  <div x-show="a.auth === 'in' && !a.order" x-cloak>
-    {{#> scroll-strip label="admin.sections" class="-mx-4 mt-6 border-b border-line sm:mx-0"
-        stripClass="gap-2 px-4 sm:px-0"}}
-    {{#each adminSections}}
-      <button
-        type="button"
-        role="tab"
-        data-section="{{id}}"
-        x-bind:aria-selected="a.section === '{{id}}'"
-        x-bind:tabindex="a.section === '{{id}}' ? 0 : -1"
-        x-on:click="a.setSection('{{id}}')"
-        x-on:keydown="a.sectionKey($event)"
-        x-bind:class="a.section === '{{id}}' ? 'border-clay text-charcoal' : 'border-transparent text-charcoal/70 hover:text-charcoal'"
-        class="min-h-12 shrink-0 border-b-2 px-3 font-medium whitespace-nowrap
-          transition-colors duration-150"
-      >{{text}}<span
-          x-show="$store.adminContent.isDirty('{{id}}')"
-          x-cloak
-          class="ml-1 inline-block size-2 rounded-full bg-warning align-middle"
-          aria-hidden="true"
-        ></span></button>
-    {{/each}}
-    {{/scroll-strip}}
-  </div>
+  {{!-- Вошли: меню разделов слева (с 1024), справа выбранный раздел. На телефоне меню
+        прячется в окно — кнопка с названием текущего раздела открывает его --}}
+  <div x-show="a.auth === 'in'" x-cloak class="mt-6 lg:grid lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-10">
+    <aside class="hidden lg:block">
+      {{> admin/nav}}
+    </aside>
+
+    <div class="min-w-0">
+  <button
+    type="button"
+    x-show="!a.order"
+    x-on:click="$store.overlay.open('admin-nav')"
+    class="flex min-h-12 w-full items-center gap-3 rounded-lg border border-border px-4 text-left
+      font-medium lg:hidden"
+  >
+    {{> icon empty name="menu" class="size-5"}}
+    <span class="min-w-0 flex-1 truncate" x-text="a.sectionName()"></span>
+    <span class="text-small text-clay">{{t "admin.sectionsOpen"}}</span>
+  </button>
 
   {{!-- Список заказов --}}
-  <div x-show="a.auth === 'in' && a.section === 'orders' && !a.order" x-cloak class="mt-6">
+  <div x-show="a.auth === 'in' && a.section === 'orders' && !a.order" x-cloak class="mt-6 lg:mt-0">
     {{!-- Вкладки (компоненты.md 4.4): на узком экране прокручиваются по горизонтали --}}
     {{#> scroll-strip label="admin.tabs" class="-mx-4 sm:mx-0" stripClass="gap-2 px-4 sm:px-0"}}
       {{#each adminTabs}}
@@ -201,7 +203,7 @@
   </div>
 
   {{!-- Сообщения из форм (бэкенд.md §14): вкладки по типу, строка раскрывается на месте --}}
-  <div x-show="a.auth === 'in' && a.section === 'messages' && !a.order" x-cloak class="mt-6">
+  <div x-show="a.auth === 'in' && a.section === 'messages' && !a.order" x-cloak class="mt-6 lg:mt-0">
     {{#> scroll-strip label="admin.msgTabs" class="-mx-4 sm:mx-0" stripClass="gap-2 px-4 sm:px-0"}}
       {{#each adminMessageTabs}}
         <button
@@ -303,7 +305,7 @@
   </div>
 
   {{!-- Заказ подробно --}}
-  <div x-show="a.auth === 'in' && a.order" x-cloak class="mt-6">
+  <div x-show="a.auth === 'in' && a.order" x-cloak class="mt-6 lg:mt-0">
     {{> button empty tertiary=true sizeMd=true icon="chevron-left" label="admin.back" onClick="a.closeOrder()"}}
 
     <div x-show="a.detail === 'loading'" aria-hidden="true" class="mt-6 flex flex-col gap-4">
@@ -432,7 +434,13 @@
   </div>
 
   {{> admin/content}}
+    </div>
+  </div>
 </main>
 
 {{> admin/modals}}
 {{> admin/picker}}
+
+{{#> modal name="admin-nav" closeLabel="admin.close" title="admin.sections"}}
+  <div class="pb-4">{{> admin/nav}}</div>
+{{/modal}}

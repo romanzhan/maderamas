@@ -1,6 +1,6 @@
 // Админка (страницы.md §17, бэкенд.md §13, §15): заказы, сообщения и разделы контента.
 // Здесь — вход, разделы, заказы и сообщения; редактор контента — store adminContent
-// (src/scripts/admin-content.js), разделы которого открываются теми же вкладками.
+// (src/scripts/admin-content.js), разделы которого открываются тем же меню.
 // Заказы владельца: вход по паролю, вкладки
 // по состоянию, заказ подробно, три действия. Это store, а не компонент страницы:
 // окна подтверждения обязаны лежать прямыми потомками body (компоненты.md 5.1),
@@ -84,6 +84,7 @@ export const admin = {
 
   // Разделы страницы: заказы и сообщения из форм (бэкенд.md §14)
   sections: [],
+  sectionNames: {},
   section: DEFAULT_SECTION,
   messageTabs: [],
   msgTab: 'all',
@@ -107,9 +108,12 @@ export const admin = {
     this.texts = { ...element.dataset }
     this.content().setup(element)
     this.tabs = [...element.querySelectorAll('[data-tab]')].map((button) => button.dataset.tab)
-    this.sections = [...element.querySelectorAll('[data-section]')].map(
-      (button) => button.dataset.section,
-    )
+    // Список разделов — из разметки: меню напечатано дважды (колонка и окно телефона),
+    // а у текстовых страниц пункта нет вовсе
+    this.sections = element.dataset.sections.split(',')
+    for (const button of document.querySelectorAll('[data-section]')) {
+      this.sectionNames[button.dataset.section] = button.textContent.trim()
+    }
     this.messageTabs = [...element.querySelectorAll('[data-msg-tab]')].map(
       (button) => button.dataset.msgTab,
     )
@@ -126,6 +130,10 @@ export const admin = {
     // не должен перечитывать уже открытый заказ, а запись окна нас не касается
     window.addEventListener('popstate', (event) => {
       if (event.state?.overlay) return
+      // Открытая запись или страница редактора пишет свою запись в историю: «назад»
+      // браузера возвращает к списку, а не уводит из админки. Только если запись её —
+      // иначе любое «назад» (закрытое окно, чужой раздел) закрывало бы что попало
+      if (!event.state?.adminView && this.content().viewPushed) this.content().closeView()
       const number = event.state?.order
       if (!number) this.leaveOrder()
       else if (this.order?.number !== number) this.openOrder(number, false)
@@ -187,19 +195,61 @@ export const admin = {
   syncUrl() {
     const params = new URLSearchParams()
     if (this.section !== DEFAULT_SECTION) params.set('s', this.section)
+    // Открытая страница в «Страницах» переживает перезагрузку
+    const page = this.content().sitePage
+    if (this.section === 'sitePages' && page) params.set('p', page)
     if (this.section === DEFAULT_SECTION && this.tab !== DEFAULT_TAB) params.set('tab', this.tab)
     const query = params.toString()
-    history.replaceState(history.state, '', location.pathname + (query ? `?${query}` : ''))
+    // Заказ уже закрыт — его номер не должен оставаться в записи истории, иначе «назад»
+    // из другого раздела открыл бы его снова
+    const state = history.state?.order && !this.order ? null : history.state
+    history.replaceState(state, '', location.pathname + (query ? `?${query}` : ''))
   },
 
   setSection(section) {
-    if (!this.sections.includes(section) || section === this.section) return
+    if (!this.sections.includes(section)) return
+    // Повторное нажатие на пункт меню возвращает к началу раздела — к списку
+    if (section === this.section) {
+      if (this.content().isContent(section)) this.content().closeView()
+      this.leaveOrder()
+      return
+    }
     this.section = section
+    this.leaveOrder()
+    window.scrollTo({ top: 0 })
     this.syncUrl()
     // Каждый раздел грузится при первом заходе в него, а не заранее
     if (this.content().isContent(section)) this.content().open(section)
     if (section === 'messages' && this.msgList === 'idle') this.loadMessages()
     if (section === 'orders' && this.list === 'idle') this.load()
+  },
+
+  /**
+   * Пункт меню. Сначала снимаются свои записи истории — открытое окно меню, открытая
+   * запись или страница, открытый заказ, — и только потом меняется раздел: иначе адрес
+   * нового раздела лёг бы в чужую запись, и «назад» вернул бы прежнее или ничего
+   */
+  pickSection(section) {
+    const overlay = Alpine.store('overlay')
+    if (overlay.active) {
+      overlay.close(() => this.pickSection(section))
+      return
+    }
+    if (this.content().viewPushed || (this.order && this.pushedOrder)) {
+      window.addEventListener('popstate', () => this.setSection(section), { once: true })
+      history.back()
+      return
+    }
+    this.setSection(section)
+  },
+
+  /** Название раздела для кнопки меню на телефоне; текстовые страницы живут в «Страницах» */
+  sectionName() {
+    return this.sectionNames[this.section === 'pages' ? 'sitePages' : this.section] ?? ''
+  },
+
+  navActive(id) {
+    return this.section === id || (id === 'sitePages' && this.section === 'pages')
   },
 
   /** Стрелки по вкладкам — общее правило для всех трёх полос (компоненты.md 4.4) */
@@ -210,16 +260,6 @@ export const admin = {
     const next = tabs[(tabs.indexOf(current) + step + tabs.length) % tabs.length]
     select(next)
     event.currentTarget.parentElement.querySelector(`[${attribute}="${next}"]`)?.focus()
-  },
-
-  sectionKey(event) {
-    this.stepTabs(
-      event,
-      this.sections,
-      this.section,
-      (next) => this.setSection(next),
-      'data-section',
-    )
   },
 
   async login(password) {

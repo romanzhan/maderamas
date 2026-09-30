@@ -140,6 +140,7 @@
     "allTitle": "Todos los productos",
     "allDescription": "Todas nuestras sillas y accesorios de madera, en un solo lugar.",
     "allSeoTitle": "Todos los productos de madera | Madera Más",
+    "allSeoDescription": "Todas las sillas evolutivas, las sillas altas, la torre de aprendizaje y los accesorios Montessori de madera, en un solo lugar. Envíos a todo el país.",
     "allSections": "Secciones del catálogo",
     "sortBy": "Ordenar por",
     "sortRelevance": "Más relevantes",
@@ -574,17 +575,19 @@
   },
   "seo": {
     "siteName": "Madera Más",
+    "siteNameAlt": "Madera Mas",
     "titleCategory": "{name} — Sillas evolutivas de madera | Madera Más",
     "titleProduct": "{name} — {category} | Madera Más",
     "titleArticle": "{title} | Blog Madera Más",
     "titlePage": "{title} | Madera Más",
-    "descHowItWorks": "Cómo se regula una silla evolutiva, qué medidas tiene y de qué está hecha.",
-    "descContact": "Escribinos por WhatsApp o dejanos tu mensaje. Te contestamos a la brevedad.",
-    "descFaq": "Envíos, armado, medidas y devoluciones: todo lo que nos preguntan seguido.",
-    "descArrepentimiento": "Arrepentiste de tu compra? Tenés 10 días corridos para devolverla, sin costo y sin explicaciones.",
-    "descQuejas": "Libro de Quejas Online: dejá tu reclamo y te respondemos en 15 días hábiles.",
+    "titleBlog": "Blog: sillas evolutivas, postura y Montessori | Madera Más",
+    "descHowItWorks": "Una sola silla acompaña al chico desde el primer año hasta la escuela: cómo se regula en altura, qué medidas tiene, de qué está hecha y cómo se arma.",
+    "descContact": "Escribinos por WhatsApp o dejanos tu mensaje: contanos qué modelo estás mirando, para qué edad o cualquier duda antes de comprar. Te contestamos a la brevedad.",
+    "descFaq": "Envíos, pagos, armado, medidas y devoluciones: las respuestas a lo que más nos preguntan sobre las sillas evolutivas y los accesorios de madera.",
+    "descArrepentimiento": "¿Te arrepentiste de tu compra? Tenés 10 días corridos desde que la recibís para devolverla, sin costo y sin dar explicaciones.",
+    "descQuejas": "Libro de Quejas Online de Madera Más: dejá tu reclamo con tus datos y te respondemos dentro de los 15 días hábiles.",
     "titleActivity": "{title} | Para familias – Madera Más",
     "descFamilies": "Juegos y actividades gratis para chicos de 2 a 8 años: memotest, colores y formas, búsqueda del tesoro, tabla de hábitos y recetas para cocinar juntos.",
-    "descBlog": "Notas para madres y padres: cómo elegir, usar y cuidar los muebles de los chicos."
+    "descBlog": "Notas para madres y padres: cómo elegir la silla según la edad, la postura correcta a la mesa, Montessori en casa y el cuidado de la madera."
   }
 }

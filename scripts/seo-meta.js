@@ -7,8 +7,21 @@
 import { articleUrl, image, imageIds, inlineJson, productUrl, t } from './data.js'
 import { AXIS_PARAM, CONTENT_PAGES, SERVICE_PAGES, SHOWCASE } from './page-types.js'
 
-// Ось варианта → свойство разметки (seo.md §4)
-const VARIES_BY = { woodColor: 'material', cushionColor: 'color' }
+// Ось варианта → свойство разметки (seo.md §4). Обе оси — цвет: дерево у всех товаров
+// одно (multilaminado), а roble, nogal и blanco — тон покрытия, и «material: Blanco»
+// было бы неправдой. Материал размечается у самого товара, из его характеристик
+const VARIES_BY = { woodColor: 'color', cushionColor: 'color' }
+
+// Длиннее Google обрезает заголовок многоточием (seo.md §2)
+const TITLE_MAX = 60
+
+/**
+ * Первый вариант заголовка, который влезает в выдачу. Шаблон с разделом или «Blog»
+ * хорош, пока короток; длинному названию он отрезал бы хвост — тогда уступает место
+ * короткому. Последний вариант берётся при любой длине: без заголовка хуже
+ */
+const fitTitle = (...variants) =>
+  variants.find((title) => title.length <= TITLE_MAX) ?? variants.at(-1)
 
 /**
  * Всё, что уходит в <head> текущей страницы.
@@ -63,22 +76,33 @@ export function seoMeta({
     meta.title = site.seo.homeTitle
     meta.description = site.seo.homeDescription
   } else if (catalog) {
-    meta.title = category.seo.title ?? t('seo.titleCategory', { name: category.name })
+    meta.title =
+      category.seo.title ??
+      fitTitle(
+        t('seo.titleCategory', { name: category.name }),
+        t('seo.titlePage', { title: category.name }),
+      )
     meta.description = category.seo.description ?? category.description
   } else if (product) {
     meta.title =
       product.seo.title ??
-      t('seo.titleProduct', {
-        name: product.name,
-        category: product.category.name,
-      })
+      fitTitle(
+        t('seo.titleProduct', { name: product.name, category: product.category.name }),
+        t('seo.titlePage', { title: product.name }),
+      )
     meta.description = product.seo.description ?? product.shortDescription
     meta.ogType = 'product'
     // Своего баннера у товара обычно нет — тогда берётся собранный из первого фото
     // (`npm run og`, картинки.md §5); нет и его — общая брендовая
     meta.og = ogFrom(product.ogImage) ?? ogFrom(`og-${product.id}`) ?? meta.og
   } else if (article) {
-    meta.title = article.seo.title ?? t('seo.titleArticle', { title: article.title })
+    meta.title =
+      article.seo.title ??
+      fitTitle(
+        t('seo.titleArticle', { title: article.title }),
+        t('seo.titlePage', { title: article.title }),
+        article.title,
+      )
     meta.description = article.seo.description ?? article.excerpt
     meta.ogType = 'article'
     meta.og = ogFrom(article.cover) ?? meta.og
@@ -90,18 +114,26 @@ export function seoMeta({
     meta.description = t('seo.descFamilies')
   } else if (activity) {
     // Своих снимков у игр нет — превью брендовое (defaultOgImage), как у инфостраниц
-    meta.title = activity.seo?.title ?? t('seo.titleActivity', { title: activity.name })
+    meta.title =
+      activity.seo?.title ??
+      fitTitle(
+        t('seo.titleActivity', { title: activity.name }),
+        t('seo.titlePage', { title: activity.name }),
+      )
     meta.description = activity.seo?.description ?? activity.excerpt
   } else if (CONTENT_PAGES[currentPath]) {
-    const [title, description] = CONTENT_PAGES[currentPath]
-    meta.title = t('seo.titlePage', { title: t(title) })
+    const [title, description, seoTitle] = CONTENT_PAGES[currentPath]
+    meta.title = seoTitle ? t(seoTitle) : t('seo.titlePage', { title: t(title) })
     meta.description = t(description)
   } else if (SERVICE_PAGES[currentPath]) {
     meta.title = t('seo.titlePage', { title: t(SERVICE_PAGES[currentPath]) })
     meta.noindex = true
   } else if (currentPath === '/404/') {
-    // Файл лежит как 404.html, поэтому адрес приходит с завершающим слешем
+    // Файл лежит как 404.html, поэтому адрес приходит с завершающим слешем.
+    // Несуществующему адресу сервер отвечает кодом 404, и этого хватает, но сам
+    // /404.html открывается с кодом 200 — без noindex он попал бы в индекс
     meta.title = t('seo.titlePage', { title: t('notFound.title') })
+    meta.noindex = true
     meta.canonical = null
   } else if (currentPath.startsWith(SHOWCASE)) {
     // Витрина закрыта в robots.txt, и meta robots ей поэтому не ставится: одно средство
@@ -116,9 +148,10 @@ export function seoMeta({
   }
 
   meta.jsonLd.push(organizationLd(site, siteUrl, absolute))
-  if (currentPath === '/') meta.jsonLd.push(websiteLd(site, siteUrl))
+  if (currentPath === '/') meta.jsonLd.push(websiteLd(siteUrl))
   if (product) meta.jsonLd.push(productLd(product, { siteUrl, absolute }))
   if (article) meta.jsonLd.push(articleLd(article, { siteUrl, absolute }))
+  if (article?.video) meta.jsonLd.push(videoLd(article, { absolute }))
   // Разметка вопросов живёт на своей странице, а не на обеих сразу: список один и тот же,
   // и две страницы с одной разметкой конкурировали бы друг с другом (решение 28.08.2026)
   if (currentPath === '/preguntas-frecuentes/') meta.jsonLd.push(faqLd(faq))
@@ -137,7 +170,10 @@ function organizationLd(site, siteUrl, absolute) {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     '@id': `${siteUrl}/#organization`,
-    name: site.legal.razonSocial ?? t('seo.siteName'),
+    // Имя — бренд: его Google показывает покупателю. Razón social — имя по реквизитам,
+    // для него у разметки своё поле
+    name: t('seo.siteName'),
+    ...(site.legal.razonSocial ? { legalName: site.legal.razonSocial } : {}),
     url: `${siteUrl}/`,
     logo: absolute('/icon-512.png'),
     email: contacts.email,
@@ -166,12 +202,20 @@ function organizationLd(site, siteUrl, absolute) {
   }
 }
 
-function websiteLd(site, siteUrl) {
+/**
+ * Сайт — ради названия над ссылкой в выдаче. Второе имя — бренд без ударения, как его
+ * чаще набирают: иначе Google может показать вместо названия голый адрес
+ */
+function websiteLd(siteUrl) {
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
+    '@id': `${siteUrl}/#website`,
     name: t('seo.siteName'),
+    alternateName: t('seo.siteNameAlt'),
     url: `${siteUrl}/`,
+    inLanguage: 'es-AR',
+    publisher: { '@id': `${siteUrl}/#organization` },
   }
 }
 
@@ -200,7 +244,9 @@ function productLd(product, { siteUrl, absolute }) {
     '@context': 'https://schema.org',
     name: product.name,
     description: product.shortDescription,
+    url,
     brand: { '@type': 'Brand', name: t('seo.siteName') },
+    ...(product.attributes?.material ? { material: product.attributes.material } : {}),
     ...(images.length ? { image: images } : {}),
   }
 
@@ -222,7 +268,9 @@ function productLd(product, { siteUrl, absolute }) {
     ...base,
     '@type': 'ProductGroup',
     productGroupID: sku,
-    variesBy: axes.map((axis) => `https://schema.org/${VARIES_BY[axis.key] ?? axis.key}`),
+    variesBy: [
+      ...new Set(axes.map((axis) => `https://schema.org/${VARIES_BY[axis.key] ?? axis.key}`)),
+    ],
     hasVariant: combinations(axes).map((combination) => {
       const price = combination.reduce(
         (sum, { option }) => sum + (option.priceDelta ?? 0),
@@ -240,11 +288,15 @@ function productLd(product, { siteUrl, absolute }) {
         '@type': 'Product',
         sku: `${sku}--${combination.map(({ option }) => option.id).join('--')}`,
         name: `${product.name} — ${combination.map(({ option }) => option.name).join(' · ')}`,
-        ...Object.fromEntries(
-          combination
-            .filter(({ axis }) => VARIES_BY[axis])
-            .map(({ axis, option }) => [VARIES_BY[axis], option.name]),
-        ),
+        // Дерево и подушка — обе цвет: у товара с двумя осями значения склеиваются,
+        // а не затирают друг друга
+        ...combination
+          .filter(({ axis }) => VARIES_BY[axis])
+          .reduce((props, { axis, option }) => {
+            const property = VARIES_BY[axis]
+            props[property] = props[property] ? `${props[property]} / ${option.name}` : option.name
+            return props
+          }, {}),
         ...(own.length ? { image: own } : {}),
         offers: offer(price, inStock, `${url}?${params}`),
       }
@@ -265,8 +317,41 @@ function articleLd(article, { siteUrl, absolute }) {
     datePublished: article.date,
     mainEntityOfPage: `${siteUrl}${articleUrl(article)}`,
     ...(cover ? { image: cover } : {}),
-    author: { '@id': `${siteUrl}/#organization` },
-    publisher: { '@id': `${siteUrl}/#organization` },
+    inLanguage: 'es-AR',
+    // Имя прямо здесь, а не только ссылкой на блок организации: проверка Google
+    // по одной ссылке считает автора безымянным
+    author: organizationRef(siteUrl),
+    publisher: organizationRef(siteUrl),
+  }
+}
+
+const organizationRef = (siteUrl) => ({
+  '@type': 'Organization',
+  '@id': `${siteUrl}/#organization`,
+  name: t('seo.siteName'),
+  url: `${siteUrl}/`,
+})
+
+/**
+ * Ролик в статье (видеоинструкция сборки) — чтобы его находил поиск по видео.
+ * Название и описание — статьи (подпись под роликом начинается с «Video:» и для
+ * названия не годится). Дата — дата статьи, ролик выходит вместе с ней; пояс —
+ * аргентинский, без него Google считает время по своему. Длительность не
+ * размечается: посчитать её на сборке нечем, а поле не обязательное
+ */
+function videoLd(article, { absolute }) {
+  // Ролик уже собран для статьи (page-context.js): адрес файла и кадр заставки
+  const { src, poster } = article.video
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'VideoObject',
+    name: article.title,
+    description: article.excerpt,
+    thumbnailUrl: absolute(poster),
+    contentUrl: absolute(src),
+    uploadDate: `${article.date}T00:00:00-03:00`,
+    inLanguage: 'es-AR',
   }
 }
 

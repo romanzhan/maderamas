@@ -1,14 +1,20 @@
-{{!-- Одна фраза словаря в редакторе: путь ключа, текст, напоминание о подстановках.
-      Общая для «Текстов сайта» и «Страниц сайта»; ждёт row = { path, value } и c. --}}
+{{!-- Одна фраза сайта в редакторе: русская подпись вместо ключа, испанский текст,
+      подсказка, где фраза видна, и напоминание о подстановках. Общая для «Страниц»
+      и «Поиска по текстам»; ждёт row — описание фразы из схемы ({ text, label, hint })
+      и c. Изменённая, но не сохранённая фраза помечена. --}}
 <label class="flex flex-col gap-2">
-  <span class="text-small text-charcoal/70" x-text="row.path"></span>
+  <span class="flex flex-wrap items-center gap-x-2 text-small font-medium">
+    <span x-text="row.label"></span>
+    <span x-show="c.textChanged(row.text)" class="rounded-sm bg-warning-bg px-2 text-caption text-warning">{{t "admin.changed"}}</span>
+  </span>
   <textarea
-    x-bind:rows="row.value.length > 90 ? 3 : 1"
-    x-bind:value="row.value"
-    x-on:input="c.setText(row.path, $event.target.value)"
+    x-bind:rows="Math.min(6, Math.max(1, Math.ceil(c.textValue(row.text).length / 70)))"
+    x-bind:value="c.textValue(row.text)"
+    x-on:input="c.setText(row.text, $event.target.value)"
     class="{{> field-box}} h-auto px-4 py-2 lg:h-auto"
   ></textarea>
-  <span x-show="c.placeholders(row.value)" class="text-caption text-charcoal/70">
-    {{t "admin.keepPlaceholders"}} <span x-text="c.placeholders(row.value)"></span>
+  <span x-show="row.hint" class="text-small text-charcoal/70" x-text="row.hint"></span>
+  <span x-show="c.placeholders(c.textValue(row.text))" class="text-caption text-charcoal/70">
+    {{t "admin.keepPlaceholders"}} <span class="font-medium" x-text="c.placeholders(c.textValue(row.text))"></span>
   </span>
 </label>

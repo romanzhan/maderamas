@@ -19,7 +19,8 @@ export const SERVICE_PAGES = {
 
 /**
  * Содержательные страницы, у которых нет записи в данных: название и описание берутся
- * из словаря. Первый ключ — название (оно же крошка), второй — описание для «головы».
+ * из словаря. Первый ключ — название (оно же крошка), второй — описание для «головы»,
+ * третий (не обязателен) — свой заголовок вкладки вместо «{название} | Madera Más».
  */
 export const CONTENT_PAGES = {
   '/como-funciona/': ['howItWorks.title', 'seo.descHowItWorks'],
@@ -27,8 +28,9 @@ export const CONTENT_PAGES = {
   '/preguntas-frecuentes/': ['footer.faq', 'seo.descFaq'],
   '/boton-de-arrepentimiento/': ['legal.arrepentimiento', 'seo.descArrepentimiento'],
   '/libro-de-quejas/': ['footer.quejas', 'seo.descQuejas'],
-  // Заголовок вкладки короткий («Blog»), а видимый H1 свой: это разные тексты
-  '/blog/': ['nav.blog', 'seo.descBlog'],
+  // Крошка короткая («Blog»), видимый H1 свой, а заголовок для поиска говорит, о чём
+  // блог: «Blog | Madera Más» находили бы только по названию бренда
+  '/blog/': ['nav.blog', 'seo.descBlog', 'seo.titleBlog'],
 }
 
 /** Витрина компонентов: служебная страница проекта, закрыта в robots.txt (seo.md п. 9) */

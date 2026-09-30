@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@import './fonts.css';
 
 /* Разметка живёт в src: страницы, блоки, компоненты, скрипты */
 @source '../';

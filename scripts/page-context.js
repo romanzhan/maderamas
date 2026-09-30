@@ -54,20 +54,48 @@ const adminSchema = JSON.parse(
   ),
 )
 
-// Разделы админки: заказы и сообщения (бэкенд.md §13–14), дальше контент в порядке
-// схемы, тексты сайта — перед настройками, которыми закрывается ряд
-function adminSections() {
-  const { site: settings, ...collections } = adminSchema.collections
+// Боковое меню админки группами: продажи, содержимое сайта, сайт целиком (владелец
+// 30.09.2026: «как в нормальных админках»). Разделы содержимого — все из схемы в её
+// порядке, кроме настроек (они в «Сайте целиком») и текстовых страниц: те открываются
+// из «Страниц» вместе с остальными, хотя раздел у них свой
+const ADMIN_NOT_IN_CONTENT_NAV = new Set(['site', 'pages'])
+function adminNav() {
+  const { collections } = adminSchema
+  const entry = (id) => ({
+    id,
+    text: collections[id].title,
+    icon: collections[id].icon,
+    // Фирменные значки (Simple Icons) рисуются заливкой, а не контуром
+    filled: collections[id].iconFilled,
+  })
   return [
-    { id: 'orders', text: t('admin.sectionOrders') },
-    { id: 'messages', text: t('admin.sectionMessages') },
-    // Фото и тексты главной и остальных страниц — первым из контента: их ищут чаще всего
-    { id: 'sitePages', text: t('admin.sectionSitePages') },
-    ...Object.entries(collections).map(([id, conf]) => ({ id, text: conf.title })),
-    { id: 'texts', text: t('admin.sectionTexts') },
-    { id: 'site', text: settings.title },
+    {
+      label: t('admin.navSales'),
+      items: [
+        { id: 'orders', text: t('admin.sectionOrders'), icon: 'receipt' },
+        { id: 'messages', text: t('admin.sectionMessages'), icon: 'inbox' },
+      ],
+    },
+    {
+      label: t('admin.navContent'),
+      items: [
+        // Страницы — первым из контента: их тексты и фото ищут чаще всего
+        { id: 'sitePages', text: t('admin.sectionSitePages'), icon: 'file-text' },
+        ...Object.keys(collections)
+          .filter((id) => !ADMIN_NOT_IN_CONTENT_NAV.has(id))
+          .map(entry),
+      ],
+    },
+    {
+      label: t('admin.navSite'),
+      items: [entry('site'), { id: 'texts', text: t('admin.sectionTexts'), icon: 'search' }],
+    },
   ]
 }
+const adminSectionIds = () => [
+  ...adminNav().flatMap((group) => group.items.map((item) => item.id)),
+  'pages',
+]
 const ADMIN_MESSAGE_TABS = [
   { id: 'all', label: 'admin.msgTabAll' },
   { id: 'contact', label: 'admin.msgTabContact' },
@@ -234,8 +262,10 @@ export function pageContext(pagePath) {
     // Посты Instagram из данных: официальную ленту не встраиваем (страницы.md §1,
     // блок 9). Вид плитки — производное от кадров, а не отдельное поле: пост с одним
     // кадром это фото, с несколькими — карусель, с роликом — рилс, и хранить это
-    // третьим полем значило бы позволить ему разойтись с содержимым
-    instagram: instagram.map(instagramPost),
+    // третьим полем значило бы позволить ему разойтись с содержимым.
+    // В данных свежие посты сверху, лента берёт первые 12: новые из админки
+    // встают в начало, а хвост уходит сам, без чистки списка (владелец 30.09.2026)
+    instagram: instagram.slice(0, 12).map(instagramPost),
   }
 
   // Страница категории собирается здесь по адресу: файл страницы тонкий и знать
@@ -379,7 +409,8 @@ export function pageContext(pagePath) {
     breadcrumbs,
     showcase,
     adminTabs: ADMIN_TABS,
-    adminSections: adminSections(),
+    adminNav: adminNav(),
+    adminSectionIds: adminSectionIds().join(','),
     adminSchemaJson: inlineJson(adminSchema),
     adminMessageTabs: ADMIN_MESSAGE_TABS,
     // Подписи полей и названия типов сообщений — из того же списка, что и письма владельцу
@@ -725,7 +756,7 @@ function allProductsCategory() {
     name: t('catalog.allTitle'),
     description: t('catalog.allDescription'),
     longDescription: null,
-    seo: { title: t('catalog.allSeoTitle'), description: null },
+    seo: { title: t('catalog.allSeoTitle'), description: t('catalog.allSeoDescription') },
   }
 }
 

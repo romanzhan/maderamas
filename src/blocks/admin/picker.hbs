@@ -1,45 +1,93 @@
-{{!-- Окно выбора фото редактора контента (бэкенд.md §15): готовые картинки своего
-      потока конвейера или загрузка новой. Лежит прямым потомком body, как все окна
-      (компоненты.md 5.1); открывает его adminContent.choose(). --}}
+{{!-- Окно выбора фото редактора контента (бэкенд.md §15): загрузить новое (перетащить
+      или выбрать файл, в поле «несколько фото» — сразу несколько) или взять уже
+      загруженное. Имя файлу придумывает админка сама (adminContent.fileId) — человеку
+      о латинице и занятых именах знать не нужно. Лежит прямым потомком body, как все
+      окна (компоненты.md 5.1); открывает его adminContent.choose(). --}}
 {{#> modal name="admin-picker" closeLabel="admin.close" title="admin.pickerTitle"}}
-  <div x-data="{ c: $store.adminContent }" class="flex flex-col gap-4">
-    <form class="flex flex-col gap-3 rounded-xl bg-sand p-4" x-on:submit.prevent="c.upload($event.target)">
-      <p class="font-medium">{{t "admin.uploadTitle"}}</p>
-      <input type="file" name="file" x-on:change="c.pickFile($event)" x-bind:accept="c.picker.flow === 'video' ? 'video/mp4' : 'image/jpeg,image/png,image/webp'" class="text-small" />
-      <label class="flex flex-col gap-2">
-        <span class="text-small font-medium">{{t "admin.uploadName"}}</span>
-        <input type="text" x-model="c.picker.name" x-on:change="c.picker.name = $store.adminContent.slug(c.picker.name)" class="{{> field-box}} bg-cream px-4" />
-        <span class="text-small text-charcoal/70">{{t "admin.uploadNameHint"}}</span>
-      </label>
-      <p x-show="c.picker.error" role="alert" class="text-small text-error" x-text="c.picker.error"></p>
-      {{!-- Имя занято: то же фото может стоять у нескольких товаров — замена только осознанно --}}
-      <div x-show="c.picker.taken" role="alert" class="flex flex-col items-start gap-3">
-        <p class="text-small text-error">{{t "admin.uploadTaken"}}</p>
-        {{> button empty secondary=true sizeMd=true label="admin.uploadReplace" onClick="c.upload($el.closest('form'), true)"}}
-      </div>
-      <div>{{> button empty primary=true sizeMd=true submit=true bindLoading="c.picker.uploading" label="admin.upload"}}</div>
-    </form>
-
-    <label class="flex flex-col gap-2">
-      <span class="text-small font-medium">{{t "admin.find"}}</span>
-      <input type="search" x-model="c.picker.query" class="{{> field-box}} px-4" />
-    </label>
-    <ul class="grid grid-cols-3 gap-2 sm:grid-cols-4">
-      <template x-for="image in c.pickerImages" x-bind:key="image.id">
-        <li>
-          <button type="button" x-on:click="c.picker.apply(image.id)" class="flex w-full flex-col gap-1 rounded-lg p-1 text-left hover:bg-sand-hover">
-            <span class="flex aspect-square w-full items-center justify-center overflow-hidden rounded-md bg-sand">
-              <template x-if="image.preview">
-                <img x-bind:src="image.preview" alt="" loading="lazy" class="size-full object-cover" />
-              </template>
-              <template x-if="!image.preview">
-                <span class="px-1 text-center text-caption text-charcoal/70" x-text="image.type === 'video' ? 'MP4' : '{{t "admin.processing"}}'"></span>
-              </template>
-            </span>
-            <span class="truncate text-caption" x-text="image.id"></span>
-          </button>
-        </li>
+  <div x-data="{ c: $store.adminContent, over: false }" class="flex flex-col gap-6 pb-4">
+    <label
+      x-on:dragover.prevent="over = true"
+      x-on:dragleave.prevent="over = false"
+      x-on:drop.prevent="over = false; c.uploadFiles($event.dataTransfer.files)"
+      x-bind:class="over ? 'border-clay bg-sand-hover' : 'border-border bg-sand hover:bg-sand-hover'"
+      class="flex min-h-40 cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2
+        border-dashed p-6 text-center transition-colors duration-150
+        has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-clay"
+    >
+      <input
+        type="file"
+        class="sr-only"
+        x-bind:multiple="c.picker.multiple"
+        x-bind:accept="c.picker.flow === 'video' ? 'video/mp4' : 'image/jpeg,image/png,image/webp'"
+        x-bind:disabled="c.upload.busy"
+        x-on:change="c.uploadFiles($event.target.files); $event.target.value = ''"
+      />
+      <template x-if="!c.upload.busy">
+        <span class="flex flex-col items-center gap-2">
+          <span class="text-clay">{{> icon empty name="upload" class="size-6"}}</span>
+          <span class="font-medium" x-text="c.picker.multiple ? '{{t "admin.dropMany"}}' : '{{t "admin.dropOne"}}'"></span>
+          <span class="text-small text-charcoal/70" x-text="c.picker.flow === 'video' ? '{{t "admin.formatsVideo"}}' : '{{t "admin.formatsImage"}}'"></span>
+        </span>
       </template>
-    </ul>
+      <template x-if="c.upload.busy">
+        <span class="flex items-center gap-2 font-medium" role="status">
+          {{> icon empty name="loader-circle" class="size-5 animate-spin"}}
+          <span x-text="'{{t "admin.uploading" done="{done}" total="{total}"}}'.replace('{done}', c.upload.done + 1).replace('{total}', c.upload.total)"></span>
+        </span>
+      </template>
+    </label>
+    <p x-show="c.upload.error" role="alert" class="-mt-3 flex items-start gap-2 text-small text-error">
+      <span class="icon-line shrink-0">{{> icon empty name="circle-alert" class="size-4"}}</span>
+      <span x-text="c.upload.error"></span>
+    </p>
+
+    <section class="flex flex-col gap-3" aria-labelledby="admin-picker-existing">
+      <h3 id="admin-picker-existing" class="font-medium">{{t "admin.existingTitle"}}</h3>
+      <label class="relative">
+        <span class="sr-only">{{t "admin.findPhoto"}}</span>
+        <span class="pointer-events-none absolute inset-y-0 left-4 flex items-center text-charcoal/70">{{> icon empty name="search" class="size-5"}}</span>
+        <input type="search" x-model="c.picker.query" placeholder="{{t "admin.findPhoto"}}" class="{{> field-box}} w-full pr-4 pl-12" />
+      </label>
+      <p x-show="c.indexState === 'loading'" class="text-small text-charcoal/70">{{t "admin.imagesLoading"}}</p>
+      <div x-show="c.indexState === 'failed'" role="alert" class="flex flex-col items-start gap-3">
+        <p class="text-small text-error">{{t "admin.errNetwork"}}</p>
+        {{> button empty secondary=true sizeMd=true label="admin.retry" onClick="c.loadIndex()"}}
+      </div>
+      <p x-show="c.indexState === 'ready' && !c.pickerImages.length" class="text-small text-charcoal/70">{{t "admin.nothingFound"}}</p>
+      <ul class="grid grid-cols-3 gap-2 sm:grid-cols-4">
+        <template x-for="image in c.pickerImages" x-bind:key="image.id">
+          <li>
+            <button
+              type="button"
+              x-on:click="c.pickExisting(image.id)"
+              x-bind:aria-pressed="c.picker.multiple ? c.picker.selected.includes(image.id) : null"
+              x-bind:class="c.picker.selected.includes(image.id) ? 'bg-sand-active' : 'hover:bg-sand-hover'"
+              class="flex w-full flex-col gap-1 rounded-lg p-1 text-left"
+            >
+              <span class="relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-md bg-sand">
+                <template x-if="c.preview(image.id)">
+                  <img x-bind:src="c.preview(image.id)" alt="" loading="lazy" class="size-full object-cover" />
+                </template>
+                <template x-if="!c.preview(image.id)">
+                  <span class="px-1 text-center text-caption text-charcoal/70" x-text="image.type === 'video' ? 'MP4' : '{{t "admin.processing"}}'"></span>
+                </template>
+                <span x-show="c.picker.selected.includes(image.id)" class="absolute top-1 right-1 flex size-6 items-center justify-center rounded-full bg-clay text-cream">{{> icon empty name="check" class="size-4"}}</span>
+              </span>
+              <span class="truncate text-caption text-charcoal/70" x-text="image.id"></span>
+            </button>
+          </li>
+        </template>
+      </ul>
+    </section>
+
+    {{!-- Отмеченные готовые фото уходят в поле одной кнопкой; она держится у низа окна --}}
+    <div x-show="c.picker.multiple && c.picker.selected.length" class="sticky bottom-0 -mx-4 border-t border-line bg-cream px-4 py-3 sm:-mx-6 sm:px-6">
+      <button
+        type="button"
+        x-on:click="c.pickSelected()"
+        class="{{> button-class primary=true sizeMd=true fullWidth=true}}"
+        x-text="'{{t "admin.addSelected" n="{n}"}}'.replace('{n}', c.picker.selected.length)"
+      ></button>
+    </div>
   </div>
 {{/modal}}

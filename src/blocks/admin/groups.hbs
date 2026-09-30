@@ -1,0 +1,32 @@
+{{!-- Поля записи или настроек карточками: заголовок группы в схеме открывает новую
+      карточку (adminContent.groups). Сверху — переходы к карточкам, когда их много:
+      у товара семь частей, и искать цену прокруткой неудобно. Поля «для опытных»
+      (адреса, коды) — в конце карточки под раскрывашкой. m — имя модели для admin/field. --}}
+<nav x-show="c.groups(c.conf.fields, {{m}}).length > 3" aria-label="{{t "admin.groupsNav"}}" class="-mb-2 flex flex-wrap gap-2">
+  <template x-for="group in c.groups(c.conf.fields, {{m}})" x-bind:key="group.id">
+    <button type="button" x-on:click="c.jump('admin-' + group.id)" class="inline-flex min-h-11 items-center rounded-full border border-line bg-cream px-3 text-small hover:bg-sand-hover" x-text="group.label"></button>
+  </template>
+</nav>
+
+<template x-for="group in c.groups(c.conf.fields, {{m}})" x-bind:key="c.col + group.id">
+  <section x-bind:id="'admin-' + group.id" class="flex flex-col gap-5 rounded-xl border border-line bg-cream p-4 lg:p-6">
+    <div>
+      <h3 class="font-display text-h4 lg:text-h4-lg" x-text="group.label"></h3>
+      <p x-show="group.hint" class="mt-1 text-small text-charcoal/70" x-text="group.hint"></p>
+    </div>
+    <template x-for="field in group.fields" x-bind:key="field.key">
+      {{> admin/field m=m f="field"}}
+    </template>
+    <template x-if="group.advanced.length">
+      <details class="rounded-lg bg-sand px-4">
+        <summary class="flex min-h-11 items-center text-small font-medium">{{t "admin.advanced"}}</summary>
+        <div class="flex flex-col gap-5 pb-4">
+          <p class="text-small text-charcoal/70">{{t "admin.advancedHint"}}</p>
+          <template x-for="field in group.advanced" x-bind:key="field.key">
+            {{> admin/field m=m f="field"}}
+          </template>
+        </div>
+      </details>
+    </template>
+  </section>
+</template>
