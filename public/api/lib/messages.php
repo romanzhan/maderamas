@@ -132,7 +132,13 @@ function notifyMessage(string $type, array $data, ?string $code): ?bool
     }
     $ownerBody[] = '';
     $ownerBody[] = messageFieldsText($data, $runtime['labels']);
-    sendMail($runtime['ownerEmail'], fillText($texts['ownerMessageSubject'], ['type' => $typeName]), implode("\n", $ownerBody));
+    // «Ответить» в уведомлении — сразу автору сообщения (у отзыва почты нет — магазину)
+    sendMail(
+        $runtime['ownerEmail'],
+        fillText($texts['ownerMessageSubject'], ['type' => $typeName]),
+        implode("\n", $ownerBody),
+        is_string($data['email'] ?? null) ? $data['email'] : null,
+    );
 
     // Покупателю — номер и дословная копия того, что он отправил (норма для Libro
     // de Quejas — seo.md п. 8; для Botón de Arrepentimiento так же честно)
