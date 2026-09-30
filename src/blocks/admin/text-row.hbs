@@ -1,0 +1,14 @@
+{{!-- Одна фраза словаря в редакторе: путь ключа, текст, напоминание о подстановках.
+      Общая для «Текстов сайта» и «Страниц сайта»; ждёт row = { path, value } и c. --}}
+<label class="flex flex-col gap-2">
+  <span class="text-small text-charcoal/70" x-text="row.path"></span>
+  <textarea
+    x-bind:rows="row.value.length > 90 ? 3 : 1"
+    x-bind:value="row.value"
+    x-on:input="c.setText(row.path, $event.target.value)"
+    class="{{> field-box}} h-auto px-4 py-2 lg:h-auto"
+  ></textarea>
+  <span x-show="c.placeholders(row.value)" class="text-caption text-charcoal/70">
+    {{t "admin.keepPlaceholders"}} <span x-text="c.placeholders(row.value)"></span>
+  </span>
+</label>

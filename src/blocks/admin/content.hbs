@@ -133,18 +133,37 @@
         {{> button empty tertiary=true sizeMd=true label="admin.versions" onClick="c.openHistory()"}}
       </div>
       <template x-for="row in c.textRows" x-bind:key="row.path">
+        {{> admin/text-row}}
+      </template>
+    </div>
+  </template>
+
+  {{!-- ——— Страницы сайта: фото и тексты одной страницы вместе ——— --}}
+  <template x-if="c.colState === 'ready' && c.col === 'sitePages' && c.sitePageConf">
+    <div class="flex max-w-3xl flex-col gap-4">
+      <div class="flex flex-wrap items-end gap-3">
         <label class="flex flex-col gap-2">
-          <span class="text-small text-charcoal/70" x-text="row.path"></span>
-          <textarea
-            x-bind:rows="row.value.length > 90 ? 3 : 1"
-            x-bind:value="row.value"
-            x-on:input="c.setText(row.path, $event.target.value)"
-            class="{{> field-box}} h-auto px-4 py-2 lg:h-auto"
-          ></textarea>
-          <span x-show="c.placeholders(row.value)" class="text-caption text-charcoal/70">
-            {{t "admin.keepPlaceholders"}} <span x-text="c.placeholders(row.value)"></span>
-          </span>
+          <span class="text-small font-medium">{{t "admin.sitePage"}}</span>
+          <select x-model="c.sitePage" class="{{> field-box}} px-4">
+            <template x-for="page in c.schema.sitePages" x-bind:key="page.id">
+              <option x-bind:value="page.id" x-bind:selected="page.id === c.sitePage" x-text="page.title"></option>
+            </template>
+          </select>
         </label>
+        <template x-if="c.sitePageConf.url">
+          <a x-bind:href="c.sitePageConf.url" target="_blank" rel="noopener" class="inline-flex min-h-12 items-center gap-2 px-2 text-small text-clay hover:text-clay-hover">{{t "admin.openOnSite"}}{{> icon empty name="arrow-right" class="size-4"}}</a>
+        </template>
+      </div>
+      <p x-show="c.sitePageConf.note" class="text-small text-charcoal/70" x-text="c.sitePageConf.note"></p>
+
+      {{!-- Фото открываются заголовком из схемы — тем же, что делит поля в других разделах --}}
+      <template x-for="field in c.sitePageConf.fields ?? []" x-bind:key="c.sitePage + (field.key ?? field.label)">
+        {{> admin/field m="c.docs.site.data" f="field"}}
+      </template>
+
+      <h3 class="mt-6 border-t border-line pt-6 font-display text-h4 lg:text-h4-lg">{{t "admin.pageTexts"}}</h3>
+      <template x-for="row in c.textRowsOf(c.sitePageConf.texts)" x-bind:key="row.path">
+        {{> admin/text-row}}
       </template>
     </div>
   </template>

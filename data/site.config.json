@@ -66,5 +66,24 @@
     "domicilio": "Aráoz 942, Villa Crespo, CABA",
     "dataFiscalUrl": "https://qr.afip.gob.ar/?qr=-h538ARTUUKJ2zSmwdV-HQ,,",
     "ivaRate": 21
+  },
+  "media": {
+    "homeHero": {
+      "narrow": "home-hero-narrow",
+      "mid": "home-hero-mid",
+      "wide": "home-hero-wide"
+    },
+    "homePicker": {
+      "baby": "bebe-roble-1",
+      "kid": "evolutiva-roble-1",
+      "helper": "home-picker-torre"
+    },
+    "homeFlagship": "evolutiva-roble-2",
+    "adjustFrames": ["home-ajuste-1", "home-ajuste-2", "home-ajuste-3"],
+    "homeAtmosphere": "home-atmosfera",
+    "howPhoto": "como-funciona-foto",
+    "aboutWorkshop": "nosotros-taller",
+    "aboutProcess": "nosotros-proceso",
+    "contactMap": "contacto-mapa"
   }
 }

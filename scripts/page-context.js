@@ -56,6 +56,8 @@ function adminSections() {
   return [
     { id: 'orders', text: t('admin.sectionOrders') },
     { id: 'messages', text: t('admin.sectionMessages') },
+    // Фото и тексты главной и остальных страниц — первым из контента: их ищут чаще всего
+    { id: 'sitePages', text: t('admin.sectionSitePages') },
     ...Object.entries(collections).map(([id, conf]) => ({ id, text: conf.title })),
     { id: 'texts', text: t('admin.sectionTexts') },
     { id: 'site', text: settings.title },
@@ -138,10 +140,11 @@ export function pageContext(pagePath) {
   // цен в проекте быть не может (принцип 16). Нет товара — плитки просто нет
   // Тон плитки приходит отсюда: в шаблоне логики не бывает, а цвет текста на промо-фоне
   // жёстко связан с тоном (визуальная-система.md §2.2) — на жёлтом тёмный, иначе светлый
+  // Фото плиток — в настройках (site.media), их меняет админка
   const picker = [
-    { id: 'silla-para-bebe', image: 'bebe-roble-1', key: 'Baby', tone: 'blue' },
-    { id: 'silla-evolutiva', image: 'evolutiva-roble-1', key: 'Kid', tone: 'green' },
-    { id: 'torre-aprendizaje', image: 'home-picker-torre', key: 'Helper', tone: 'yellow' },
+    { id: 'silla-para-bebe', image: site.media.homePicker.baby, key: 'Baby', tone: 'blue' },
+    { id: 'silla-evolutiva', image: site.media.homePicker.kid, key: 'Kid', tone: 'green' },
+    { id: 'torre-aprendizaje', image: site.media.homePicker.helper, key: 'Helper', tone: 'yellow' },
   ]
     .map(({ id, image, key, tone }) => {
       const product = byId(id)
@@ -195,12 +198,12 @@ export function pageContext(pagePath) {
   const home = {
     // Кадры для секции регулировки: инфографику готовит владелец, до неё встают
     // заглушки той же геометрии
-    adjustFrames: ['home-ajuste-1', 'home-ajuste-2', 'home-ajuste-3'],
+    adjustFrames: site.media.adjustFrames,
     cheapestSilla: cheapestIn('sillas'),
     // Кадр для разворота флагмана выбран отдельно от карточки (решение владельца
     // 29.08.2026): в карточке нужен первый кадр съёмки, а на развороте — тот, где стул
     // виден целиком и в интерьере. Так же выбраны кадры для плиток подбора выше
-    flagshipImage: 'evolutiva-roble-2',
+    flagshipImage: site.media.homeFlagship,
     flagship: withCard(products.find((product) => product.id === 'silla-evolutiva') ?? products[0]),
     featured: (featured.length ? featured : products).map(withCard),
     // В ленте на главной показываем всё, что есть: карточки листаются вбок,
