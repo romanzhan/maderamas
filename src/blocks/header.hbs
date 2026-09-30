@@ -8,8 +8,10 @@
       bare — упрощённый вид для чекаута (компоненты.md 4.1): логотип и возврат в корзину,
       без меню, поиска, избранного и корзины. Уводить покупателя с чекаута нечем.
       bareHome — тот же вид без возврата в корзину: список заказов владельца
-      (бэкенд.md §13) к покупке отношения не имеет. --}}
+      (бэкенд.md §13) к покупке отношения не имеет. admin — справа публикация и выход;
+      до входа шапки нет вовсе: знак бренда стоит в самой карточке входа. --}}
 <header
+  {{#if admin}}x-show="$store.admin.auth === 'in'" x-cloak{{/if}}
   x-data="siteHeader"
   x-bind:class="$store.header.scrolled && 'shadow-sm'"
   class="sticky top-0 z-10 bg-cream transition-shadow duration-200"
@@ -28,6 +30,7 @@
           {{t "checkout.backToCart"}}
         </a>
       {{/unless}}
+      {{#if admin}}{{> admin/header-actions}}{{/if}}
     </div>
   {{else}}
   <div class="page-container flex h-(--header-h) items-center gap-2">

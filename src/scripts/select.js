@@ -23,9 +23,14 @@ export function selectField() {
     typedAt: 0,
 
     // Пункты и текст-заглушка берутся из спрятанного select — второго списка в проекте
-    // нет, значит и разойтись им негде
+    // нет, значит и разойтись им негде.
+    // Без спрятанного select — список админки (admin/select.hbs): пункты и значение
+    // приходят из данных редактора (x-effect в разметке), выбор уходит событием choose.
+    // Логика клавиатуры и поиска по буквам та же — второй её копии не заводим
     init() {
       const native = this.$refs.native
+      if (!native) return void (this.prefix = this.$id('select'))
+
       // Префикс — от id спрятанного select: он один на компонент и не зависит от того,
       // из какого элемента вызван optionId (иначе aria-activedescendant укажет в пустоту)
       this.prefix = native.id
@@ -71,9 +76,13 @@ export function selectField() {
       if (!option) return
 
       this.value = option.code
-      // Нативный select — источник значения для формы; событие нужно слою валидации
-      this.$refs.native.value = option.code
-      this.$refs.native.dispatchEvent(new Event('change', { bubbles: true }))
+      if (this.$refs.native) {
+        // Нативный select — источник значения для формы; событие нужно слою валидации
+        this.$refs.native.value = option.code
+        this.$refs.native.dispatchEvent(new Event('change', { bubbles: true }))
+      } else {
+        this.$dispatch('choose', option.code)
+      }
       this.hide()
     },
 

@@ -1,0 +1,36 @@
+{{!-- Раскрытый список пунктов: общий у списка магазина (select) и списка админки
+      (admin/select), поведение одно — src/scripts/select.js. id — у списка магазина;
+      без него (админка: поля повторяются в строках, своих id у них нет) адреса для
+      скринридера берутся из selectField.
+      Список прижат к полю по ширине, поэтому позиционирование тривиально и
+      Floating UI здесь не нужен (в отличие от меню и подсказок поиска).
+      Скругление и прокрутка разнесены по двум элементам: иначе полоса прокрутки
+      рисуется поверх скруглённого угла --}}
+<div
+  x-show="open"
+  x-cloak
+  class="absolute top-full right-0 left-0 z-20 mt-1 overflow-hidden rounded-md border
+    border-border bg-cream shadow-md"
+>
+  <ul
+    {{#if id}}id="{{id}}-list"{{else}}x-bind:id="prefix + '-list'"{{/if}}
+    x-ref="list"
+    role="listbox"
+    {{#if id}}aria-labelledby="{{id}}-label"{{else}}x-bind:aria-labelledby="prefix + '-label'"{{/if}}
+    class="scrollbar-soft max-h-64 overflow-y-auto py-2"
+  >
+    <template x-for="(option, index) in options" :key="option.code">
+      <li
+        :id="optionId(index)"
+        role="option"
+        :aria-selected="option.code === value"
+        @click="choose(index)"
+        @mousemove="moveTo(index)"
+        class="flex min-h-12 cursor-pointer items-center px-4 text-body lg:min-h-10"
+        :class="index === highlighted ? 'bg-sand-hover' : ''"
+      >
+        <span x-text="option.name"></span>
+      </li>
+    </template>
+  </ul>
+</div>

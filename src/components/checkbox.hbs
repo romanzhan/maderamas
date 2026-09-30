@@ -10,24 +10,20 @@
   has-focus-visible:outline-2 has-focus-visible:outline-offset-2
   has-focus-visible:outline-clay{{else}}flex min-h-11 items-start gap-3{{/if}}
   {{#if disabled}}cursor-default opacity-45{{else}}cursor-pointer{{/if}}">
-  {{#unless chip}}<span class="relative mt-1 flex size-6 shrink-0 items-center justify-center lg:size-5">{{/unless}}
-    <input
-      type="checkbox"
-      {{#if name}}name="{{name}}"{{/if}}
-      {{#if value}}value="{{value}}"{{/if}}
-      {{#if xModel}}x-model="{{xModel}}"{{/if}}
-      {{#if onChange}}x-on:change="{{onChange}}"{{/if}}
-      {{#if checked}}checked{{/if}}
-      {{#if disabled}}disabled{{/if}}
-      class="peer {{#if chip}}sr-only{{else}}size-full appearance-none rounded-sm border border-border
-        bg-sand checked:border-clay checked:bg-clay disabled:cursor-default{{/if}}"
-    />
-  {{#unless chip}}
-    <span class="pointer-events-none absolute text-cream opacity-0 peer-checked:opacity-100">
-      {{> icon empty name="check" class="size-4"}}
-    </span>
-  </span>
-  {{/unless}}
+  {{#*inline "attrs"}}
+    {{#if name}}name="{{name}}"{{/if}}
+    {{#if value}}value="{{value}}"{{/if}}
+    {{#if xModel}}x-model="{{xModel}}"{{/if}}
+    {{#if onChange}}x-on:change="{{onChange}}"{{/if}}
+    {{#if checked}}checked{{/if}}
+    {{#if disabled}}disabled{{/if}}
+  {{/inline}}
+  {{!-- Таблетке квадратик не нужен: input прячется, отметку рисует сама оболочка --}}
+  {{#if chip}}
+    <input type="checkbox" {{> attrs}} class="peer sr-only" />
+  {{else}}
+    {{#> checkbox-box}}{{> attrs}}{{/checkbox-box}}
+  {{/if}}
   {{#if swatch}}
     <span
       class="{{#unless chip}}mt-1 {{/unless}}size-5 shrink-0 rounded-full border border-border"

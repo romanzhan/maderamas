@@ -1,5 +1,28 @@
 import { isPlainClick } from './overlay.js'
 
+// Метка «на этом устройстве входили в админку» (ставит и снимает src/scripts/admin.js).
+// Это не вход и не доступ: админку по-прежнему закрывает пароль на сервере, а метка
+// только решает, показывать ли владельцу полосу «Открыть админку» (owner-bar)
+const OWNER_KEY = 'madera.owner'
+
+export function isOwner() {
+  try {
+    return localStorage.getItem(OWNER_KEY) === '1'
+  } catch {
+    // Хранилище закрыто (приватный режим) — полосы просто не будет
+    return false
+  }
+}
+
+export function markOwner(on) {
+  try {
+    if (on) localStorage.setItem(OWNER_KEY, '1')
+    else localStorage.removeItem(OWNER_KEY)
+  } catch {
+    // То же: без хранилища метки нет, полосы тоже
+  }
+}
+
 // Поведение шапки: тень появляется при прокрутке. Прятать шапку при движении вниз
 // мы перестали 27.08.2026 — решение владельца: она висит всегда, на любой ширине.
 // Состояние лежит в store, потому что за него держится не только сама шапка.

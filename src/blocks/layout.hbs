@@ -74,11 +74,12 @@
     {{!-- bare — чекаут (страницы.md §7): промо-полоса, меню, поиск, корзина-панель
           и плавающая кнопка скрыты, шапка упрощена. Отвлекающего на чекауте быть
           не должно, а уводить с него ссылками — тем более --}}
-    {{#unless bare}}{{> announcement}}{{/unless}}
+    {{#unless bare}}{{> owner-bar}}{{> announcement}}{{/unless}}
     {{> header}}
     {{> offline-notice}}
     {{> @partial-block}}
-    {{> footer}}
+    {{!-- Админке подвал магазина не нужен: его ссылки ведут покупателя, а не владельца --}}
+    {{#unless admin}}{{> footer}}{{/unless}}
     {{> toast}}
     {{#unless bare}}
       {{> cart-panel}}

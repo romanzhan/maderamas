@@ -1,0 +1,23 @@
+{{!-- Полоса владельца над сайтом (владелец 30.09.2026: значок в шапке «не очевиден»).
+      Видна только на устройстве, где владелец уже входил в админку: метку ставит вход
+      в админку (src/scripts/admin.js → markOwner, бэкенд.md §13), покупатель полосу
+      не видит никогда.
+      Поэтому и текст по-русски — из словаря админки. Стоит над промо-полосой и не липнет:
+      шапку не теснит и уезжает при прокрутке. Подсветка ссылки — без скругления, во всю
+      высоту полосы (владелец 30.09.2026) --}}
+<div x-data x-show="$store.header.owner" x-cloak lang="ru" class="bg-sand">
+  <div class="page-container flex min-h-11 items-center justify-between gap-3 text-small">
+    <span class="flex min-w-0 items-center gap-2 text-charcoal/70">
+      {{> icon empty name="layout-dashboard" class="size-4"}}
+      <span class="truncate">{{t "admin.ownerBar"}}</span>
+    </span>
+    <a
+      href="/admin/"
+      class="-mr-3 inline-flex min-h-11 shrink-0 items-center gap-2 px-3 font-medium
+        text-clay hover:bg-sand-hover hover:text-charcoal"
+    >
+      {{t "admin.ownerBarOpen"}}
+      {{> icon empty name="arrow-right" class="size-4"}}
+    </a>
+  </div>
+</div>

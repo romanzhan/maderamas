@@ -68,12 +68,7 @@
         }"
       {{/if}}
       {{#unless compact}}aria-describedby="{{id}}-message"{{/unless}}
-      class="flex h-12 w-full items-center justify-between gap-2 rounded-md border bg-sand px-4
-        text-left text-body ring-inset focus:ring-1 focus:outline-none lg:h-11
-        disabled:cursor-not-allowed disabled:border-border disabled:bg-sand-hover
-        disabled:text-charcoal/70
-        {{#if error}}border-error focus:border-error focus:ring-error{{/if}}
-        {{#unless error}}border-border focus:border-clay focus:ring-clay{{/unless}}"
+      class="{{> select-trigger-class error=error}}"
     >
       {{!-- Подпись отрисована и на сервере: до старта Alpine поле не выглядит пустым.
             С готовым значением это имя выбранного пункта, без него — заглушка --}}
@@ -86,39 +81,7 @@
       >
       {{> icon empty name="chevron-down" class="size-5"}}
     </button>
-
-    {{!-- Список прижат к полю по ширине, поэтому позиционирование тривиально и
-          Floating UI здесь не нужен (в отличие от меню и подсказок поиска).
-          Скругление и прокрутка разнесены по двум элементам: иначе полоса прокрутки
-          рисуется поверх скруглённого угла --}}
-    <div
-      x-show="open"
-      x-cloak
-      class="absolute top-full right-0 left-0 z-20 mt-1 overflow-hidden rounded-md border
-        border-border bg-cream shadow-md"
-    >
-      <ul
-        id="{{id}}-list"
-        x-ref="list"
-        role="listbox"
-        aria-labelledby="{{id}}-label"
-        class="scrollbar-soft max-h-64 overflow-y-auto py-2"
-      >
-        <template x-for="(option, index) in options" :key="option.code">
-          <li
-            :id="optionId(index)"
-            role="option"
-            :aria-selected="option.code === value"
-            @click="choose(index)"
-            @mousemove="moveTo(index)"
-            class="flex min-h-12 cursor-pointer items-center px-4 text-body lg:min-h-10"
-            :class="index === highlighted ? 'bg-sand-hover' : ''"
-          >
-            <span x-text="option.name"></span>
-          </li>
-        </template>
-      </ul>
-    </div>
+    {{> select-panel id=id}}
   </div>
 
   {{#unless compact}}

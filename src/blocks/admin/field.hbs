@@ -8,24 +8,125 @@
       раскладывает по карточкам content.hbs (adminContent.groups).
       when/unless в схеме — поле видно только при таком значении другого поля записи. --}}
 <div class="flex flex-col gap-2" x-show="c.visible({{m}}, {{f}})">
-  {{!-- Строка, адрес, дата, число, деньги --}}
-  <template x-if="['text', 'slug', 'date', 'number', 'money'].includes({{f}}.type)">
+  {{!-- Строка, адрес, деньги. Поля браузерного типа (number, date) здесь не живут:
+        их стрелки и календарь браузер рисует сам и по-своему — ниже свои --}}
+  <template x-if="['text', 'slug', 'money'].includes({{f}}.type)">
     <label class="flex flex-col gap-2">
       <span class="text-small font-medium">
         <span x-text="{{f}}.label"></span><span x-show="{{f}}.required" class="text-error" aria-hidden="true"> *</span>
       </span>
       <input
-        x-bind:type="{ date: 'date', number: 'number', money: 'number' }[{{f}}.type] ?? 'text'"
+        type="text"
         x-bind:inputmode="{{f}}.type === 'money' ? 'numeric' : null"
-        x-bind:step="{{f}}.type === 'number' ? 'any' : null"
         x-bind:value="c.value({{m}}, {{f}})"
         x-on:input="{{f}}.type === 'text' && c.update({{m}}, {{f}}, $event.target.value)"
-        x-on:change="c.update({{m}}, {{f}}, $event.target.value)"
-        x-bind:class="{{f}}.type === 'text' || {{f}}.type === 'slug' ? 'w-full' : 'w-full sm:max-w-xs'"
+        x-on:change="c.update({{m}}, {{f}}, $event.target.value) === false && ($event.target.value = c.value({{m}}, {{f}}))"
+        x-bind:class="{{f}}.type === 'money' ? 'w-full sm:max-w-xs tabular-nums' : 'w-full'"
         class="{{> field-box}} px-4"
       />
       <span x-show="{{f}}.type === 'money' && c.value({{m}}, {{f}}) !== ''" class="text-small text-charcoal/70 tabular-nums" x-text="c.money(c.value({{m}}, {{f}}))"></span>
     </label>
+  </template>
+
+  {{!-- Число: «− значение +», как счётчик количества в магазине. Кнопки — шаг на
+        единицу, дробное (вес 7,9) вписывается руками. Меньше нуля в наших полях
+        ничего не бывает: «−» у нуля просто стоит на месте, а не гаснет — погасшая кнопка
+        выбросила бы фокус клавиатуры в начало страницы --}}
+  <template x-if="{{f}}.type === 'number'">
+    <div class="flex flex-col gap-2">
+      {{!-- Подпись — текстом, а не label: внутри три элемента, и нажатие по подписи
+            попадало бы в кнопку «−». Полю ввода имя даёт aria-label --}}
+      <span class="text-small font-medium" aria-hidden="true">
+        <span x-text="{{f}}.label"></span><span x-show="{{f}}.required" class="text-error"> *</span>
+      </span>
+      <span class="flex w-fit items-center rounded-md border border-border bg-sand focus-within:border-clay">
+        <button
+          type="button"
+          x-on:click="c.step({{m}}, {{f}}, -1)"
+          class="flex size-12 shrink-0 items-center justify-center rounded-l-md hover:bg-sand-hover lg:size-11"
+          x-bind:aria-label="'{{t "admin.less"}}: ' + {{f}}.label"
+        >{{> icon empty name="minus" class="size-5"}}</button>
+        <input
+          type="text"
+          inputmode="decimal"
+          x-bind:aria-label="{{f}}.label"
+          x-bind:value="c.value({{m}}, {{f}})"
+          x-bind:aria-required="{{f}}.required ? 'true' : null"
+          x-on:change="c.update({{m}}, {{f}}, $event.target.value) === false && ($event.target.value = c.value({{m}}, {{f}}))"
+          class="h-12 w-24 border-x border-border bg-sand text-center text-body ring-inset tabular-nums focus:ring-1 focus:ring-clay focus:outline-none lg:h-11"
+        />
+        <button
+          type="button"
+          x-on:click="c.step({{m}}, {{f}}, 1)"
+          class="flex size-12 shrink-0 items-center justify-center rounded-r-md hover:bg-sand-hover lg:size-11"
+          x-bind:aria-label="'{{t "admin.more"}}: ' + {{f}}.label"
+        >{{> icon empty name="plus" class="size-5"}}</button>
+      </span>
+    </div>
+  </template>
+
+  {{!-- Дата: своя кнопка и календарь Cally (механика его, вид наш — main.css).
+        Показываем по-русски (30.09.2026), храним как в данных (2026-09-30) --}}
+  <template x-if="{{f}}.type === 'date'">
+    <div
+      class="flex flex-col gap-2"
+      x-data="{ open: false, shown: null }"
+      x-on:keydown.escape="open && ((open = false), $refs.trigger.focus())"
+      x-on:click.outside="open = false"
+    >
+      <span class="text-small font-medium">
+        <span x-text="{{f}}.label"></span><span x-show="{{f}}.required" class="text-error" aria-hidden="true"> *</span>
+      </span>
+      <div class="relative w-full sm:max-w-xs">
+        <button
+          type="button"
+          x-ref="trigger"
+          aria-haspopup="dialog"
+          x-bind:aria-expanded="open"
+          x-bind:aria-label="{{f}}.label + ': ' + (c.value({{m}}, {{f}}) ? c.day(c.value({{m}}, {{f}})) : '{{t "admin.chooseDate"}}')"
+          x-on:click="open = !open; open && $nextTick(() => $refs.calendar.focus())"
+          class="{{> select-trigger-class}}"
+        >
+          <span class="tabular-nums" x-bind:class="c.value({{m}}, {{f}}) ? '' : 'text-charcoal/70'" x-text="c.value({{m}}, {{f}}) ? c.day(c.value({{m}}, {{f}})) : '{{t "admin.chooseDate"}}'"></span>
+          {{> icon empty name="calendar" class="size-5 shrink-0"}}
+        </button>
+        {{!-- Семь дней по 44 px — 308: под полем внутри карточки на 360 это не влезает,
+              поэтому на телефоне календарь всплывает посреди экрана, с 640 — под полем --}}
+        <div
+          x-show="open"
+          x-cloak
+          role="dialog"
+          x-bind:aria-label="{{f}}.label"
+          class="fixed top-1/2 left-1/2 z-20 flex -translate-1/2 flex-col gap-2 rounded-md border border-border bg-cream p-2 shadow-md
+            sm:absolute sm:top-full sm:left-0 sm:mt-1 sm:translate-none sm:p-3"
+        >
+          <calendar-date
+            x-ref="calendar"
+            class="admin-calendar"
+            locale="ru-RU"
+            first-day-of-week="1"
+            format-weekday="short"
+            x-bind:value="c.value({{m}}, {{f}})"
+            x-on:change="c.update({{m}}, {{f}}, $event.target.value); open = false; $nextTick(() => $refs.trigger.focus())"
+            x-on:focusday="shown = $event.detail"
+          >
+            {{!-- Заголовок свой — «август 2026» одной строкой: у библиотеки год и месяц
+                  стоят в двух местах, между стрелками один год --}}
+            <span slot="heading" x-text="c.monthTitle(shown ?? c.value({{m}}, {{f}}))"></span>
+            <span slot="previous">{{> icon empty name="chevron-left" class="size-5"}}<span class="sr-only">{{t "admin.prevMonth"}}</span></span>
+            <span slot="next">{{> icon empty name="chevron-right" class="size-5"}}<span class="sr-only">{{t "admin.nextMonth"}}</span></span>
+            <calendar-month></calendar-month>
+          </calendar-date>
+          {{!-- Только у поля, которое может быть пустым: даты статьи, товара и отзыва
+                обязательны, пустая остановила бы сборку сайта --}}
+          <template x-if="{{f}}.nullable && c.value({{m}}, {{f}})">
+            <button type="button" x-on:click="c.update({{m}}, {{f}}, ''); open = false; $nextTick(() => $refs.trigger.focus())" class="inline-flex min-h-11 items-center gap-2 self-start text-small text-error hover:underline">
+              {{> icon empty name="x" class="size-4"}}{{t "admin.clearDate"}}
+            </button>
+          </template>
+        </div>
+      </div>
+    </div>
   </template>
 
   <template x-if="{{f}}.type === 'textarea'">
@@ -45,12 +146,7 @@
   {{!-- Галочка с пояснением рядом: что изменится на сайте, видно до нажатия --}}
   <template x-if="{{f}}.type === 'bool'">
     <label class="flex min-h-12 cursor-pointer items-start gap-3 rounded-lg border border-line px-4 py-3 hover:bg-sand-hover">
-      <input
-        type="checkbox"
-        x-bind:checked="c.value({{m}}, {{f}})"
-        x-on:change="c.update({{m}}, {{f}}, $event.target.checked)"
-        class="mt-1 size-5 shrink-0 accent-clay"
-      />
+      {{#> checkbox-box}}x-bind:checked="c.value({{m}}, {{f}})" x-on:change="c.update({{m}}, {{f}}, $event.target.checked)"{{/checkbox-box}}
       <span class="flex flex-col gap-1">
         <span class="font-medium" x-text="{{f}}.label"></span>
         <span x-show="{{f}}.hint" class="text-small text-charcoal/70" x-text="{{f}}.hint"></span>
@@ -58,6 +154,8 @@
     </label>
   </template>
 
+  {{!-- Цвет: палитру открывает браузер (своей в проекте нет и не нужно), но образец
+        и код цвета — наши: рамку браузера вокруг образца снимает main.css --}}
   <template x-if="{{f}}.type === 'color'">
     <label class="flex flex-col gap-2">
       <span class="text-small font-medium" x-text="{{f}}.label"></span>
@@ -66,35 +164,19 @@
           type="color"
           x-bind:value="c.value({{m}}, {{f}})"
           x-on:input="c.update({{m}}, {{f}}, $event.target.value.toUpperCase())"
-          class="h-11 w-16 shrink-0 cursor-pointer rounded-md border border-border bg-sand"
+          class="color-swatch size-12 shrink-0 cursor-pointer rounded-md border border-border lg:size-11"
         />
-        <span class="text-small text-charcoal/70">{{t "admin.colorHint"}}</span>
+        <span class="flex flex-col">
+          <span class="font-medium tabular-nums" x-text="c.value({{m}}, {{f}})"></span>
+          <span class="text-small text-charcoal/70">{{t "admin.colorHint"}}</span>
+        </span>
       </span>
     </label>
   </template>
 
   {{!-- Выбор из списка: варианты из схемы, из другого раздела или тем вопросов --}}
   <template x-if="{{f}}.type === 'select' || {{f}}.type === 'ref'">
-    <label class="flex flex-col gap-2">
-      <span class="text-small font-medium">
-        <span x-text="{{f}}.label"></span><span x-show="{{f}}.required" class="text-error" aria-hidden="true"> *</span>
-      </span>
-      <select
-        x-on:change="c.update({{m}}, {{f}}, $event.target.value)"
-        class="{{> field-box}} w-full px-4 sm:max-w-md"
-      >
-        <template x-if="{{f}}.nullable || !{{f}}.required">
-          <option value="" x-bind:selected="c.value({{m}}, {{f}}) === ''">—</option>
-        </template>
-        <template x-for="option in c.selectOptions({{f}})" x-bind:key="option.value">
-          <option
-            x-bind:value="option.value"
-            x-bind:selected="String(c.value({{m}}, {{f}})) === option.value"
-            x-text="option.label"
-          ></option>
-        </template>
-      </select>
-    </label>
+    {{> admin/select m=m f=f}}
   </template>
 
   {{!-- Одно фото или ролик: крупное превью, имя файла человеку не нужно --}}
@@ -198,12 +280,7 @@
         <div class="scrollbar-soft mt-2 grid max-h-80 gap-1 overflow-y-auto rounded-lg border border-line p-2 sm:grid-cols-2">
           <template x-for="option in c.selectOptions({{f}})" x-bind:key="option.value">
             <label class="flex min-h-12 cursor-pointer items-center gap-3 rounded-md px-2 hover:bg-sand-hover">
-              <input
-                type="checkbox"
-                x-bind:checked="c.refs({{m}}, {{f}}).includes(option.value)"
-                x-on:change="c.toggleRef({{m}}, {{f}}, option.value)"
-                class="size-5 shrink-0 accent-clay"
-              />
+              {{#> checkbox-box}}x-bind:checked="c.refs({{m}}, {{f}}).includes(option.value)" x-on:change="c.toggleRef({{m}}, {{f}}, option.value)"{{/checkbox-box}}
               <span class="flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-sm bg-sand">
                 <template x-if="option.thumb">
                   <img x-bind:src="option.thumb" alt="" class="size-full object-cover" />

@@ -284,6 +284,33 @@
     display: none;
   }
 
+  /* Полоса прокрутки страницы — тонкая и почти невидимая (владелец 30.09.2026):
+     светлый бегунок цвета линий на прозрачном фоне, темнее под курсором. Стандартные
+     свойства — Chrome, Firefox; псевдоэлементы — Safari, где стандартных пока нет */
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-line) transparent;
+  }
+
+  html::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  html::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  html::-webkit-scrollbar-thumb {
+    background-color: var(--color-line);
+    background-clip: padding-box;
+    border: 2px solid transparent;
+    border-radius: 8px;
+  }
+
+  html::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-border);
+  }
+
   /* Скрытое до старта Alpine не мигает (сложные-узлы.md п. 14) */
   [x-cloak] {
     display: none !important;
@@ -465,7 +492,7 @@
    Два синтаксиса намеренно: первый понимает Firefox, второй — Chrome и Safari */
 @utility scrollbar-soft {
   scrollbar-width: thin;
-  scrollbar-color: var(--color-border) transparent;
+  scrollbar-color: var(--color-line) transparent;
 
   &::-webkit-scrollbar {
     width: 8px;
@@ -476,14 +503,14 @@
   }
 
   &::-webkit-scrollbar-thumb {
-    background-color: var(--color-border);
+    background-color: var(--color-line);
     background-clip: padding-box;
     border: 2px solid transparent;
     border-radius: 8px;
   }
 
   &::-webkit-scrollbar-thumb:hover {
-    background-color: var(--color-charcoal);
+    background-color: var(--color-border);
   }
 }
 
@@ -742,4 +769,115 @@
    иначе лист игры у каждого браузера ложился бы на бумагу по-своему */
 @page {
   margin: 12mm;
+}
+
+/* Образец цвета в админке (поле «цвет»): браузер рисует вокруг образца свою рамку
+   с отступом, и квадрат выглядел кнопкой из системных настроек. Снимаем её — остаётся
+   наш скруглённый образец цвета во всё поле */
+@utility color-swatch {
+  appearance: none;
+  padding: 0;
+  overflow: hidden;
+  background: none;
+
+  &::-webkit-color-swatch-wrapper {
+    padding: 0;
+  }
+  &::-webkit-color-swatch {
+    border: none;
+  }
+  &::-moz-color-swatch {
+    border: none;
+  }
+}
+
+/* Календарь полей с датой в админке (Cally, admin/field). Механика библиотеки, вид наш:
+   всё, что библиотека открывает наружу (части и два цвета), красится токенами */
+@utility admin-calendar {
+  --color-accent: var(--color-clay);
+  --color-text-on-accent: var(--color-cream);
+  font-size: var(--text-small);
+
+  &::part(header) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: calc(var(--spacing) * 2);
+  }
+  /* Кнопки листания — по размеру нажатия (стандарты-размеров.md §3) */
+  &::part(button) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: calc(var(--spacing) * 11);
+    height: calc(var(--spacing) * 11);
+    border: none;
+    border-radius: var(--radius-md);
+    background: none;
+    color: var(--color-charcoal);
+    cursor: pointer;
+  }
+  &::part(button):hover {
+    background: var(--color-sand-hover);
+  }
+  &::part(disabled) {
+    opacity: 0.45;
+    pointer-events: none;
+  }
+}
+
+/* Дни месяца — части <calendar-month>, внутри календаря админки */
+/* Свой заголовок «август 2026» (admin/field): с заглавной, как подпись раздела */
+.admin-calendar [slot='heading'] {
+  display: inline-block;
+  font-weight: 600;
+
+  &::first-letter {
+    text-transform: uppercase;
+  }
+}
+
+.admin-calendar calendar-month {
+  /* Строка месяца над сеткой повторяла бы заголовок: прячем с глаз, но не от диктора —
+     по ней он называет таблицу дней */
+  &::part(heading) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  &::part(th) {
+    padding-bottom: calc(var(--spacing) * 1);
+    color: color-mix(in srgb, var(--color-charcoal) 70%, transparent);
+    font-weight: 500;
+    text-transform: capitalize;
+  }
+  /* День — тоже зона нажатия 44: семь дней по 44 влезают в 360 вместе с полями */
+  &::part(day) {
+    width: calc(var(--spacing) * 11);
+    height: calc(var(--spacing) * 11);
+    border-radius: var(--radius-md);
+    color: var(--color-charcoal);
+    font-variant-numeric: tabular-nums;
+  }
+  &::part(day):hover {
+    background: var(--color-sand-hover);
+  }
+  &::part(today) {
+    box-shadow: inset 0 0 0 1px var(--color-border);
+    font-weight: 600;
+  }
+  /* Выбранный день и под курсором остаётся глиной: иначе подсветка наведения давала бы
+     светлый текст на светлом фоне */
+  &::part(selected),
+  &::part(selected):hover {
+    background: var(--color-clay);
+    color: var(--color-cream);
+  }
+  &::part(outside) {
+    color: color-mix(in srgb, var(--color-charcoal) 45%, transparent);
+  }
 }

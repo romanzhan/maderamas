@@ -12,7 +12,12 @@
              (сложные-узлы.md п. 5);
              live — поле живой формы: рамку и текст ошибки ведёт слой валидации
              (src/scripts/form.js), а errorPattern даёт свой текст на нарушение
-             шаблона («El DNI tiene 7 u 8 números» вместо общего «revisá»).
+             шаблона («El DNI tiene 7 u 8 números» вместо общего «revisá»);
+             reveal + revealLabel — у поля пароля кнопка «показать»: набирать пароль
+             вслепую на телефоне — главная причина ошибок входа;
+             messageOnError (с live) — строка сообщения появляется только с ошибкой:
+             у поля без подсказки пустое место под ним отрывало от него следующий
+             элемент (вход в админку, владелец 30.09.2026).
       Под полем всегда одна строка сообщения: ошибка → предупреждение → подсказка.
       Место под неё зарезервировано, поэтому форма не прыгает. --}}
 <div class="flex flex-col gap-2 {{#if woo}}form-row{{/if}}">
@@ -24,11 +29,13 @@
       <span class="text-charcoal/70">{{t "fields.optional"}}</span>{{/if}}
   </label>
 
-  <div class="relative {{#if woo}}woocommerce-input-wrapper{{/if}}">
+  <div class="relative {{#if woo}}woocommerce-input-wrapper{{/if}}"
+    {{#if reveal}}x-data="{ shown: false }"{{/if}}>
     <input
       id="{{id}}"
       {{#if name}}name="{{name}}"{{/if}}
       type="{{#if type}}{{type}}{{else}}text{{/if}}"
+      {{#if reveal}}x-bind:type="shown ? 'text' : 'password'"{{/if}}
       {{#if inputmode}}inputmode="{{inputmode}}"{{/if}}
       {{#if autocomplete}}autocomplete="{{autocomplete}}"{{/if}}
       {{#if placeholder}}placeholder="{{t placeholder}}"{{/if}}
@@ -53,6 +60,7 @@
         }"
       {{/if}}
       aria-describedby="{{id}}-message"
+      {{#if messageOnError}}x-bind:aria-invalid="errors['{{name}}'] ? 'true' : null"{{/if}}
       class="{{> field-box this}} px-4
         {{!-- Отключённое приглушено фоном, а не прозрачностью: значение должно
               оставаться читаемым (формы-и-поля.md п. 2, сост. 6) --}}
@@ -60,7 +68,7 @@
         [&[readonly]]:bg-cream
         {{!-- Место под галочку резервируется сразу: иначе текст дёргался бы
               в момент, когда значение стало верным --}}
-        {{#if (or valid checkValid)}}pr-11{{/if}}"
+        {{#if (or (or valid checkValid) reveal)}}pr-11{{/if}}"
     />
     {{!-- Галочка одна: valid — статичный образец витрины, checkValid — живое поле
           формы. Оба вместе поставили бы в поле две галочки друг на друга --}}
@@ -75,9 +83,26 @@
         class="absolute inset-y-0 right-4 flex items-center text-success"
       >{{> icon empty name="check" class="size-5"}}</span>
     {{/if}}
+    {{#if reveal}}
+      <button
+        type="button"
+        x-on:click="shown = !shown"
+        x-bind:aria-pressed="shown"
+        aria-label="{{t revealLabel}}"
+        class="absolute inset-y-0 right-0 flex w-11 items-center justify-center rounded-r-md
+          text-charcoal/70 hover:text-charcoal"
+      >
+        <span x-show="!shown">{{> icon empty name="eye" class="size-5"}}</span>
+        <span x-show="shown" x-cloak>{{> icon empty name="eye-off" class="size-5"}}</span>
+      </button>
+    {{/if}}
   </div>
 
-  <p id="{{id}}-message" class="flex min-h-6 text-small">
+  <p
+    id="{{id}}-message"
+    {{#if messageOnError}}x-show="errors['{{name}}']" x-cloak role="alert"{{/if}}
+    class="flex {{#unless messageOnError}}min-h-6{{/unless}} text-small"
+  >
     {{> field-message empty live=live name=name error=error warning=warning hint=hint
         domain=domain}}
   </p>
