@@ -194,7 +194,11 @@ export function shapesGame() {
       }
       add({ shape: target.shape, color: pickOne(colors.filter((c) => c !== target.color)) })
       add({ shape: pickOne(shapes.filter((s) => s !== target.shape)), color: target.color })
-      while (options.length < Math.min(SHAPE_OPTIONS, shapes.length * colors.length)) {
+      // Предел — по разным сочетаниям, а не по числу строк: две строки одного тона
+      // дают одно сочетание, и счёт по строкам крутил бы цикл вечно
+      const distinct =
+        new Set(shapes.map((s) => s.icon)).size * new Set(colors.map((c) => c.tone)).size
+      while (options.length < Math.min(SHAPE_OPTIONS, distinct)) {
         add({ shape: pickOne(shapes), color: pickOne(colors) })
       }
 

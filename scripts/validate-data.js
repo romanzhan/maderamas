@@ -463,6 +463,12 @@ function checkActivities(activities, productIds) {
         if (!PROMO_TONES.includes(color.tone)) fail(`${where}: цвет "${color.tone}" не из палитры`)
         needText(color.name, 'имя цвета')
       }
+      if (new Set(list(game.colors).map((color) => color.tone)).size !== list(game.colors).length) {
+        fail(`${where}: два цвета одного тона — ребёнок не отличит их в игре`)
+      }
+      if (new Set(list(game.shapes).map((shape) => shape.icon)).size !== list(game.shapes).length) {
+        fail(`${where}: две одинаковые фигуры — их не отличить`)
+      }
       for (const counter of needList(game.counters, 'game.counters', 1)) {
         needIcon(counter.icon, 'предмет для счёта')
         needText(counter.question, 'вопрос счёта')
