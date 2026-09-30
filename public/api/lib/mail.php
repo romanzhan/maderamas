@@ -92,7 +92,12 @@ function smtpConfigured(array $mail): bool
     return !empty($smtp['host']) && !empty($smtp['user']) && !empty($smtp['password']);
 }
 
-function sendMail(string $to, string $subject, string $body): bool
+/**
+ * $replyTo — кому уйдёт «Ответить»: у уведомлений владельцу это покупатель, чтобы
+ * ответ из почты сразу попадал ему (владелец 30.09.2026). Без него — общий адрес
+ * магазина из конфига
+ */
+function sendMail(string $to, string $subject, string $body, ?string $replyTo = null): bool
 {
     $mail = config()['mail'];
     if ($mail['from'] === '') {
@@ -106,8 +111,13 @@ function sendMail(string $to, string $subject, string $body): bool
         'Content-Type: text/plain; charset=UTF-8',
         'Content-Transfer-Encoding: 8bit',
     ];
-    if (!empty($mail['replyTo'])) {
-        $headers[] = 'Reply-To: ' . $mail['replyTo'];
+    // Адрес покупателя идёт в заголовок письма: только настоящий адрес, без переводов
+    // строки — иначе через него можно было бы дописать в письмо свои заголовки
+    $customerReply = $replyTo !== null && filter_var($replyTo, FILTER_VALIDATE_EMAIL) !== false
+        && !preg_match('/[\r\n]/', $replyTo);
+    $reply = $customerReply ? $replyTo : ($mail['replyTo'] ?? '');
+    if ($reply !== '') {
+        $headers[] = 'Reply-To: ' . $reply;
     }
     // Скрытые копии — только адреса из конфига: владелец следит за перепиской магазина
     $bcc = array_values(array_filter((array) ($mail['bcc'] ?? []), fn ($address) => is_string($address) && $address !== '' && $address !== $to));
@@ -290,7 +300,13 @@ function notifyOrderStatus(PDO $db, array $order, string $status, string $baseUr
         }
         $parts = array_merge($parts, ['', $orderUrl]);
 
-        $sent = sendMail($runtime['ownerEmail'], fillText($texts[$subjectKey], ['n' => $number]), implode("\n", $parts));
+        // «Ответить» в этом письме — сразу покупателю
+        $sent = sendMail(
+            $runtime['ownerEmail'],
+            fillText($texts[$subjectKey], ['n' => $number]),
+            implode("\n", $parts),
+            $customer['billing_email'],
+        );
         addEvent($db, $order['id'], $sent ? 'email_owner_sent' : 'email_owner_failed', ['status' => $status]);
     }
 }
