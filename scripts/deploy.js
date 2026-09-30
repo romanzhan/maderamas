@@ -183,8 +183,10 @@ for (const target of siteTargets) {
   const head = await text('/', { method: 'HEAD' })
   const noindex = /noindex/i.test(head?.headers?.get('x-robots-tag') ?? '')
   if (target.preview) {
-    if (!/^Disallow: \/$/m.test(robots))
-      problems.push(`${target.name}: robots.txt не закрывает превью`)
+    // Превью закрывает заголовок noindex, а robots.txt обход разрешает — иначе робот
+    // не увидел бы запрета (seo.md п. 9, 30.09.2026). Запрет обхода здесь — ошибка
+    if (/^Disallow: \/$/m.test(robots))
+      problems.push(`${target.name}: robots.txt запрещает обход — робот не увидит noindex`)
     if (!noindex) problems.push(`${target.name}: нет заголовка X-Robots-Tag: noindex`)
   } else {
     if (/^Disallow: \/$/m.test(robots))

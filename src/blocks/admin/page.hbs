@@ -69,13 +69,12 @@
   {{#each adminMessageTypes}}data-t-type-{{type}}="{{t key}}" {{/each}}
   {{#each adminMessageLabels}}data-l-{{field}}="{{t key}}" {{/each}}
 >
-  {{!-- Заголовок — только после входа: страница входа открыта всем, и «админка» на ней
-        ни к чему (владелец 30.09.2026). Публикация и выход — в шапке (admin/header-actions);
-        на телефоне публикация здесь: в шапке рядом с выходом ей тесно --}}
-  <div x-show="a.auth === 'in'" x-cloak class="flex flex-wrap items-center justify-between gap-4">
-    <h1 class="font-display text-h1 lg:text-h1-lg">{{t "admin.title"}}</h1>
-    <span class="sm:hidden">{{> admin/build-status}}</span>
-  </div>
+  {{!-- Большого заголовка «Админка» нет (владелец 30.09.2026: «место занимает и не
+        функционален»); название страницы для диктора — sr-only. Публикация и выход —
+        в шапке (admin/header-actions); на телефоне публикация здесь: в шапке рядом
+        с выходом ей тесно --}}
+  <h1 x-show="a.auth === 'in'" x-cloak class="sr-only">{{t "admin.title"}}</h1>
+  <div x-show="a.auth === 'in'" x-cloak class="mb-2 sm:hidden">{{> admin/build-status}}</div>
 
   {{!-- Сессия ещё проверяется: место под форму или список, чтобы страница не прыгала --}}
   <div x-show="a.auth === 'checking'" aria-hidden="true" class="mt-8 flex max-w-sm flex-col gap-4">
@@ -104,7 +103,8 @@
       <span class="flex size-12 items-center justify-center rounded-full bg-sand text-clay">
         {{> icon empty name="lock" class="size-6"}}
       </span>
-      <h2 class="text-h3 lg:text-h3-lg">{{t "admin.loginTitle"}}</h2>
+      {{!-- Заголовок страницы входа — он и есть главный: «Вход», без слова «админка» --}}
+      <h1 class="text-h3 lg:text-h3-lg">{{t "admin.loginTitle"}}</h1>
     </div>
     <div class="flex flex-col gap-2">
       {{> field empty id="admin-password" name="password" type="password" label="admin.password"
@@ -118,7 +118,7 @@
 
   {{!-- Вошли: меню разделов слева (с 1024), справа выбранный раздел. На телефоне меню
         прячется в окно — кнопка с названием текущего раздела открывает его --}}
-  <div x-show="a.auth === 'in'" x-cloak class="mt-6 lg:grid lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-10">
+  <div x-show="a.auth === 'in'" x-cloak class="lg:grid lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-10">
     <aside class="hidden lg:block">
       {{> admin/nav}}
     </aside>

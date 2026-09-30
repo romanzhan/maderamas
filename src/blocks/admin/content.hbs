@@ -94,7 +94,7 @@
 
   {{!-- ——— Страница: блоки сверху вниз, в каждом его фото и фразы ——— --}}
   <template x-if="c.colState === 'ready' && c.col === 'sitePages' && c.sitePageConf">
-    <div class="flex max-w-3xl flex-col gap-6">
+    <div class="flex flex-col gap-6">
       <div>
         {{> link empty nav=true back=true label="admin.allPages" onClick="c.back()"}}
       </div>
@@ -232,7 +232,7 @@
 
   {{!-- ——— Запись: поля карточками групп ——— --}}
   <template x-if="c.colState === 'ready' && c.conf && !c.conf.object && c.item">
-    <div class="flex max-w-3xl flex-col gap-6">
+    <div class="flex flex-col gap-6">
       <div>
         {{> link empty nav=true back=true onClick="c.back()"
             bindLabel=(concat "c.col === 'pages' ? '" (t "admin.allPages") "' : c.conf.title")}}
@@ -264,7 +264,7 @@
 
   {{!-- ——— Настройки: один объект, те же карточки групп ——— --}}
   <template x-if="c.colState === 'ready' && c.conf?.object && c.doc">
-    <div class="flex max-w-3xl flex-col gap-6">
+    <div class="flex flex-col gap-6">
       <div>
         <h2 class="font-display text-h2 lg:text-h2-lg" x-text="c.conf.title"></h2>
         <p class="mt-2 text-charcoal/70" x-text="c.conf.hint"></p>
@@ -277,7 +277,7 @@
 
   {{!-- ——— Поиск по текстам: любая фраза сайта по слову ——— --}}
   <template x-if="c.colState === 'ready' && c.col === 'texts' && c.doc">
-    <div class="flex max-w-3xl flex-col gap-5">
+    <div class="flex flex-col gap-5">
       <div>
         <h2 class="font-display text-h2 lg:text-h2-lg">{{t "admin.searchTitle"}}</h2>
         <p class="mt-2 text-charcoal/70">{{t "admin.searchHint"}}</p>
@@ -305,7 +305,7 @@
 
   {{!-- ——— История версий раздела ——— --}}
   <template x-if="c.history || c.historyState === 'loading'">
-    <section class="mt-8 max-w-3xl rounded-xl border border-line p-4 lg:p-6" aria-labelledby="admin-history-title">
+    <section class="mt-8 rounded-xl border border-line p-4 lg:p-6" aria-labelledby="admin-history-title">
       <div class="flex items-center justify-between gap-3">
         <h2 id="admin-history-title" class="font-display text-h4 lg:text-h4-lg">{{t "admin.versions"}}</h2>
         <button type="button" x-on:click="c.history = null; c.historyState = 'idle'" class="flex size-11 items-center justify-center rounded-md hover:bg-sand-hover" aria-label="{{t "admin.close"}}">{{> icon empty name="x" class="size-5"}}</button>

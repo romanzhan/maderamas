@@ -6,8 +6,10 @@
 <nav aria-label="{{t "admin.sections"}}" class="flex flex-col gap-6">
   {{#each adminNav}}
     <div>
-      <p class="px-3 text-caption text-charcoal/70">{{label}}</p>
-      <ul class="mt-2 flex flex-col gap-2">
+      {{!-- Текст и значки — по краю заголовков и страницы, а подсветка пункта выходит
+            за этот край на свой отступ (владелец 30.09.2026) --}}
+      <p class="text-caption text-charcoal/70">{{label}}</p>
+      <ul class="-mx-3 mt-2 flex flex-col gap-2">
         {{#each items}}
           <li>
             <button
