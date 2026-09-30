@@ -10,7 +10,8 @@
       окна `inert`, а соседи считаются от body.
       Обязательные: name (имя оверлея), title (ключ словаря). Содержимое — блоком вызова.
       Опция openOn — событие окна, по которому окно открывает себя само: кнопок, зовущих
-      его, может быть несколько, и повторять выражение открытия в каждой не нужно. --}}
+      его, может быть несколько, и повторять выражение открытия в каждой не нужно.
+      closeLabel — ключ подписи крестика для скринридера: админка говорит по-русски. --}}
 <div
   x-data="overlayPanel('{{name}}')"
   x-cloak
@@ -58,7 +59,7 @@
           class="-mr-3 flex size-12 shrink-0 items-center justify-center rounded-lg
             hover:bg-sand-hover"
         >
-          <span class="sr-only">{{t "common.close"}}</span>
+          <span class="sr-only">{{#if closeLabel}}{{t closeLabel}}{{else}}{{t "common.close"}}{{/if}}</span>
           {{> icon empty name="x" class="size-6"}}
         </button>
       </div>

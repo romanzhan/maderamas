@@ -1,0 +1,40 @@
+{{!-- Окно выбора фото редактора контента (бэкенд.md §15): готовые картинки своего
+      потока конвейера или загрузка новой. Лежит прямым потомком body, как все окна
+      (компоненты.md 5.1); открывает его adminContent.choose(). --}}
+{{#> modal name="admin-picker" closeLabel="admin.close" title="admin.pickerTitle"}}
+  <div x-data="{ c: $store.adminContent }" class="flex flex-col gap-4">
+    <form class="flex flex-col gap-3 rounded-xl bg-sand p-4" x-on:submit.prevent="c.upload($event.target)">
+      <p class="font-medium">{{t "admin.uploadTitle"}}</p>
+      <input type="file" name="file" x-on:change="c.pickFile($event)" x-bind:accept="c.picker.flow === 'video' ? 'video/mp4' : 'image/jpeg,image/png,image/webp'" class="text-small" />
+      <label class="flex flex-col gap-2">
+        <span class="text-small font-medium">{{t "admin.uploadName"}}</span>
+        <input type="text" x-model="c.picker.name" x-on:change="c.picker.name = $store.adminContent.slug(c.picker.name)" class="{{> field-box}} bg-cream px-4" />
+        <span class="text-small text-charcoal/70">{{t "admin.uploadNameHint"}}</span>
+      </label>
+      <p x-show="c.picker.error" role="alert" class="text-small text-error" x-text="c.picker.error"></p>
+      <div>{{> button empty primary=true sizeMd=true submit=true bindLoading="c.picker.uploading" label="admin.upload"}}</div>
+    </form>
+
+    <label class="flex flex-col gap-2">
+      <span class="text-small font-medium">{{t "admin.find"}}</span>
+      <input type="search" x-model="c.picker.query" class="{{> field-box}} px-4" />
+    </label>
+    <ul class="grid grid-cols-3 gap-2 sm:grid-cols-4">
+      <template x-for="image in c.pickerImages" x-bind:key="image.id">
+        <li>
+          <button type="button" x-on:click="c.picker.apply(image.id)" class="flex w-full flex-col gap-1 rounded-lg p-1 text-left hover:bg-sand-hover">
+            <span class="flex aspect-square w-full items-center justify-center overflow-hidden rounded-md bg-sand">
+              <template x-if="image.preview">
+                <img x-bind:src="image.preview" alt="" loading="lazy" class="size-full object-cover" />
+              </template>
+              <template x-if="!image.preview">
+                <span class="px-1 text-center text-caption text-charcoal/70" x-text="image.type === 'video' ? 'MP4' : '{{t "admin.processing"}}'"></span>
+              </template>
+            </span>
+            <span class="truncate text-caption" x-text="image.id"></span>
+          </button>
+        </li>
+      </template>
+    </ul>
+  </div>
+{{/modal}}

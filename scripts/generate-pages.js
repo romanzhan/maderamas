@@ -3,7 +3,7 @@
 // шансов разойтись. Файл тонкий: всё содержимое в общем блоке, а какая это сущность,
 // определяет адрес страницы.
 // Папки сгенерированных страниц в git не попадают (.gitignore).
-import { mkdirSync, readdirSync, rmSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { loadData } from './data.js'
@@ -27,7 +27,18 @@ const ARTICLE_TEMPLATE = `{{!-- Статья блога. Файл создан �
 {{/layout}}
 `
 
-const { site, products, categories, articles } = loadData()
+// Разделы каталога и инфостраницы, заведённые в админке (бэкенд.md §15), тоже получают
+// файл сами. Существующие файлы первого уровня писал человек — их скрипт не трогает;
+// свои он узнаёт по метке и убирает, когда запись удалили
+const GENERATED_MARK = 'Файл создан скриптом (scripts/generate-pages.js) для записи'
+const topTemplate = (block, what) => `{{!-- ${what}. ${GENERATED_MARK} из данных —
+      руками не правится: правится общий блок ${block}. --}}
+{{#> layout}}
+  {{> ${block}}}
+{{/layout}}
+`
+
+const { site, products, categories, articles, pages } = loadData()
 const slugById = new Map(categories.map((category) => [category.id, category.slug]))
 
 // Ключ — путь папки внутри src/pages, значение — содержимое index.html
@@ -69,4 +80,27 @@ for (const [path, contents] of wanted) {
   writeFileSync(resolve(dir, 'index.html'), contents)
 }
 
-console.log(`Сгенерированных страниц: ${wanted.size}.`)
+// Первый уровень: раздел каталога или инфостраница без своего файла
+const topWanted = new Map([
+  ...categories.map((category) => [category.slug, topTemplate('catalog/page', 'Раздел каталога')]),
+  ...pages.map((page) => [page.slug, topTemplate('content/page', 'Инфостраница')]),
+])
+const isGenerated = (slug) => {
+  const file = resolve(pagesRoot, slug, 'index.html')
+  return existsSync(file) && readFileSync(file, 'utf8').includes(GENERATED_MARK)
+}
+for (const entry of readdirSync(pagesRoot, { withFileTypes: true })) {
+  if (entry.isDirectory() && isGenerated(entry.name) && !topWanted.has(entry.name)) {
+    rmSync(resolve(pagesRoot, entry.name), { recursive: true, force: true })
+  }
+}
+let topCreated = 0
+for (const [slug, contents] of topWanted) {
+  const file = resolve(pagesRoot, slug, 'index.html')
+  if (existsSync(file) && !isGenerated(slug)) continue
+  mkdirSync(dirname(file), { recursive: true })
+  writeFileSync(file, contents)
+  topCreated++
+}
+
+console.log(`Сгенерированных страниц: ${wanted.size + topCreated}.`)

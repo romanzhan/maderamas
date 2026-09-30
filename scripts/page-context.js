@@ -43,11 +43,24 @@ const ADMIN_TABS = [
   { id: 'all', label: 'admin.tabAll' },
 ]
 
-// Разделы той же страницы и вкладки сообщений по типу формы (бэкенд.md §14)
-const ADMIN_SECTIONS = [
-  { id: 'orders', label: 'admin.sectionOrders' },
-  { id: 'messages', label: 'admin.sectionMessages' },
-]
+// Схема форм админки контента (бэкенд.md §15): разделы, поля, подписи — данные,
+// а не разметка; страница получает её целиком, скрипт раскладывает по типам полей
+const adminSchema = JSON.parse(
+  readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), '../data/admin-schema.json'), 'utf8'),
+)
+
+// Разделы админки: заказы и сообщения (бэкенд.md §13–14), дальше контент в порядке
+// схемы, тексты сайта — перед настройками, которыми закрывается ряд
+function adminSections() {
+  const { site: settings, ...collections } = adminSchema.collections
+  return [
+    { id: 'orders', text: t('admin.sectionOrders') },
+    { id: 'messages', text: t('admin.sectionMessages') },
+    ...Object.entries(collections).map(([id, conf]) => ({ id, text: conf.title })),
+    { id: 'texts', text: t('admin.sectionTexts') },
+    { id: 'site', text: settings.title },
+  ]
+}
 const ADMIN_MESSAGE_TABS = [
   { id: 'all', label: 'admin.msgTabAll' },
   { id: 'contact', label: 'admin.msgTabContact' },
@@ -318,11 +331,20 @@ export function pageContext(pagePath) {
     breadcrumbs,
     showcase,
     adminTabs: ADMIN_TABS,
-    adminSections: ADMIN_SECTIONS,
+    adminSections: adminSections(),
+    adminSchemaJson: inlineJson(adminSchema),
     adminMessageTabs: ADMIN_MESSAGE_TABS,
     // Подписи полей и названия типов сообщений — из того же списка, что и письма владельцу
-    adminMessageLabels: Object.entries(MESSAGE_FIELD_LABELS).map(([field, key]) => ({ field, key })),
-    adminMessageTypes: Object.entries(MESSAGE_TYPE_LABELS).map(([type, key]) => ({ type, key })),
+    // Подписи те же, что у писем владельцу (scripts/message-fields.js), но админка
+    // по-русски: поле → admin.field.<поле>, тип → admin.msgType<Тип>
+    adminMessageLabels: Object.keys(MESSAGE_FIELD_LABELS).map((field) => ({
+      field,
+      key: `admin.field.${field}`,
+    })),
+    adminMessageTypes: Object.keys(MESSAGE_TYPE_LABELS).map((type) => ({
+      type,
+      key: `admin.msgType${type.charAt(0).toUpperCase()}${type.slice(1)}`,
+    })),
     site,
     sprite,
     cards,

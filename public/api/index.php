@@ -9,6 +9,7 @@ declare(strict_types=1);
 //   POST /api/mercadopago/webhook    уведомления Mercado Pago о платежах
 //   POST /api/messages               формы обратной связи (lib/messages.php, бэкенд.md §14)
 //   /api/admin/…                     заказы и сообщения для владельца (lib/admin.php, §13)
+//   /api/admin/content…, /uploads…   контент сайта, фото, история, публикация (lib/content.php, §15)
 
 require __DIR__ . '/lib/app.php';
 require __DIR__ . '/lib/http.php';
@@ -19,6 +20,7 @@ require __DIR__ . '/lib/mercadopago.php';
 require __DIR__ . '/lib/mail.php';
 require __DIR__ . '/lib/messages.php';
 require __DIR__ . '/lib/admin.php';
+require __DIR__ . '/lib/content.php';
 
 // Сверка с Mercado Pago по запросу статуса — не чаще раза в минуту на заказ (бэкенд.md §5)
 const RECONCILE_INTERVAL = 60;
@@ -271,6 +273,34 @@ if ($method === 'GET' && $path === '/admin/messages') {
 }
 if ($method === 'POST' && preg_match('#^/admin/messages/(\d{1,9})/status$#', $path, $matches)) {
     adminMessageStatusHandler((int) $matches[1]);
+}
+
+// Контент сайта (бэкенд.md §15): имя коллекции сверяется со списком, а не подставляется
+// в путь к файлу — чужое имя не превратится в чтение произвольного файла
+$collection = '(' . implode('|', array_keys(CONTENT_COLLECTIONS)) . ')';
+if ($method === 'GET' && $path === '/admin/content') {
+    adminContentIndexHandler();
+}
+if ($method === 'GET' && preg_match("#^/admin/content/{$collection}$#", $path, $matches)) {
+    adminContentGetHandler($matches[1]);
+}
+if ($method === 'PUT' && preg_match("#^/admin/content/{$collection}$#", $path, $matches)) {
+    adminContentSaveHandler($matches[1]);
+}
+if ($method === 'GET' && preg_match("#^/admin/content/{$collection}/history$#", $path, $matches)) {
+    adminHistoryListHandler($matches[1]);
+}
+if ($method === 'GET' && preg_match("#^/admin/content/{$collection}/history/(\d{8}-\d{6}-[a-f0-9]{4})$#", $path, $matches)) {
+    adminHistoryGetHandler($matches[1], $matches[2]);
+}
+if ($method === 'POST' && $path === '/admin/uploads') {
+    adminUploadHandler();
+}
+if ($method === 'DELETE' && preg_match('#^/admin/uploads/([a-z0-9]+(?:-[a-z0-9]+)*)$#', $path, $matches)) {
+    adminUploadDeleteHandler($matches[1]);
+}
+if ($method === 'GET' && $path === '/admin/build') {
+    adminBuildHandler();
 }
 
 fail(404, 'notFound');

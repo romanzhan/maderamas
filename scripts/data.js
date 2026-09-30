@@ -41,7 +41,9 @@ function read(file, shape) {
 export function loadData() {
   return {
     site: read('site.config.json', 'object'),
-    dictionary: read('dictionaries/es.json', 'object'),
+    // Админка — на русском (решение владельца 30.09.2026): её раздел admin.* живёт
+    // в своём словаре и подмешивается сюда, чтобы t() оставался один на весь проект
+    dictionary: { ...read('dictionaries/es.json', 'object'), ...read('dictionaries/admin.ru.json', 'object') },
     products: read('products.json', 'list'),
     categories: read('categories.json', 'list'),
     articles: read('articles.json', 'list'),
@@ -60,7 +62,8 @@ export function t(key, options) {
   const value = key.split('.').reduce((node, part) => node?.[part], dictionary)
 
   if (typeof value !== 'string') {
-    throw new Error(`Нет ключа словаря "${key}" в data/dictionaries/es.json`)
+    const file = key.startsWith('admin.') ? 'admin.ru.json' : 'es.json'
+    throw new Error(`Нет ключа словаря "${key}" в data/dictionaries/${file}`)
   }
 
   const vars = options?.hash ?? options ?? {}

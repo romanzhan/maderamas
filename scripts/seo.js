@@ -12,7 +12,7 @@ const distRoot = resolve(projectRoot, 'dist')
 // Сервер заказов роботу тем более не нужен — он отвечает JSON, а не страницами;
 // список заказов владельца — под паролем, роботу там делать нечего
 const HIDDEN = ['/_componentes/']
-const DISALLOW = ['/_componentes/', '/api/', '/pedidos/']
+const DISALLOW = ['/_componentes/', '/api/', '/admin/']
 
 // Второго списка «что не индексируем» не держим: страница сама несёт meta noindex,
 // и карта читает её же (27.08.2026 — иначе списки расходятся, и в карту попадает
@@ -86,6 +86,9 @@ writeFileSync(
   resolve(distRoot, '.htaccess'),
   `ErrorDocument 404 /404.html
 
+# Список заказов жил по адресу /pedidos/ до 30.09.2026 — закладка владельца ведёт в админку
+RedirectMatch 301 ^/pedidos/?$ /admin/
+
 # Тип задаём сами: по умолчанию сервер отдаёт скрипты как application/x-javascript,
 # и правило кеша ниже до них не доходит
 AddType application/javascript .js
@@ -126,12 +129,12 @@ ${
   RewriteRule ^ ${siteUrl}%{REQUEST_URI} [L,R=301]
 </IfModule>
 
-# Список заказов владельца (бэкенд.md §13): robots.txt запрещает обход, поэтому meta
+# Админка владельца (бэкенд.md §13, §15): robots.txt запрещает обход, поэтому meta
 # noindex на странице робот не прочтёт — попадание в индекс по внешней ссылке
 # запрещает заголовок, как у превью
 <IfModule mod_rewrite.c>
   RewriteEngine On
-  RewriteRule ^pedidos/ - [E=NOINDEX:1]
+  RewriteRule ^admin/ - [E=NOINDEX:1]
 </IfModule>
 <IfModule mod_headers.c>
   Header set X-Robots-Tag "noindex, nofollow" env=NOINDEX

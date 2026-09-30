@@ -1,0 +1,682 @@
+{
+  "collections": {
+    "products": {
+      "title": "Товары",
+      "item": "товар",
+      "titleField": "name",
+      "imageField": "images",
+      "orderField": "order",
+      "urlPrefix": "category",
+      "new": {
+        "name": "Nuevo producto",
+        "shortDescription": "",
+        "description": "",
+        "price": 0,
+        "oldPrice": null,
+        "currency": "ARS",
+        "inStock": true,
+        "featured": false,
+        "images": [],
+        "dimensionsImage": null,
+        "ogImage": null,
+        "attributes": {
+          "material": "",
+          "dimensions": null,
+          "weight": null,
+          "ageRange": null,
+          "maxLoad": null
+        },
+        "options": {},
+        "accessories": [],
+        "related": [],
+        "sku": null,
+        "seo": { "title": null, "description": null }
+      },
+      "fields": [
+        { "type": "heading", "label": "Основное" },
+        { "key": "name", "type": "text", "label": "Название", "required": true },
+        {
+          "key": "slug",
+          "type": "slug",
+          "label": "Адрес страницы",
+          "hint": "Латиница через дефис, например silla-evolutiva. После публикации не меняйте: старые ссылки перестанут работать."
+        },
+        {
+          "key": "categoryId",
+          "type": "ref",
+          "collection": "categories",
+          "label": "Раздел каталога",
+          "required": true
+        },
+        {
+          "key": "shortDescription",
+          "type": "textarea",
+          "rows": 2,
+          "label": "Короткое описание",
+          "hint": "Одна-две фразы под названием и в поиске."
+        },
+        {
+          "key": "description",
+          "type": "textarea",
+          "rows": 12,
+          "label": "Описание",
+          "hint": "Абзацы — через пустую строку. **Жирный** — двумя звёздочками. Ссылка: [текст](/sillas/)."
+        },
+        { "type": "heading", "label": "Цена и наличие" },
+        { "key": "price", "type": "money", "label": "Цена, песо", "required": true },
+        {
+          "key": "oldPrice",
+          "type": "money",
+          "nullable": true,
+          "label": "Старая цена",
+          "hint": "Только для скидки: зачёркнутая цена, обязательно больше цены. Пусто — без скидки."
+        },
+        { "key": "inStock", "type": "bool", "label": "В наличии" },
+        { "key": "featured", "type": "bool", "label": "Показывать на главной" },
+        {
+          "key": "createdAt",
+          "type": "date",
+          "label": "Дата появления",
+          "hint": "От неё считается бейдж «Nuevo»."
+        },
+        { "type": "heading", "label": "Фото" },
+        {
+          "key": "images",
+          "type": "images",
+          "flow": "product",
+          "label": "Фото товара",
+          "hint": "Первое — в карточке каталога, второе — при наведении мышью. Квадрат или вертикаль: обрезается до квадрата по центру."
+        },
+        {
+          "key": "dimensionsImage",
+          "type": "image",
+          "flow": "content",
+          "nullable": true,
+          "label": "Схема размеров"
+        },
+        {
+          "key": "ogImage",
+          "type": "image",
+          "flow": "og",
+          "nullable": true,
+          "label": "Картинка для WhatsApp",
+          "hint": "1200 × 630. Пусто — соберётся сама из первого фото."
+        },
+        { "type": "heading", "label": "Характеристики" },
+        { "key": "attributes.material", "type": "text", "label": "Материал" },
+        {
+          "key": "attributes.ageRange",
+          "type": "text",
+          "nullable": true,
+          "label": "Возраст",
+          "hint": "Например: 1 a 15 años"
+        },
+        {
+          "key": "attributes.maxLoad",
+          "type": "number",
+          "nullable": true,
+          "label": "Максимальная нагрузка, кг"
+        },
+        { "key": "attributes.weight", "type": "number", "nullable": true, "label": "Вес, кг" },
+        {
+          "key": "attributes.dimensions.width",
+          "type": "number",
+          "nullable": true,
+          "label": "Ширина, см"
+        },
+        {
+          "key": "attributes.dimensions.depth",
+          "type": "number",
+          "nullable": true,
+          "label": "Глубина, см"
+        },
+        {
+          "key": "attributes.dimensions.height",
+          "type": "number",
+          "nullable": true,
+          "label": "Высота, см"
+        },
+        { "type": "heading", "label": "Цвета дерева" },
+        {
+          "key": "options.woodColor",
+          "type": "list",
+          "label": "Цвета дерева",
+          "item": "цвет",
+          "titleField": "name",
+          "hint": "Доплата прибавляется к цене товара. Свои фото цвета показываются на странице товара и в каталоге при фильтре.",
+          "new": {
+            "id": "",
+            "name": "",
+            "swatch": "#C69C6D",
+            "priceDelta": 0,
+            "inStock": true,
+            "images": []
+          },
+          "fields": [
+            { "key": "name", "type": "text", "label": "Название", "required": true },
+            {
+              "key": "id",
+              "type": "slug",
+              "label": "Код в адресе",
+              "hint": "Латиница, например roble. Попадает в ссылку ?madera=…"
+            },
+            { "key": "swatch", "type": "color", "label": "Цвет кружка" },
+            { "key": "priceDelta", "type": "money", "label": "Доплата, песо" },
+            { "key": "inStock", "type": "bool", "label": "В наличии" },
+            { "key": "images", "type": "images", "flow": "product", "label": "Фото этого цвета" }
+          ]
+        },
+        { "type": "heading", "label": "Цвета подушки" },
+        {
+          "key": "options.cushionColor",
+          "type": "list",
+          "label": "Цвета подушки",
+          "item": "цвет",
+          "titleField": "name",
+          "new": { "id": "", "name": "", "swatch": "#9DB8D2", "priceDelta": 0, "inStock": true },
+          "fields": [
+            { "key": "name", "type": "text", "label": "Название", "required": true },
+            {
+              "key": "id",
+              "type": "slug",
+              "label": "Код в адресе",
+              "hint": "Латиница, например celeste. Попадает в ссылку ?almohadon=…"
+            },
+            { "key": "swatch", "type": "color", "label": "Цвет кружка" },
+            { "key": "priceDelta", "type": "money", "label": "Доплата, песо" },
+            { "key": "inStock", "type": "bool", "label": "В наличии" }
+          ]
+        },
+        { "type": "heading", "label": "Связанные товары" },
+        {
+          "key": "accessories",
+          "type": "refs",
+          "collection": "products",
+          "label": "Предлагать вместе (допродажа)"
+        },
+        { "key": "related", "type": "refs", "collection": "products", "label": "Похожие товары" },
+        { "type": "heading", "label": "Для поиска Google" },
+        {
+          "key": "seo.title",
+          "type": "text",
+          "nullable": true,
+          "label": "Заголовок вкладки",
+          "hint": "Пусто — соберётся из названия."
+        },
+        {
+          "key": "seo.description",
+          "type": "textarea",
+          "rows": 3,
+          "nullable": true,
+          "label": "Описание в поиске",
+          "hint": "Пусто — возьмётся короткое описание."
+        }
+      ]
+    },
+    "categories": {
+      "title": "Разделы каталога",
+      "item": "раздел",
+      "titleField": "name",
+      "orderField": "order",
+      "urlPrefix": "",
+      "new": {
+        "name": "Nueva categoría",
+        "description": "",
+        "longDescription": null,
+        "image": null,
+        "seo": { "title": null, "description": null }
+      },
+      "fields": [
+        {
+          "key": "name",
+          "type": "text",
+          "label": "Название",
+          "required": true,
+          "hint": "Так раздел называется в меню и на странице."
+        },
+        {
+          "key": "slug",
+          "type": "slug",
+          "label": "Адрес страницы",
+          "hint": "Латиница через дефис. После публикации не меняйте."
+        },
+        { "key": "description", "type": "textarea", "rows": 3, "label": "Описание под заголовком" },
+        {
+          "key": "longDescription",
+          "type": "textarea",
+          "rows": 8,
+          "nullable": true,
+          "label": "Текст внизу страницы",
+          "hint": "Для поисковиков. Абзацы — через пустую строку."
+        },
+        {
+          "key": "image",
+          "type": "image",
+          "flow": "content",
+          "nullable": true,
+          "label": "Картинка плитки на главной"
+        },
+        { "type": "heading", "label": "Для поиска Google" },
+        { "key": "seo.title", "type": "text", "nullable": true, "label": "Заголовок вкладки" },
+        {
+          "key": "seo.description",
+          "type": "textarea",
+          "rows": 3,
+          "nullable": true,
+          "label": "Описание в поиске"
+        }
+      ]
+    },
+    "articles": {
+      "title": "Блог",
+      "item": "статью",
+      "titleField": "title",
+      "imageField": "cover",
+      "urlPrefix": "blog",
+      "new": {
+        "title": "Nuevo artículo",
+        "excerpt": "",
+        "cover": "",
+        "body": "",
+        "sections": [],
+        "relatedProducts": [],
+        "seo": { "title": null, "description": null }
+      },
+      "fields": [
+        { "key": "title", "type": "text", "label": "Заголовок", "required": true },
+        {
+          "key": "slug",
+          "type": "slug",
+          "label": "Адрес статьи",
+          "hint": "Латиница через дефис. После публикации не меняйте."
+        },
+        { "key": "date", "type": "date", "label": "Дата" },
+        {
+          "key": "excerpt",
+          "type": "textarea",
+          "rows": 3,
+          "label": "Лид",
+          "hint": "Под заголовком и в карточке блога."
+        },
+        {
+          "key": "cover",
+          "type": "image",
+          "flow": "content",
+          "label": "Обложка",
+          "hint": "Квадрат."
+        },
+        {
+          "key": "body",
+          "type": "textarea",
+          "rows": 6,
+          "label": "Вступление",
+          "hint": "Абзацы — через пустую строку."
+        },
+        { "type": "heading", "label": "Видео (необязательно)" },
+        {
+          "key": "video.id",
+          "type": "image",
+          "flow": "video",
+          "nullable": true,
+          "label": "Ролик MP4"
+        },
+        {
+          "key": "video.poster",
+          "type": "image",
+          "flow": "content",
+          "nullable": true,
+          "label": "Заставка ролика"
+        },
+        {
+          "key": "video.caption",
+          "type": "text",
+          "nullable": true,
+          "label": "Подпись под роликом"
+        },
+        { "type": "heading", "label": "Разделы статьи" },
+        {
+          "key": "sections",
+          "type": "list",
+          "label": "Разделы",
+          "item": "раздел",
+          "titleField": "title",
+          "new": { "id": "", "title": "", "body": "" },
+          "fields": [
+            { "key": "title", "type": "text", "label": "Подзаголовок", "required": true },
+            { "key": "body", "type": "textarea", "rows": 5, "label": "Текст" },
+            { "key": "items", "type": "strings", "label": "Список пунктов" },
+            { "key": "ordered", "type": "bool", "label": "Пункты нумерованные" },
+            { "key": "quote", "type": "text", "nullable": true, "label": "Вынесенная фраза" },
+            { "key": "note.title", "type": "text", "nullable": true, "label": "Врезка: заголовок" },
+            {
+              "key": "note.text",
+              "type": "textarea",
+              "rows": 3,
+              "nullable": true,
+              "label": "Врезка: текст"
+            }
+          ]
+        },
+        { "type": "heading", "label": "Товары под статьёй" },
+        { "key": "relatedProducts", "type": "refs", "collection": "products", "label": "Товары" },
+        { "type": "heading", "label": "Для поиска Google" },
+        { "key": "seo.title", "type": "text", "nullable": true, "label": "Заголовок вкладки" },
+        {
+          "key": "seo.description",
+          "type": "textarea",
+          "rows": 3,
+          "nullable": true,
+          "label": "Описание в поиске"
+        }
+      ]
+    },
+    "pages": {
+      "title": "Страницы",
+      "item": "страницу",
+      "titleField": "title",
+      "urlPrefix": "",
+      "new": {
+        "title": "Nueva página",
+        "lead": "",
+        "body": "",
+        "sections": [],
+        "seo": { "title": null, "description": null }
+      },
+      "fields": [
+        { "key": "title", "type": "text", "label": "Заголовок", "required": true },
+        {
+          "key": "slug",
+          "type": "slug",
+          "label": "Адрес страницы",
+          "hint": "Латиница через дефис. После публикации не меняйте."
+        },
+        { "key": "lead", "type": "textarea", "rows": 3, "label": "Лид" },
+        {
+          "key": "body",
+          "type": "textarea",
+          "rows": 8,
+          "label": "Текст",
+          "hint": "Абзацы — через пустую строку."
+        },
+        {
+          "key": "sections",
+          "type": "list",
+          "label": "Разделы",
+          "item": "раздел",
+          "titleField": "title",
+          "new": { "id": "", "title": "", "body": "" },
+          "fields": [
+            { "key": "title", "type": "text", "label": "Подзаголовок", "required": true },
+            { "key": "body", "type": "textarea", "rows": 5, "label": "Текст" },
+            { "key": "items", "type": "strings", "label": "Список пунктов" }
+          ]
+        },
+        { "type": "heading", "label": "Для поиска Google" },
+        { "key": "seo.title", "type": "text", "nullable": true, "label": "Заголовок вкладки" },
+        {
+          "key": "seo.description",
+          "type": "textarea",
+          "rows": 3,
+          "nullable": true,
+          "label": "Описание в поиске"
+        }
+      ]
+    },
+    "faq": {
+      "title": "Вопросы и ответы",
+      "item": "вопрос",
+      "titleField": "question",
+      "orderField": "order",
+      "new": { "topic": "", "question": "", "answer": "" },
+      "fields": [
+        {
+          "key": "topic",
+          "type": "select",
+          "source": "faqTopics",
+          "label": "Тема",
+          "required": true,
+          "hint": "Названия тем — в «Тексты сайта» → Темы вопросов."
+        },
+        { "key": "question", "type": "text", "label": "Вопрос", "required": true },
+        { "key": "answer", "type": "textarea", "rows": 6, "label": "Ответ", "required": true }
+      ]
+    },
+    "reviews": {
+      "title": "Отзывы",
+      "item": "отзыв",
+      "titleField": "author",
+      "new": {
+        "author": "",
+        "productId": "",
+        "rating": 5,
+        "text": "",
+        "source": "site",
+        "sourceUrl": null,
+        "image": null,
+        "incentivized": false
+      },
+      "fields": [
+        { "key": "author", "type": "text", "label": "Имя покупателя", "required": true },
+        {
+          "key": "productId",
+          "type": "ref",
+          "collection": "products",
+          "label": "Товар",
+          "required": true
+        },
+        {
+          "key": "rating",
+          "type": "select",
+          "label": "Оценка",
+          "options": [
+            { "value": 5, "label": "5" },
+            { "value": 4, "label": "4" },
+            { "value": 3, "label": "3" },
+            { "value": 2, "label": "2" },
+            { "value": 1, "label": "1" }
+          ]
+        },
+        { "key": "text", "type": "textarea", "rows": 5, "label": "Текст отзыва", "required": true },
+        { "key": "date", "type": "date", "label": "Дата" },
+        {
+          "key": "source",
+          "type": "select",
+          "label": "Откуда отзыв",
+          "hint": "Только отзывы с сайта попадают в разметку для Google.",
+          "options": [
+            { "value": "site", "label": "С сайта" },
+            { "value": "mercadolibre", "label": "Mercado Libre" },
+            { "value": "whatsapp", "label": "WhatsApp" }
+          ]
+        },
+        { "key": "sourceUrl", "type": "text", "nullable": true, "label": "Ссылка на отзыв" },
+        {
+          "key": "image",
+          "type": "image",
+          "flow": "content",
+          "nullable": true,
+          "label": "Фото покупателя"
+        },
+        {
+          "key": "incentivized",
+          "type": "bool",
+          "label": "Отзыв за вознаграждение (скидку, подарок)"
+        }
+      ]
+    },
+    "instagram": {
+      "title": "Instagram",
+      "item": "пост",
+      "titleField": "alt",
+      "new": { "url": "https://www.instagram.com/", "alt": "", "frames": [] },
+      "fields": [
+        { "key": "url", "type": "text", "label": "Ссылка на пост", "required": true },
+        {
+          "key": "alt",
+          "type": "text",
+          "label": "Подпись кадра",
+          "hint": "Что на фото — по-испански. Её читают вслух незрячим."
+        },
+        {
+          "key": "frames",
+          "type": "list",
+          "label": "Кадры",
+          "item": "кадр",
+          "titleField": "image",
+          "hint": "Один кадр — фото, несколько — карусель, кадр с роликом — рилс.",
+          "new": { "image": "", "video": null },
+          "fields": [
+            {
+              "key": "image",
+              "type": "image",
+              "flow": "social",
+              "label": "Обложка кадра",
+              "required": true
+            },
+            {
+              "key": "video",
+              "type": "image",
+              "flow": "video",
+              "nullable": true,
+              "label": "Ролик MP4"
+            }
+          ]
+        }
+      ]
+    },
+    "site": {
+      "title": "Настройки",
+      "object": true,
+      "fields": [
+        { "type": "heading", "label": "Что включено на сайте" },
+        { "key": "features.blog", "type": "bool", "label": "Блог" },
+        { "key": "features.wishlist", "type": "bool", "label": "Избранное (сердечки)" },
+        { "key": "features.reviews", "type": "bool", "label": "Отзывы покупателей" },
+        {
+          "key": "features.cuotas",
+          "type": "bool",
+          "label": "Строка про рассрочку под ценой",
+          "hint": "Включайте, только когда рассрочка так и настроена в Mercado Pago."
+        },
+        { "key": "cuotas.count", "type": "number", "label": "Рассрочка: число платежей" },
+        { "key": "cuotas.interestFree", "type": "bool", "label": "Рассрочка без процентов" },
+        { "type": "heading", "label": "Полоса вверху сайта" },
+        { "key": "announcement.enabled", "type": "bool", "label": "Показывать полосу" },
+        { "key": "announcement.text", "type": "text", "label": "Текст" },
+        { "key": "announcement.textShort", "type": "text", "label": "Короткий текст (телефон)" },
+        { "key": "announcement.cta", "type": "text", "nullable": true, "label": "Кнопка" },
+        { "key": "announcement.url", "type": "text", "nullable": true, "label": "Ссылка" },
+        { "type": "heading", "label": "Баннер акции на главной" },
+        { "key": "promo.enabled", "type": "bool", "label": "Показывать баннер" },
+        { "key": "promo.title", "type": "text", "label": "Заголовок" },
+        { "key": "promo.text", "type": "textarea", "rows": 2, "label": "Текст" },
+        { "key": "promo.url", "type": "text", "nullable": true, "label": "Ссылка" },
+        {
+          "key": "promo.image",
+          "type": "image",
+          "flow": "content",
+          "nullable": true,
+          "label": "Картинка"
+        },
+        { "type": "heading", "label": "Контакты" },
+        {
+          "key": "contacts.whatsapp",
+          "type": "text",
+          "label": "WhatsApp (только цифры с кодом страны)",
+          "hint": "Например 5491127915729"
+        },
+        { "key": "contacts.phone", "type": "text", "label": "Телефон для показа" },
+        { "key": "contacts.email", "type": "text", "label": "Email" },
+        { "key": "contacts.instagram", "type": "text", "label": "Instagram (ссылка)" },
+        {
+          "key": "contacts.address",
+          "type": "text",
+          "nullable": true,
+          "label": "Адрес для посетителей",
+          "hint": "Пусто — адрес на сайте не показывается."
+        },
+        { "key": "contacts.hours", "type": "text", "nullable": true, "label": "Часы работы" },
+        { "type": "heading", "label": "Магазин" },
+        {
+          "key": "shipping.cost",
+          "type": "money",
+          "label": "Стоимость доставки, песо",
+          "hint": "0 — сайт доставку не считает: «No incluido», стоимость согласуется после покупки."
+        },
+        {
+          "key": "cart.maxQtyPerItem",
+          "type": "number",
+          "label": "Максимум штук одного товара в корзине"
+        },
+        {
+          "key": "cart.paymentLinkDays",
+          "type": "number",
+          "label": "Сколько дней живёт ссылка на оплату"
+        },
+        { "key": "catalog.newBadgeDays", "type": "number", "label": "Сколько дней товар «Nuevo»" },
+        { "type": "heading", "label": "Поиск Google" },
+        { "key": "seo.homeTitle", "type": "text", "label": "Заголовок главной" },
+        {
+          "key": "seo.homeDescription",
+          "type": "textarea",
+          "rows": 3,
+          "label": "Описание главной в поиске"
+        },
+        {
+          "key": "seo.defaultOgImage",
+          "type": "image",
+          "flow": "og",
+          "label": "Картинка для WhatsApp по умолчанию"
+        },
+        { "type": "heading", "label": "Реквизиты (подвал, обязательны по закону)" },
+        { "key": "legal.razonSocial", "type": "text", "label": "Razón social" },
+        { "key": "legal.cuit", "type": "text", "label": "CUIT" },
+        { "key": "legal.domicilio", "type": "text", "label": "Юридический адрес (Data Fiscal)" },
+        { "key": "legal.dataFiscalUrl", "type": "text", "label": "Ссылка Data Fiscal" },
+        { "key": "legal.ivaRate", "type": "number", "label": "IVA, %" }
+      ]
+    }
+  },
+  "texts": {
+    "sections": {
+      "nav": "Навигация и меню",
+      "footer": "Подвал",
+      "common": "Общие кнопки",
+      "home": "Главная",
+      "howItWorks": "Как это работает",
+      "whatsapp": "Кнопка WhatsApp",
+      "social": "Соцсети",
+      "catalog": "Каталог",
+      "product": "Страница товара",
+      "spec": "Характеристики",
+      "badge": "Бейджи",
+      "price": "Цена",
+      "qty": "Количество",
+      "stock": "Наличие",
+      "gallery": "Галерея",
+      "carousel": "Ленты",
+      "search": "Поиск",
+      "cart": "Корзина",
+      "checkout": "Оформление заказа",
+      "fields": "Поля форм",
+      "forms": "Формы",
+      "errors": "Сообщения об ошибках",
+      "wishlist": "Избранное",
+      "reviews": "Отзывы",
+      "thanks": "Страница «Gracias»",
+      "email": "Письма",
+      "messageLabels": "Подписи в письмах владельцу",
+      "notFound": "Страница 404",
+      "article": "Статья",
+      "legal": "Юридическое",
+      "faqTopics": "Темы вопросов",
+      "faq": "Страница вопросов",
+      "about": "Nosotros",
+      "contact": "Контакты",
+      "arrepentimiento": "Кнопка отказа",
+      "quejas": "Книга жалоб",
+      "blog": "Блог",
+      "seo": "Поиск Google"
+    }
+  }
+}

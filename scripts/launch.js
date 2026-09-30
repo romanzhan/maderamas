@@ -12,12 +12,13 @@
 import { execSync, spawnSync } from 'node:child_process'
 import { randomUUID } from 'node:crypto'
 import { resolve4 } from 'node:dns/promises'
-import { existsSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { homedir } from 'node:os'
 import { resolve } from 'node:path'
 
 const root = resolve(import.meta.dirname, '..')
 const deployPath = resolve(root, 'madera-data', 'deploy.json')
+const NODE = '/opt/alt/alt-nodejs22/root/usr/bin/node'
 const keysPath = resolve(root, 'mercadopago-prod.txt')
 
 const deploy = JSON.parse(readFileSync(deployPath, 'utf8'))
@@ -156,9 +157,21 @@ remote(
 )
 console.log('Готово: копия в ~/backups, превью на тестовых ключах, боевой сайт — на боевых')
 
-// 3. Боевая сборка и заливка — со своими проверками (deploy.js)
+// 3. Боевой сайт — вторая цель сборщика (бэкенд.md §15): с этого момента и публикация,
+// и правки в админке собирают оба сайта. Дальше обычная публикация со своими проверками
 step('Собираю и заливаю боевой сайт')
-execSync('node scripts/deploy.js prod', { cwd: root, stdio: 'inherit' })
+remote(
+  `${NODE} -e '
+    const fs = require("fs")
+    const file = process.env.HOME + "/madera-build/targets.json"
+    const targets = JSON.parse(fs.readFileSync(file, "utf8"))
+    if (!targets.some((t) => t.name === "prod")) {
+      targets.push({ name: "prod", path: process.argv[1], url: process.argv[2], preview: false })
+    }
+    fs.writeFileSync(file, JSON.stringify(targets, null, 2))
+  ' "${deploy.prod.path}" "${prodUrl}"`,
+)
+execSync('node scripts/deploy.js', { cwd: root, stdio: 'inherit' })
 
 // 4. Один адрес магазина: голый домен и http уводят на https://www
 step('Проверяю перенаправления')
@@ -180,15 +193,11 @@ if (redirectProblems.length) {
   throw new Error(`Сайт залит, но перенаправления не работают: ${redirectProblems.join(', ')}`)
 }
 
-// 5. С этого момента публикация обновляет оба сайта
-deploy.launched = true
-writeFileSync(deployPath, `${JSON.stringify(deploy, null, 2)}\n`)
-
 console.log(`
 Магазин открыт: ${prodUrl}
 
 Осталось руками:
-  1. Один настоящий платёж на минимальную сумму — и проверить письмо и /pedidos/.
+  1. Один настоящий платёж на минимальную сумму — и проверить письмо и заказ в /admin/.
   2. Планировщик Hostinger: копия базы раз в сутки теперь с боевого сайта —
      php ~/${deploy.prod.path}/api/cli.php backup
   3. Google Search Console: добавить ${prodUrl} и отправить ${prodUrl}/sitemap.xml

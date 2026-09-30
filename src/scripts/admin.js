@@ -1,4 +1,7 @@
-// Список заказов владельца (страницы.md §17, бэкенд.md §13): вход по паролю, вкладки
+// Админка (страницы.md §17, бэкенд.md §13, §15): заказы, сообщения и разделы контента.
+// Здесь — вход, разделы, заказы и сообщения; редактор контента — store adminContent
+// (src/scripts/admin-content.js), разделы которого открываются теми же вкладками.
+// Заказы владельца: вход по паролю, вкладки
 // по состоянию, заказ подробно, три действия. Это store, а не компонент страницы:
 // окна подтверждения обязаны лежать прямыми потомками body (компоненты.md 5.1),
 // а общее состояние у них и у страницы возможно только через store.
@@ -102,6 +105,7 @@ export const admin = {
   start(element) {
     this.root = element
     this.texts = { ...element.dataset }
+    this.content().setup(element)
     this.tabs = [...element.querySelectorAll('[data-tab]')].map((button) => button.dataset.tab)
     this.sections = [...element.querySelectorAll('[data-section]')].map(
       (button) => button.dataset.section,
@@ -160,8 +164,19 @@ export const admin = {
     if (this.auth === 'in') this.enter()
   },
 
+  /** Редактор контента: свой store, общий со страницей админки */
+  content() {
+    return Alpine.store('adminContent')
+  },
+
   /** Вход состоялся (или сессия жива): список и, если в адресе есть номер, заказ */
   enter() {
+    // Полоса публикации видна в любом разделе — сводка грузится сразу
+    this.content().loadIndex()
+    if (this.content().isContent(this.section)) {
+      this.content().open(this.section)
+      return
+    }
     if (this.section === 'messages') this.loadMessages()
     else this.load()
     const number = Number(location.hash.slice(1))
@@ -182,6 +197,7 @@ export const admin = {
     this.section = section
     this.syncUrl()
     // Каждый раздел грузится при первом заходе в него, а не заранее
+    if (this.content().isContent(section)) this.content().open(section)
     if (section === 'messages' && this.msgList === 'idle') this.loadMessages()
     if (section === 'orders' && this.list === 'idle') this.load()
   },

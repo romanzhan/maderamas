@@ -63,6 +63,13 @@ window.addEventListener('popstate', () => Alpine.store('overlay').dismiss())
 // после такой перезагрузки останется на месте
 if (history.state?.overlay) history.replaceState(null, '')
 
+// Редактор контента нужен только в админке (бэкенд.md §15): остальным страницам его код
+// не грузится, а здесь store обязан появиться до старта — разметка обращается к нему сразу
+if (document.querySelector('[data-admin]')) {
+  const { adminContent } = await import('./admin-content.js')
+  document.addEventListener('alpine:init', () => Alpine.store('adminContent', adminContent))
+}
+
 // Ручной старт: stores и magic-хелперы регистрируются в alpine:init до него
 Alpine.start()
 

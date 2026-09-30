@@ -2,7 +2,7 @@
       разобрать. Лежат прямыми потомками body, как велит компоненты.md 5.1; поля
       каждого окна — обычная форма, её значения уходят на сервер как есть.
       `close()` — из общего механизма окна (overlayPanel), `a` — store списка заказов. --}}
-{{#> modal name="admin-ship" title="admin.shipTitle"}}
+{{#> modal name="admin-ship" closeLabel="admin.close" title="admin.shipTitle"}}
   <form x-data="{ a: $store.admin }" x-on:submit.prevent="a.act('ship', $event.target)" class="flex flex-col gap-4">
     <p class="text-charcoal/70">{{t "admin.shipText"}}</p>
     {{> field empty id="admin-tracking" name="tracking" label="admin.shipTracking" optional=true
@@ -13,12 +13,12 @@
     </p>
     <div class="flex flex-wrap gap-3">
       {{> button empty primary=true sizeLg=true submit=true bindLoading="a.acting" label="admin.shipConfirm"}}
-      {{> button empty secondary=true sizeLg=true label="common.back" onClick="close()"}}
+      {{> button empty secondary=true sizeLg=true label="admin.cancel" onClick="close()"}}
     </div>
   </form>
 {{/modal}}
 
-{{#> modal name="admin-cancel" title="admin.cancelTitle"}}
+{{#> modal name="admin-cancel" closeLabel="admin.close" title="admin.cancelTitle"}}
   <form x-data="{ a: $store.admin }" x-on:submit.prevent="a.act('cancel', $event.target)" class="flex flex-col gap-4">
     <p class="text-charcoal/70">{{t "admin.cancelText"}}</p>
     <p x-show="a.actionFailed" x-cloak role="alert" class="flex items-start gap-2 text-small text-error">
@@ -27,12 +27,12 @@
     </p>
     <div class="flex flex-wrap gap-3">
       {{> button empty primary=true sizeLg=true submit=true bindLoading="a.acting" label="admin.cancelConfirm"}}
-      {{> button empty secondary=true sizeLg=true label="common.back" onClick="close()"}}
+      {{> button empty secondary=true sizeLg=true label="admin.cancel" onClick="close()"}}
     </div>
   </form>
 {{/modal}}
 
-{{#> modal name="admin-resolve" title="admin.resolveTitle"}}
+{{#> modal name="admin-resolve" closeLabel="admin.close" title="admin.resolveTitle"}}
   <form x-data="{ a: $store.admin }" x-on:submit.prevent="a.act('resolve', $event.target)" class="flex flex-col gap-4">
     <p class="text-charcoal/70">{{t "admin.resolveText"}}</p>
     <fieldset class="flex flex-col gap-1">
@@ -47,7 +47,7 @@
     </p>
     <div class="flex flex-wrap gap-3">
       {{> button empty primary=true sizeLg=true submit=true bindLoading="a.acting" label="admin.resolveConfirm"}}
-      {{> button empty secondary=true sizeLg=true label="common.back" onClick="close()"}}
+      {{> button empty secondary=true sizeLg=true label="admin.cancel" onClick="close()"}}
     </div>
   </form>
 {{/modal}}

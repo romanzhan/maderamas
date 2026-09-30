@@ -54,6 +54,7 @@ const RESERVED_SLUGS = new Set([
   'favoritos',
   'gracias',
   'pedidos',
+  'admin',
   '404',
 ])
 
@@ -192,23 +193,6 @@ function checkProvinces(provinces) {
 
     if (typeof province.name !== 'string' || !province.name.trim()) {
       fail(`provinces.json: у кода "${province.code}" пустое название`)
-    }
-  }
-}
-
-/**
- * У инфостраницы есть свой файл-страница. Страницы товаров и статей пишет скрипт,
- * а инфостраницы лежат первым уровнем и создаются руками (стек-и-библиотеки.md п. 3):
- * переименовали slug в данных — и запись осталась без адреса, а адрес без записи.
- */
-function checkPageFiles(pages) {
-  for (const page of pages) {
-    const file = resolve(projectRoot, `src/pages/${page.slug}/index.html`)
-    if (!existsSync(file)) {
-      fail(
-        `Инфостраница "${page.id}": нет файла src/pages/${page.slug}/index.html — ` +
-          'запись есть, а страницы по этому адресу нет',
-      )
     }
   }
 }
@@ -483,7 +467,6 @@ function validate() {
   checkTextLinks(articles, 'Статья')
   checkTextLinks(pages, 'Инфостраница')
   checkTextLinks(products, 'Товар')
-  checkPageFiles(pages)
 
   // Блок seo — часть контракта товаров, категорий, статей и инфостраниц (данные.md).
   // Его читает «голова» страницы; забытый блок уронил бы сборку стеком Node вместо

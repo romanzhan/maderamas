@@ -1,0 +1,190 @@
+{{!-- Разделы контента админки (бэкенд.md §15, страницы.md §17): список записей раздела,
+      форма записи, настройки сайта и тексты сайта. Поля не написаны здесь по одному —
+      их описывает data/admin-schema.json, разметку поля по типу даёт admin/field.
+      Состояние — store adminContent. Сохраняется раздел целиком кнопкой в полосе внизу;
+      несохранённые правки переживают переход между разделами (точка на вкладке). --}}
+<script type="application/json" id="admin-schema">{{{adminSchemaJson}}}</script>
+
+<div
+  x-data="{ c: $store.adminContent }"
+  x-show="a.auth === 'in' && c.isContent(a.section)"
+  x-cloak
+  class="mt-6 pb-24"
+>
+  {{!-- Сборка на хостинге отклонила данные: сайт остался прежним, причина — здесь --}}
+  <div
+    x-show="c.build.state === 'error' && !c.build.pending"
+    role="alert"
+    class="mb-6 rounded-xl bg-error-bg p-4 text-error lg:p-6"
+  >
+    <p class="font-medium">{{t "admin.buildErrorTitle"}}</p>
+    <pre class="mt-2 font-sans text-small whitespace-pre-wrap" x-text="c.build.message"></pre>
+  </div>
+
+  <div x-show="c.colState === 'loading'" aria-hidden="true" class="flex flex-col gap-3">
+    <div class="h-12 w-full max-w-md rounded-lg bg-sand"></div>
+    <div class="h-20 rounded-xl bg-sand"></div>
+    <div class="h-20 rounded-xl bg-sand"></div>
+  </div>
+
+  <div x-show="c.colState === 'failed'" role="alert" class="flex flex-col items-start gap-4">
+    <p class="text-error">{{t "admin.errNetwork"}}</p>
+    {{> button empty secondary=true sizeMd=true label="admin.retry" onClick="c.open(c.col)"}}
+  </div>
+
+  {{!-- ——— Список записей раздела ——— --}}
+  <template x-if="c.colState === 'ready' && c.conf && !c.conf.object && c.itemIndex === null">
+    <div class="flex flex-col gap-4">
+      <div class="flex flex-wrap items-end gap-3">
+        <label class="flex w-full max-w-sm flex-col gap-2">
+          <span class="text-small font-medium">{{t "admin.find"}}</span>
+          <input type="search" x-model="c.query" class="{{> field-box}} px-4" />
+        </label>
+        {{> button empty primary=true sizeMd=true icon="plus" label="admin.add" onClick="c.addItem()"}}
+        {{> button empty tertiary=true sizeMd=true label="admin.versions" onClick="c.openHistory()"}}
+      </div>
+      <p x-show="c.conf.orderField" class="text-small text-charcoal/70">{{t "admin.orderHint"}}</p>
+
+      <ul class="flex flex-col gap-2">
+        <template x-for="row in c.rows" x-bind:key="row.item.id + row.index">
+          <li class="flex items-center gap-3 rounded-xl border border-line bg-cream p-2 pr-3">
+            <button type="button" x-on:click="c.openItem(row.index)" class="flex min-w-0 flex-1 items-center gap-3 text-left">
+              <span class="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-sand">
+                <template x-if="c.thumb(row.item)">
+                  <img x-bind:src="c.thumb(row.item)" alt="" class="size-full object-cover" />
+                </template>
+              </span>
+              <span class="min-w-0">
+                <span class="block truncate font-medium" x-text="c.title(row.item)"></span>
+                <span class="block truncate text-small text-charcoal/70" x-text="c.url(row.item) ?? row.item.id"></span>
+              </span>
+            </button>
+            <template x-if="!c.query">
+              <span class="flex shrink-0">
+                <button type="button" x-on:click="c.move(c.doc.data, row.index, -1)" class="flex size-10 items-center justify-center rounded-md hover:bg-sand-hover" aria-label="{{t "admin.moveUp"}}">{{> icon empty name="chevron-down" class="size-4 rotate-180"}}</button>
+                <button type="button" x-on:click="c.move(c.doc.data, row.index, 1)" class="flex size-10 items-center justify-center rounded-md hover:bg-sand-hover" aria-label="{{t "admin.moveDown"}}">{{> icon empty name="chevron-down" class="size-4"}}</button>
+              </span>
+            </template>
+          </li>
+        </template>
+      </ul>
+      <p x-show="!c.rows.length" class="text-charcoal/70">{{t "admin.nothingFound"}}</p>
+    </div>
+  </template>
+
+  {{!-- ——— Форма записи ——— --}}
+  <template x-if="c.colState === 'ready' && c.conf && !c.conf.object && c.item">
+    <div class="flex max-w-3xl flex-col gap-4">
+      <div>
+        <button type="button" x-on:click="c.closeItem()" class="inline-flex min-h-11 items-center gap-2 text-clay hover:text-clay-hover">
+          {{> icon empty name="chevron-left" class="size-5"}}<span x-text="c.conf.title"></span>
+        </button>
+      </div>
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <h2 class="font-display text-h2 lg:text-h2-lg" x-text="c.title(c.item)"></h2>
+        <div class="flex flex-wrap items-center gap-2">
+          <template x-if="c.url(c.item)">
+            <a x-bind:href="c.url(c.item)" target="_blank" rel="noopener" class="inline-flex min-h-10 items-center gap-2 px-2 text-small text-clay hover:text-clay-hover">{{t "admin.openOnSite"}}{{> icon empty name="arrow-right" class="size-4"}}</a>
+          </template>
+          {{> button empty tertiary=true sizeSm=true label="admin.duplicate" onClick="c.duplicateItem(c.itemIndex)"}}
+          <button
+            type="button"
+            x-on:click="c.removeItem(c.itemIndex)"
+            x-text="c.confirmDelete === c.itemIndex ? '{{t "admin.confirmDelete"}}' : '{{t "admin.delete"}}'"
+            class="min-h-10 rounded-lg px-3 text-small font-medium text-error hover:bg-error-bg"
+          ></button>
+        </div>
+      </div>
+
+      <template x-for="field in c.conf.fields" x-bind:key="field.key ?? field.label">
+        {{> admin/field m="c.item" f="field"}}
+      </template>
+    </div>
+  </template>
+
+  {{!-- ——— Настройки: один объект, без списка ——— --}}
+  <template x-if="c.colState === 'ready' && c.conf?.object && c.doc">
+    <div class="flex max-w-3xl flex-col gap-4">
+      <div>{{> button empty tertiary=true sizeMd=true label="admin.versions" onClick="c.openHistory()"}}</div>
+      <template x-for="field in c.conf.fields" x-bind:key="field.key ?? field.label">
+        {{> admin/field m="c.doc.data" f="field"}}
+      </template>
+    </div>
+  </template>
+
+  {{!-- ——— Тексты сайта: фразы по разделам, поиск по всем ——— --}}
+  <template x-if="c.colState === 'ready' && c.col === 'texts' && c.doc">
+    <div class="flex max-w-3xl flex-col gap-4">
+      <p class="text-small text-charcoal/70">{{t "admin.textsHint"}}</p>
+      <div class="flex flex-wrap items-end gap-3">
+        <label class="flex flex-col gap-2">
+          <span class="text-small font-medium">{{t "admin.textsSection"}}</span>
+          <select x-model="c.textsSection" class="{{> field-box}} px-4">
+            <template x-for="section in c.textSections" x-bind:key="section.id">
+              <option x-bind:value="section.id" x-text="section.label"></option>
+            </template>
+          </select>
+        </label>
+        <label class="flex w-full max-w-sm flex-col gap-2">
+          <span class="text-small font-medium">{{t "admin.textsFind"}}</span>
+          <input type="search" x-model="c.textsQuery" class="{{> field-box}} px-4" />
+        </label>
+        {{> button empty tertiary=true sizeMd=true label="admin.versions" onClick="c.openHistory()"}}
+      </div>
+      <template x-for="row in c.textRows" x-bind:key="row.path">
+        <label class="flex flex-col gap-2">
+          <span class="text-small text-charcoal/70" x-text="row.path"></span>
+          <textarea
+            x-bind:rows="row.value.length > 90 ? 3 : 1"
+            x-bind:value="row.value"
+            x-on:input="c.setText(row.path, $event.target.value)"
+            class="{{> field-box}} h-auto px-4 py-2 lg:h-auto"
+          ></textarea>
+          <span x-show="c.placeholders(row.value)" class="text-caption text-charcoal/70">
+            {{t "admin.keepPlaceholders"}} <span x-text="c.placeholders(row.value)"></span>
+          </span>
+        </label>
+      </template>
+    </div>
+  </template>
+
+  {{!-- ——— История версий раздела ——— --}}
+  <template x-if="c.history || c.historyState === 'loading'">
+    <section class="mt-8 max-w-3xl rounded-xl border border-line p-4 lg:p-6" aria-labelledby="admin-history-title">
+      <div class="flex items-center justify-between gap-3">
+        <h2 id="admin-history-title" class="font-display text-h4 lg:text-h4-lg">{{t "admin.versions"}}</h2>
+        <button type="button" x-on:click="c.history = null; c.historyState = 'idle'" class="flex size-10 items-center justify-center rounded-md hover:bg-sand-hover" aria-label="{{t "admin.close"}}">{{> icon empty name="x" class="size-5"}}</button>
+      </div>
+      <p class="mt-2 text-small text-charcoal/70">{{t "admin.historyHint"}}</p>
+      <ul class="mt-4 flex flex-col gap-1">
+        <template x-for="version in c.history ?? []" x-bind:key="version.id">
+          <li class="flex items-center justify-between gap-3 border-b border-line py-2">
+            <span class="tabular-nums" x-text="c.when(version.savedAt)"></span>
+            <button type="button" x-on:click="c.restore(version.id)" class="min-h-10 px-2 text-small font-medium text-clay hover:text-clay-hover">{{t "admin.restore"}}</button>
+          </li>
+        </template>
+      </ul>
+      <p x-show="c.history && !c.history.length" class="mt-2 text-charcoal/70">{{t "admin.historyEmpty"}}</p>
+    </section>
+  </template>
+
+  {{!-- ——— Полоса сохранения: видна, когда есть что сохранять или что сказать ——— --}}
+  <div
+    x-show="c.isDirty() || c.saving || c.saveError || c.saved"
+    class="fixed inset-x-0 bottom-0 z-20 border-t border-line bg-cream shadow-md"
+  >
+    <div class="page-container pb-safe flex flex-wrap items-center gap-3 py-3">
+      <p class="min-w-0 flex-1 text-small" role="status" aria-live="polite">
+        <span x-show="c.saveError" class="text-error" x-text="c.saveError"></span>
+        <span x-show="!c.saveError && c.isDirty()">{{t "admin.unsaved"}}</span>
+        <span x-show="!c.saveError && !c.isDirty() && c.saved" class="text-success">{{t "admin.savedPublishing"}}</span>
+      </p>
+      <template x-if="c.isDirty()">
+        <span class="flex gap-2">
+          {{> button empty tertiary=true sizeMd=true label="admin.discard" onClick="c.discard()"}}
+          {{> button empty primary=true sizeMd=true label="admin.save" bindLoading="c.saving" onClick="c.save()"}}
+        </span>
+      </template>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,6 @@
+{{!-- Состояние публикации в шапке админки (бэкенд.md §15): сохранено ≠ уже на сайте.
+      Сборка на хостинге идёт минуту-две; значок ждёт её сам (adminContent.pollBuild),
+      текст ошибки сборки — в разделе контента, здесь только тон и подпись. --}}
+<span role="status" aria-live="polite">
+  {{> badge empty bindKind="$store.adminContent.buildTone" bindText="$store.adminContent.buildLabel"}}
+</span>
