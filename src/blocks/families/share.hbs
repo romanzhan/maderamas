@@ -1,0 +1,15 @@
+{{!-- Приглашение поделиться (страницы.md §14б): идея заказчицы — дети играют, родители
+      выкладывают. Скидки и обещаний за это нет (решение владельца 30.09.2026), только
+      просьба отметить аккаунт. Стоит внизу списка игр и каждой игры. --}}
+<section class="mt-12 rounded-2xl bg-sand p-6 lg:mt-16 lg:p-10">
+  <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between lg:gap-12">
+    <div class="min-w-0">
+      <h2 class="font-display text-h3 lg:text-h3-lg">{{t "families.shareTitle"}}</h2>
+      <p class="mt-2 max-w-prose text-charcoal/70">{{t "families.shareText" handle=links.instagramHandle}}</p>
+    </div>
+    <div class="shrink-0">
+      {{> button empty secondary=true sizeMd=true icon="instagram" iconFilled=true
+          label="families.shareCta" href=links.instagram external=true}}
+    </div>
+  </div>
+</section>

@@ -8,6 +8,7 @@
     "accesorios": "Accesorios",
     "nosotros": "Nosotros",
     "blog": "Blog",
+    "familias": "Para familias",
     "contacto": "Contacto",
     "ayuda": "Ayuda",
     "openMenu": "Abrir menú",
@@ -479,6 +480,86 @@
     "successTitle": "Registramos tu reclamo",
     "successText": "Te enviamos una copia por email. Te respondemos dentro de los 15 días hábiles."
   },
+  "families": {
+    "title": "Juegos y actividades para chicos",
+    "lead": "Juegos para la pantalla, para imprimir y para la cocina, pensados para chicos de 2 a 8 años y para jugar en familia. Gratis y sin registrarse.",
+    "gridTitle": "Elegí un juego",
+    "empty": "Todavía no publicamos juegos.",
+    "formatOnline": "Para jugar en pantalla",
+    "formatPrint": "Para imprimir",
+    "formatKitchen": "Para la cocina",
+    "agesLabel": "Edad",
+    "durationLabel": "Duración",
+    "formatLabel": "Formato",
+    "howTo": "Cómo se juega",
+    "materials": "Qué necesitás",
+    "playTitle": "A jugar",
+    "print": "Imprimir",
+    "printTitle": "Para imprimir",
+    "printHint": "Se imprime solo lo necesario, sin menú ni fotos. Queda mejor en hoja A4 y, si querés que dure, en cartulina.",
+    "shareTitle": "¿Jugaron en casa?",
+    "shareText": "Compartí una foto o el dibujo en Instagram y etiquetanos en {handle}. Nos encanta ver cómo juegan.",
+    "shareCta": "Ir a Instagram",
+    "relatedTitle": "Para acompañar el juego",
+    "moreTitle": "Más juegos",
+    "backToList": "Volver a los juegos",
+    "blogTitle": "¿Buscás más ideas?",
+    "blogText": "En el blog escribimos sobre juegos, rutinas y cómo acompañar a los chicos en cada etapa.",
+    "blogCta": "Leer el blog",
+    "memotest": {
+      "pairsLabel": "Cantidad de pares",
+      "pairs": "{n} pares",
+      "restart": "Mezclar de nuevo",
+      "moves": "Intentos: {n}",
+      "found": "Pares: {found} de {total}",
+      "cardHidden": "Carta {n}, boca abajo",
+      "match": "¡Par encontrado! {name}.",
+      "noMatch": "No son iguales. Probá otra vez.",
+      "won": "¡Muy bien! Encontraste todos los pares en {n} intentos.",
+      "playAgain": "Jugar de nuevo",
+      "cutHint": "Recortá por la línea punteada. Cada animal aparece dos veces."
+    },
+    "shapes": {
+      "modesLabel": "Qué jugamos",
+      "modeShapes": "Colores y formas",
+      "modeNumbers": "Números",
+      "askShape": "Tocá {shape} {color}",
+      "right": "¡Muy bien!",
+      "wrong": "Casi. Probá otra vez.",
+      "next": "Siguiente",
+      "score": "Aciertos: {n}",
+      "optionShape": "{shape} {color}",
+      "optionNumber": "{n}"
+    },
+    "treasure": {
+      "clue": "Pista {n}",
+      "hideAt": "Esconder en: {place}",
+      "treasureAt": "El tesoro va en: {place}",
+      "cardsTitle": "Las pistas"
+    },
+    "chart": {
+      "heading": "Mis pequeños logros",
+      "name": "Nombre",
+      "week": "Semana",
+      "habit": "Lo que hice",
+      "mon": "Lun",
+      "tue": "Mar",
+      "wed": "Mié",
+      "thu": "Jue",
+      "fri": "Vie",
+      "sat": "Sáb",
+      "sun": "Dom",
+      "tableTitle": "La tabla"
+    },
+    "recipes": {
+      "time": "Tiempo: {time}",
+      "ingredients": "Ingredientes",
+      "steps": "Paso a paso",
+      "kid": "Lo hace el chico",
+      "adult": "Lo hace un adulto",
+      "cardsTitle": "Las recetas"
+    }
+  },
   "blog": {
     "title": "Notas para madres y padres",
     "lead": "Cómo elegir, cómo usar y cómo cuidar los muebles que acompañan a los chicos.",
@@ -500,6 +581,8 @@
     "descFaq": "Envíos, armado, medidas y devoluciones: todo lo que nos preguntan seguido.",
     "descArrepentimiento": "Arrepentiste de tu compra? Tenés 10 días corridos para devolverla, sin costo y sin explicaciones.",
     "descQuejas": "Libro de Quejas Online: dejá tu reclamo y te respondemos en 15 días hábiles.",
+    "titleActivity": "{title} | Para familias – Madera Más",
+    "descFamilies": "Juegos y actividades gratis para chicos de 2 a 8 años: memotest, colores y formas, búsqueda del tesoro, tabla de hábitos y recetas para cocinar juntos.",
     "descBlog": "Notas para madres y padres: cómo elegir, usar y cuidar los muebles de los chicos."
   }
 }

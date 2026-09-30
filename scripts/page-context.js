@@ -4,7 +4,9 @@ import { existsSync, readFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import {
+  activityUrl,
   articleUrl,
+  FAMILIES_PATH,
   image,
   imageAt,
   imageIds,
@@ -46,7 +48,10 @@ const ADMIN_TABS = [
 // Схема форм админки контента (бэкенд.md §15): разделы, поля, подписи — данные,
 // а не разметка; страница получает её целиком, скрипт раскладывает по типам полей
 const adminSchema = JSON.parse(
-  readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), '../data/admin-schema.json'), 'utf8'),
+  readFileSync(
+    resolve(dirname(fileURLToPath(import.meta.url)), '../data/admin-schema.json'),
+    'utf8',
+  ),
 )
 
 // Разделы админки: заказы и сообщения (бэкенд.md §13–14), дальше контент в порядке
@@ -77,8 +82,18 @@ const spritePath = resolve(srcDir, 'icons/sprite.svg')
 const iconsDir = resolve(srcDir, 'icons/source')
 
 export function pageContext(pagePath) {
-  const { site, dictionary, provinces, products, categories, articles, faq, pages, instagram } =
-    loadData()
+  const {
+    site,
+    dictionary,
+    provinces,
+    products,
+    categories,
+    articles,
+    activities,
+    faq,
+    pages,
+    instagram,
+  } = loadData()
 
   // Флаг reviews выключает отзывы целиком, а не только секцию на странице товара:
   // звёзды не выводятся нигде (состояния-экранов.md п. 3). Гасим у источника — иначе
@@ -247,6 +262,15 @@ export function pageContext(pagePath) {
     : null
   const article = foundArticle ? articlePage(foundArticle, byDate, products, withCard) : null
 
+  // Para familias: игры и занятия для детей (страницы.md §14б). Список и страница игры
+  // собираются, как у блога, по адресу
+  const games = [...activities].sort((a, b) => a.order - b.order).map(activityCard)
+  const families = currentPath === FAMILIES_PATH ? { activities: games } : null
+  const foundActivity = activities.find((item) => currentPath === activityUrl(item)) ?? null
+  const activity = foundActivity
+    ? activityPage(foundActivity, games, products, withCard, links)
+    : null
+
   // Вопросы по темам (страницы.md §12). Подпись темы — ключ словаря по её id, как
   // у категорий в меню; нет ключа — встаёт сам id, и это видно в предупреждении сборки
   const faqPage = currentPath === '/preguntas-frecuentes/' ? groupFaq(faq, dictionary) : null
@@ -288,11 +312,21 @@ export function pageContext(pagePath) {
               { label: t('nav.blog'), href: '/blog/' },
               { label: article.title },
             ])
-          : SERVICE_PAGES[currentPath]
-            ? markBreadcrumbs([inicio, { label: t(SERVICE_PAGES[currentPath]) }], { plain: true })
-            : CONTENT_PAGES[currentPath]
-              ? markBreadcrumbs([inicio, { label: t(CONTENT_PAGES[currentPath][0]) }])
-              : null
+          : families
+            ? markBreadcrumbs([inicio, { label: t('nav.familias') }])
+            : activity
+              ? markBreadcrumbs([
+                  inicio,
+                  { label: t('nav.familias'), href: FAMILIES_PATH },
+                  { label: activity.name },
+                ])
+              : SERVICE_PAGES[currentPath]
+                ? markBreadcrumbs([inicio, { label: t(SERVICE_PAGES[currentPath]) }], {
+                    plain: true,
+                  })
+                : CONTENT_PAGES[currentPath]
+                  ? markBreadcrumbs([inicio, { label: t(CONTENT_PAGES[currentPath][0]) }])
+                  : null
 
   // empty — явный пустой контекст для вложенных вызовов: без него partial наследует всё
   // окружение вызывающего и «чужой» флаг молча включает ветку (см. стек-и-библиотеки п. 3)
@@ -317,7 +351,18 @@ export function pageContext(pagePath) {
     : null
 
   // «Голова» страницы считается одним местом для всех типов страниц (seo.md §2)
-  const seo = seoMeta({ site, currentPath, category, catalog, product, page, article, faq })
+  const seo = seoMeta({
+    site,
+    currentPath,
+    category,
+    catalog,
+    product,
+    page,
+    article,
+    families,
+    activity,
+    faq,
+  })
 
   return {
     seo,
@@ -330,6 +375,8 @@ export function pageContext(pagePath) {
     // отрисовывает карточки заранее и прячет несовпавшие
     articles: byDate,
     article,
+    families,
+    activity,
     faqPage,
     breadcrumbs,
     showcase,
@@ -460,18 +507,11 @@ function instagramPost(post) {
  */
 function articlePage(article, byDate, products, withCard) {
   const others = byDate.filter((item) => item.id !== article.id)
-  const sections = (article.sections ?? []).map((section) => ({
-    ...section,
-    body: paragraphs(section.body),
-    items: (section.items ?? []).map(inline),
-    note: section.note && { ...section.note, text: inline(section.note.text) },
-    quote: section.quote && inline(section.quote),
-  }))
 
   return {
     ...article,
     body: paragraphs(article.body),
-    sections,
+    sections: longSections(article.sections),
     video: article.video && articleVideo(article.video),
     readingMinutes: readingMinutes(article),
     related: (article.relatedProducts ?? [])
@@ -481,6 +521,120 @@ function articlePage(article, byDate, products, withCard) {
     // Соседние статьи: ближайшие по списку, а не «похожие» — похожесть нам считать нечем
     more: others.slice(0, 3),
   }
+}
+
+/**
+ * Разделы длинного текста (данные.md §4): у статьи и у игры один контракт и один разбор —
+ * абзацы, список, вынесенная фраза, врезка
+ */
+function longSections(sections) {
+  return (sections ?? []).map((section) => ({
+    ...section,
+    body: paragraphs(section.body),
+    items: (section.items ?? []).map(inline),
+    note: section.note && { ...section.note, text: inline(section.note.text) },
+    quote: section.quote && inline(section.quote),
+  }))
+}
+
+// Формат игры → подпись. В шаблоне логики не бывает, поэтому здесь
+const FORMAT_LABELS = {
+  online: 'families.formatOnline',
+  print: 'families.formatPrint',
+  kitchen: 'families.formatKitchen',
+}
+
+// Тон игры → кружок значка: заливка и цвет значка на ней (визуальная-система.md §2.2:
+// на жёлтом тёмный, на остальных светлый). Цвет только в кружке, плитка песочная:
+// пять залитых плиток подряд кричали бы (там же, §2.3 — «кружок промо-тона»)
+const TONE_ACCENTS = {
+  blue: 'bg-promo-blue text-cream',
+  pink: 'bg-promo-pink text-cream',
+  yellow: 'bg-promo-yellow text-charcoal',
+  green: 'bg-promo-green text-cream',
+  orange: 'bg-promo-orange text-cream',
+}
+
+// Шаг рецепта, который делает взрослый, начинается со слова «Adulto:» (данные.md §4б):
+// вложенных списков в форме админки нет, а строка с пометкой правится в одно поле
+const ADULT_STEP = /^adulto:\s*/i
+
+// Дни недели таблицы привычек — по порядку аргентинского календаря, с понедельника
+const WEEK_DAYS = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
+
+/** Игра в списке: плитка с тоном, значком, форматом и возрастом */
+function activityCard(activity) {
+  const format = t(FORMAT_LABELS[activity.format])
+  return {
+    ...activity,
+    href: activityUrl(activity),
+    formatLabel: format,
+    meta: `${format} · ${activity.ages}`,
+    accent: TONE_ACCENTS[activity.tone],
+  }
+}
+
+/**
+ * Страница игры (страницы.md §14б): текст как у статьи, сама игра по её виду,
+ * товары внизу и соседние игры. Данные игры для скрипта уходят в страницу JSON-ом,
+ * а то, что печатается и читается без скрипта, собрано здесь.
+ */
+function activityPage(activity, games, products, withCard, links) {
+  const game = activity.game ?? {}
+  const card = games.find((item) => item.id === activity.id)
+  const kind = activity.kind
+
+  // Подсказка № k прячется там, куда ведёт загадка № k−1; первую читают вслух. Считается
+  // здесь, чтобы в данных место записывалось один раз — у загадки, а не дважды
+  const clues = (game.clues ?? []).map((clue, index, list) => ({
+    number: index + 1,
+    text: clue.text,
+    hideAt: index > 0 ? list[index - 1].place : null,
+  }))
+
+  return {
+    ...card,
+    body: paragraphs(activity.body),
+    sections: longSections(activity.sections),
+    steps: (activity.steps ?? []).map(inline),
+    materials: (activity.materials ?? []).map(inline),
+    [kind]: true,
+    // Печатный лист есть у всех, кроме игры на экране с формами: её смысл — нажимать
+    printable: kind !== 'shapes',
+    memotestCards: kind === 'memotest' ? game.cards.flatMap((item) => [item, item]) : [],
+    memotestPairs: kind === 'memotest' ? memotestPairs(game.cards.length) : [],
+    clues,
+    treasureAt: game.clues?.at(-1)?.place ?? null,
+    habits: game.habits ?? [],
+    days: WEEK_DAYS.map((day) => t(`families.chart.${day}`)),
+    recipes: (game.recipes ?? []).map((recipe) => ({
+      ...recipe,
+      steps: (recipe.steps ?? []).map((step) => ({
+        text: step.replace(ADULT_STEP, ''),
+        kid: !ADULT_STEP.test(step),
+      })),
+    })),
+    // Игра на экране: колода memotest и наборы для форм — скрипту (src/scripts/games.js)
+    gameJson: ['memotest', 'shapes'].includes(kind) ? inlineJson(game) : null,
+    shareText: t('families.shareText', { handle: links.instagramHandle }),
+    related: (activity.relatedProducts ?? [])
+      .map((id) => products.find((item) => item.id === id))
+      .filter(Boolean)
+      .map(withCard),
+    more: games.filter((item) => item.id !== activity.id).slice(0, 3),
+  }
+}
+
+/**
+ * Сколько пар предложить на выбор: 4 для самых маленьких, 6, 8 и вся колода. Больше
+ * колоды не бывает, а два одинаковых числа в переключателе были бы шумом
+ */
+function memotestPairs(total) {
+  return [...new Set([4, 6, 8, total].filter((n) => n <= total))].map((n) => ({
+    n,
+    label: t('families.memotest.pairs', { n }),
+    selected: n === Math.min(6, total),
+  }))
 }
 
 /**

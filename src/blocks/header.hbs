@@ -68,7 +68,7 @@
       </div>
       <ul class="flex items-center gap-2">
         {{#each nav.main}}
-          <li>
+          <li {{#if wide}}class="hidden xl:block"{{/if}}>
             {{> nav-row ../empty empty=../empty href=href label=label current=current class="h-10"}}
           </li>
         {{/each}}

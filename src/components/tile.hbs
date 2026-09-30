@@ -1,6 +1,10 @@
 {{!-- Плитка (компоненты.md 3.7): фото на подложке → заголовок → пояснение → цена «от».
-      Виды: категория и подбор («что нужно ребёнку сегодня»).
+      Виды: категория, подбор («что нужно ребёнку сегодня») и игра раздела Para familias.
       Обязательные: href, title. Опции: text, imageId, imageAlt, price, priceFrom;
+      icon — вместо фото значок Lucide в круге (у игр своих снимков нет, а заглушка
+      бренда на пяти плитках подряд читалась бы браком); accent — классы круга: заливка
+      промо-тоном и цвет значка (без него круг кремовый); meta — строка мелким текстом
+      внизу (формат и возраст игры);
       промо-подложка — один из флагов blue | pink | yellow | green плюс onDark
       (он приходит вместе с флагом и выключен только у жёлтого).
 
@@ -19,14 +23,25 @@
       bg-sand text-charcoal hover:bg-sand-active
     {{/unless}}{{/unless}}{{/unless}}{{/unless}}"
 >
-  <div class="overflow-hidden rounded-lg bg-cream">
-    {{> picture empty id=imageId alt=imageAlt class="aspect-square w-full object-cover"
-        sizes="(min-width: 1024px) 30vw, 100vw"}}
-  </div>
+  {{#if icon}}
+    <span class="flex size-12 items-center justify-center rounded-full
+      {{#if accent}}{{accent}}{{else}}bg-cream text-charcoal{{/if}}">
+      {{> icon empty name=icon class="size-6"}}
+    </span>
+  {{else}}
+    <div class="overflow-hidden rounded-lg bg-cream">
+      {{> picture empty id=imageId alt=imageAlt class="aspect-square w-full object-cover"
+          sizes="(min-width: 1024px) 30vw, 100vw"}}
+    </div>
+  {{/if}}
 
   <h3 class="text-h4 lg:text-h4-lg">{{title}}</h3>
   {{#if text}}
     <p class="text-small {{#if onDark}}text-cream/75{{else}}text-charcoal/70{{/if}}">{{text}}</p>
+  {{/if}}
+
+  {{#if meta}}
+    <p class="mt-auto pt-2 text-caption font-medium">{{meta}}</p>
   {{/if}}
 
   {{#if price}}

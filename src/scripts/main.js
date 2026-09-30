@@ -72,6 +72,15 @@ if (document.querySelector('[data-admin]')) {
   document.addEventListener('alpine:init', () => Alpine.store('adminContent', adminContent))
 }
 
+// Игры раздела Para familias (страницы.md §14б) — тем же приёмом: код только там, где игра
+if (document.querySelector('[data-game]')) {
+  const { memotest, shapesGame } = await import('./games.js')
+  document.addEventListener('alpine:init', () => {
+    Alpine.data('memotest', memotest)
+    Alpine.data('shapesGame', shapesGame)
+  })
+}
+
 // Ручной старт: stores и magic-хелперы регистрируются в alpine:init до него
 Alpine.start()
 

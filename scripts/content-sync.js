@@ -24,6 +24,7 @@ export const CONTENT_DATA = [
   'data/products.json',
   'data/categories.json',
   'data/articles.json',
+  'data/activities.json',
   'data/pages.json',
   'data/faq.json',
   'data/reviews.json',

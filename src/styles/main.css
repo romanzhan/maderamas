@@ -191,6 +191,29 @@
     outline-offset: 2px;
   }
 
+  /* Печать (30.09.2026, раздел Para familias — там есть листы для печати, но правило
+     общее): на бумагу идёт только содержимое страницы, без шапки, подвала, панелей
+     и плавающих кнопок. Спрайт иконок и так скрыт — <use> читает его и скрытым.
+     У страницы с листом (data-print-sheet) печатается только лист: карточки игры
+     вырезают ножницами, меню и советы на них лишние */
+  @media print {
+    body > :not(main) {
+      display: none !important;
+    }
+
+    main:has([data-print-sheet]) > :not([data-print-sheet]) {
+      display: none !important;
+    }
+
+    /* Отступы страницы на бумаге не нужны: поля даёт @page, а нижний отступ <main>
+       сам по себе выталкивал пустой лист */
+    main:has([data-print-sheet]),
+    [data-print-sheet] {
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+  }
+
   /* Кому движение мешает — тому его нет (стандарты-размеров.md п. 12) */
   @media (prefers-reduced-motion: reduce) {
     *,
@@ -691,4 +714,10 @@
   & a:hover {
     color: var(--color-clay-hover);
   }
+}
+
+/* Поля листа при печати (раздел Para familias): одни на все страницы и все браузеры,
+   иначе лист игры у каждого браузера ложился бы на бумагу по-своему */
+@page {
+  margin: 12mm;
 }

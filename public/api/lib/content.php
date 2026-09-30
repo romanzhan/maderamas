@@ -17,6 +17,7 @@ const CONTENT_COLLECTIONS = [
     'products' => ['data/products.json', 'list'],
     'categories' => ['data/categories.json', 'list'],
     'articles' => ['data/articles.json', 'list'],
+    'activities' => ['data/activities.json', 'list'],
     'pages' => ['data/pages.json', 'list'],
     'faq' => ['data/faq.json', 'list'],
     'reviews' => ['data/reviews.json', 'list'],

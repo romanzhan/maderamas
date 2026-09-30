@@ -1,0 +1,8 @@
+{{!-- Кнопка печати листа игры и подсказка к ней. На бумагу сама не попадает. Печать —
+      обычная печать браузера: лист собран в разметке, PDF-файлов нет, и правка текста
+      в админке сразу меняет и то, что печатается. --}}
+<div class="flex flex-col items-start gap-3 print:hidden">
+  {{> button empty secondary=true sizeMd=true icon="printer" label="families.print"
+      onClick="window.print()"}}
+  <p class="max-w-prose text-small text-charcoal/70">{{t "families.printHint"}}</p>
+</div>

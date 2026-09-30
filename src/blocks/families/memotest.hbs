@@ -1,0 +1,108 @@
+{{!-- Memotest: игра на экране и лист карточек для печати (страницы.md §14б).
+      Механика — src/scripts/games.js (memotest); колода приходит из данных JSON-ом.
+      Переворота с анимацией нет (принцип 12): карта меняет вид сразу, цветом — только
+      микропереход. Рубашка — глина: закрытая карта это то, что нажимают.
+      На телефоне в карте только значок, подпись — для чтения с экрана: четыре колонки
+      на 360 не вмещают слово под значком. --}}
+<section class="page-container mt-10 lg:mt-12" data-print-sheet>
+  <div class="print:hidden">
+    <h2 class="font-display text-h2 lg:text-h2-lg">{{t "families.playTitle"}}</h2>
+
+    <div
+      x-data="memotest"
+      data-game
+      data-pairs="{{#each activity.memotestPairs}}{{#if selected}}{{n}}{{/if}}{{/each}}"
+      data-t-card-hidden="{{t "families.memotest.cardHidden" n="{n}"}}"
+      data-t-match="{{t "families.memotest.match" name="{name}"}}"
+      data-t-no-match="{{t "families.memotest.noMatch"}}"
+      data-t-won="{{t "families.memotest.won" n="{n}"}}"
+      data-t-moves="{{t "families.memotest.moves" n="{n}"}}"
+      data-t-found="{{t "families.memotest.found" found="{found}" total="{total}"}}"
+      class="mt-6 max-w-3xl rounded-2xl bg-sand p-4 lg:p-8"
+    >
+      <script type="application/json">{{{activity.gameJson}}}</script>
+
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <fieldset>
+          <legend class="text-small font-medium">{{t "families.memotest.pairsLabel"}}</legend>
+          <div class="mt-2 flex flex-wrap gap-2">
+            {{#each activity.memotestPairs}}
+              <label class="{{> pill-class}} has-checked:border-clay has-checked:bg-cream">
+                <input
+                  type="radio"
+                  name="memotest-pares"
+                  value="{{n}}"
+                  class="sr-only"
+                  {{#if selected}}checked{{/if}}
+                  x-on:change="choose({{n}})"
+                />
+                <span class="text-small font-medium">{{label}}</span>
+              </label>
+            {{/each}}
+          </div>
+        </fieldset>
+        {{> button empty tertiary=true sizeMd=true icon="rotate-ccw" label="families.memotest.restart"
+            onClick="shuffle()"}}
+      </div>
+
+      <p class="mt-6 flex flex-wrap gap-x-4 gap-y-1 text-small text-charcoal/70 tabular-nums">
+        <span x-text="movesLabel"></span>
+        <span x-text="foundLabel"></span>
+      </p>
+
+      <ul class="mt-3 grid gap-2 sm:gap-3" x-bind:class="columns">
+        <template x-for="(card, index) in deck" x-bind:key="card.key">
+          <li>
+            <button
+              type="button"
+              x-on:click="flip(card)"
+              x-bind:aria-label="label(card, index)"
+              x-bind:aria-pressed="card.open || card.done"
+              x-bind:class="card.done
+                ? 'bg-success-bg text-charcoal'
+                : card.open
+                  ? 'bg-cream text-charcoal'
+                  : 'bg-clay text-cream hover:bg-clay-hover active:bg-clay-active'"
+              class="flex aspect-square w-full flex-col items-center justify-center gap-1 rounded-xl
+                transition-colors duration-150"
+            >
+              <template x-if="card.open || card.done">
+                <span class="flex flex-col items-center gap-1" aria-hidden="true">
+                  <svg class="icon-stroke size-6 fill-none sm:size-12"><use x-bind:href="'#icon-' + card.icon"></use></svg>
+                  <span class="hidden text-caption font-medium sm:block" x-text="card.name"></span>
+                </span>
+              </template>
+            </button>
+          </li>
+        </template>
+      </ul>
+
+      <p class="mt-4 min-h-6 text-small font-medium" role="status" aria-live="polite" x-text="message"></p>
+
+      <div x-show="won" x-cloak class="mt-4 flex flex-col items-start gap-4 rounded-xl bg-cream p-4 lg:p-6">
+        <p class="font-display text-h3 lg:text-h3-lg" x-text="wonLabel"></p>
+        {{> button empty primary=true sizeMd=true label="families.memotest.playAgain" onClick="shuffle()"}}
+      </div>
+    </div>
+
+    <h3 class="mt-10 font-display text-h3 lg:text-h3-lg">{{t "families.printTitle"}}</h3>
+    <div class="mt-4">{{> families/print-button}}</div>
+  </div>
+
+  {{!-- Лист для печати: вся колода, каждая карта дважды, под ножницы --}}
+  <div class="hidden print:block">
+    <p class="font-display text-h3">{{activity.name}}</p>
+    <p class="mt-1 text-small">{{t "families.memotest.cutHint"}}</p>
+    <ul class="mt-4 grid grid-cols-4">
+      {{#each activity.memotestCards}}
+        {{!-- Высота задана, а не квадрат: шесть рядов квадратов по четверти листа
+              не влезают на A4, и последний ряд уезжал на вторую страницу --}}
+        <li class="flex h-32 flex-col items-center justify-center gap-2 border border-dashed
+          border-border break-inside-avoid">
+          {{> icon ../empty name=icon class="size-12"}}
+          <span class="text-small font-medium">{{name}}</span>
+        </li>
+      {{/each}}
+    </ul>
+  </div>
+</section>
