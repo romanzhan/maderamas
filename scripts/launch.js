@@ -1,4 +1,5 @@
 // Перенос магазина на основной домен одной командой: npm run launch
+// (npm run launch -- --sin-webhook — без секрета уведомлений Mercado Pago; см. шаг 1)
 //
 // До запуска боевой адрес вёл на Tiendanube, а новый сайт жил на dev с тестовыми ключами.
 // Команда делает всё, что на нашей стороне, и в безопасном порядке: сначала проверяет,
@@ -6,15 +7,21 @@
 // ключи), и только потом что-то меняет. Упала на середине — повторный запуск доделает:
 // каждый шаг проверяет, не сделан ли он уже.
 //
+// С 30.09.2026 панель хостинга команда готовит сама через API Hostinger (scripts/hostinger.js):
+// сайт для домена, записи DNS @ и www (почтовые записи не трогаются), сертификат и суточная
+// копия базы в планировщике. Руками у владельца остались только кабинет Mercado Pago
+// и Search Console.
+//
 // Превью и боевой сайт делят один хостинг. Сервер ищет приватную папку вверх от папки
 // сайта (бэкенд.md §2), поэтому dev получает свою копию рядом с собой — тестовые ключи
 // и тестовые заказы, — а боевой сайт берёт ~/madera-data с боевыми ключами и чистой базой.
 import { execSync, spawnSync } from 'node:child_process'
 import { randomUUID } from 'node:crypto'
-import { resolve4 } from 'node:dns/promises'
+import { Resolver, resolve4 } from 'node:dns/promises'
 import { existsSync, readFileSync } from 'node:fs'
 import { homedir } from 'node:os'
 import { resolve } from 'node:path'
+import { hostinger, waitFor } from './hostinger.js'
 
 const root = resolve(import.meta.dirname, '..')
 const deployPath = resolve(root, 'madera-data', 'deploy.json')
@@ -65,6 +72,11 @@ function liveKeys() {
   return { accessToken: pairs.access_token ?? '', webhookSecret: pairs.webhook_secret ?? '' }
 }
 
+// Без секрета уведомлений заказ узнаёт об оплате, только когда покупатель вернулся
+// на «Gracias»: уведомления Mercado Pago сервер без подписи не принимает. Запуск без него —
+// осознанное решение владельца, поэтому отдельным флагом, а не молча
+const withoutWebhook = process.argv.includes('--sin-webhook')
+
 const step = (text) => console.log(`\n— ${text}`)
 const fail = (problems) => {
   console.error('\nПеренос не начат, ничего не изменено. Сначала:')
@@ -72,7 +84,8 @@ const fail = (problems) => {
   process.exit(1)
 }
 
-// 1. Проверки: всё, что должен сделать владелец, сделано
+// 1. Проверки — до любых изменений: без боевых ключей DNS не переключается, иначе
+// адрес магазина остался бы без магазина
 step('Проверяю, готово ли всё для переноса')
 const problems = []
 
@@ -80,14 +93,92 @@ const keys = liveKeys()
 if (!keys.accessToken.startsWith('APP_USR-')) {
   problems.push('в mercadopago-prod.txt нет боевого access_token (APP_USR-…)')
 }
-if (!keys.webhookSecret) {
+if (!keys.webhookSecret && withoutWebhook) {
+  console.log(
+    'Внимание: без секрета уведомлений. Оплата отметится в заказе, когда покупатель вернётся ' +
+      'на страницу «Gracias»; секрет — строкой webhook_secret=… и повторный npm run launch',
+  )
+} else if (!keys.webhookSecret) {
   problems.push(
     `в mercadopago-prod.txt нет webhook_secret: в кабинете Mercado Pago, приложение «Madera mas tienda», ` +
       `Modo productivo → Webhooks, адрес ${prodUrl}/api/mercadopago/webhook, событие «Pagos» — ` +
-      'и вписать выданный секрет строкой webhook_secret=…',
+      'и вписать выданный секрет строкой webhook_secret=… ' +
+      '(или запуск без него: npm run launch -- --sin-webhook)',
   )
 }
 
+if (problems.length) fail(problems)
+
+// 0. Панель хостинга. Каждый шаг смотрит, не сделан ли он уже: повторный запуск безопасен
+step('Готовлю хостинг: сайт для домена, DNS, сертификат')
+const sites = (await hostinger('GET', '/api/hosting/v1/websites')).data
+if (!sites.some((site) => site.domain === apexHost)) {
+  const dev = sites.find((site) => site.domain === devHost)
+  if (!dev)
+    throw new Error(
+      `В аккаунте Hostinger нет сайта ${devHost} — не понимаю, на какой тариф ставить`,
+    )
+  await hostinger('POST', '/api/hosting/v1/websites', { domain: apexHost, order_id: dev.order_id })
+  process.stdout.write(`Сайт ${apexHost} заведён, жду его папку на сервере`)
+  await waitFor(
+    'папка сайта на сервере',
+    () => remote(`test -d "$HOME/${deploy.prod.path}" && echo yes || echo no`) === 'yes',
+  )
+  console.log(' есть')
+}
+
+// Адрес сервера — тот же, что у SSH: хостинг отдаёт сайт прямо с него (проверено 30.09.2026),
+// сеть доставки хостинга для голого домена не нужна. www — псевдоним голого домена
+const serverIp = deploy.host
+const zone = await hostinger('GET', `/api/dns/v1/zones/${apexHost}`)
+const recordsOf = (name, type) =>
+  (zone.find((record) => record.name === name && record.type === type)?.records ?? [])
+    .map((record) => record.content)
+    .join(' ')
+if (recordsOf('@', 'A') !== serverIp || recordsOf('www', 'CNAME') !== `${apexHost}.`) {
+  await hostinger('PUT', `/api/dns/v1/zones/${apexHost}`, {
+    overwrite: true,
+    zone: [
+      { name: '@', type: 'A', ttl: 300, records: [{ content: serverIp }] },
+      { name: 'www', type: 'CNAME', ttl: 300, records: [{ content: `${apexHost}.` }] },
+    ],
+  })
+  console.log(`DNS: ${apexHost} → ${serverIp}, www → ${apexHost} (почта не тронута)`)
+}
+
+// Смотрим через публичные серверы имён, а не системный кеш: он помнит Tiendanube
+const publicDns = new Resolver()
+publicDns.setServers(['8.8.8.8', '1.1.1.1'])
+process.stdout.write('Жду, пока DNS разойдётся')
+await waitFor('DNS домена указывает на хостинг', async () => {
+  const [apex, www] = await Promise.all([
+    publicDns.resolve4(apexHost).catch(() => []),
+    publicDns.resolve4(prodHost).catch(() => []),
+  ])
+  return apex.includes(serverIp) && www.includes(serverIp)
+})
+console.log(' готово')
+
+const sslPath = `/api/hosting/v1/accounts/${deploy.user}/websites/${apexHost}/ssl`
+const sslState = async () => {
+  const status = await hostinger('GET', `${sslPath}/status`)
+  return status?.data?.status ?? status?.status
+}
+if ((await sslState()) !== 'active') {
+  if (!['installing', 'waiting_for_retry'].includes(await sslState())) {
+    await hostinger('POST', `${sslPath}/setup`)
+  }
+  process.stdout.write('Ставлю сертификат')
+  await waitFor('сертификат SSL', async () => {
+    const state = await sslState()
+    if (state === 'failed')
+      throw new Error('Hostinger не смог выпустить сертификат — см. hPanel → SSL')
+    return state === 'active'
+  })
+  console.log(' есть')
+}
+
+// Сайт на месте: домен, сертификат и папка сходятся?
 const folder = remote(`test -d "$HOME/${deploy.prod.path}" && echo yes || echo no`)
 if (folder !== 'yes') {
   problems.push(
@@ -116,7 +207,9 @@ if (folder !== 'yes') {
   remote(`rm -f "$HOME/${deploy.prod.path}/${probe}"`)
 }
 
-if (problems.length) fail(problems)
+// Здесь DNS уже переключён — «ничего не изменено» было бы неправдой
+if (problems.length)
+  throw new Error(`Хостинг готов, но сайт по адресу не отвечает: ${problems.join('; ')}`)
 console.log('Всё на месте')
 
 // 2. Сервер: копия, отдельная папка превью, боевые ключи и чистая база
@@ -193,12 +286,25 @@ if (redirectProblems.length) {
   throw new Error(`Сайт залит, но перенаправления не работают: ${redirectProblems.join(', ')}`)
 }
 
+// 5. Суточная копия базы заказов — теперь с боевого сайта (бэкенд.md §12)
+const backupCommand = `php /home/${deploy.user}/${deploy.prod.path}/api/cli.php backup`
+const cronPath = `/api/hosting/v1/accounts/${deploy.user}/cron-jobs`
+const jobs = await hostinger('GET', cronPath)
+if (!(jobs?.data ?? jobs).some((job) => job.command === backupCommand)) {
+  await hostinger('POST', cronPath, { time: '30 3 * * *', command: backupCommand })
+  console.log('Планировщик: копия базы каждую ночь в 03:30')
+}
+
 console.log(`
 Магазин открыт: ${prodUrl}
 
-Осталось руками:
+Осталось:
   1. Один настоящий платёж на минимальную сумму — и проверить письмо и заказ в /admin/.
-  2. Планировщик Hostinger: копия базы раз в сутки теперь с боевого сайта —
-     php ~/${deploy.prod.path}/api/cli.php backup
-  3. Google Search Console: добавить ${prodUrl} и отправить ${prodUrl}/sitemap.xml
+  2. Google Search Console: добавить ${prodUrl} и отправить ${prodUrl}/sitemap.xml${
+    keys.webhookSecret
+      ? ''
+      : `
+  3. Секрет уведомлений Mercado Pago: вписать webhook_secret=… в mercadopago-prod.txt
+     и повторить npm run launch — остальные шаги он пропустит как сделанные`
+  }
 `)
