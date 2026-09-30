@@ -18,7 +18,7 @@
 
   {{!-- Широкий кадр мастерской: он и есть первое доказательство «делаем сами» --}}
   <section class="mt-8 lg:mt-12">
-    {{> picture empty id="nosotros-taller" alt=(t "about.workshopAlt")
+    {{> picture empty id=site.media.aboutWorkshop alt=(t "about.workshopAlt")
         ratio="aspect-video sm:aspect-panorama" sizes="100vw"
         class="aspect-video w-full object-cover sm:aspect-panorama"}}
   </section>
@@ -29,7 +29,7 @@
       {{> prose empty paragraphs=page.body}}
 
       <div class="overflow-hidden rounded-2xl">
-        {{> picture empty id="nosotros-proceso" alt=(t "about.storyAlt")
+        {{> picture empty id=site.media.aboutProcess alt=(t "about.storyAlt")
             sizes="(min-width: 1024px) 50vw, 100vw"
             class="aspect-square w-full object-cover"}}
       </div>

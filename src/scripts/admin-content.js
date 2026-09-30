@@ -86,6 +86,7 @@ export const adminContent = {
 
   textsSection: 'home',
   textsQuery: '',
+  sitePage: 'home',
 
   pollTimer: null,
 
@@ -101,7 +102,7 @@ export const adminContent = {
   },
 
   isContent(section) {
-    return section in this.schema.collections || section === 'texts'
+    return section in this.schema.collections || section === 'texts' || section === 'sitePages'
   },
 
   async request(path, options = {}) {
@@ -139,6 +140,13 @@ export const adminContent = {
     this.confirmDelete = null
     this.history = null
     if (this.indexState === 'idle') this.loadIndex()
+    // Страницы сайта — не свой файл, а два чужих: фото в настройках, фразы в словаре
+    if (name === 'sitePages') {
+      this.colState = 'loading'
+      await Promise.all(['site', 'texts'].filter((n) => !this.docs[n]).map((n) => this.load(n)))
+      if (this.col === name) this.colState = this.docs.site && this.docs.texts ? 'ready' : 'failed'
+      return
+    }
     // Товарам, статьям и отзывам нужны списки товаров и разделов для выбора
     const needs = new Set([name, 'products', 'categories', 'texts'])
     await Promise.all([...needs].filter((n) => !this.docs[n]).map((n) => this.load(n)))
@@ -166,6 +174,7 @@ export const adminContent = {
   },
 
   isDirty(name = this.col) {
+    if (name === 'sitePages') return this.isDirty('site') || this.isDirty('texts')
     const doc = this.docs[name]
     return Boolean(doc) && JSON.stringify(doc.data) !== doc.saved
   },
@@ -463,6 +472,18 @@ export const adminContent = {
   get textRows() {
     const data = this.docs.texts?.data ?? {}
     const query = this.textsQuery.trim().toLowerCase()
+    const rows = this.textRowsOf(query ? Object.keys(data) : [this.textsSection])
+    return query
+      ? rows.filter(
+          (row) =>
+            row.value.toLowerCase().includes(query) || row.path.toLowerCase().includes(query),
+        )
+      : rows
+  },
+
+  /** Фразы разделов словаря плоским списком: путь → текст */
+  textRowsOf(sections) {
+    const data = this.docs.texts?.data ?? {}
     const rows = []
     const walk = (node, path) => {
       for (const [key, value] of Object.entries(node)) {
@@ -471,13 +492,14 @@ export const adminContent = {
         else rows.push({ path: full, value })
       }
     }
-    walk(query ? data : { [this.textsSection]: data[this.textsSection] ?? {} }, '')
-    return query
-      ? rows.filter(
-          (row) =>
-            row.value.toLowerCase().includes(query) || row.path.toLowerCase().includes(query),
-        )
-      : rows
+    for (const section of sections) if (data[section]) walk(data[section], section)
+    return rows
+  },
+
+  // ——— Страницы сайта: фото страницы (site.media) и её тексты (словарь) в одном месте ———
+
+  get sitePageConf() {
+    return this.schema.sitePages?.find((page) => page.id === this.sitePage) ?? null
   },
 
   setText(path, value) {
@@ -562,6 +584,15 @@ export const adminContent = {
   },
 
   async save(name = this.col) {
+    if (name === 'sitePages') {
+      // Каждый файл — своим запросом со своей версией; споткнулся первый — второй ждёт
+      for (const part of ['site', 'texts']) {
+        if (!this.isDirty(part)) continue
+        await this.save(part)
+        if (this.saveError) return
+      }
+      return
+    }
     const doc = this.docs[name]
     if (!doc || this.saving) return
     const data = this.normalize(name, doc.data)
@@ -607,7 +638,8 @@ export const adminContent = {
   async discard(name = this.col) {
     this.itemIndex = null
     this.saveError = ''
-    await this.load(name)
+    const parts = name === 'sitePages' ? ['site', 'texts'] : [name]
+    await Promise.all(parts.map((part) => this.load(part)))
   },
 
   // ——— История ———

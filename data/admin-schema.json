@@ -371,7 +371,7 @@
       ]
     },
     "pages": {
-      "title": "Страницы",
+      "title": "Текстовые страницы",
       "item": "страницу",
       "titleField": "title",
       "urlPrefix": "",
@@ -435,7 +435,7 @@
           "source": "faqTopics",
           "label": "Тема",
           "required": true,
-          "hint": "Названия тем — в «Тексты сайта» → Темы вопросов."
+          "hint": "Названия тем — в «Страницах сайта» → Вопросы."
         },
         { "key": "question", "type": "text", "label": "Вопрос", "required": true },
         { "key": "answer", "type": "textarea", "rows": 6, "label": "Ответ", "required": true }
@@ -678,5 +678,212 @@
       "blog": "Блог",
       "seo": "Поиск Google"
     }
-  }
+  },
+  "sitePages": [
+    {
+      "id": "home",
+      "title": "Главная",
+      "url": "/",
+      "note": "Товары, отзывы, вопросы, Instagram и статьи на главной берутся из своих разделов. Баннер акции и полоса вверху — в «Настройках».",
+      "fields": [
+        { "type": "heading", "label": "Первый экран" },
+        {
+          "key": "media.homeHero.wide",
+          "type": "image",
+          "flow": "content",
+          "label": "Фото для компьютера (панорама)",
+          "hint": "Один и тот же снимок в трёх обрезках: панорама, 16:9 и вертикаль 4:5. Стул — справа, слева место под текст."
+        },
+        {
+          "key": "media.homeHero.mid",
+          "type": "image",
+          "flow": "content",
+          "label": "Фото для планшета (16:9)"
+        },
+        {
+          "key": "media.homeHero.narrow",
+          "type": "image",
+          "flow": "content",
+          "label": "Фото для телефона (вертикаль 4:5)"
+        },
+        { "type": "heading", "label": "Подбор по возрасту" },
+        {
+          "key": "media.homePicker.baby",
+          "type": "image",
+          "flow": "product",
+          "label": "Плитка «для малыша»"
+        },
+        {
+          "key": "media.homePicker.kid",
+          "type": "image",
+          "flow": "product",
+          "label": "Плитка «для ребёнка»"
+        },
+        {
+          "key": "media.homePicker.helper",
+          "type": "image",
+          "flow": "content",
+          "label": "Плитка «помощник на кухне»"
+        },
+        { "type": "heading", "label": "Разворот главного товара" },
+        {
+          "key": "media.homeFlagship",
+          "type": "image",
+          "flow": "product",
+          "label": "Фото разворота",
+          "hint": "Стул виден целиком и в интерьере."
+        },
+        { "type": "heading", "label": "Как растёт стул" },
+        {
+          "key": "media.adjustFrames.0",
+          "type": "image",
+          "flow": "content",
+          "label": "Кадр регулировки 1",
+          "hint": "Три кадра листаются по кругу; те же кадры — на главной и на «Как это работает»."
+        },
+        {
+          "key": "media.adjustFrames.1",
+          "type": "image",
+          "flow": "content",
+          "label": "Кадр регулировки 2"
+        },
+        {
+          "key": "media.adjustFrames.2",
+          "type": "image",
+          "flow": "content",
+          "label": "Кадр регулировки 3"
+        },
+        { "type": "heading", "label": "Широкий кадр атмосферы" },
+        {
+          "key": "media.homeAtmosphere",
+          "type": "image",
+          "flow": "content",
+          "label": "Фото во всю ширину"
+        }
+      ],
+      "texts": ["home"]
+    },
+    {
+      "id": "how",
+      "title": "Как это работает",
+      "url": "/como-funciona/",
+      "note": "Картинка с размерами берётся у главного товара («Товары» → Silla Evolutiva).",
+      "fields": [
+        { "type": "heading", "label": "Фото страницы" },
+        { "key": "media.howPhoto", "type": "image", "flow": "content", "label": "Широкий кадр" },
+        { "type": "heading", "label": "Кадры регулировки" },
+        {
+          "key": "media.adjustFrames.0",
+          "type": "image",
+          "flow": "content",
+          "label": "Кадр регулировки 1",
+          "hint": "Три кадра листаются по кругу; те же кадры — на главной и на «Как это работает»."
+        },
+        {
+          "key": "media.adjustFrames.1",
+          "type": "image",
+          "flow": "content",
+          "label": "Кадр регулировки 2"
+        },
+        {
+          "key": "media.adjustFrames.2",
+          "type": "image",
+          "flow": "content",
+          "label": "Кадр регулировки 3"
+        }
+      ],
+      "texts": ["howItWorks"]
+    },
+    {
+      "id": "about",
+      "title": "Nosotros",
+      "url": "/nosotros/",
+      "note": "Основной текст страницы — в «Текстовых страницах» → Nosotros.",
+      "fields": [
+        { "type": "heading", "label": "Фото страницы" },
+        {
+          "key": "media.aboutWorkshop",
+          "type": "image",
+          "flow": "content",
+          "label": "Широкий кадр мастерской"
+        },
+        {
+          "key": "media.aboutProcess",
+          "type": "image",
+          "flow": "content",
+          "label": "Фото рядом с рассказом"
+        }
+      ],
+      "texts": ["about"]
+    },
+    {
+      "id": "contact",
+      "title": "Контакты",
+      "url": "/contacto/",
+      "fields": [
+        { "type": "heading", "label": "Фото страницы" },
+        {
+          "key": "media.contactMap",
+          "type": "image",
+          "flow": "content",
+          "label": "Картинка карты",
+          "hint": "Видна, только когда в «Настройках» указан адрес."
+        }
+      ],
+      "texts": ["contact"]
+    },
+    {
+      "id": "faq",
+      "title": "Вопросы",
+      "url": "/preguntas-frecuentes/",
+      "note": "Сами вопросы — в разделе «Вопросы».",
+      "texts": ["faq", "faqTopics"]
+    },
+    {
+      "id": "blog",
+      "title": "Блог и статьи",
+      "url": "/blog/",
+      "note": "Статьи, их фото и видео — в разделе «Статьи».",
+      "texts": ["blog", "article"]
+    },
+    {
+      "id": "catalog",
+      "title": "Каталог",
+      "url": "/productos/",
+      "texts": ["catalog", "badge", "price", "stock"]
+    },
+    {
+      "id": "product",
+      "title": "Страница товара",
+      "texts": ["product", "spec", "gallery", "qty", "reviews"]
+    },
+    {
+      "id": "order",
+      "title": "Корзина и заказ",
+      "url": "/carrito/",
+      "texts": ["cart", "checkout", "thanks", "email"]
+    },
+    {
+      "id": "layout",
+      "title": "Шапка, меню и подвал",
+      "texts": ["nav", "footer", "common", "search", "wishlist", "whatsapp", "social"]
+    },
+    {
+      "id": "legal",
+      "title": "Отказ от покупки и жалобы",
+      "url": "/boton-de-arrepentimiento/",
+      "texts": ["legal", "arrepentimiento", "quejas"]
+    },
+    {
+      "id": "notFound",
+      "title": "Страница 404",
+      "texts": ["notFound"]
+    },
+    {
+      "id": "seo",
+      "title": "Поиск Google",
+      "note": "Заголовок и описание главной — в «Настройках».",
+      "texts": ["seo"]
+    }
+  ]
 }

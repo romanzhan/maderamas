@@ -8,38 +8,6 @@ import { MESSAGE_FIELD_LABELS, MESSAGE_TYPE_LABELS } from './message-fields.js'
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 
-// Картинки, зашитые в блоки, а не в данные (картинки.md §2.6).
-// Пополняется вместе с вёрсткой блока, который их выводит. Отсутствие такой картинки —
-// предупреждение, а не ошибка: часть кадров владелец присылает по ходу, и до них
-// в вёрстке стоит заглушка бренда — это штатное состояние, а не поломка сборки.
-const CONTENT_IMAGE_IDS = [
-  // Герой главной: один снимок тремя обрезками (src/blocks/home/hero.hbs)
-  'home-hero-narrow',
-  'home-hero-mid',
-  'home-hero-wide',
-  // Широкий кадр секции атмосферы (src/blocks/home/atmosphere.hbs)
-  'home-atmosfera',
-  // Кадры регулировки стула — инфографику готовит владелец (page-context, home.adjustFrames)
-  'home-ajuste-1',
-  'home-ajuste-2',
-  'home-ajuste-3',
-  // Кадр-передышка на странице «как это работает» (src/blocks/how/page.hbs)
-  'como-funciona-foto',
-  // Страница «Nosotros»: широкий кадр мастерской и снимок рядом с этапами работы
-  // (src/blocks/about/page.hbs)
-  'nosotros-taller',
-  'nosotros-proceso',
-  // Фото, зашитые в блоки главной: подбор по возрасту и разворот флагмана
-  'bebe-roble-1',
-  'evolutiva-roble-1',
-  'home-picker-torre',
-  'evolutiva-roble-2',
-  'evolutiva-roble-5',
-  'evolutiva-nogal-3',
-  'evolutiva-blanco-2',
-  'torre-2',
-]
-
 const REVIEW_SOURCES = new Set(['site', 'mercadolibre', 'whatsapp'])
 
 // Корень адресов уже занят служебными страницами — категория с таким slug перекрыла бы их.
@@ -87,6 +55,7 @@ const CONFIG_SECTIONS = [
   'shipping',
   'seo',
   'legal',
+  'media',
 ]
 
 // Логотип и знак лежат среди иконок (картинки.md), но иконками не являются
@@ -408,9 +377,20 @@ function checkInstagram(posts, images) {
 }
 
 /** То же для картинок блоков: отсутствие — предупреждение, на их месте живёт заглушка */
-function checkContentImages(ids, manifest) {
+/**
+ * Фото страниц, а не товаров (site.media, данные.md §7): герой, плитки подбора, кадры
+ * регулировки, «Nosotros»… Выбрать «ничего» нельзя — у блока нет вида без кадра.
+ * Нет файла — предупреждение, а не ошибка: часть кадров владелец присылает по ходу,
+ * и до них в вёрстке стоит заглушка бренда — это штатное состояние, а не поломка.
+ */
+function checkContentImages(media, manifest) {
+  const ids = Object.values(media).flatMap((value) =>
+    value && typeof value === 'object' ? Object.values(value) : [value],
+  )
   for (const id of ids) {
-    if (!(id in manifest)) {
+    if (typeof id !== 'string' || !SLUG.test(id)) {
+      fail(`site.config.json: в media есть пустое или неверное фото "${id}"`)
+    } else if (!(id in manifest)) {
       warnings.push(`картинка блока "${id}" ещё не прислана — на её месте заглушка бренда`)
     }
   }
@@ -587,7 +567,7 @@ function validate() {
 
   checkProvinces(provinces)
 
-  checkContentImages(CONTENT_IMAGE_IDS, images)
+  checkContentImages(site.media, images)
   checkImages([site.seo.defaultOgImage, site.promo.image], 'Настройки сайта', images)
 
   if (site.features.secondLanguage) checkDictionaryParity(dictionary)
