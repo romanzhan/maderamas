@@ -1,0 +1,9 @@
+{{~!-- Классы кнопки выпадающего списка: её делят список магазина (select) и список
+       админки (admin/select). Как field-box — не компонент, а один список классов
+       (принцип 16). Опция: error. --~}}
+flex h-12 w-full items-center justify-between gap-2 rounded-md border bg-sand px-4
+text-left text-body ring-inset focus:ring-1 focus:outline-none lg:h-11
+disabled:cursor-not-allowed disabled:border-border disabled:bg-sand-hover
+disabled:text-charcoal/70
+{{#if error}}border-error focus:border-error focus:ring-error{{/if}}
+{{#unless error}}border-border focus:border-clay focus:ring-clay{{/unless}}

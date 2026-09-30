@@ -3,7 +3,7 @@ import { announcementBar } from './announcement.js'
 import { catalogStore } from './catalog.js'
 import { initCarousels } from './carousel.js'
 import { initGallery } from './gallery.js'
-import { siteHeader } from './header.js'
+import { isOwner, siteHeader } from './header.js'
 import { offlineNotice } from './offline.js'
 import { overlay, overlayPanel } from './overlay.js'
 import { productPage } from './product.js'
@@ -24,7 +24,8 @@ import { scrollStrip } from './scroll-strip.js'
 // Всё, что Alpine должен знать, регистрируется до старта (сложные-узлы.md п. 14)
 document.addEventListener('alpine:init', () => {
   Alpine.store('overlay', overlay)
-  Alpine.store('header', { scrolled: false })
+  // owner — полоса владельца над сайтом (owner-bar): читается один раз при старте
+  Alpine.store('header', { scrolled: false, owner: isOwner() })
   Alpine.store('cart', cart)
   Alpine.store('wishlist', wishlist)
   // Каталог: без сетки на странице store молча ничего не делает

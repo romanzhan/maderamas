@@ -1,0 +1,38 @@
+{{!-- Выпадающий список редактора (admin/field): тот же список, что у магазина — поведение
+      src/scripts/select.js, раскрытая часть и вид кнопки — общие (select-panel,
+      select-trigger-class). Отличие одно: пунктов нет в разметке, они приходят из данных
+      редактора. m и f — имена переменных Alpine, как у admin/field.
+      Пункт «—» (пусто) есть, когда поле можно оставить незаполненным. --}}
+<div
+  class="flex flex-col gap-2"
+  x-data="selectField()"
+  x-effect="options = [
+    ...({{f}}.nullable || !{{f}}.required ? [{ code: '', name: '—' }] : []),
+    ...c.selectOptions({{f}}).map((option) => ({ code: option.value, name: option.label })),
+  ]; value = String(c.value({{m}}, {{f}}))"
+  x-on:choose="c.update({{m}}, {{f}}, $event.detail)"
+  x-on:click.outside="open && hide({ focusTrigger: false })"
+>
+  <span x-bind:id="prefix + '-label'" class="text-small font-medium">
+    <span x-text="{{f}}.label"></span><span x-show="{{f}}.required" class="text-error" aria-hidden="true"> *</span>
+  </span>
+  <div class="relative w-full sm:max-w-md">
+    <button
+      type="button"
+      x-ref="trigger"
+      role="combobox"
+      x-bind:aria-controls="prefix + '-list'"
+      x-bind:aria-labelledby="prefix + '-label'"
+      x-bind:aria-expanded="open"
+      x-bind:aria-required="{{f}}.required ? 'true' : null"
+      x-bind:aria-activedescendant="open && highlighted >= 0 ? optionId(highlighted) : null"
+      x-on:click="open ? hide() : show()"
+      x-on:keydown="onKey($event)"
+      class="{{> select-trigger-class}}"
+    >
+      <span class="truncate" x-bind:class="selected?.code ? '' : 'text-charcoal/70'" x-text="selected ? selected.name : '—'"></span>
+      {{> icon empty name="chevron-down" class="size-5 shrink-0"}}
+    </button>
+    {{> select-panel}}
+  </div>
+</div>

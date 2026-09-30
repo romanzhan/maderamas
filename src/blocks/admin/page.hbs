@@ -8,7 +8,7 @@
       Noindex и Disallow: страница служебная и под паролем. --}}
 <main
   id="contenido"
-  class="page-container py-6 lg:py-10"
+  class="page-container flex flex-1 flex-col py-6 lg:py-10"
   x-data="{ a: $store.admin }"
   x-init="a.start($el)"
   data-admin
@@ -69,13 +69,12 @@
   {{#each adminMessageTypes}}data-t-type-{{type}}="{{t key}}" {{/each}}
   {{#each adminMessageLabels}}data-l-{{field}}="{{t key}}" {{/each}}
 >
-  <div class="flex flex-wrap items-center justify-between gap-4">
+  {{!-- Заголовок — только после входа: страница входа открыта всем, и «админка» на ней
+        ни к чему (владелец 30.09.2026). Публикация и выход — в шапке (admin/header-actions);
+        на телефоне публикация здесь: в шапке рядом с выходом ей тесно --}}
+  <div x-show="a.auth === 'in'" x-cloak class="flex flex-wrap items-center justify-between gap-4">
     <h1 class="font-display text-h1 lg:text-h1-lg">{{t "admin.title"}}</h1>
-    <div x-show="a.auth === 'in'" x-cloak class="flex items-center gap-3">
-      {{!-- Публикация видна из любого раздела: правка сохранена ≠ правка на сайте --}}
-      {{> admin/build-status}}
-      {{> button empty tertiary=true sizeMd=true label="admin.logout" onClick="a.logout()"}}
-    </div>
+    <span class="sm:hidden">{{> admin/build-status}}</span>
   </div>
 
   {{!-- Сессия ещё проверяется: место под форму или список, чтобы страница не прыгала --}}
@@ -85,24 +84,36 @@
     <div class="h-12 w-1/2 rounded-lg bg-sand"></div>
   </div>
 
-  {{!-- Вход: один пароль, без логинов и ролей (бэкенд.md §13) --}}
+  {{!-- Вход: один пароль, без логинов и ролей (бэкенд.md §13). Карточка по центру,
+        без слова «админка»: страница открыта всем (владелец 30.09.2026).
+        Ошибка — в строке сообщения самого поля, как у всех полей сайта: отдельной
+        строкой ниже она уезжала от поля. Поле ведёт себя как в живой форме (live),
+        только ошибки приходят не из проверки формы, а из ответа сервера.
+        «Запомнить» — месяц без входа, иначе выход при закрытии браузера (бэкенд.md §13) --}}
   <form
     x-show="a.auth === 'out'"
     x-cloak
     novalidate
-    x-on:submit.prevent="a.login($event.target.elements.password.value)"
-    class="mt-8 flex max-w-sm flex-col gap-4"
+    x-data="{ get errors() { return { password: this.$store.admin.loginError } }, warnings: {}, valids: {} }"
+    x-on:submit.prevent="a.login($event.target.elements.password.value, $event.target.elements.remember.checked)"
+    class="m-auto flex w-full max-w-sm flex-col gap-6 rounded-xl border border-line bg-cream p-6 lg:p-8"
   >
-    <h2 class="text-h3 lg:text-h3-lg">{{t "admin.loginTitle"}}</h2>
-    {{> field empty id="admin-password" name="password" type="password" label="admin.password"
-        required=true autocomplete="current-password"}}
-    <p x-show="a.loginError" x-cloak role="alert" class="flex items-start gap-2 text-small text-error">
-      <span class="icon-line shrink-0">{{> icon empty name="circle-alert" class="size-4"}}</span>
-      <span x-text="a.loginError"></span>
-    </p>
-    <div>
-      {{> button empty primary=true sizeLg=true submit=true bindLoading="a.loggingIn" label="admin.enter"}}
+    {{!-- Шапки до входа нет: знак бренда — здесь, ссылкой на магазин --}}
+    <a href="/" class="flex min-h-11 items-center justify-center">{{> wordmark empty}}</a>
+    <div class="flex flex-col items-center gap-3 text-center">
+      <span class="flex size-12 items-center justify-center rounded-full bg-sand text-clay">
+        {{> icon empty name="lock" class="size-6"}}
+      </span>
+      <h2 class="text-h3 lg:text-h3-lg">{{t "admin.loginTitle"}}</h2>
     </div>
+    <div class="flex flex-col gap-2">
+      {{> field empty id="admin-password" name="password" type="password" label="admin.password"
+          required=true autocomplete="current-password" live=true reveal=true
+          revealLabel="admin.showPassword" messageOnError=true}}
+      {{> checkbox empty name="remember" label="admin.remember"}}
+    </div>
+    {{> button empty primary=true sizeLg=true fullWidth=true submit=true bindLoading="a.loggingIn"
+        label="admin.enter"}}
   </form>
 
   {{!-- Вошли: меню разделов слева (с 1024), справа выбранный раздел. На телефоне меню
@@ -306,7 +317,9 @@
 
   {{!-- Заказ подробно --}}
   <div x-show="a.auth === 'in' && a.order" x-cloak class="mt-6 lg:mt-0">
-    {{> button empty tertiary=true sizeMd=true icon="chevron-left" label="admin.back" onClick="a.closeOrder()"}}
+    {{!-- «Назад» — та же ссылка, что внизу статьи и игры: стрелка встаёт по левому краю
+          текста заказа (у кнопки её сдвигал внутренний отступ) --}}
+    {{> link empty nav=true back=true label="admin.back" onClick="a.closeOrder()"}}
 
     <div x-show="a.detail === 'loading'" aria-hidden="true" class="mt-6 flex flex-col gap-4">
       <div class="h-8 w-1/2 rounded-sm bg-sand"></div>
@@ -323,7 +336,9 @@
     </div>
 
     <template x-if="a.order && a.detail === 'ready'">
-      <div class="mt-6 flex max-w-3xl flex-col gap-8">
+      {{!-- Заказ разложен по карточкам, у каждого значения — подпись над ним: сплошным
+            текстом имя, почта, телефон и адрес сливались (владелец 30.09.2026) --}}
+      <div class="mt-4 flex max-w-4xl flex-col gap-6">
         <div class="flex flex-wrap items-center gap-3">
           <h2 class="font-display text-h2 lg:text-h2-lg" x-text="'#' + a.order.number"></h2>
           {{> badge empty bindKind="a.statusKind(a.statusOf(a.order))" bindText="a.statusLabel(a.statusOf(a.order))"}}
@@ -343,88 +358,140 @@
           </span>
         </div>
 
-        <section class="grid gap-6 sm:grid-cols-2">
-          <div>
-            <h3 class="text-h4 lg:text-h4-lg">{{t "admin.customer"}}</h3>
-            <p class="mt-2" x-text="a.order.customer.billing_first_name + ' ' + a.order.customer.billing_last_name"></p>
-            <p>{{> link empty inline=true bindHref="'mailto:' + a.order.customer.billing_email" bindText="a.order.customer.billing_email"}}</p>
-            <p class="tabular-nums" x-text="a.order.customer.billing_phone"></p>
-            <p class="text-small text-charcoal/70">
-              <span>{{t "admin.dni"}}</span> <span class="tabular-nums" x-text="a.order.customer.billing_dni"></span>
-            </p>
-            <div class="mt-3">
+        <div class="grid gap-4 md:grid-cols-2">
+          <section class="flex flex-col gap-4 rounded-xl border border-line bg-cream p-4 lg:p-6">
+            <h3 class="flex items-center gap-2 text-h4 lg:text-h4-lg">
+              {{> icon empty name="user" class="size-5 text-clay"}}{{t "admin.customer"}}
+            </h3>
+            <dl class="flex flex-col gap-3">
+              <div>
+                <dt class="text-small text-charcoal/70">{{t "admin.orderName"}}</dt>
+                <dd class="font-medium" x-text="a.order.customer.billing_first_name + ' ' + a.order.customer.billing_last_name"></dd>
+              </div>
+              <div>
+                <dt class="text-small text-charcoal/70">{{t "admin.orderEmail"}}</dt>
+                <dd class="break-all">{{> link empty inline=true bindHref="'mailto:' + a.order.customer.billing_email" bindText="a.order.customer.billing_email"}}</dd>
+              </div>
+              <div class="flex flex-wrap gap-x-8 gap-y-3">
+                <div>
+                  <dt class="text-small text-charcoal/70">{{t "admin.orderPhone"}}</dt>
+                  <dd class="tabular-nums" x-text="a.order.customer.billing_phone"></dd>
+                </div>
+                <div>
+                  <dt class="text-small text-charcoal/70">{{t "admin.dni"}}</dt>
+                  <dd class="tabular-nums" x-text="a.order.customer.billing_dni"></dd>
+                </div>
+              </div>
+            </dl>
+            <div class="mt-auto">
               {{> button empty secondary=true sizeMd=true icon="whatsapp" iconFilled=true label="admin.whatsapp"
                   bindHref="a.whatsappUrl(a.order.customer.billing_phone)" external=true}}
             </div>
-          </div>
-          <div>
-            <h3 class="text-h4 lg:text-h4-lg">{{t "admin.delivery"}}</h3>
-            <p class="mt-2" x-text="a.order.customer.billing_address_1"></p>
-            <p x-show="a.order.customer.billing_address_2" x-text="a.order.customer.billing_address_2"></p>
-            <p x-text="a.order.customer.billing_city + ', ' + a.order.customer.stateName"></p>
-            <p class="tabular-nums" x-text="a.order.customer.billing_postcode"></p>
-            <div x-show="a.order.customer.billing_references" class="mt-3">
-              <h4 class="text-small font-medium">{{t "admin.references"}}</h4>
-              <p class="whitespace-pre-line" x-text="a.order.customer.billing_references"></p>
-            </div>
-            <div x-show="a.order.tracking" class="mt-3">
-              <h4 class="text-small font-medium">{{t "admin.tracking"}}</h4>
-              <p class="tabular-nums" x-text="a.order.tracking"></p>
-            </div>
-          </div>
-        </section>
+          </section>
 
-        <section>
-          <h3 class="text-h4 lg:text-h4-lg">{{t "admin.items"}}</h3>
-          <ul class="mt-3 flex flex-col gap-2">
+          <section class="flex flex-col gap-4 rounded-xl border border-line bg-cream p-4 lg:p-6">
+            <h3 class="flex items-center gap-2 text-h4 lg:text-h4-lg">
+              {{> icon empty name="truck" class="size-5 text-clay"}}{{t "admin.delivery"}}
+            </h3>
+            <dl class="flex flex-col gap-3">
+              <div>
+                <dt class="text-small text-charcoal/70">{{t "admin.orderAddress"}}</dt>
+                <dd>
+                  <span class="block" x-text="a.order.customer.billing_address_1"></span>
+                  <span class="block" x-show="a.order.customer.billing_address_2" x-text="a.order.customer.billing_address_2"></span>
+                </dd>
+              </div>
+              <div class="flex flex-wrap gap-x-8 gap-y-3">
+                <div>
+                  <dt class="text-small text-charcoal/70">{{t "admin.orderCity"}}</dt>
+                  <dd x-text="a.order.customer.billing_city + ', ' + a.order.customer.stateName"></dd>
+                </div>
+                <div>
+                  <dt class="text-small text-charcoal/70">{{t "admin.orderPostcode"}}</dt>
+                  <dd class="tabular-nums" x-text="a.order.customer.billing_postcode"></dd>
+                </div>
+              </div>
+              <div x-show="a.order.customer.billing_references">
+                <dt class="text-small text-charcoal/70">{{t "admin.references"}}</dt>
+                <dd class="whitespace-pre-line" x-text="a.order.customer.billing_references"></dd>
+              </div>
+              <div x-show="a.order.tracking">
+                <dt class="text-small text-charcoal/70">{{t "admin.tracking"}}</dt>
+                <dd class="font-medium tabular-nums" x-text="a.order.tracking"></dd>
+              </div>
+            </dl>
+          </section>
+        </div>
+
+        <section class="flex flex-col gap-4 rounded-xl border border-line bg-cream p-4 lg:p-6">
+          <h3 class="flex items-center gap-2 text-h4 lg:text-h4-lg">
+            {{> icon empty name="package" class="size-5 text-clay"}}{{t "admin.items"}}
+          </h3>
+          <ul class="flex flex-col divide-y divide-line">
             <template x-for="line in a.order.items" x-bind:key="line.productId + (line.variantId ?? '')">
-              <li class="flex items-start justify-between gap-4">
-                <span>
-                  <span x-text="line.name"></span>
-                  <span class="text-charcoal/70" x-show="line.variant" x-text="' · ' + line.variant"></span>
-                  <span class="text-charcoal/70 tabular-nums" x-text="' × ' + line.qty"></span>
+              <li class="flex items-start justify-between gap-4 py-3 first:pt-0">
+                <span class="flex min-w-0 flex-col gap-1">
+                  <span class="font-medium" x-text="line.name"></span>
+                  <span class="flex flex-wrap items-center gap-2 text-small text-charcoal/70">
+                    <span x-show="line.variant" x-text="line.variant"></span>
+                    <span class="rounded-full bg-sand px-2 text-charcoal tabular-nums" x-text="'× ' + line.qty"></span>
+                  </span>
                 </span>
-                <span class="shrink-0 tabular-nums" x-text="a.fmtMoney(line.sum)"></span>
+                <span class="shrink-0 font-medium tabular-nums" x-text="a.fmtMoney(line.sum)"></span>
               </li>
             </template>
           </ul>
-          <dl class="mt-3 flex flex-col gap-1 border-t border-line pt-3">
+          <dl class="flex flex-col gap-2 rounded-lg bg-sand p-4">
             <div class="flex justify-between gap-4 text-small text-charcoal/70">
               <dt>{{t "admin.shipping"}}</dt>
               <dd class="tabular-nums" x-text="a.order.shipping ? a.fmtMoney(a.order.shipping) : '{{t "admin.shippingNotIncluded"}}'"></dd>
             </div>
-            <div class="flex justify-between gap-4 font-medium">
+            <div class="flex justify-between gap-4 text-h4 font-semibold lg:text-h4-lg">
               <dt>{{t "admin.total"}}</dt>
               <dd class="tabular-nums" x-text="a.fmtMoney(a.order.total)"></dd>
             </div>
           </dl>
         </section>
 
-        <section>
-          <h3 class="text-h4 lg:text-h4-lg">{{t "admin.payment"}}</h3>
-          <p class="mt-2" x-show="!a.order.payment.id">{{t "admin.noPayment"}}</p>
-          <dl x-show="a.order.payment.id" class="mt-2 flex flex-col gap-1 text-small">
-            <div class="flex gap-2"><dt class="text-charcoal/70">{{t "admin.mpPayment"}}</dt><dd class="tabular-nums" x-text="a.order.payment.id"></dd></div>
-            <div class="flex gap-2"><dt class="text-charcoal/70">{{t "admin.mpStatus"}}</dt><dd x-text="a.order.payment.status + (a.order.payment.detail ? ' · ' + a.order.payment.detail : '')"></dd></div>
-          </dl>
-        </section>
+        <div class="grid gap-4 md:grid-cols-2">
+          <section class="flex flex-col gap-4 rounded-xl border border-line bg-cream p-4 lg:p-6">
+            <h3 class="flex items-center gap-2 text-h4 lg:text-h4-lg">
+              {{> icon empty name="credit-card" class="size-5 text-clay"}}{{t "admin.payment"}}
+            </h3>
+            <p x-show="!a.order.payment.id" class="text-charcoal/70">{{t "admin.noPayment"}}</p>
+            <dl x-show="a.order.payment.id" class="flex flex-col gap-3">
+              <div>
+                <dt class="text-small text-charcoal/70">{{t "admin.mpPayment"}}</dt>
+                <dd class="tabular-nums" x-text="a.order.payment.id"></dd>
+              </div>
+              <div>
+                <dt class="text-small text-charcoal/70">{{t "admin.mpStatus"}}</dt>
+                <dd x-text="a.order.payment.status + (a.order.payment.detail ? ' · ' + a.order.payment.detail : '')"></dd>
+              </div>
+            </dl>
+          </section>
 
-        <section x-show="a.order.customer.order_comments">
-          <h3 class="text-h4 lg:text-h4-lg">{{t "admin.note"}}</h3>
-          <p class="mt-2 whitespace-pre-line" x-text="a.order.customer.order_comments"></p>
-        </section>
+          <section x-show="a.order.customer.order_comments" class="flex flex-col gap-4 rounded-xl border border-line bg-cream p-4 lg:p-6">
+            <h3 class="flex items-center gap-2 text-h4 lg:text-h4-lg">
+              {{> icon empty name="message-square" class="size-5 text-clay"}}{{t "admin.note"}}
+            </h3>
+            <p class="whitespace-pre-line" x-text="a.order.customer.order_comments"></p>
+          </section>
+        </div>
 
-        <section>
-          <h3 class="text-h4 lg:text-h4-lg">{{t "admin.history"}}</h3>
-          <ol class="mt-3 flex flex-col gap-2 text-small">
+        <section class="flex flex-col gap-4 rounded-xl border border-line bg-cream p-4 lg:p-6">
+          <h3 class="flex items-center gap-2 text-h4 lg:text-h4-lg">
+            {{> icon empty name="history" class="size-5 text-clay"}}{{t "admin.history"}}
+          </h3>
+          {{!-- Лента: точка на линии — событие, дата над текстом --}}
+          <ol class="ml-1.5 flex flex-col border-l border-line">
             <template x-for="(event, index) in a.order.events" x-bind:key="index">
-              <li class="flex flex-col gap-1 sm:flex-row sm:gap-4">
-                <span class="shrink-0 text-charcoal/70 tabular-nums sm:w-36" x-text="a.fmtDate(event.at)"></span>
-                <span>
-                  <span x-text="a.eventText(event)"></span>
-                  <span x-show="event.detail?.note" class="block text-charcoal/70 whitespace-pre-line" x-text="event.detail?.note"></span>
-                  <span x-show="event.detail?.tracking" class="block text-charcoal/70 tabular-nums" x-text="event.detail?.tracking"></span>
-                </span>
+              <li class="relative flex flex-col gap-1 pb-4 pl-5 last:pb-0">
+                <span class="absolute top-1.5 -left-1.5 size-3 rounded-full bg-clay ring-2 ring-cream" aria-hidden="true"></span>
+                <span class="text-small text-charcoal/70 tabular-nums" x-text="a.fmtDate(event.at)"></span>
+                <span x-text="a.eventText(event)"></span>
+                <span x-show="event.detail?.note" class="text-small whitespace-pre-line text-charcoal/70" x-text="event.detail?.note"></span>
+                <span x-show="event.detail?.tracking" class="text-small text-charcoal/70 tabular-nums" x-text="event.detail?.tracking"></span>
               </li>
             </template>
           </ol>

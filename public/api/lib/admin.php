@@ -7,6 +7,9 @@ declare(strict_types=1);
 
 const ADMIN_COOKIE = 'madera_admin';
 const ADMIN_SESSION_TTL = 12 * 3600;
+// «Запомнить меня» на своём устройстве — месяц без входа. Без галочки cookie живёт до
+// закрытия браузера, а сессия на сервере — не дольше 12 часов
+const ADMIN_REMEMBER_TTL = 30 * DAY_SECONDS;
 const ADMIN_PAGE_SIZE = 25;
 // Пять неверных паролей подряд — пауза на четверть часа (бэкенд.md §7 п. 14)
 const ADMIN_LOGIN_ATTEMPTS = 5;
@@ -81,11 +84,13 @@ function adminLoginHandler(): never
     // Просроченные сессии подчищаются здесь: расписания у сервера нет
     $db->prepare('DELETE FROM sessions WHERE expires_at < ?')->execute([nowUtc()]);
 
+    $remember = ($input['remember'] ?? false) === true;
     $token = bin2hex(random_bytes(32));
-    $expiresAt = time() + ADMIN_SESSION_TTL;
+    $expiresAt = time() + ($remember ? ADMIN_REMEMBER_TTL : ADMIN_SESSION_TTL);
     $db->prepare('INSERT INTO sessions (key, created_at, expires_at) VALUES (?, ?, ?)')
         ->execute([sessionKey($token), nowUtc(), gmdate('Y-m-d\TH:i:s\Z', $expiresAt)]);
-    setAdminCookie($token, $expiresAt);
+    // Без «запомнить» — cookie сеанса (срок 0): закрыл браузер — вышел
+    setAdminCookie($token, $remember ? $expiresAt : 0);
 
     jsonResponse(200, ['ok' => true]);
 }

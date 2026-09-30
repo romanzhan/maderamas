@@ -11,6 +11,9 @@
 // Проверку по существу делает сборка на сервере; её ответ показывает полоса публикации.
 
 import Alpine from 'alpinejs'
+// Календарь для полей с датой (<calendar-date>): механика библиотеки, вид — main.css.
+// Грузится вместе с редактором, то есть только в админке
+import 'cally'
 import { dateTime, money } from './format.js'
 
 const API = '/api/admin'
@@ -378,6 +381,21 @@ export const adminContent = {
     return money(Number(value) || 0)
   },
 
+  /** Заголовок календаря: «август 2026» (месяц — из листания календаря или из даты поля) */
+  monthTitle(value) {
+    const date = value instanceof Date ? value : value ? new Date(`${value}T00:00:00Z`) : new Date()
+    const month = new Intl.DateTimeFormat('ru-RU', { month: 'long', timeZone: 'UTC' }).format(date)
+    return `${month} ${date.getUTCFullYear()}`
+  },
+
+  /** Кнопки «−» и «+» у числа: шаг единица, ниже нуля не опускаемся */
+  step(model, field, delta) {
+    const current = Number(this.value(model, field)) || 0
+    // Дробное (вес 7,9) шагает от себя же, без хвостов вида 8.899999
+    const next = Math.max(0, Math.round((current + delta) * 100) / 100)
+    this.update(model, field, String(next))
+  },
+
   when(iso) {
     return iso ? dateTime(iso) : ''
   },
@@ -388,16 +406,29 @@ export const adminContent = {
     return value ?? ''
   },
 
+  /** false — значение не записано (в числе мусор): поле вернёт прежнее */
   update(model, field, raw) {
     let value = raw
     if (field.type === 'number' || field.type === 'money') {
-      value = raw === '' ? (field.nullable ? null : 0) : Number(raw)
-      if (field.type === 'money' && value !== null) value = Math.round(value)
+      // Поля текстовые, браузер буквы не отсекает: деньги пишут «45.000» и «$ 45 000»,
+      // вес — «7,9». Всё, что не число, не сохраняем — иначе в данные ушёл бы null
+      const cleaned =
+        field.type === 'money'
+          ? String(raw).replace(/[^\d-]/g, '')
+          : String(raw).replace(/\s/g, '').replace(/,/g, '.')
+      if (cleaned === '') {
+        value = field.nullable ? null : 0
+      } else {
+        value = Number(cleaned)
+        if (Number.isNaN(value)) return false
+        if (field.type === 'money') value = Math.round(value)
+      }
     } else if (
       field.type === 'select' &&
       field.options?.every((option) => typeof option.value === 'number')
     ) {
-      value = Number(raw)
+      // Пункт «—» — пусто, а не ноль
+      value = raw === '' ? (field.nullable ? null : '') : Number(raw)
     } else if (field.type === 'slug') {
       value = slugify(raw)
     } else if (typeof raw === 'string' && field.nullable && raw.trim() === '') {

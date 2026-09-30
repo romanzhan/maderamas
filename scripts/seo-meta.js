@@ -125,6 +125,10 @@ export function seoMeta({
     const [title, description, seoTitle] = CONTENT_PAGES[currentPath]
     meta.title = seoTitle ? t(seoTitle) : t('seo.titlePage', { title: t(title) })
     meta.description = t(description)
+  } else if (currentPath === '/admin/') {
+    // Страница входа открыта всем: во вкладке — только бренд, без «админки»
+    meta.title = t('seo.siteName')
+    meta.noindex = true
   } else if (SERVICE_PAGES[currentPath]) {
     meta.title = t('seo.titlePage', { title: t(SERVICE_PAGES[currentPath]) })
     meta.noindex = true

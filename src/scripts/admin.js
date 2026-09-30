@@ -8,6 +8,7 @@
 // Тексты приходят из разметки data-атрибутами: испанских строк в скриптах не бывает.
 import Alpine from 'alpinejs'
 import { dateTime, money } from './format.js'
+import { markOwner } from './header.js'
 
 const API = '/api/admin'
 const DEFAULT_TAB = 'paid'
@@ -154,6 +155,7 @@ export const admin = {
     })
     if (response.status === 401 && path !== '/login') {
       this.auth = 'out'
+      markOwner(false)
       // Сессия истекла посреди окна подтверждения: окно держит форму пароля недоступной
       const overlay = Alpine.store('overlay')
       if (overlay.active) overlay.close()
@@ -169,7 +171,13 @@ export const admin = {
     } catch {
       this.auth = 'out'
     }
-    if (this.auth === 'in') this.enter()
+    // Метку ставит и живая сессия: владелец, вошедший до её появления, увидит полосу
+    // владельца с первого же захода. Снимает её только ответ «не авторизован» (request):
+    // сбой сети — не повод прятать кнопку
+    if (this.auth === 'in') {
+      markOwner(true)
+      this.enter()
+    }
   },
 
   /** Редактор контента: свой store, общий со страницей админки */
@@ -262,7 +270,7 @@ export const admin = {
     event.currentTarget.parentElement.querySelector(`[${attribute}="${next}"]`)?.focus()
   },
 
-  async login(password) {
+  async login(password, remember = false) {
     if (this.loggingIn) return
     // Пустое поле — не повод ходить на сервер и тратить попытку (формы-и-поля.md п. 3.4)
     if (!password) {
@@ -272,9 +280,10 @@ export const admin = {
     this.loggingIn = true
     this.loginError = ''
     try {
-      const response = await this.request('/login', { password })
+      const response = await this.request('/login', { password, remember })
       if (response.ok) {
         this.auth = 'in'
+        markOwner(true)
         this.enter()
       } else if (response.status === 401) {
         this.loginError = this.texts.tWrongPassword
@@ -287,6 +296,15 @@ export const admin = {
       this.loginError = this.texts.tActionFailed
     }
     this.loggingIn = false
+    // Курсор — обратно в поле с выделенным паролем, чтобы перенабрать сразу. После
+    // отрисовки: строка ошибки под полем к этому моменту уже видна
+    if (this.loginError) {
+      Alpine.nextTick(() => {
+        const field = document.getElementById('admin-password')
+        field?.focus()
+        field?.select()
+      })
+    }
   },
 
   async logout() {
@@ -296,6 +314,7 @@ export const admin = {
       // Сессия и так закрыта — форма входа покажется в любом случае
     }
     this.auth = 'out'
+    markOwner(false)
     this.orders = []
     this.list = 'idle'
     this.messages = []

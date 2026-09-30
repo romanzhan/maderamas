@@ -96,18 +96,22 @@
   <template x-if="c.colState === 'ready' && c.col === 'sitePages' && c.sitePageConf">
     <div class="flex max-w-3xl flex-col gap-6">
       <div>
-        <button type="button" x-on:click="c.back()" class="inline-flex min-h-11 items-center gap-2 text-clay hover:text-clay-hover">
-          {{> icon empty name="chevron-left" class="size-5"}}{{t "admin.allPages"}}
-        </button>
+        {{> link empty nav=true back=true label="admin.allPages" onClick="c.back()"}}
       </div>
-      <div class="flex flex-col gap-2">
-        <div class="flex flex-wrap items-center justify-between gap-3">
+      <div class="flex flex-col gap-4">
+        <div class="flex flex-col gap-2">
           <h2 class="font-display text-h2 lg:text-h2-lg" x-text="c.sitePageConf.title"></h2>
-          <template x-if="c.sitePageConf.url">
-            <a x-bind:href="c.sitePageConf.url" target="_blank" rel="noopener" class="inline-flex min-h-11 items-center gap-2 text-small font-medium text-clay hover:text-clay-hover">{{t "admin.openOnSite"}}{{> icon empty name="external-link" class="size-4"}}</a>
-          </template>
+          <p class="text-charcoal/70" x-text="c.sitePageConf.summary"></p>
         </div>
-        <p class="text-charcoal/70" x-text="c.sitePageConf.summary"></p>
+        {{!-- Действия — полосой между линиями, как у записи ниже: отделены и от
+              заголовка, и от содержимого (владелец 30.09.2026) --}}
+        <template x-if="c.sitePageConf.url">
+          <div class="border-y border-line py-1">
+            <div class="-mx-3 flex flex-wrap items-center gap-2">
+              <a x-bind:href="c.sitePageConf.url" target="_blank" rel="noopener" class="inline-flex min-h-11 items-center gap-2 rounded-lg px-3 text-small font-medium text-clay hover:bg-sand-hover">{{t "admin.openOnSite"}}{{> icon empty name="external-link" class="size-4"}}</a>
+            </div>
+          </div>
+        </template>
       </div>
 
       {{!-- Оглавление: блоки страницы по порядку, нажатие прокручивает к блоку --}}
@@ -230,13 +234,16 @@
   <template x-if="c.colState === 'ready' && c.conf && !c.conf.object && c.item">
     <div class="flex max-w-3xl flex-col gap-6">
       <div>
-        <button type="button" x-on:click="c.back()" class="inline-flex min-h-11 items-center gap-2 text-clay hover:text-clay-hover">
-          {{> icon empty name="chevron-left" class="size-5"}}<span x-text="c.col === 'pages' ? '{{t "admin.allPages"}}' : c.conf.title"></span>
-        </button>
+        {{> link empty nav=true back=true onClick="c.back()"
+            bindLabel=(concat "c.col === 'pages' ? '" (t "admin.allPages") "' : c.conf.title")}}
       </div>
-      <div class="flex flex-col gap-3">
+      <div class="flex flex-col gap-4">
         <h2 class="font-display text-h2 lg:text-h2-lg" x-text="c.title(c.item)"></h2>
-        <div class="flex flex-wrap items-center gap-2">
+        {{!-- Действия с записью — полосой между двумя линиями: под заголовком они
+              читались его продолжением (владелец 30.09.2026). Кнопки сдвинуты на свой
+              отступ влево, чтобы текст первой встал по краю заголовка --}}
+        <div class="border-y border-line py-1">
+        <div class="-mx-3 flex flex-wrap items-center gap-2">
           <template x-if="c.url(c.item)">
             <a x-bind:href="c.url(c.item)" target="_blank" rel="noopener" class="inline-flex min-h-11 items-center gap-2 rounded-lg px-3 text-small font-medium text-clay hover:bg-sand-hover">{{t "admin.openOnSite"}}{{> icon empty name="external-link" class="size-4"}}</a>
           </template>
@@ -248,6 +255,7 @@
             class="inline-flex min-h-11 items-center gap-2 rounded-lg px-3 text-small font-medium"
           >{{> icon empty name="trash-2" class="size-4"}}<span x-text="c.confirmDelete === c.itemIndex ? '{{t "admin.confirmDelete"}}' : '{{t "admin.delete"}}'"></span></button>
           <button x-show="c.confirmDelete === c.itemIndex" type="button" x-on:click="c.confirmDelete = null" class="inline-flex min-h-11 items-center rounded-lg px-3 text-small hover:bg-sand-hover">{{t "admin.cancel"}}</button>
+        </div>
         </div>
       </div>
       {{> admin/groups m="c.item"}}
@@ -318,7 +326,7 @@
   {{!-- ——— Полоса сохранения: видна, когда есть что сохранять или что сказать ——— --}}
   <div
     x-show="c.isDirty() || c.saving || c.saveError || c.saved"
-    class="fixed inset-x-0 bottom-0 z-20 border-t border-line bg-cream shadow-md"
+    class="fixed inset-x-0 bottom-0 z-10 border-t border-line bg-cream shadow-md"
   >
     <div class="page-container pb-safe flex flex-wrap items-center gap-3 py-3">
       <p class="min-w-0 flex-1 text-small" role="status" aria-live="polite">

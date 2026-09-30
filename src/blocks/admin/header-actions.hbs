@@ -1,0 +1,9 @@
+{{!-- Правая часть шапки в админке: состояние публикации и выход (владелец 30.09.2026:
+      «вынеси в шапку»). Видно только после входа — на странице входа шапка пустая,
+      кроме логотипа. Состояние публикации на телефоне не влезает рядом с выходом —
+      там оно остаётся под заголовком страницы (admin/page). --}}
+<div x-show="$store.admin.auth === 'in'" x-cloak class="ml-auto flex items-center gap-3">
+  <span class="hidden sm:inline-flex">{{> admin/build-status}}</span>
+  {{> button empty secondary=true sizeMd=true icon="log-out" label="admin.logout"
+      onClick="$store.admin.logout()"}}
+</div>

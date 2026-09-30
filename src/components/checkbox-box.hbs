@@ -1,0 +1,15 @@
+{{!-- Квадратик чекбокса: своя отрисовка поверх нативного input (компоненты.md ч. 2).
+      Один на магазин (checkbox) и админку (admin/field) — второй разметки квадратика
+      быть не должно (принцип 16). Атрибуты самого input (имя, значение, привязки
+      Alpine) приходят блоком вызова: {{#> checkbox-box}}name="…" checked{{/checkbox-box}} --}}
+<span class="relative mt-1 flex size-6 shrink-0 items-center justify-center lg:size-5">
+  <input
+    type="checkbox"
+    {{> @partial-block}}
+    class="peer size-full appearance-none rounded-sm border border-border bg-sand
+      checked:border-clay checked:bg-clay disabled:cursor-default"
+  />
+  <span class="pointer-events-none absolute text-cream opacity-0 peer-checked:opacity-100">
+    {{> icon empty name="check" class="size-4"}}
+  </span>
+</span>
