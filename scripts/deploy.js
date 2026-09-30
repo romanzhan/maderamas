@@ -41,7 +41,9 @@ const sshArgs = [
 
 function ssh(script, input) {
   const result = spawnSync('ssh', [...sshArgs, script], {
-    input,
+    // Вывод читается байтами (архивы), поэтому и вход — байтами: строка при encoding
+    // 'buffer' не перекодируется
+    input: typeof input === 'string' ? Buffer.from(input) : input,
     encoding: 'buffer',
     maxBuffer: 1 << 30,
   })
