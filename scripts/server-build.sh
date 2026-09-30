@@ -60,7 +60,7 @@ cp "$BUILD/data/images.json" "$CONTENT/data/images.json.tmp" &&
   mv "$CONTENT/data/images.json.tmp" "$CONTENT/data/images.json" ||
   fail 'Список картинок не скопировался в ~/madera-content'
 
-# Цели: dev всегда, боевой сайт — после запуска (scripts/launch.js дописывает его).
+# Цели — из targets.json: с 30.09.2026 только боевой сайт (dev закрыт, scripts/deploy.js).
 # Список — в переменную, не через <(...): на хостинге нет /dev/fd, и подстановка молча
 # давала пустой список, то есть «сборку» без сборки
 targets=$(node -e '

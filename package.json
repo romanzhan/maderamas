@@ -20,7 +20,8 @@
     "pages": "node scripts/generate-pages.js",
     "deploy": "node scripts/deploy.js",
     "content:pull": "node scripts/content-sync.js",
-    "launch": "node scripts/launch.js"
+    "launch": "node scripts/launch.js",
+    "backup:pull": "node scripts/backup-pull.js"
   },
   "dependencies": {
     "alpinejs": "^3.15.0",

@@ -95,6 +95,19 @@ function logLine(string $level, string $message, array $context = []): void
     file_put_contents($dir . '/api-' . gmdate('Y-m') . '.log', $line . PHP_EOL, FILE_APPEND | LOCK_EX);
 }
 
+/**
+ * Журнал действий владельца (бэкенд.md §7): вход и неудачные попытки, решения по заказам
+ * и сообщениям, правки контента — с адресом, откуда пришли. Сайт стоит за сетью доставки
+ * хостинга, поэтому рядом с адресом соединения — адрес, который она передала
+ */
+function auditLine(string $message, array $context = []): void
+{
+    $forwarded = trim(explode(',', (string) ($_SERVER['HTTP_X_FORWARDED_FOR'] ?? ''))[0]);
+    logLine('info', 'admin: ' . $message, $context + [
+        'ip' => $forwarded !== '' ? $forwarded : ($_SERVER['REMOTE_ADDR'] ?? ''),
+    ]);
+}
+
 function sendJsonHeaders(int $status): void
 {
     http_response_code($status);

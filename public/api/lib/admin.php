@@ -78,6 +78,7 @@ function adminLoginHandler(): never
     $input = readJsonBody();
     $password = $input['password'] ?? '';
     if (!is_string($password) || !password_verify($password, $hash)) {
+        auditLine('неверный пароль');
         fail(401, 'wrongPassword');
     }
 
@@ -89,6 +90,7 @@ function adminLoginHandler(): never
     $expiresAt = time() + ($remember ? ADMIN_REMEMBER_TTL : ADMIN_SESSION_TTL);
     $db->prepare('INSERT INTO sessions (key, created_at, expires_at) VALUES (?, ?, ?)')
         ->execute([sessionKey($token), nowUtc(), gmdate('Y-m-d\TH:i:s\Z', $expiresAt)]);
+    auditLine('вход', ['remember' => $remember]);
     // Без «запомнить» — cookie сеанса (срок 0): закрыл браузер — вышел
     setAdminCookie($token, $remember ? $expiresAt : 0);
 
@@ -105,6 +107,7 @@ function adminLogoutHandler(): never
         $db->prepare('DELETE FROM sessions WHERE key = ?')->execute([sessionKey($token)]);
     }
     setAdminCookie('', time() - DAY_SECONDS);
+    auditLine('выход');
     jsonResponse(200, ['ok' => true]);
 }
 
@@ -246,6 +249,7 @@ function adminShipHandler(string $number): never
 
     updateOrder($db, $order['id'], ['shipped_at' => nowUtc(), 'tracking' => $tracking !== '' ? $tracking : null]);
     addEvent($db, $order['id'], 'shipped', $tracking !== '' ? ['tracking' => $tracking] : null);
+    auditLine('заказ отправлен', ['order' => $number]);
 
     finishResponse(200, ['ok' => true]);
     notifyShipped($db, fetchOrderById($db, $order['id']), baseUrl());
@@ -262,6 +266,7 @@ function adminCancelHandler(string $number): never
 
     updateOrder($db, $order['id'], ['status' => 'cancelled']);
     addEvent($db, $order['id'], 'cancelled_by_owner', ['from' => $order['status']]);
+    auditLine('заказ отменён', ['order' => $number]);
     jsonResponse(200, ['ok' => true]);
 }
 
@@ -317,6 +322,7 @@ function adminMessageStatusHandler(int $id): never
     }
 
     $db->prepare('UPDATE messages SET status = ?, updated_at = ? WHERE id = ?')->execute([$status, nowUtc(), $id]);
+    auditLine('сообщение', ['id' => $id, 'from' => $message['status'], 'to' => $status]);
     jsonResponse(200, ['ok' => true]);
 }
 
@@ -335,6 +341,7 @@ function adminResolveHandler(string $number): never
 
     updateOrder($db, $order['id'], ['status' => $decision]);
     addEvent($db, $order['id'], 'resolved', ['to' => $decision, 'note' => $note]);
+    auditLine('заказ разобран', ['order' => $number, 'to' => $decision]);
 
     finishResponse(200, ['ok' => true]);
     // Покупатель, чей платёж владелец признал верным, письма об оплате обычно ещё не получал —
