@@ -120,11 +120,12 @@ console.log(
   `Код на сервере: ${files.length} файлов${upload.includes('deps') ? ', зависимости обновлены' : ''}`,
 )
 
-// Цели сборки: превью есть всегда; боевой сайт дописывает npm run launch
+// Цели сборки: с 30.09.2026 одна — боевой сайт (dev закрыт, на нём только переадресация
+// на www). Список живёт на сервере; пропал — восстанавливается без dev
 const targets = ssh(`cat ~/${BUILD}/targets.json`)
 if (!targets.ok) {
-  const dev = [{ name: 'dev', path: deploy.path, url: deploy.url, preview: true }]
-  sshOrFail(`cat > ~/${BUILD}/targets.json`, JSON.stringify(dev, null, 2), 'Цели не записались')
+  const prod = [{ name: 'prod', path: deploy.prod.path, url: deploy.prod.url, preview: false }]
+  sshOrFail(`cat > ~/${BUILD}/targets.json`, JSON.stringify(prod, null, 2), 'Цели не записались')
 }
 const siteTargets = JSON.parse(targets.ok ? targets.out : ssh(`cat ~/${BUILD}/targets.json`).out)
 

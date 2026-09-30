@@ -61,6 +61,17 @@ function remote(script, input = '') {
   return result.stdout.trim()
 }
 
+// Запуск выполнен 30.09.2026, а dev закрыт тем же днём (владелец). Повторный прогон
+// вернул бы на dev папку данных с копией боевых ключей и вторую цель сборки, и снова
+// трогал бы DNS — поэтому команда больше не работает. Секрет уведомлений Mercado Pago —
+// `cli.php webhook-secret` (бэкенд.md §10)
+if (remote('test -f "$HOME/madera-data/.lanzado" && echo yes || echo no') === 'yes') {
+  throw new Error(
+    'Магазин уже запущен (30.09.2026), dev закрыт — launch второй раз не выполняется. ' +
+      'Секрет вебхука: ssh … "php ~/domains/maderamas.com.ar/public_html/api/cli.php webhook-secret" < файл',
+  )
+}
+
 /** Ключи из mercadopago-prod.txt (строки имя=значение; # — комментарий) */
 function liveKeys() {
   if (!existsSync(keysPath)) throw new Error('Нет mercadopago-prod.txt с боевыми ключами')

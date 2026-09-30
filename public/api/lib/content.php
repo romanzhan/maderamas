@@ -192,7 +192,7 @@ function adminContentSaveHandler(string $name): never
     saveHistory($name, $currentRaw);
     writeFileAtomic($file, $raw);
     requestRebuild('admin:' . $name);
-    logLine('info', 'admin: сохранён контент', ['collection' => $name]);
+    auditLine('сохранён контент', ['collection' => $name]);
 
     jsonResponse(200, ['version' => contentVersion($raw), 'build' => buildStatus()]);
 }
@@ -437,7 +437,7 @@ function adminUploadHandler(): never
         throw new RuntimeException("Не сохранился загруженный файл {$id}");
     }
     requestRebuild('upload:' . $id);
-    logLine('info', 'admin: загружен файл', ['flow' => $flow, 'id' => $id]);
+    auditLine('загружен файл', ['flow' => $flow, 'id' => $id]);
 
     jsonResponse(200, ['id' => $id, 'images' => contentImages(), 'build' => buildStatus()]);
 }
