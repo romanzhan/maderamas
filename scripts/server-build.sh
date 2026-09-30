@@ -49,18 +49,22 @@ timeout 900 node scripts/images.js >>"$LOG" 2>&1 || fail 'Конвейер ка�
 # Админке нужен свежий список картинок с превью
 cp "$BUILD/data/images.json" "$CONTENT/data/images.json"
 
-# Цели: dev всегда, боевой сайт — после запуска (scripts/launch.js дописывает его)
+# Цели: dev всегда, боевой сайт — после запуска (scripts/launch.js дописывает его).
+# Список — в переменную, не через <(...): на хостинге нет /dev/fd, и подстановка молча
+# давала пустой список, то есть «сборку» без сборки
+targets=$(node -e '
+  for (const t of require(process.argv[1])) console.log([t.name, t.path, t.preview].join("\t"))
+' "$BUILD/targets.json" 2>>"$LOG") && [ -n "$targets" ] || fail 'Не прочитался список целей targets.json'
+
 while IFS=$'\t' read -r name path preview; do
   echo "== $name" >>"$LOG"
   if [ "$preview" = "true" ]; then
-    PREVIEW=1 timeout 900 npm run build >>"$LOG" 2>&1 || fail "Сборка «$name» не прошла"
+    PREVIEW=1 timeout 900 npm run build </dev/null >>"$LOG" 2>&1 || fail "Сборка «$name» не прошла"
   else
-    env -u PREVIEW timeout 900 npm run build >>"$LOG" 2>&1 || fail "Сборка «$name» не прошла"
+    env -u PREVIEW timeout 900 npm run build </dev/null >>"$LOG" 2>&1 || fail "Сборка «$name» не прошла"
   fi
   rsync -a --delete --chmod=D755,F644 "$BUILD/dist/" "$HOME/$path/" >>"$LOG" 2>&1 ||
     fail "Заливка «$name» не прошла"
-done < <(node -e '
-  for (const t of require(process.argv[1])) console.log([t.name, t.path, t.preview].join("\t"))
-' "$BUILD/targets.json")
+done <<<"$targets"
 
 status ok
