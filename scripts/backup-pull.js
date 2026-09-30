@@ -30,7 +30,7 @@ const ssh = (script) =>
       `${deploy.user}@${deploy.host}`,
       script,
     ],
-    { encoding: 'buffer', maxBuffer: 1 << 31 },
+    { encoding: 'buffer', maxBuffer: 2 ** 31 - 1 },
   )
 
 mkdirSync(target, { recursive: true })

@@ -1527,58 +1527,50 @@
   },
   "home-hero-mid": {
     "type": "content",
-    "width": 2752,
-    "height": 1536,
+    "width": 1456,
+    "height": 819,
     "sizes": [
       480,
       960,
-      1600,
-      1920,
-      2752
+      1456
     ],
     "format": "webp",
     "files": {
-      "480": "home-hero-mid-480-e4423487.webp",
-      "960": "home-hero-mid-960-e4423487.webp",
-      "1600": "home-hero-mid-1600-e4423487.webp",
-      "1920": "home-hero-mid-1920-e4423487.webp",
-      "2752": "home-hero-mid-2752-e4423487.webp"
+      "480": "home-hero-mid-480-1da4ffa4.webp",
+      "960": "home-hero-mid-960-1da4ffa4.webp",
+      "1456": "home-hero-mid-1456-1da4ffa4.webp"
     }
   },
   "home-hero-narrow": {
     "type": "content",
-    "width": 1152,
-    "height": 1536,
+    "width": 656,
+    "height": 820,
     "sizes": [
       480,
-      960,
-      1152
+      656
     ],
     "format": "webp",
     "files": {
-      "480": "home-hero-narrow-480-1bb92f03.webp",
-      "960": "home-hero-narrow-960-1bb92f03.webp",
-      "1152": "home-hero-narrow-1152-1bb92f03.webp"
+      "480": "home-hero-narrow-480-2795fd76.webp",
+      "656": "home-hero-narrow-656-2795fd76.webp"
     }
   },
   "home-hero-wide": {
     "type": "content",
-    "width": 2752,
-    "height": 1179,
+    "width": 1916,
+    "height": 821,
     "sizes": [
       480,
       960,
       1600,
-      1920,
-      2752
+      1916
     ],
     "format": "webp",
     "files": {
-      "480": "home-hero-wide-480-237f63f3.webp",
-      "960": "home-hero-wide-960-237f63f3.webp",
-      "1600": "home-hero-wide-1600-237f63f3.webp",
-      "1920": "home-hero-wide-1920-237f63f3.webp",
-      "2752": "home-hero-wide-2752-237f63f3.webp"
+      "480": "home-hero-wide-480-284d918d.webp",
+      "960": "home-hero-wide-960-284d918d.webp",
+      "1600": "home-hero-wide-1600-284d918d.webp",
+      "1916": "home-hero-wide-1916-284d918d.webp"
     }
   },
   "home-picker-torre": {
