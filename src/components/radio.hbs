@@ -1,18 +1,27 @@
 {{!-- Радио (компоненты.md ч. 2): выбор строго один, стрелки ходят по группе — это даёт
-      нативный input с общим name. Отрисовка своя, область нажатия не меньше 44. --}}
-<label class="flex min-h-11 items-start gap-3
+      нативный input с общим name. Отрисовка своя, область нажатия не меньше 44.
+      chip — вид «таблетки», как у чекбокса фильтров (30.09.2026, переключатели игр
+      Para familias): кружок прячется, выбранная таблетка получает рамку акцента, фокус
+      клавиатуры рисуется на самой таблетке — у спрятанного input его не видно.
+      onChange — выражение Alpine; text — готовая подпись вместо ключа словаря. --}}
+<label class="{{#if chip}}{{> pill-class}} has-checked:border-clay has-checked:bg-cream
+  has-focus-visible:outline-2 has-focus-visible:outline-offset-2
+  has-focus-visible:outline-clay{{else}}flex min-h-11 items-start gap-3{{/if}}
   {{#if disabled}}cursor-default opacity-45{{else}}cursor-pointer{{/if}}">
-  <span class="relative mt-1 flex size-6 shrink-0 items-center justify-center lg:size-5">
+  {{#unless chip}}<span class="relative mt-1 flex size-6 shrink-0 items-center justify-center lg:size-5">{{/unless}}
     <input
       type="radio"
       name="{{name}}"
       value="{{value}}"
       {{#if checked}}checked{{/if}}
       {{#if disabled}}disabled{{/if}}
-      class="peer size-full appearance-none rounded-full border border-border bg-sand
-        checked:border-clay disabled:cursor-default"
+      {{#if onChange}}x-on:change="{{onChange}}"{{/if}}
+      class="{{#if chip}}sr-only{{else}}peer size-full appearance-none rounded-full border border-border bg-sand
+        checked:border-clay disabled:cursor-default{{/if}}"
     />
+  {{#unless chip}}
     <span class="pointer-events-none absolute size-3 rounded-full bg-clay opacity-0 peer-checked:opacity-100 lg:size-2"></span>
   </span>
-  <span class="text-body">{{t label}}</span>
+  {{/unless}}
+  <span class="{{#if chip}}text-small font-medium{{else}}text-body{{/if}}">{{#if text}}{{text}}{{else}}{{t label}}{{/if}}</span>
 </label>

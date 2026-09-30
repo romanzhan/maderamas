@@ -514,7 +514,7 @@
       "found": "Pares: {found} de {total}",
       "cardHidden": "Carta {n}, boca abajo",
       "match": "¡Par encontrado! {name}.",
-      "noMatch": "No son iguales. Probá otra vez.",
+      "noMatch": "No son iguales: {first} y {second}. Probá otra vez.",
       "won": "¡Muy bien! Encontraste todos los pares en {n} intentos.",
       "playAgain": "Jugar de nuevo",
       "cutHint": "Recortá por la línea punteada. Cada animal aparece dos veces."
@@ -528,8 +528,7 @@
       "wrong": "Casi. Probá otra vez.",
       "next": "Siguiente",
       "score": "Aciertos: {n}",
-      "optionShape": "{shape} {color}",
-      "optionNumber": "{n}"
+      "optionShape": "{shape} {color}"
     },
     "treasure": {
       "clue": "Pista {n}",
@@ -538,7 +537,6 @@
       "cardsTitle": "Las pistas"
     },
     "chart": {
-      "heading": "Mis pequeños logros",
       "name": "Nombre",
       "week": "Semana",
       "habit": "Lo que hice",
@@ -550,6 +548,10 @@
       "sat": "Sáb",
       "sun": "Dom",
       "tableTitle": "La tabla"
+    },
+    "coloring": {
+      "cardsTitle": "Las láminas",
+      "printOne": "Imprimir la lámina {name}"
     },
     "recipes": {
       "time": "Tiempo: {time}",

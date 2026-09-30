@@ -17,8 +17,8 @@
 // и тестовые заказы, — а боевой сайт берёт ~/madera-data с боевыми ключами и чистой базой.
 import { execSync, spawnSync } from 'node:child_process'
 import { randomUUID } from 'node:crypto'
-import { Resolver, resolve4 } from 'node:dns/promises'
-import { existsSync, readFileSync, writeFileSync } from 'node:fs'
+import { resolve4 } from 'node:dns/promises'
+import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { homedir } from 'node:os'
 import { resolve } from 'node:path'
 import { hostinger, waitFor } from './hostinger.js'
@@ -35,6 +35,7 @@ const prodUrl = deploy.prod.url.replace(/\/$/, '')
 const prodHost = new URL(prodUrl).host
 const apexHost = prodHost.replace(/^www\./, '')
 const devHost = new URL(deploy.url).host
+const backupsDir = resolve(root, 'madera-data', 'backups')
 
 /** Команда на сервере; stdin — то, что уходит ей на вход (секреты не попадают в строку команды) */
 function remote(script, input = '') {
@@ -111,6 +112,7 @@ if (problems.length) fail(problems)
 
 // 0. Панель хостинга. Каждый шаг смотрит, не сделан ли он уже: повторный запуск безопасен
 step('Готовлю хостинг: сайт для домена')
+const zonePath = `/api/dns/v1/zones/${apexHost}`
 const sites = (await hostinger('GET', '/api/hosting/v1/websites')).data
 if (!sites.some((site) => site.domain === apexHost)) {
   const dev = sites.find((site) => site.domain === devHost)
@@ -119,37 +121,19 @@ if (!sites.some((site) => site.domain === apexHost)) {
       `В аккаунте Hostinger нет сайта ${devHost} — не понимаю, на какой тариф ставить`,
     )
   // Домен мог быть припаркован на сайте превью (так его завели в июле): пока он там,
-  // отдельный сайт хостинг не создаёт. Снимаем парковку, но сначала сохраняем зону DNS —
-  // в ней почта магазина — и после снятия проверяем, что зона на месте
+  // отдельный сайт хостинг не создаёт. Снятие парковки удаляет и зону DNS целиком
+  // (выяснилось 30.09.2026 — вместе с ней ушла почта), поэтому зона сначала сохраняется,
+  // а после создания сайта её записи возвращаются из копии (ниже)
   const parkedPath = `/api/hosting/v1/accounts/${deploy.user}/websites/${devHost}/parked-domains`
   const parked = await hostinger('GET', parkedPath)
   if ((parked?.data ?? parked).some((item) => item.domain === apexHost)) {
-    const zonePath = `/api/dns/v1/zones/${apexHost}`
     const before = await hostinger('GET', zonePath)
     writeFileSync(
-      resolve(root, 'madera-data', 'backups', `dns-${apexHost}-${Date.now()}.json`),
+      resolve(backupsDir, `dns-${apexHost}-${Date.now()}.json`),
       JSON.stringify(before, null, 2),
     )
     await hostinger('DELETE', `${parkedPath}/${apexHost}`)
-    const after = await hostinger('GET', zonePath).catch(() => [])
-    const lost = before.filter(
-      (record) => !after.some((kept) => kept.name === record.name && kept.type === record.type),
-    )
-    if (lost.length) {
-      await hostinger('PUT', zonePath, {
-        overwrite: true,
-        zone: lost.map(({ name, type, ttl, records }) => ({
-          name,
-          type,
-          ttl,
-          records: records.map(({ content }) => ({ content })),
-        })),
-      })
-      console.log(`DNS: после снятия парковки вернул записи — ${lost.length}`)
-    }
-    console.log(
-      `Парковка ${apexHost} на ${devHost} снята, зона DNS цела (копия в madera-data/backups)`,
-    )
+    console.log(`Парковка ${apexHost} на ${devHost} снята (копия зоны DNS в madera-data/backups)`)
   }
   await hostinger('POST', '/api/hosting/v1/websites', { domain: apexHost, order_id: dev.order_id })
   process.stdout.write(`Сайт ${apexHost} заведён, жду его папку на сервере`)
@@ -158,6 +142,32 @@ if (!sites.some((site) => site.domain === apexHost)) {
     () => remote(`test -d "$HOME/${deploy.prod.path}" && echo yes || echo no`) === 'yes',
   )
   console.log(' есть')
+}
+
+// Зона DNS из копии: всё, кроме адресов сайта (@ и www — их ставит шаг переключения ниже).
+// Нужна, если зона пропала вместе с парковкой: без неё у магазина нет почты
+const savedZones = readdirSync(backupsDir).filter((name) => name.startsWith(`dns-${apexHost}-`))
+if (savedZones.length) {
+  const saved = JSON.parse(readFileSync(resolve(backupsDir, savedZones.sort().at(-1)), 'utf8'))
+  const current = await hostinger('GET', zonePath).catch(() => [])
+  const missing = saved.filter(
+    (record) =>
+      !(record.name === '@' && record.type === 'A') &&
+      record.name !== 'www' &&
+      !current.some((kept) => kept.name === record.name && kept.type === record.type),
+  )
+  if (missing.length) {
+    await hostinger('PUT', zonePath, {
+      overwrite: true,
+      zone: missing.map(({ name, type, ttl, records }) => ({
+        name,
+        type,
+        ttl,
+        records: records.map(({ content }) => ({ content })),
+      })),
+    })
+    console.log(`DNS: записи из копии возвращены — ${missing.length} (почта и подписи)`)
+  }
 }
 
 // 2. Сервер: копия, отдельная папка превью, боевые ключи и чистая база
@@ -216,16 +226,18 @@ remote(
 remote(`bash "$HOME/madera-build/scripts/server-build.sh" --force`)
 
 step('Переключаю домен на хостинг')
-// Адрес сервера — тот же, что у SSH: хостинг отдаёт сайт прямо с него (проверено 30.09.2026),
-// сеть доставки хостинга для голого домена не нужна. www — псевдоним голого домена
+// Создавая сайт, хостинг сам ставит в зону свою сеть доставки: ALIAS для @ и CNAME для www
+// на *.cdn.hstgr.net, с её сертификатом (так вышло 30.09.2026). Тогда трогать нечего.
+// Прямые записи на сервер ставятся, только если домен смотрит мимо хостинга (Tiendanube)
 const serverIp = deploy.host
-const zone = await hostinger('GET', `/api/dns/v1/zones/${apexHost}`)
-const recordsOf = (name, type) =>
-  (zone.find((record) => record.name === name && record.type === type)?.records ?? [])
-    .map((record) => record.content)
-    .join(' ')
-if (recordsOf('@', 'A') !== serverIp || recordsOf('www', 'CNAME') !== `${apexHost}.`) {
-  await hostinger('PUT', `/api/dns/v1/zones/${apexHost}`, {
+const zone = await hostinger('GET', zonePath)
+const pointsHere = (name) =>
+  zone
+    .filter((record) => record.name === name && ['A', 'ALIAS', 'CNAME'].includes(record.type))
+    .flatMap((record) => record.records.map((item) => item.content))
+    .some((content) => content.includes('hstgr.net') || content === serverIp)
+if (!pointsHere('@') || !pointsHere('www')) {
+  await hostinger('PUT', zonePath, {
     overwrite: true,
     zone: [
       { name: '@', type: 'A', ttl: 300, records: [{ content: serverIp }] },
@@ -235,36 +247,25 @@ if (recordsOf('@', 'A') !== serverIp || recordsOf('www', 'CNAME') !== `${apexHos
   console.log(`DNS: ${apexHost} → ${serverIp}, www → ${apexHost} (почта не тронута)`)
 }
 
-// Смотрим через публичные серверы имён, а не системный кеш: он помнит Tiendanube
-const publicDns = new Resolver()
-publicDns.setServers(['8.8.8.8', '1.1.1.1'])
-process.stdout.write('Жду, пока DNS разойдётся')
-await waitFor('DNS домена указывает на хостинг', async () => {
-  const [apex, www] = await Promise.all([
-    publicDns.resolve4(apexHost).catch(() => []),
-    publicDns.resolve4(prodHost).catch(() => []),
-  ])
-  return apex.includes(serverIp) && www.includes(serverIp)
-})
-console.log(' готово')
-
-const sslPath = `/api/hosting/v1/accounts/${deploy.user}/websites/${apexHost}/ssl`
-const sslState = async () => {
-  const status = await hostinger('GET', `${sslPath}/status`)
-  return status?.data?.status ?? status?.status
-}
-if ((await sslState()) !== 'active') {
-  if (!['installing', 'waiting_for_retry'].includes(await sslState())) {
-    await hostinger('POST', `${sslPath}/setup`)
+// Готово, когда оба адреса отвечают по https с верным сертификатом. Сертификат выпускает
+// хостинг: сеть доставки — сама, прямой сервер — по запросу (ssl/setup)
+const answers = async (host) =>
+  fetch(`https://${host}/`, { redirect: 'manual', signal: AbortSignal.timeout(15_000) })
+    .then((response) => response.status < 500)
+    .catch(() => false)
+if (!(await answers(apexHost)) || !(await answers(prodHost))) {
+  const sslPath = `/api/hosting/v1/accounts/${deploy.user}/websites/${apexHost}/ssl`
+  const status = await hostinger('GET', `${sslPath}/status`).catch(() => null)
+  const state = status?.data?.status ?? status?.status
+  if (!['active', 'installing', 'waiting_for_retry'].includes(state)) {
+    await hostinger('POST', `${sslPath}/setup`).catch(() => null)
   }
-  process.stdout.write('Ставлю сертификат')
-  await waitFor('сертификат SSL', async () => {
-    const state = await sslState()
-    if (state === 'failed')
-      throw new Error('Hostinger не смог выпустить сертификат — см. hPanel → SSL')
-    return state === 'active'
-  })
-  console.log(' есть')
+  process.stdout.write('Жду, пока домен ответит по https')
+  await waitFor(
+    'https по адресу магазина',
+    async () => (await answers(apexHost)) && (await answers(prodHost)),
+  )
+  console.log(' готово')
 }
 
 // Сайт на месте: домен, сертификат и папка сходятся?
@@ -313,13 +314,22 @@ for (const from of [
   `https://${apexHost}/sillas/`,
   `http://${prodHost}/sillas/`,
 ]) {
-  const response = await fetch(from, {
-    redirect: 'manual',
-    signal: AbortSignal.timeout(20_000),
-  }).catch(() => null)
-  const to = response?.headers.get('location') ?? ''
-  console.log(`${response?.status ?? 0} ${from} → ${to}`)
-  if (response?.status !== 301 || to !== `${prodUrl}/sillas/`) redirectProblems.push(from)
+  // Цепочка до двух шагов: сеть доставки хостинга сама уводит http на https, а на www
+  // уводит уже наш .htaccess — http://голый.домен доходит до цели за два постоянных перехода
+  let url = from
+  let ok = false
+  for (let hop = 0; hop < 2 && !ok; hop++) {
+    const response = await fetch(url, {
+      redirect: 'manual',
+      signal: AbortSignal.timeout(20_000),
+    }).catch(() => null)
+    const to = response?.headers.get('location') ?? ''
+    console.log(`${response?.status ?? 0} ${url} → ${to}`)
+    if (response?.status !== 301) break
+    ok = to === `${prodUrl}/sillas/`
+    url = to
+  }
+  if (!ok) redirectProblems.push(from)
 }
 if (redirectProblems.length) {
   throw new Error(`Сайт залит, но перенаправления не работают: ${redirectProblems.join(', ')}`)

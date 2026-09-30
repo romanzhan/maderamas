@@ -22,16 +22,10 @@
       <fieldset>
         <legend class="text-small font-medium">{{t "families.shapes.modesLabel"}}</legend>
         <div class="mt-2 flex flex-wrap gap-2">
-          <label class="{{> pill-class}} has-checked:border-clay has-checked:bg-cream">
-            <input type="radio" name="juego-modo" value="shapes" class="sr-only" checked
-              x-on:change="setMode('shapes')" />
-            <span class="text-small font-medium">{{t "families.shapes.modeShapes"}}</span>
-          </label>
-          <label class="{{> pill-class}} has-checked:border-clay has-checked:bg-cream">
-            <input type="radio" name="juego-modo" value="numbers" class="sr-only"
-              x-on:change="setMode('numbers')" />
-            <span class="text-small font-medium">{{t "families.shapes.modeNumbers"}}</span>
-          </label>
+          {{> radio empty chip=true name="juego-modo" value="shapes" label="families.shapes.modeShapes"
+              checked=true onChange="setMode('shapes')"}}
+          {{> radio empty chip=true name="juego-modo" value="numbers" label="families.shapes.modeNumbers"
+              onChange="setMode('numbers')"}}
         </div>
       </fieldset>
       <p class="text-small text-charcoal/70 tabular-nums" x-text="scoreLabel"></p>
@@ -39,8 +33,9 @@
 
     <p class="mt-8 font-display text-h3 lg:text-h3-lg" aria-live="polite" x-text="round?.prompt"></p>
 
-    {{!-- Счёт: столько же предметов, сколько просят сосчитать. Подпись для чтения с
-          экрана не нужна — вопрос уже прочитан, а число — ответ, который ищут --}}
+    {{!-- Счёт: столько же предметов, сколько просят сосчитать. Этот режим только для глаз:
+          подпись «пять морковок» для чтения с экрана выдала бы ответ, а без неё считать
+          нечего. Режим цветов и форм читается целиком --}}
     <template x-if="mode === 'numbers' && round">
       <div class="mt-6 flex flex-wrap gap-3" aria-hidden="true">
         <template x-for="item in round.items" x-bind:key="item">
@@ -59,12 +54,12 @@
             type="button"
             x-on:click="pick(option)"
             x-bind:aria-label="option.label"
-            x-bind:disabled="isWrong(option)"
+            x-bind:aria-disabled="isWrong(option)"
             x-bind:class="state === 'right' && option.correct
               ? 'border-success bg-success-bg'
               : 'border-line bg-cream hover:bg-sand-hover'"
             class="flex min-h-24 w-full items-center justify-center rounded-xl border-2 p-3
-              transition-colors duration-150 disabled:opacity-45"
+              transition-colors duration-150 aria-disabled:opacity-45"
           >
             <template x-if="option.icon">
               <svg class="icon-stroke size-12 text-charcoal" x-bind:class="fills[option.tone]" aria-hidden="true"><use x-bind:href="'#icon-' + option.icon"></use></svg>
@@ -87,7 +82,7 @@
       ></p>
       <template x-if="state === 'right'">
         {{> button empty primary=true sizeMd=true iconRight="arrow-right"
-            label="families.shapes.next" onClick="next()"}}
+            label="families.shapes.next" onClick="next(true)"}}
       </template>
     </div>
   </div>

@@ -399,14 +399,14 @@ function checkContentImages(media, manifest) {
 
 // Игры раздела Para familias (данные.md §4б). Вид игры задаёт, что лежит в game и какая
 // разметка её выводит; неизвестный вид страница не нарисовала бы вовсе
-const ACTIVITY_KINDS = ['memotest', 'shapes', 'treasure', 'chart', 'recipes']
+const ACTIVITY_KINDS = ['memotest', 'shapes', 'treasure', 'chart', 'recipes', 'coloring']
 const ACTIVITY_FORMATS = ['online', 'print', 'kitchen']
 const PROMO_TONES = ['blue', 'pink', 'yellow', 'green', 'orange']
 
 const iconExists = (name) =>
   typeof name === 'string' && existsSync(resolve(projectRoot, `src/icons/source/${name}.svg`))
 
-function checkActivities(activities, productIds) {
+function checkActivities(activities, productIds, images) {
   checkRequiredText(activities, 'Игра', ['name', 'title', 'excerpt', 'body', 'ages', 'duration'])
 
   for (const activity of activities) {
@@ -486,13 +486,23 @@ function checkActivities(activities, productIds) {
         needText(habit.name, 'название привычки')
       }
     }
+    if (activity.kind === 'coloring') {
+      for (const sheet of needList(game.sheets, 'game.sheets', 1)) {
+        needText(sheet.name, 'название листа')
+        checkImages([sheet.image], `${where}, лист "${sheet.name}"`, images)
+        if (!sheet.image) fail(`${where}: у листа "${sheet.name}" нет картинки`)
+      }
+    }
     if (activity.kind === 'recipes') {
       for (const recipe of needList(game.recipes, 'game.recipes', 1)) {
         if (!SLUG.test(recipe.id ?? '')) fail(`${where}: у рецепта неверный id "${recipe.id}"`)
         needText(recipe.title, 'название рецепта')
         needText(recipe.time, 'время рецепта')
         for (const item of needList(recipe.ingredients, 'ингредиентах', 1)) needText(item, 'ингредиент')
-        for (const step of needList(recipe.steps, 'шагах рецепта', 1)) needText(step, 'шаг рецепта')
+        // Проверяется текст без пометки «Adulto:» — одна пометка без шага дала бы пустую строку
+        for (const step of needList(recipe.steps, 'шагах рецепта', 1)) {
+          needText(String(step).replace(/^adulto:\s*/i, ''), 'шаг рецепта')
+        }
       }
     }
   }
@@ -648,7 +658,7 @@ function validate() {
     }
   }
 
-  checkActivities(activities, productIds)
+  checkActivities(activities, productIds, images)
 
   for (const review of reviews) {
     const where = `Отзыв "${review.id}"`

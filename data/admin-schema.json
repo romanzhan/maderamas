@@ -397,7 +397,8 @@
           "counters": [],
           "clues": [],
           "habits": [],
-          "recipes": []
+          "recipes": [],
+          "sheets": []
         },
         "relatedProducts": [],
         "seo": {
@@ -452,6 +453,10 @@
             {
               "value": "recipes",
               "label": "Рецепты (печать)"
+            },
+            {
+              "value": "coloring",
+              "label": "Раскраски (печать)"
             }
           ]
         },
@@ -520,6 +525,10 @@
             {
               "value": "star",
               "label": "Звезда"
+            },
+            {
+              "value": "palette",
+              "label": "Палитра"
             }
           ]
         },
@@ -577,6 +586,7 @@
           "key": "body",
           "type": "textarea",
           "rows": 6,
+          "required": true,
           "label": "Вступление",
           "hint": "Абзацы — через пустую строку."
         },
@@ -589,6 +599,7 @@
         },
         {
           "key": "game.cards",
+          "min": 4,
           "type": "list",
           "label": "Карты",
           "item": "карту",
@@ -674,6 +685,7 @@
         },
         {
           "key": "game.shapes",
+          "min": 2,
           "type": "list",
           "label": "Фигуры",
           "item": "фигуру",
@@ -737,6 +749,7 @@
         },
         {
           "key": "game.colors",
+          "min": 2,
           "type": "list",
           "label": "Цвета",
           "item": "цвет",
@@ -794,6 +807,7 @@
         },
         {
           "key": "game.counters",
+          "min": 1,
           "type": "list",
           "label": "Что считать",
           "item": "предмет",
@@ -863,6 +877,7 @@
         },
         {
           "key": "game.clues",
+          "min": 2,
           "type": "list",
           "label": "Подсказки по порядку",
           "item": "подсказку",
@@ -900,6 +915,7 @@
         },
         {
           "key": "game.habits",
+          "min": 1,
           "type": "list",
           "label": "Строки таблицы",
           "item": "привычку",
@@ -984,6 +1000,7 @@
         },
         {
           "key": "game.recipes",
+          "min": 1,
           "type": "list",
           "label": "Рецепты",
           "item": "рецепт",
@@ -1026,11 +1043,32 @@
         },
         {
           "type": "heading",
+          "label": "Листы раскраски",
+          "when": { "kind": "coloring" }
+        },
+        {
+          "key": "game.sheets",
+          "type": "list",
+          "min": 1,
+          "label": "Листы",
+          "item": "лист",
+          "titleField": "name",
+          "when": { "kind": "coloring" },
+          "hint": "Чёрно-белый рисунок, вертикальный лист. Новые рисует scripts/coloring.js.",
+          "new": { "image": "", "name": "" },
+          "fields": [
+            { "key": "image", "type": "image", "flow": "content", "label": "Рисунок" },
+            { "key": "name", "type": "text", "label": "Название", "required": true }
+          ]
+        },
+        {
+          "type": "heading",
           "label": "Как играть"
         },
         {
           "key": "steps",
           "type": "strings",
+          "min": 1,
           "label": "Шаги «Cómo se juega»"
         },
         {

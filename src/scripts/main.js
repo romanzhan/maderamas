@@ -74,10 +74,11 @@ if (document.querySelector('[data-admin]')) {
 
 // Игры раздела Para familias (страницы.md §14б) — тем же приёмом: код только там, где игра
 if (document.querySelector('[data-game]')) {
-  const { memotest, shapesGame } = await import('./games.js')
+  const { coloringSheets, memotest, shapesGame } = await import('./games.js')
   document.addEventListener('alpine:init', () => {
     Alpine.data('memotest', memotest)
     Alpine.data('shapesGame', shapesGame)
+    Alpine.data('coloringSheets', coloringSheets)
   })
 }
 

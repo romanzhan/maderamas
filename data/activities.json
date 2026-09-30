@@ -62,7 +62,7 @@
     },
     "relatedProducts": ["silla-evolutiva", "set-mesa-sillas", "mesa-silla-evolutiva"],
     "seo": {
-      "title": "Memotest de animales para chicos: jugá online o imprimilo gratis | Madera Más",
+      "title": "Memotest de animales para jugar o imprimir | Madera Más",
       "description": null
     }
   },
@@ -128,7 +128,7 @@
     },
     "relatedProducts": ["silla-evolutiva", "equilibristas", "set-mesa-sillas"],
     "seo": {
-      "title": "Juego de colores, formas y números para chicos de 2 a 5 años | Madera Más",
+      "title": "Juego de colores, formas y números para chicos | Madera Más",
       "description": null
     }
   },
@@ -164,7 +164,7 @@
         "body": "Una búsqueda del tesoro funciona cuando todos participan y nadie se queda afuera. Tres cosas ayudan mucho:",
         "items": [
           "Con chicos que todavía no leen, formá equipos con un chico más grande o un adulto que lea las pistas.",
-          "Si son muchos, turnate quién abre cada pista: así no la encuentra siempre el más rápido.",
+          "Si son muchos, túrnense para abrir las pistas: así no las encuentra siempre el más rápido.",
           "Dejá los lugares peligrosos afuera del recorrido: nada de hornallas, escaleras sin baranda ni estantes altos."
         ]
       },
@@ -206,7 +206,7 @@
     },
     "relatedProducts": ["set-mesa-sillas", "equilibristas", "banquito-estrella"],
     "seo": {
-      "title": "Búsqueda del tesoro para cumpleaños infantil: pistas con rima para imprimir | Madera Más",
+      "title": "Búsqueda del tesoro para cumpleaños infantil | Madera Más",
       "description": null
     }
   },
@@ -260,7 +260,7 @@
     },
     "relatedProducts": ["torre-aprendizaje", "silla-evolutiva", "banquito-estrella"],
     "seo": {
-      "title": "Tabla de hábitos para chicos para imprimir: mis pequeños logros | Madera Más",
+      "title": "Tabla de hábitos para chicos para imprimir | Madera Más",
       "description": null
     }
   },
@@ -281,7 +281,7 @@
     "steps": [
       "Elegí la receta según el tiempo que tengan y la edad del chico.",
       "Juntá todos los ingredientes antes de empezar, así nadie espera.",
-      "Lavense las manos y pongan al chico a la altura de la mesada, seguro y estable.",
+      "Lávense las manos y pongan al chico a la altura de la mesada, seguro y estable.",
       "Seguí los pasos: los marcados son para él; el horno y los cuchillos filosos, para el adulto."
     ],
     "materials": [
@@ -380,8 +380,60 @@
     },
     "relatedProducts": ["torre-aprendizaje", "silla-alta", "silla-alta-dos-escalones"],
     "seo": {
-      "title": "Recetas para cocinar con chicos: pequeños ayudantes en la cocina | Madera Más",
+      "title": "Recetas para cocinar con chicos | Madera Más",
       "description": null
     }
+  },
+  {
+    "id": "laminas-para-colorear",
+    "name": "Láminas para colorear",
+    "slug": "dibujos-para-colorear",
+    "kind": "coloring",
+    "order": 6,
+    "title": "Dibujos para colorear e imprimir: animales de Argentina y más",
+    "excerpt": "Ocho láminas para colorear, listas para imprimir: carpincho, hornero, yaguareté, pingüinos y más. Trazos grandes y claros, pensados para chicos de 3 a 7 años.",
+    "ages": "De 3 a 7 años",
+    "duration": "20 minutos",
+    "format": "print",
+    "icon": "palette",
+    "tone": "blue",
+    "body": "Colorear es de las actividades más tranquilas y completas para los chicos: practican el agarre del lápiz, eligen colores, se concentran y terminan algo que es suyo.\n\nAcá tenés láminas con animales de Argentina y escenas de todos los días, con trazos gruesos y espacios grandes para que los más chicos no se frustren. Imprimí una sola o todas juntas, cada una en su hoja.",
+    "steps": [
+      "Elegí una lámina y tocá el ícono de imprimir, o imprimí todas juntas con el botón de arriba.",
+      "Prepará crayones, lápices o fibras y un lugar cómodo en la mesa.",
+      "Dejá que elija los colores: no hace falta que el carpincho sea marrón.",
+      "Cuando termine, escribí su nombre y la fecha atrás de la hoja."
+    ],
+    "materials": ["Las láminas impresas en hoja A4.", "Crayones, lápices de colores o fibras."],
+    "sections": [
+      {
+        "id": "por-edad",
+        "title": "Qué esperar según la edad",
+        "body": "Entre los 2 y los 3 años es normal pintar por encima de las líneas: están descubriendo el lápiz. Hacia los 4 y 5 años empiezan a respetar los bordes, y a los 6 ya eligen colores con intención.",
+        "note": {
+          "title": "Un consejo",
+          "text": "Crayones gruesos para los más chicos: se agarran con toda la mano y no se rompen. Los lápices finos, para cuando ya los manejan con los dedos."
+        }
+      },
+      {
+        "id": "postura",
+        "title": "Sentados a la altura justa",
+        "body": "Para colorear un buen rato, los pies tienen que apoyar y la mesa tiene que quedar a la altura de los codos. Si el chico queda bajo, colorea de costado y se cansa enseguida."
+      }
+    ],
+    "game": {
+      "sheets": [
+        { "image": "colorear-carpincho", "name": "Carpincho" },
+        { "image": "colorear-hornero", "name": "Hornero" },
+        { "image": "colorear-yaguarete", "name": "Yaguareté" },
+        { "image": "colorear-pinguinos", "name": "Pingüinos" },
+        { "image": "colorear-llama", "name": "Llama" },
+        { "image": "colorear-ballena", "name": "Ballena" },
+        { "image": "colorear-merienda", "name": "Merienda con osito" },
+        { "image": "colorear-huerta", "name": "La huerta" }
+      ]
+    },
+    "relatedProducts": ["mesa-silla-evolutiva", "set-mesa-sillas", "silla-evolutiva"],
+    "seo": { "title": "Dibujos para colorear e imprimir gratis | Madera Más", "description": null }
   }
 ]
