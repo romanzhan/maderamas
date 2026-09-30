@@ -12,6 +12,9 @@ set -u
 
 NODE_DIR=/opt/alt/alt-nodejs22/root/usr/bin
 export PATH="$NODE_DIR:/usr/local/bin:/usr/bin:/bin"
+# Сборщик Vite открывает по потоку на ядро (их на сервере 48), а лимит процессов
+# хостинга столько не даёт — сборка падала. Двух потоков хватает: ~25 секунд
+export RAYON_NUM_THREADS=2 UV_THREADPOOL_SIZE=2
 CONTENT="$HOME/madera-content"
 BUILD="$HOME/madera-build"
 LOG="$BUILD/build.log"
