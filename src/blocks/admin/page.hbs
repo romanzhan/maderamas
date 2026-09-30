@@ -102,8 +102,8 @@
     x-cloak
     role="tablist"
     aria-label="{{t "admin.sections"}}"
-    class="scrollbar-soft -mx-4 mt-6 flex gap-2 overflow-x-auto border-b border-line px-4
-      sm:mx-0 sm:px-0"
+    class="scrollbar-soft -mx-4 mt-6 flex gap-2 overflow-x-auto overflow-y-hidden border-b
+      border-line px-4 sm:mx-0 sm:px-0"
   >
     {{#each adminSections}}
       <button
@@ -115,7 +115,7 @@
         x-on:click="a.setSection('{{id}}')"
         x-on:keydown="a.sectionKey($event)"
         x-bind:class="a.section === '{{id}}' ? 'border-clay text-charcoal' : 'border-transparent text-charcoal/70 hover:text-charcoal'"
-        class="-mb-px min-h-12 shrink-0 border-b-2 px-3 font-medium whitespace-nowrap
+        class="min-h-12 shrink-0 border-b-2 px-3 font-medium whitespace-nowrap
           transition-colors duration-150"
       >{{text}}<span
           x-show="$store.adminContent.isDirty('{{id}}')"
