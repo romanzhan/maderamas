@@ -542,6 +542,9 @@ const FORMAT_LABELS = {
   kitchen: 'families.formatKitchen',
 }
 
+// Значок формата в строке характеристик игры: нажимать, печатать, готовить
+const FORMAT_ICONS = { online: 'hand', print: 'printer', kitchen: 'chef-hat' }
+
 // Тон игры → кружок значка: заливка и цвет значка на ней (визуальная-система.md §2.2:
 // на жёлтом тёмный, на остальных светлый). Цвет только в кружке, плитка песочная:
 // пять залитых плиток подряд кричали бы (там же, §2.3 — «кружок промо-тона»)
@@ -567,6 +570,7 @@ function activityCard(activity) {
     ...activity,
     href: activityUrl(activity),
     formatLabel: format,
+    formatIcon: FORMAT_ICONS[activity.format],
     meta: `${format} · ${activity.ages}`,
     accent: TONE_ACCENTS[activity.tone],
   }

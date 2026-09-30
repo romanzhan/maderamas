@@ -1,0 +1,11 @@
+{{!-- Одна характеристика игры в строке под лидом: значок в кремовом круге, подпись,
+      значение. label — ключ словаря, value — готовое значение из данных. --}}
+<div class="flex items-center gap-3 rounded-xl bg-sand p-3 lg:p-4">
+  <span class="flex size-10 shrink-0 items-center justify-center rounded-full bg-cream text-charcoal">
+    {{> icon empty name=icon class="size-5"}}
+  </span>
+  <div class="min-w-0">
+    <dt class="text-small text-charcoal/70">{{t label}}</dt>
+    <dd class="font-medium">{{value}}</dd>
+  </div>
+</div>
