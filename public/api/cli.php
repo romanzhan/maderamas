@@ -61,8 +61,67 @@ function purge(): void
     echo 'Удалено сообщений старше двух лет: ' . $statement->rowCount() . "\n";
 }
 
+/**
+ * Последние заказы с хронологией и строки журнала про вебхук и почту за сегодня —
+ * проверка тестовой оплаты (бэкенд.md §10). Только чтение
+ */
+function orders(int $limit): void
+{
+    $db = db();
+    $rows = $db->query('SELECT * FROM orders ORDER BY id DESC LIMIT ' . max(1, $limit))->fetchAll();
+    if (!$rows) {
+        echo "Заказов нет\n";
+    }
+    $events = $db->prepare('SELECT at, kind, detail FROM events WHERE order_id = ? ORDER BY id');
+    foreach ($rows as $order) {
+        $customer = json_decode((string) $order['customer'], true) ?: [];
+        echo "\n#{$order['id']} · {$order['status']} · {$order['total']} {$order['currency']} · {$order['created_at']}\n";
+        echo '  ', $customer['billing_first_name'] ?? '', ' ', $customer['billing_last_name'] ?? '',
+            ' <', $customer['billing_email'] ?? '', ">\n";
+        echo "  MP: платёж {$order['mp_payment_id']} · {$order['mp_status']} {$order['mp_status_detail']}",
+            " · сверка {$order['mp_checked_at']}\n";
+        $events->execute([$order['id']]);
+        foreach ($events as $event) {
+            echo "  {$event['at']}  {$event['kind']}  ", mb_substr((string) $event['detail'], 0, 160), "\n";
+        }
+    }
+
+    $log = dataDir() . '/logs/api-' . gmdate('Y-m') . '.log';
+    echo "\nЖурнал за сегодня (вебхук, Mercado Pago, почта):\n";
+    foreach (is_file($log) ? file($log) : [] as $line) {
+        if (str_contains($line, gmdate('Y-m-d')) && preg_match('/webhook|mercadopago|mail/i', $line)) {
+            echo '  ', trim($line), "\n";
+        }
+    }
+}
+
+/**
+ * Секрет уведомлений Mercado Pago — со стандартного ввода, не из строки команды: строки
+ * команд видны в списке процессов. Остальной конфиг не трогается (бэкенд.md §5, §10)
+ */
+function webhookSecret(): void
+{
+    $secret = trim((string) stream_get_contents(STDIN));
+    if (!preg_match('/^[A-Za-z0-9]{16,128}$/', $secret)) {
+        fwrite(STDERR, "Секрет не похож на ключ Mercado Pago — конфиг не изменён\n");
+        exit(1);
+    }
+    $file = dataDir() . '/config.php';
+    // Копия — с теми же правами, что и сам конфиг: в ней ключи и пароли
+    $copy = $file . '.bak-' . gmdate('Ymd-His');
+    copy($file, $copy);
+    chmod($copy, 0600);
+    $config = require $file;
+    $config['mercadopago']['webhookSecret'] = $secret;
+    file_put_contents($file, "<?php\n\nreturn " . var_export($config, true) . ";\n");
+    chmod($file, 0600);
+    echo "Секрет уведомлений записан\n";
+}
+
 match ($argv[1] ?? '') {
     'backup' => backup(),
     'purge' => purge(),
-    default => fwrite(STDERR, "Использование: php cli.php backup | purge\n"),
+    'orders' => orders((int) ($argv[2] ?? 3)),
+    'webhook-secret' => webhookSecret(),
+    default => fwrite(STDERR, "Использование: php cli.php backup | purge | orders [n] | webhook-secret < секрет\n"),
 };
