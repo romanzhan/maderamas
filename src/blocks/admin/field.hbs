@@ -1,0 +1,226 @@
+{{!-- Одно поле редактора контента по описанию из data/admin-schema.json (бэкенд.md §15).
+      Параметры — имена переменных Alpine, а не значения: m — запись, которую правим
+      (c.item, c.doc.data или строка вложенного списка row), f — описание поля.
+      nested — поле внутри строки вложенного списка: там нет заголовков групп и вложенных
+      списков, поэтому и повторного включения самого себя глубже одного уровня нет.
+      Подпись оборачивает поле — связь подписи и ввода без id, которых у полей,
+      повторяющихся в строках списка, не бывает. --}}
+<div class="flex flex-col gap-2" x-bind:class="{{f}}.type === 'heading' && 'mt-6'">
+  {{#unless nested}}
+    <template x-if="{{f}}.type === 'heading'">
+      <h3 class="border-t border-line pt-6 font-display text-h4 lg:text-h4-lg" x-text="{{f}}.label"></h3>
+    </template>
+  {{/unless}}
+
+  {{!-- Строка, адрес, дата, число, деньги --}}
+  <template x-if="['text', 'slug', 'date', 'number', 'money'].includes({{f}}.type)">
+    <label class="flex flex-col gap-2">
+      <span class="text-small font-medium">
+        <span x-text="{{f}}.label"></span><span x-show="{{f}}.required" class="text-error" aria-hidden="true"> *</span>
+      </span>
+      <input
+        x-bind:type="{ date: 'date', number: 'number', money: 'number' }[{{f}}.type] ?? 'text'"
+        x-bind:inputmode="{{f}}.type === 'money' ? 'numeric' : null"
+        x-bind:step="{{f}}.type === 'number' ? 'any' : null"
+        x-bind:value="c.value({{m}}, {{f}})"
+        x-on:input="{{f}}.type === 'text' && c.update({{m}}, {{f}}, $event.target.value)"
+        x-on:change="c.update({{m}}, {{f}}, $event.target.value)"
+        class="{{> field-box}} px-4"
+      />
+      <span x-show="{{f}}.type === 'money' && c.value({{m}}, {{f}}) !== ''" class="text-small text-charcoal/70 tabular-nums" x-text="c.money(c.value({{m}}, {{f}}))"></span>
+    </label>
+  </template>
+
+  <template x-if="{{f}}.type === 'textarea'">
+    <label class="flex flex-col gap-2">
+      <span class="text-small font-medium">
+        <span x-text="{{f}}.label"></span><span x-show="{{f}}.required" class="text-error" aria-hidden="true"> *</span>
+      </span>
+      <textarea
+        x-bind:rows="{{f}}.rows ?? 4"
+        x-bind:value="c.value({{m}}, {{f}})"
+        x-on:input="c.update({{m}}, {{f}}, $event.target.value)"
+        class="{{> field-box}} h-auto px-4 py-3 lg:h-auto"
+      ></textarea>
+    </label>
+  </template>
+
+  <template x-if="{{f}}.type === 'bool'">
+    <label class="flex min-h-11 cursor-pointer items-center gap-3">
+      <input
+        type="checkbox"
+        x-bind:checked="c.value({{m}}, {{f}})"
+        x-on:change="c.update({{m}}, {{f}}, $event.target.checked)"
+        class="size-5 shrink-0 accent-clay"
+      />
+      <span x-text="{{f}}.label"></span>
+    </label>
+  </template>
+
+  <template x-if="{{f}}.type === 'color'">
+    <label class="flex flex-col gap-2">
+      <span class="text-small font-medium" x-text="{{f}}.label"></span>
+      <span class="flex items-center gap-3">
+        <input
+          type="color"
+          x-bind:value="c.value({{m}}, {{f}})"
+          x-on:input="c.update({{m}}, {{f}}, $event.target.value.toUpperCase())"
+          class="h-11 w-16 shrink-0 cursor-pointer rounded-md border border-border bg-sand"
+        />
+        <span class="text-small tabular-nums" x-text="c.value({{m}}, {{f}})"></span>
+      </span>
+    </label>
+  </template>
+
+  {{!-- Выбор из списка: варианты из схемы, из другого раздела или тем вопросов --}}
+  <template x-if="{{f}}.type === 'select' || {{f}}.type === 'ref'">
+    <label class="flex flex-col gap-2">
+      <span class="text-small font-medium">
+        <span x-text="{{f}}.label"></span><span x-show="{{f}}.required" class="text-error" aria-hidden="true"> *</span>
+      </span>
+      <select
+        x-on:change="c.update({{m}}, {{f}}, $event.target.value)"
+        class="{{> field-box}} px-4"
+      >
+        <template x-if="{{f}}.nullable || !{{f}}.required">
+          <option value="" x-bind:selected="c.value({{m}}, {{f}}) === ''">—</option>
+        </template>
+        <template x-for="option in c.selectOptions({{f}})" x-bind:key="option.value">
+          <option
+            x-bind:value="option.value"
+            x-bind:selected="String(c.value({{m}}, {{f}})) === option.value"
+            x-text="option.label"
+          ></option>
+        </template>
+      </select>
+    </label>
+  </template>
+
+  {{!-- Одно фото или ролик --}}
+  <template x-if="{{f}}.type === 'image'">
+    <div class="flex flex-col gap-2">
+      <span class="text-small font-medium" x-text="{{f}}.label"></span>
+      <div class="flex flex-wrap items-center gap-3">
+        <span class="flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-sand">
+          <template x-if="c.preview(c.value({{m}}, {{f}}))">
+            <img x-bind:src="c.preview(c.value({{m}}, {{f}}))" alt="" class="size-full object-cover" />
+          </template>
+          <template x-if="!c.preview(c.value({{m}}, {{f}}))">
+            <span class="text-charcoal/45">{{> icon empty name="image" class="size-6"}}</span>
+          </template>
+        </span>
+        <span class="min-w-0 flex-1 text-small break-all text-charcoal/70" x-text="c.value({{m}}, {{f}}) || '{{t "admin.noImage"}}'"></span>
+        {{> button empty secondary=true sizeSm=true label="admin.chooseImage" onClick=(concat "c.choose(" m ", " f ")")}}
+        <template x-if="{{f}}.nullable && c.value({{m}}, {{f}})">
+          <button type="button" x-on:click="c.update({{m}}, {{f}}, '')" class="min-h-10 px-2 text-small text-clay hover:text-clay-hover">{{t "admin.remove"}}</button>
+        </template>
+      </div>
+    </div>
+  </template>
+
+  {{!-- Несколько фото по порядку: первое — главное --}}
+  <template x-if="{{f}}.type === 'images'">
+    <div class="flex flex-col gap-2">
+      <span class="text-small font-medium" x-text="{{f}}.label"></span>
+      <div class="flex flex-wrap gap-3">
+        <template x-for="(id, index) in c.imagesOf({{m}}, {{f}})" x-bind:key="id + index">
+          <div class="flex w-24 flex-col gap-1">
+            <span class="flex size-24 items-center justify-center overflow-hidden rounded-lg bg-sand">
+              <template x-if="c.preview(id)">
+                <img x-bind:src="c.preview(id)" alt="" class="size-full object-cover" />
+              </template>
+              <template x-if="!c.preview(id)">
+                <span class="px-1 text-center text-caption text-charcoal/70">{{t "admin.processing"}}</span>
+              </template>
+            </span>
+            <span class="flex justify-between">
+              <button type="button" x-on:click="c.move(c.listOf({{m}}, {{f}}), index, -1)" class="flex size-8 items-center justify-center rounded-md hover:bg-sand-hover" aria-label="{{t "admin.moveLeft"}}">{{> icon empty name="chevron-left" class="size-4"}}</button>
+              <button type="button" x-on:click="c.removeRow({{m}}, {{f}}, index)" class="flex size-8 items-center justify-center rounded-md text-error hover:bg-sand-hover" aria-label="{{t "admin.remove"}}">{{> icon empty name="x" class="size-4"}}</button>
+              <button type="button" x-on:click="c.move(c.listOf({{m}}, {{f}}), index, 1)" class="flex size-8 items-center justify-center rounded-md hover:bg-sand-hover" aria-label="{{t "admin.moveRight"}}">{{> icon empty name="chevron-right" class="size-4"}}</button>
+            </span>
+          </div>
+        </template>
+        <button
+          type="button"
+          x-on:click="c.choose({{m}}, {{f}})"
+          class="flex size-24 flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-border text-small text-charcoal/70 hover:bg-sand-hover"
+        >{{> icon empty name="plus" class="size-5"}}{{t "admin.addImage"}}</button>
+      </div>
+    </div>
+  </template>
+
+  {{!-- Список строк: пункты раздела --}}
+  <template x-if="{{f}}.type === 'strings'">
+    <div class="flex flex-col gap-2">
+      <span class="text-small font-medium" x-text="{{f}}.label"></span>
+      <template x-for="(text, index) in c.listOf({{m}}, {{f}})" x-bind:key="index">
+        <div class="flex items-start gap-2">
+          <textarea
+            rows="2"
+            x-bind:value="text"
+            x-on:input="c.setString({{m}}, {{f}}, index, $event.target.value)"
+            class="{{> field-box}} h-auto flex-1 px-4 py-2 lg:h-auto"
+          ></textarea>
+          <button type="button" x-on:click="c.removeRow({{m}}, {{f}}, index)" class="flex size-11 shrink-0 items-center justify-center rounded-md text-error hover:bg-sand-hover" aria-label="{{t "admin.remove"}}">{{> icon empty name="x" class="size-5"}}</button>
+        </div>
+      </template>
+      <div>
+        <button type="button" x-on:click="c.addRow({{m}}, {{f}})" class="inline-flex min-h-10 items-center gap-2 text-small font-medium text-clay hover:text-clay-hover">{{> icon empty name="plus" class="size-4"}}{{t "admin.addPoint"}}</button>
+      </div>
+    </div>
+  </template>
+
+  {{#unless nested}}
+    {{!-- Ссылки на записи другого раздела: отметить нужные --}}
+    <template x-if="{{f}}.type === 'refs'">
+      <fieldset class="flex flex-col gap-2">
+        <legend class="text-small font-medium" x-text="{{f}}.label"></legend>
+        <div class="scrollbar-soft mt-2 grid max-h-64 gap-1 overflow-y-auto rounded-md border border-border p-2 sm:grid-cols-2">
+          <template x-for="option in c.selectOptions({{f}})" x-bind:key="option.value">
+            <label class="flex min-h-10 cursor-pointer items-center gap-3 rounded-sm px-2 hover:bg-sand-hover">
+              <input
+                type="checkbox"
+                x-bind:checked="c.refs({{m}}, {{f}}).includes(option.value)"
+                x-on:change="c.toggleRef({{m}}, {{f}}, option.value)"
+                class="size-5 shrink-0 accent-clay"
+              />
+              <span x-text="option.label"></span>
+            </label>
+          </template>
+        </div>
+      </fieldset>
+    </template>
+
+    {{!-- Вложенные записи: цвета, разделы статьи, кадры поста --}}
+    <template x-if="{{f}}.type === 'list'">
+      <div class="flex flex-col gap-3">
+        <template x-for="(row, rowIndex) in c.listOf({{m}}, {{f}})" x-bind:key="rowIndex">
+          {{!-- Новая пустая запись раскрыта, заполненные свёрнуты. Один раз при появлении:
+                привязка к названию свернула бы строку прямо во время ввода --}}
+          <details class="rounded-xl border border-line bg-cream" x-init="$el.open = c.title(row, {{f}}) === '—'">
+            <summary class="flex min-h-12 cursor-pointer items-center gap-3 px-4">
+              <span class="min-w-0 flex-1 truncate font-medium" x-text="c.title(row, {{f}})"></span>
+              <button type="button" x-on:click.prevent="c.move(c.listOf({{m}}, {{f}}), rowIndex, -1)" class="flex size-9 items-center justify-center rounded-md hover:bg-sand-hover" aria-label="{{t "admin.moveUp"}}">{{> icon empty name="chevron-down" class="size-4 rotate-180"}}</button>
+              <button type="button" x-on:click.prevent="c.move(c.listOf({{m}}, {{f}}), rowIndex, 1)" class="flex size-9 items-center justify-center rounded-md hover:bg-sand-hover" aria-label="{{t "admin.moveDown"}}">{{> icon empty name="chevron-down" class="size-4"}}</button>
+              <button type="button" x-on:click.prevent="c.removeRow({{m}}, {{f}}, rowIndex)" class="flex size-9 items-center justify-center rounded-md text-error hover:bg-sand-hover" aria-label="{{t "admin.remove"}}">{{> icon empty name="trash-2" class="size-4"}}</button>
+            </summary>
+            <div class="flex flex-col gap-4 border-t border-line p-4">
+              <template x-for="sub in {{f}}.fields" x-bind:key="sub.key">
+                {{> admin/field m="row" f="sub" nested=true}}
+              </template>
+            </div>
+          </details>
+        </template>
+        <div>
+          <button type="button" x-on:click="c.addRow({{m}}, {{f}})" class="inline-flex min-h-11 items-center gap-2 font-medium text-clay hover:text-clay-hover">
+            {{> icon empty name="plus" class="size-5"}}<span>{{t "admin.add"}} <span x-text="{{f}}.item"></span></span>
+          </button>
+        </div>
+      </div>
+    </template>
+  {{/unless}}
+
+  <template x-if="{{f}}.hint">
+    <p class="text-small text-charcoal/70" x-text="{{f}}.hint"></p>
+  </template>
+</div>

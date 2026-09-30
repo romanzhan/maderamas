@@ -1,19 +1,32 @@
-{{!-- Список заказов владельца (страницы.md §17, бэкенд.md §13). Один экран, три вида
-      по очереди: вход по паролю → список с вкладками → заказ подробно. Состояние живёт
-      в store `admin` (src/scripts/admin.js): окна подтверждения лежат прямыми потомками
-      body и делят его со страницей. Строки, которые скрипт подставляет сам (состояния,
-      хронология, ошибки входа), отдаются data-атрибутами — испанских строк в скриптах
-      не бывает. Noindex и Disallow: страница служебная и под паролем. --}}
+{{!-- Админка владельца (страницы.md §17, бэкенд.md §13, §15) — по-русски (решение
+      владельца 30.09.2026, словарь data/dictionaries/admin.ru.json). Вход по паролю →
+      разделы вкладками: заказы, сообщения и контент сайта. Состояние заказов живёт
+      в store `admin` (src/scripts/admin.js), контента — в `adminContent`
+      (src/scripts/admin-content.js): окна подтверждения лежат прямыми потомками body
+      и делят его со страницей. Строки, которые скрипт подставляет сам (состояния,
+      хронология, ошибки), отдаются data-атрибутами — строк в скриптах не бывает.
+      Noindex и Disallow: страница служебная и под паролем. --}}
 <main
   id="contenido"
   class="page-container py-6 lg:py-10"
   x-data="{ a: $store.admin }"
   x-init="a.start($el)"
+  data-admin
+  data-t-conflict="{{t "admin.conflict"}}"
+  data-t-save-failed="{{t "admin.saveFailed"}}"
+  data-t-required-field="{{t "admin.requiredField"}}"
+  data-t-upload-missing="{{t "admin.uploadMissing"}}"
+  data-t-upload-failed="{{t "admin.uploadFailed"}}"
+  data-t-build-pending="{{t "admin.buildPending"}}"
+  data-t-build-building="{{t "admin.buildBuilding"}}"
+  data-t-build-ok="{{t "admin.buildOk"}}"
+  data-t-build-error="{{t "admin.buildError"}}"
+  data-t-build-unknown="{{t "admin.buildUnknown"}}"
   data-t-wrong-password="{{t "admin.wrongPassword"}}"
   data-t-too-many-attempts="{{t "admin.tooManyAttempts"}}"
   data-t-action-failed="{{t "admin.actionFailed"}}"
-  data-t-required="{{t "errors.required"}}"
-  data-t-network="{{t "errors.network"}}"
+  data-t-required="{{t "admin.errRequired"}}"
+  data-t-network="{{t "admin.errNetwork"}}"
   data-t-status-created="{{t "admin.statusCreated"}}"
   data-t-status-pending="{{t "admin.statusPending"}}"
   data-t-status-paid="{{t "admin.statusPaid"}}"
@@ -47,11 +60,13 @@
   {{#each adminMessageTypes}}data-t-type-{{type}}="{{t key}}" {{/each}}
   {{#each adminMessageLabels}}data-l-{{field}}="{{t key}}" {{/each}}
 >
-  <div class="flex items-center justify-between gap-4">
+  <div class="flex flex-wrap items-center justify-between gap-4">
     <h1 class="font-display text-h1 lg:text-h1-lg">{{t "admin.title"}}</h1>
-    <span x-show="a.auth === 'in'" x-cloak>
+    <div x-show="a.auth === 'in'" x-cloak class="flex items-center gap-3">
+      {{!-- Публикация видна из любого раздела: правка сохранена ≠ правка на сайте --}}
+      {{> admin/build-status}}
       {{> button empty tertiary=true sizeMd=true label="admin.logout" onClick="a.logout()"}}
-    </span>
+    </div>
   </div>
 
   {{!-- Сессия ещё проверяется: место под форму или список, чтобы страница не прыгала --}}
@@ -87,7 +102,8 @@
     x-cloak
     role="tablist"
     aria-label="{{t "admin.sections"}}"
-    class="mt-6 flex gap-2 border-b border-line"
+    class="scrollbar-soft -mx-4 mt-6 flex gap-2 overflow-x-auto border-b border-line px-4
+      sm:mx-0 sm:px-0"
   >
     {{#each adminSections}}
       <button
@@ -99,9 +115,14 @@
         x-on:click="a.setSection('{{id}}')"
         x-on:keydown="a.sectionKey($event)"
         x-bind:class="a.section === '{{id}}' ? 'border-clay text-charcoal' : 'border-transparent text-charcoal/70 hover:text-charcoal'"
-        class="-mb-px min-h-12 border-b-2 px-3 font-display text-h4 whitespace-nowrap transition-colors
-          duration-150 lg:text-h4-lg"
-      >{{t label}}</button>
+        class="-mb-px min-h-12 shrink-0 border-b-2 px-3 font-medium whitespace-nowrap
+          transition-colors duration-150"
+      >{{text}}<span
+          x-show="$store.adminContent.isDirty('{{id}}')"
+          x-cloak
+          class="ml-1 inline-block size-2 rounded-full bg-warning align-middle"
+          aria-hidden="true"
+        ></span></button>
     {{/each}}
   </div>
 
@@ -143,9 +164,9 @@
     <div x-show="a.list === 'failed'" x-cloak class="mt-6 flex flex-col items-start gap-3">
       <p role="alert" class="flex items-start gap-2 text-error">
         <span class="icon-line shrink-0">{{> icon empty name="circle-alert" class="size-4"}}</span>
-        {{t "errors.network"}}
+        {{t "admin.errNetwork"}}
       </p>
-      {{> button empty secondary=true sizeMd=true label="common.retry" onClick="a.load()"}}
+      {{> button empty secondary=true sizeMd=true label="admin.retry" onClick="a.load()"}}
     </div>
 
     <div x-show="a.list === 'ready'" x-cloak>
@@ -217,9 +238,9 @@
     <div x-show="a.msgList === 'failed'" x-cloak class="mt-6 flex flex-col items-start gap-3">
       <p role="alert" class="flex items-start gap-2 text-error">
         <span class="icon-line shrink-0">{{> icon empty name="circle-alert" class="size-4"}}</span>
-        {{t "errors.network"}}
+        {{t "admin.errNetwork"}}
       </p>
-      {{> button empty secondary=true sizeMd=true label="common.retry" onClick="a.loadMessages()"}}
+      {{> button empty secondary=true sizeMd=true label="admin.retry" onClick="a.loadMessages()"}}
     </div>
 
     <div x-show="a.msgList === 'ready'" x-cloak>
@@ -305,9 +326,9 @@
     <div x-show="a.detail === 'failed'" x-cloak class="mt-6 flex flex-col items-start gap-3">
       <p role="alert" class="flex items-start gap-2 text-error">
         <span class="icon-line shrink-0">{{> icon empty name="circle-alert" class="size-4"}}</span>
-        {{t "errors.network"}}
+        {{t "admin.errNetwork"}}
       </p>
-      {{> button empty secondary=true sizeMd=true label="common.retry" onClick="a.openOrder(a.order.number, false)"}}
+      {{> button empty secondary=true sizeMd=true label="admin.retry" onClick="a.openOrder(a.order.number, false)"}}
     </div>
 
     <template x-if="a.order && a.detail === 'ready'">
@@ -378,11 +399,11 @@
           </ul>
           <dl class="mt-3 flex flex-col gap-1 border-t border-line pt-3">
             <div class="flex justify-between gap-4 text-small text-charcoal/70">
-              <dt>{{t "cart.shipping"}}</dt>
-              <dd class="tabular-nums" x-text="a.order.shipping ? a.fmtMoney(a.order.shipping) : '{{t "cart.shippingNotIncluded"}}'"></dd>
+              <dt>{{t "admin.shipping"}}</dt>
+              <dd class="tabular-nums" x-text="a.order.shipping ? a.fmtMoney(a.order.shipping) : '{{t "admin.shippingNotIncluded"}}'"></dd>
             </div>
             <div class="flex justify-between gap-4 font-medium">
-              <dt>{{t "cart.total"}}</dt>
+              <dt>{{t "admin.total"}}</dt>
               <dd class="tabular-nums" x-text="a.fmtMoney(a.order.total)"></dd>
             </div>
           </dl>
@@ -420,6 +441,9 @@
       </div>
     </template>
   </div>
+
+  {{> admin/content}}
 </main>
 
 {{> admin/modals}}
+{{> admin/picker}}
