@@ -296,11 +296,11 @@ if ($method === 'GET' && preg_match("#^/admin/content/{$collection}/history/(\d{
 if ($method === 'POST' && $path === '/admin/uploads') {
     adminUploadHandler();
 }
-if ($method === 'DELETE' && preg_match('#^/admin/uploads/([a-z0-9]+(?:-[a-z0-9]+)*)$#', $path, $matches)) {
-    adminUploadDeleteHandler($matches[1]);
-}
 if ($method === 'GET' && $path === '/admin/build') {
     adminBuildHandler();
+}
+if ($method === 'POST' && $path === '/admin/build') {
+    adminRebuildHandler();
 }
 
 fail(404, 'notFound');

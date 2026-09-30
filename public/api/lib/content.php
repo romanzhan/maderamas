@@ -118,8 +118,13 @@ function writeFileAtomic(string $file, string $body): void
         mkdir($dir, 0755, true);
     }
     $tmp = $file . '.tmp-' . bin2hex(random_bytes(4));
-    file_put_contents($tmp, $body, LOCK_EX);
-    rename($tmp, $file);
+    // Недописанный файл (кончилось место) не должен встать на место целого
+    if (file_put_contents($tmp, $body, LOCK_EX) !== strlen($body) || !rename($tmp, $file)) {
+        if (is_file($tmp)) {
+            unlink($tmp);
+        }
+        throw new RuntimeException("Не записался {$file}");
+    }
 }
 
 /** Сводка для админки: версии коллекций, картинки, состояние публикации */
@@ -144,7 +149,9 @@ function adminContentGetHandler(string $name): never
     requireAdmin(db());
     $raw = readContentRaw($name);
 
-    jsonResponse(200, ['data' => json_decode($raw, true), 'version' => contentVersion($raw)]);
+    // Без true: пустой {} (options товара без вариантов) должен остаться объектом —
+    // массивом [] он потерял бы в админке всё, что в него допишут
+    jsonResponse(200, ['data' => json_decode($raw), 'version' => contentVersion($raw)]);
 }
 
 function adminContentSaveHandler(string $name): never
@@ -153,9 +160,14 @@ function adminContentSaveHandler(string $name): never
     requireSameOrigin();
     requireAdmin(db());
 
-    $input = readContentBody();
-    $data = $input['data'] ?? null;
+    [$input, $body] = readContentBody();
+    $data = $input['data'];
     $base = (string) ($input['version'] ?? '');
+
+    // Два сохранения разом (две вкладки) иначе оба прошли бы сверку версии,
+    // и второе молча затёрло бы первое. Снимается с концом запроса
+    $lock = fopen(contentDir() . '/.lock-' . $name, 'c');
+    flock($lock, LOCK_EX);
 
     $file = contentFile($name);
     $currentRaw = readContentRaw($name);
@@ -170,8 +182,13 @@ function adminContentSaveHandler(string $name): never
         fail(422, 'invalid', ['detail' => $problem]);
     }
 
+    // Пишется разбор объектами — по той же причине, что в adminContentGetHandler
+    $raw = json_encode($body->data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    if ($raw === false) {
+        fail(422, 'invalid', ['detail' => 'Данные не превращаются в JSON']);
+    }
+    $raw .= "\n";
     saveHistory($name, $currentRaw);
-    $raw = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . "\n";
     writeFileAtomic($file, $raw);
     requestRebuild('admin:' . $name);
     logLine('info', 'admin: сохранён контент', ['collection' => $name]);
@@ -179,7 +196,10 @@ function adminContentSaveHandler(string $name): never
     jsonResponse(200, ['version' => contentVersion($raw), 'build' => buildStatus()]);
 }
 
-/** Тело сохранения больше обычного (тексты сайта целиком), поэтому свой предел */
+/**
+ * Тело сохранения больше обычного (тексты сайта целиком), поэтому свой предел.
+ * Два разбора: массивами — для проверок, объектами — для записи.
+ */
 function readContentBody(): array
 {
     if ((int) ($_SERVER['CONTENT_LENGTH'] ?? 0) > CONTENT_BODY_LIMIT) {
@@ -190,10 +210,10 @@ function readContentBody(): array
         fail(413, 'badRequest');
     }
     $data = json_decode($raw, true, CONTENT_JSON_DEPTH);
-    if (!is_array($data)) {
+    if (!is_array($data) || !array_key_exists('data', $data)) {
         fail(400, 'badRequest');
     }
-    return $data;
+    return [$data, json_decode($raw, false, CONTENT_JSON_DEPTH)];
 }
 
 /**
@@ -289,7 +309,7 @@ function saveHistory(string $name, string $raw): void
         mkdir($dir, 0755, true);
     }
     // Имя — момент правки: по нему список сортируется и откатывается
-    file_put_contents($dir . '/' . gmdate('Ymd-His') . '-' . bin2hex(random_bytes(2)) . '.json', $raw);
+    writeFileAtomic($dir . '/' . gmdate('Ymd-His') . '-' . bin2hex(random_bytes(2)) . '.json', $raw);
 
     $files = glob($dir . '/*.json') ?: [];
     rsort($files);
@@ -320,7 +340,7 @@ function adminHistoryGetHandler(string $name, string $id): never
     if (!is_file($file)) {
         fail(404, 'notFound');
     }
-    jsonResponse(200, ['data' => json_decode((string) file_get_contents($file), true)]);
+    jsonResponse(200, ['data' => json_decode((string) file_get_contents($file))]);
 }
 
 /**
@@ -357,7 +377,10 @@ function contentImages(): array
 /**
  * Загрузка фото или ролика в исходники: дальше его нарежет конвейер при сборке.
  * Имя файла = id картинки; тот же id в другом потоке — отказ, иначе конвейер
- * не поймёт, какой из двух файлов главный.
+ * не поймёт, какой из двух файлов главный. Занятое имя в том же потоке — только
+ * с явной заменой (replace=1): одно фото стоит у нескольких товаров, и тихая замена
+ * поменяла бы их все. Исходники больше нигде не хранятся, поэтому прежний файл
+ * не стирается, а уходит в trash/.
  */
 function adminUploadHandler(): never
 {
@@ -396,37 +419,26 @@ function adminUploadHandler(): never
     if (!is_dir($dir)) {
         mkdir($dir, 0755, true);
     }
-    // Замена фото под тем же именем: прежний файл с другим расширением убирается,
-    // иначе конвейер увидел бы два исходника одной картинки
-    foreach (glob($dir . '/' . $id . '.*') ?: [] as $old) {
-        unlink($old);
+    $existing = glob($dir . '/' . $id . '.*') ?: [];
+    if ($existing && ($_POST['replace'] ?? '') !== '1') {
+        fail(409, 'taken');
     }
-    move_uploaded_file($file['tmp_name'], $dir . '/' . $id . '.' . $extension);
+    // Прежний файл с любым расширением — в корзину: иначе конвейер увидел бы два
+    // исходника одной картинки
+    foreach ($existing as $old) {
+        $trash = contentDir() . '/trash/' . $settings['dir'];
+        if (!is_dir($trash)) {
+            mkdir($trash, 0755, true);
+        }
+        rename($old, $trash . '/' . gmdate('Ymd-His') . '-' . basename($old));
+    }
+    if (!move_uploaded_file($file['tmp_name'], $dir . '/' . $id . '.' . $extension)) {
+        throw new RuntimeException("Не сохранился загруженный файл {$id}");
+    }
     requestRebuild('upload:' . $id);
     logLine('info', 'admin: загружен файл', ['flow' => $flow, 'id' => $id]);
 
     jsonResponse(200, ['id' => $id, 'images' => contentImages(), 'build' => buildStatus()]);
-}
-
-function adminUploadDeleteHandler(string $id): never
-{
-    requireHttps();
-    requireSameOrigin();
-    requireAdmin(db());
-
-    $removed = false;
-    foreach (CONTENT_UPLOAD_FLOWS as $settings) {
-        foreach (glob(contentDir() . '/images-source/' . $settings['dir'] . '/' . $id . '.*') ?: [] as $file) {
-            unlink($file);
-            $removed = true;
-        }
-    }
-    if (!$removed) {
-        fail(404, 'notFound');
-    }
-    requestRebuild('delete:' . $id);
-
-    jsonResponse(200, ['images' => contentImages(), 'build' => buildStatus()]);
 }
 
 /**
@@ -436,6 +448,12 @@ function adminUploadDeleteHandler(string $id): never
 function buildStatus(): array
 {
     $status = json_decode(readOptional(contentDir() . '/build-status.json'), true) ?: [];
+    // Сборка идёт до минуты; «идёт» дольше 20 минут — процесс снят хостингом и уже
+    // ничего не допишет (scripts/server-build.sh ловит только мягкое завершение)
+    $started = strtotime((string) ($status['startedAt'] ?? '')) ?: 0;
+    if (($status['state'] ?? '') === 'building' && $started < time() - 1200) {
+        $status = ['state' => 'error', 'message' => 'Сборка оборвалась на полпути.'];
+    }
     return [
         'state' => $status['state'] ?? 'unknown',
         'message' => $status['message'] ?? '',
@@ -447,5 +465,15 @@ function buildStatus(): array
 function adminBuildHandler(): never
 {
     requireAdmin(db());
+    jsonResponse(200, ['build' => buildStatus()]);
+}
+
+/** Повтор после неудачной сборки: сохранять нечего, а собрать заново нужно */
+function adminRebuildHandler(): never
+{
+    requireHttps();
+    requireSameOrigin();
+    requireAdmin(db());
+    requestRebuild('admin:retry');
     jsonResponse(200, ['build' => buildStatus()]);
 }

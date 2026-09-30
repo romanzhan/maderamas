@@ -19,6 +19,7 @@
   >
     <p class="font-medium">{{t "admin.buildErrorTitle"}}</p>
     <pre class="mt-2 font-sans text-small whitespace-pre-wrap" x-text="c.build.message"></pre>
+    <div class="mt-4">{{> button empty secondary=true sizeMd=true label="admin.retry" onClick="c.rebuild()"}}</div>
   </div>
 
   <div x-show="c.colState === 'loading'" aria-hidden="true" class="flex flex-col gap-3">

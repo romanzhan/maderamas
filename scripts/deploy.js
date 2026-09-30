@@ -89,19 +89,36 @@ const protect = [
   'build.log',
   '.package-lock.sha',
 ].map((path) => `--exclude '/${path}'`)
-sshOrFail(
+// 3. Зависимости — там же и только если поменялся список: npm ci на хостинге идёт минуты.
+// Всё под замком сборщика: минутная сборка после правки в админке не должна собирать
+// наполовину заменённый код
+const lockHash = createHash('sha256')
+  .update(readFileSync(resolve(root, 'package-lock.json')))
+  .digest('hex')
+const upload = sshOrFail(
   [
     'set -e',
+    'exec 9>"$HOME/.madera-build.lock"',
+    'flock -w 1200 9',
     `stage=$HOME/${BUILD}-stage`,
     'rm -rf "$stage" && mkdir -p "$stage"',
     'tar -C "$stage" -xf -',
     `rsync -a --delete ${protect.join(' ')} "$stage/" "$HOME/${BUILD}/"`,
     'rm -rf "$stage"',
-  ].join(' && '),
+    `cd ~/${BUILD}`,
+    `if [ "$(cat .package-lock.sha 2>/dev/null)" != ${lockHash} ]; then`,
+    `  export PATH=${NODE}:$PATH`,
+    '  npm ci --no-audit --no-fund >/dev/null',
+    `  echo ${lockHash} > .package-lock.sha`,
+    '  echo deps',
+    'fi',
+  ].join('\n'),
   archive.stdout,
-  'Код не доехал до сервера',
+  'Код или зависимости не доехали до сервера',
 )
-console.log(`Код на сервере: ${files.length} файлов`)
+console.log(
+  `Код на сервере: ${files.length} файлов${upload.includes('deps') ? ', зависимости обновлены' : ''}`,
+)
 
 // Цели сборки: превью есть всегда; боевой сайт дописывает npm run launch
 const targets = ssh(`cat ~/${BUILD}/targets.json`)
@@ -110,20 +127,6 @@ if (!targets.ok) {
   sshOrFail(`cat > ~/${BUILD}/targets.json`, JSON.stringify(dev, null, 2), 'Цели не записались')
 }
 const siteTargets = JSON.parse(targets.ok ? targets.out : ssh(`cat ~/${BUILD}/targets.json`).out)
-
-// 3. Зависимости — только если поменялся список: npm ci на хостинге идёт минуты
-const lockHash = createHash('sha256')
-  .update(readFileSync(resolve(root, 'package-lock.json')))
-  .digest('hex')
-const serverLock = ssh(`cat ~/${BUILD}/.package-lock.sha 2>/dev/null`).out.trim()
-if (serverLock !== lockHash) {
-  console.log('Ставлю зависимости на сервере…')
-  sshOrFail(
-    `export PATH=${NODE}:$PATH && cd ~/${BUILD} && npm ci --no-audit --no-fund >/dev/null && echo ${lockHash} > .package-lock.sha`,
-    undefined,
-    'npm ci на сервере не прошёл',
-  )
-}
 
 // 4. Сборка — тот же сборщик, что после правки в админке
 console.log('Сборка на сервере…')

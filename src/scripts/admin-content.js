@@ -390,6 +390,7 @@ export const adminContent = {
       uploading: false,
       error: '',
       name: '',
+      taken: false,
       apply: (id) => {
         if (multiple) setPath(model, field.key, [...(getPath(model, field.key) ?? []), id])
         else setPath(model, field.key, id)
@@ -414,9 +415,11 @@ export const adminContent = {
   pickFile(event) {
     const file = event.target.files?.[0]
     if (file && !this.picker.name) this.picker.name = slugify(file.name.replace(/\.[^.]+$/, ''))
+    this.picker.taken = false
   },
 
-  async upload(form) {
+  /** replace — после подтверждения: имя занято фото, которое может стоять у других записей */
+  async upload(form, replace = false) {
     const file = form.elements.file.files?.[0]
     const id = slugify(this.picker.name)
     if (!file || !id) {
@@ -425,14 +428,18 @@ export const adminContent = {
     }
     this.picker.uploading = true
     this.picker.error = ''
+    this.picker.taken = false
     const body = new FormData()
     body.append('flow', this.picker.flow)
     body.append('id', id)
     body.append('file', file)
+    if (replace) body.append('replace', '1')
     try {
       const response = await this.request('/uploads', { method: 'POST', body })
       const result = await response.json().catch(() => ({}))
-      if (!response.ok) {
+      if (result.error === 'taken') {
+        this.picker.taken = true
+      } else if (!response.ok) {
         this.picker.error = result.detail ?? this.texts.tUploadFailed
       } else {
         this.images = result.images
@@ -566,6 +573,7 @@ export const adminContent = {
     this.saving = true
     this.saveError = ''
     this.saved = false
+    const sent = JSON.stringify(doc.data)
     try {
       const response = await this.request(`/content/${name}`, {
         method: 'PUT',
@@ -574,7 +582,9 @@ export const adminContent = {
       })
       const result = await response.json().catch(() => ({}))
       if (response.ok) {
-        doc.data = data
+        // Набранное, пока шёл запрос, не пропадает: модель заменяется сохранённым видом,
+        // только если её с отправки не трогали, иначе правки остаются несохранёнными
+        if (JSON.stringify(doc.data) === sent) doc.data = data
         doc.version = result.version
         doc.saved = JSON.stringify(data)
         this.autoSlug.clear()
@@ -606,6 +616,7 @@ export const adminContent = {
     this.historyState = 'loading'
     try {
       const response = await this.request(`/content/${this.col}/history`)
+      if (!response.ok) throw new Error(response.status)
       this.history = (await response.json()).versions
       this.historyState = 'ready'
     } catch {
@@ -617,6 +628,7 @@ export const adminContent = {
   async restore(id) {
     try {
       const response = await this.request(`/content/${this.col}/history/${id}`)
+      if (!response.ok) throw new Error(response.status)
       this.doc.data = (await response.json()).data
       this.itemIndex = null
       this.history = null
@@ -646,6 +658,16 @@ export const adminContent = {
       if (finished) this.loadIndex()
     } catch {
       this.pollTimer = setTimeout(() => this.pollBuild(), POLL_MS * 3)
+    }
+  },
+
+  async rebuild() {
+    try {
+      const response = await this.request('/build', { method: 'POST' })
+      if (!response.ok) throw new Error(response.status)
+      this.setBuild((await response.json()).build)
+    } catch {
+      this.saveError = this.texts.tSaveFailed
     }
   },
 
