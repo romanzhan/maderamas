@@ -110,7 +110,7 @@ if (!keys.webhookSecret && withoutWebhook) {
 if (problems.length) fail(problems)
 
 // 0. Панель хостинга. Каждый шаг смотрит, не сделан ли он уже: повторный запуск безопасен
-step('Готовлю хостинг: сайт для домена, DNS, сертификат')
+step('Готовлю хостинг: сайт для домена')
 const sites = (await hostinger('GET', '/api/hosting/v1/websites')).data
 if (!sites.some((site) => site.domain === apexHost)) {
   const dev = sites.find((site) => site.domain === devHost)
@@ -127,6 +127,62 @@ if (!sites.some((site) => site.domain === apexHost)) {
   console.log(' есть')
 }
 
+// 2. Сервер: копия, отдельная папка превью, боевые ключи и чистая база
+step('Разделяю превью и боевой сайт на сервере')
+const devData = `$HOME/domains/${devHost}/madera-data`
+const stamp = new Date().toISOString().slice(0, 16).replace(/[-:T]/g, '')
+remote(
+  [
+    'set -e',
+    'mkdir -p "$HOME/backups"',
+    `tar -C "$HOME" -czf "$HOME/backups/madera-data-antes-del-lanzamiento-${stamp}.tgz" madera-data`,
+    // Превью забирает нынешнюю папку целиком: тестовые ключи и тестовые заказы остаются с ним
+    `if [ ! -d "${devData}" ]; then cp -a "$HOME/madera-data" "${devData}"; chmod 700 "${devData}"; fi`,
+  ].join(' && '),
+)
+
+// Ключи уходят на вход php, а не в строку команды: строки команд видны в списке процессов
+const writeKeys = [
+  '$in = json_decode(stream_get_contents(STDIN), true);',
+  '$file = getenv("HOME") . "/madera-data/config.php";',
+  '$c = require $file;',
+  '$c["mercadopago"]["accessToken"] = $in["accessToken"];',
+  '$c["mercadopago"]["webhookSecret"] = $in["webhookSecret"];',
+  '$c["mercadopago"]["enabled"] = true;',
+  'file_put_contents($file, "<?php\\n\\nreturn " . var_export($c, true) . ";\\n");',
+  'chmod($file, 0600);',
+].join(' ')
+remote(
+  [
+    'set -e',
+    'cd "$HOME/madera-data"',
+    // Тестовые заказы боевому сайту не нужны: база уезжает в копию, сервер создаст новую
+    `if [ ! -f .lanzado ]; then for f in orders.sqlite orders.sqlite-wal orders.sqlite-shm; do ` +
+      `if [ -f "$f" ]; then mv "$f" "$HOME/backups/$f-prueba-${stamp}"; fi; done; touch .lanzado; fi`,
+    `php -r '${writeKeys}'`,
+  ].join(' && '),
+  JSON.stringify(keys),
+)
+console.log('Готово: копия в ~/backups, превью на тестовых ключах, боевой сайт — на боевых')
+
+// 3. Боевой сайт — вторая цель сборщика (бэкенд.md §15): с этого момента и публикация,
+// и правки в админке собирают оба сайта. Собирается ДО переключения DNS: адрес ещё ведёт
+// на Tiendanube, а в папке уже лежит готовый магазин — окна с пустой заглушкой хостинга нет
+step('Собираю боевой сайт в его папку')
+remote(
+  `${NODE} -e '
+    const fs = require("fs")
+    const file = process.env.HOME + "/madera-build/targets.json"
+    const targets = JSON.parse(fs.readFileSync(file, "utf8"))
+    if (!targets.some((t) => t.name === "prod")) {
+      targets.push({ name: "prod", path: process.argv[1], url: process.argv[2], preview: false })
+    }
+    fs.writeFileSync(file, JSON.stringify(targets, null, 2))
+  ' "${deploy.prod.path}" "${prodUrl}"`,
+)
+remote(`bash "$HOME/madera-build/scripts/server-build.sh" --force`)
+
+step('Переключаю домен на хостинг')
 // Адрес сервера — тот же, что у SSH: хостинг отдаёт сайт прямо с него (проверено 30.09.2026),
 // сеть доставки хостинга для голого домена не нужна. www — псевдоним голого домена
 const serverIp = deploy.host
@@ -212,58 +268,8 @@ if (problems.length)
   throw new Error(`Хостинг готов, но сайт по адресу не отвечает: ${problems.join('; ')}`)
 console.log('Всё на месте')
 
-// 2. Сервер: копия, отдельная папка превью, боевые ключи и чистая база
-step('Разделяю превью и боевой сайт на сервере')
-const devData = `$HOME/domains/${devHost}/madera-data`
-const stamp = new Date().toISOString().slice(0, 16).replace(/[-:T]/g, '')
-remote(
-  [
-    'set -e',
-    'mkdir -p "$HOME/backups"',
-    `tar -C "$HOME" -czf "$HOME/backups/madera-data-antes-del-lanzamiento-${stamp}.tgz" madera-data`,
-    // Превью забирает нынешнюю папку целиком: тестовые ключи и тестовые заказы остаются с ним
-    `if [ ! -d "${devData}" ]; then cp -a "$HOME/madera-data" "${devData}"; chmod 700 "${devData}"; fi`,
-  ].join(' && '),
-)
-
-// Ключи уходят на вход php, а не в строку команды: строки команд видны в списке процессов
-const writeKeys = [
-  '$in = json_decode(stream_get_contents(STDIN), true);',
-  '$file = getenv("HOME") . "/madera-data/config.php";',
-  '$c = require $file;',
-  '$c["mercadopago"]["accessToken"] = $in["accessToken"];',
-  '$c["mercadopago"]["webhookSecret"] = $in["webhookSecret"];',
-  '$c["mercadopago"]["enabled"] = true;',
-  'file_put_contents($file, "<?php\\n\\nreturn " . var_export($c, true) . ";\\n");',
-  'chmod($file, 0600);',
-].join(' ')
-remote(
-  [
-    'set -e',
-    'cd "$HOME/madera-data"',
-    // Тестовые заказы боевому сайту не нужны: база уезжает в копию, сервер создаст новую
-    `if [ ! -f .lanzado ]; then for f in orders.sqlite orders.sqlite-wal orders.sqlite-shm; do ` +
-      `if [ -f "$f" ]; then mv "$f" "$HOME/backups/$f-prueba-${stamp}"; fi; done; touch .lanzado; fi`,
-    `php -r '${writeKeys}'`,
-  ].join(' && '),
-  JSON.stringify(keys),
-)
-console.log('Готово: копия в ~/backups, превью на тестовых ключах, боевой сайт — на боевых')
-
-// 3. Боевой сайт — вторая цель сборщика (бэкенд.md §15): с этого момента и публикация,
-// и правки в админке собирают оба сайта. Дальше обычная публикация со своими проверками
-step('Собираю и заливаю боевой сайт')
-remote(
-  `${NODE} -e '
-    const fs = require("fs")
-    const file = process.env.HOME + "/madera-build/targets.json"
-    const targets = JSON.parse(fs.readFileSync(file, "utf8"))
-    if (!targets.some((t) => t.name === "prod")) {
-      targets.push({ name: "prod", path: process.argv[1], url: process.argv[2], preview: false })
-    }
-    fs.writeFileSync(file, JSON.stringify(targets, null, 2))
-  ' "${deploy.prod.path}" "${prodUrl}"`,
-)
+// Обычная публикация со своими проверками адресов — теперь и боевого
+step('Публикую и проверяю адреса')
 execSync('node scripts/deploy.js', { cwd: root, stdio: 'inherit' })
 
 // 4. Один адрес магазина: голый домен и http уводят на https://www
