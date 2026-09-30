@@ -19,12 +19,15 @@ CONTENT="$HOME/madera-content"
 BUILD="$HOME/madera-build"
 LOG="$BUILD/build.log"
 
-# Одна сборка за раз: минутный запуск не должен наложиться на идущую сборку
+# Одна сборка за раз (тот же замок берёт заливка кода, scripts/deploy.js). Минутный
+# запуск при занятом замке просто уходит; публикация ждёт — иначе она отчиталась бы
+# «собрано», не собрав новый код
 exec 9>"$HOME/.madera-build.lock"
-flock -n 9 || exit 0
-
-if [ "${1:-}" != "--force" ] && [ ! -f "$CONTENT/.pending" ]; then
-  exit 0
+if [ "${1:-}" = "--force" ]; then
+  flock -w 1200 9 || { echo 'Сборщик занят больше 20 минут' >&2; exit 1; }
+else
+  flock -n 9 || exit 0
+  [ -f "$CONTENT/.pending" ] || exit 0
 fi
 # Флаг снимается до сборки: правка, пришедшая во время сборки, поставит его снова
 rm -f "$CONTENT/.pending"
@@ -32,10 +35,13 @@ rm -f "$CONTENT/.pending"
 status() { node "$BUILD/scripts/build-status.js" "$CONTENT/build-status.json" "$1" "$LOG"; }
 : >"$LOG"
 status building
+# Оборвалось на полпути (хостинг снял процесс) — админка не должна вечно ждать «идёт сборка»
+trap 'status error' EXIT
 cd "$BUILD" || exit 1
 
 fail() {
   echo "$1" >>"$LOG"
+  trap - EXIT
   status error
   # Публикация с рабочей машины ждёт код выхода; минутному запуску он безразличен
   exit 1
@@ -50,7 +56,9 @@ fail() {
 
 timeout 900 node scripts/images.js >>"$LOG" 2>&1 || fail 'Конвейер картинок не прошёл'
 # Админке нужен свежий список картинок с превью
-cp "$BUILD/data/images.json" "$CONTENT/data/images.json"
+cp "$BUILD/data/images.json" "$CONTENT/data/images.json.tmp" &&
+  mv "$CONTENT/data/images.json.tmp" "$CONTENT/data/images.json" ||
+  fail 'Список картинок не скопировался в ~/madera-content'
 
 # Цели: dev всегда, боевой сайт — после запуска (scripts/launch.js дописывает его).
 # Список — в переменную, не через <(...): на хостинге нет /dev/fd, и подстановка молча
@@ -70,4 +78,5 @@ while IFS=$'\t' read -r name path preview; do
     fail "Заливка «$name» не прошла"
 done <<<"$targets"
 
+trap - EXIT
 status ok

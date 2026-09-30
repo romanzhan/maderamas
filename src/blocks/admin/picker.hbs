@@ -12,6 +12,11 @@
         <span class="text-small text-charcoal/70">{{t "admin.uploadNameHint"}}</span>
       </label>
       <p x-show="c.picker.error" role="alert" class="text-small text-error" x-text="c.picker.error"></p>
+      {{!-- Имя занято: то же фото может стоять у нескольких товаров — замена только осознанно --}}
+      <div x-show="c.picker.taken" role="alert" class="flex flex-col items-start gap-3">
+        <p class="text-small text-error">{{t "admin.uploadTaken"}}</p>
+        {{> button empty secondary=true sizeMd=true label="admin.uploadReplace" onClick="c.upload($el.closest('form'), true)"}}
+      </div>
       <div>{{> button empty primary=true sizeMd=true submit=true bindLoading="c.picker.uploading" label="admin.upload"}}</div>
     </form>
 
