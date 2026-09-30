@@ -97,14 +97,9 @@
   </form>
 
   {{!-- Разделы: заказы и сообщения из форм (бэкенд.md §13–14) --}}
-  <div
-    x-show="a.auth === 'in' && !a.order"
-    x-cloak
-    role="tablist"
-    aria-label="{{t "admin.sections"}}"
-    class="scrollbar-soft -mx-4 mt-6 flex gap-2 overflow-x-auto overflow-y-hidden border-b
-      border-line px-4 sm:mx-0 sm:px-0"
-  >
+  <div x-show="a.auth === 'in' && !a.order" x-cloak>
+    {{#> scroll-strip label="admin.sections" class="-mx-4 mt-6 border-b border-line sm:mx-0"
+        stripClass="gap-2 px-4 sm:px-0"}}
     {{#each adminSections}}
       <button
         type="button"
@@ -124,16 +119,13 @@
           aria-hidden="true"
         ></span></button>
     {{/each}}
+    {{/scroll-strip}}
   </div>
 
   {{!-- Список заказов --}}
   <div x-show="a.auth === 'in' && a.section === 'orders' && !a.order" x-cloak class="mt-6">
     {{!-- Вкладки (компоненты.md 4.4): на узком экране прокручиваются по горизонтали --}}
-    <div
-      role="tablist"
-      aria-label="{{t "admin.tabs"}}"
-      class="scrollbar-soft -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0"
-    >
+    {{#> scroll-strip label="admin.tabs" class="-mx-4 sm:mx-0" stripClass="gap-2 px-4 sm:px-0"}}
       {{#each adminTabs}}
         <button
           type="button"
@@ -148,7 +140,7 @@
             duration-150"
         >{{t label}}</button>
       {{/each}}
-    </div>
+    {{/scroll-strip}}
 
     <form class="mt-4 max-w-xs" x-on:submit.prevent="a.search($event.target.elements.q.value)">
       {{> field empty id="admin-q" name="q" label="admin.search" inputmode="numeric"
@@ -209,11 +201,7 @@
 
   {{!-- Сообщения из форм (бэкенд.md §14): вкладки по типу, строка раскрывается на месте --}}
   <div x-show="a.auth === 'in' && a.section === 'messages' && !a.order" x-cloak class="mt-6">
-    <div
-      role="tablist"
-      aria-label="{{t "admin.msgTabs"}}"
-      class="scrollbar-soft -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0"
-    >
+    {{#> scroll-strip label="admin.msgTabs" class="-mx-4 sm:mx-0" stripClass="gap-2 px-4 sm:px-0"}}
       {{#each adminMessageTabs}}
         <button
           type="button"
@@ -228,7 +216,7 @@
             duration-150"
         >{{t label}}</button>
       {{/each}}
-    </div>
+    {{/scroll-strip}}
 
     <div x-show="a.msgList === 'loading'" aria-hidden="true" class="mt-4 flex flex-col gap-3">
       <div class="h-20 rounded-xl bg-sand"></div>
