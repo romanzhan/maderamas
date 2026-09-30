@@ -267,9 +267,7 @@ export function pageContext(pagePath) {
   const games = [...activities].sort((a, b) => a.order - b.order).map(activityCard)
   const families = currentPath === FAMILIES_PATH ? { activities: games } : null
   const foundActivity = activities.find((item) => currentPath === activityUrl(item)) ?? null
-  const activity = foundActivity
-    ? activityPage(foundActivity, games, products, withCard, links)
-    : null
+  const activity = foundActivity ? activityPage(foundActivity, games, products, withCard) : null
 
   // Вопросы по темам (страницы.md §12). Подпись темы — ключ словаря по её id, как
   // у категорий в меню; нет ключа — встаёт сам id, и это видно в предупреждении сборки
@@ -579,7 +577,7 @@ function activityCard(activity) {
  * товары внизу и соседние игры. Данные игры для скрипта уходят в страницу JSON-ом,
  * а то, что печатается и читается без скрипта, собрано здесь.
  */
-function activityPage(activity, games, products, withCard, links) {
+function activityPage(activity, games, products, withCard) {
   const game = activity.game ?? {}
   const card = games.find((item) => item.id === activity.id)
   const kind = activity.kind
@@ -599,13 +597,12 @@ function activityPage(activity, games, products, withCard, links) {
     steps: (activity.steps ?? []).map(inline),
     materials: (activity.materials ?? []).map(inline),
     [kind]: true,
-    // Печатный лист есть у всех, кроме игры на экране с формами: её смысл — нажимать
-    printable: kind !== 'shapes',
     memotestCards: kind === 'memotest' ? game.cards.flatMap((item) => [item, item]) : [],
     memotestPairs: kind === 'memotest' ? memotestPairs(game.cards.length) : [],
     clues,
     treasureAt: game.clues?.at(-1)?.place ?? null,
     habits: game.habits ?? [],
+    sheets: game.sheets ?? [],
     days: WEEK_DAYS.map((day) => t(`families.chart.${day}`)),
     recipes: (game.recipes ?? []).map((recipe) => ({
       ...recipe,
@@ -616,7 +613,6 @@ function activityPage(activity, games, products, withCard, links) {
     })),
     // Игра на экране: колода memotest и наборы для форм — скрипту (src/scripts/games.js)
     gameJson: ['memotest', 'shapes'].includes(kind) ? inlineJson(game) : null,
-    shareText: t('families.shareText', { handle: links.instagramHandle }),
     related: (activity.relatedProducts ?? [])
       .map((id) => products.find((item) => item.id === id))
       .filter(Boolean)

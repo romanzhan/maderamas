@@ -212,6 +212,27 @@
       margin: 0 !important;
       padding: 0 !important;
     }
+
+    /* Один лист из многих (раскраски): скрипт отмечает его data-print-only на время печати */
+    [data-print-sheet]:has([data-print-only]) [data-print-page]:not([data-print-only]) {
+      display: none !important;
+    }
+
+    /* Лист раскраски — ровно одна страница A4: высота блока чуть меньше листа за вычетом
+       полей @page (297 − 2 × 12 = 273 мм), рисунок вписан в неё. Принудительных разрывов
+       нет — с ними спрятанные соседи при печати одного листа давали пустые страницы */
+    [data-print-page] {
+      display: flex !important;
+      height: 270mm;
+      align-items: center;
+      justify-content: center;
+      break-inside: avoid;
+    }
+
+    [data-print-page] img {
+      width: auto;
+      max-height: 262mm;
+    }
   }
 
   /* Кому движение мешает — тому его нет (стандарты-размеров.md п. 12) */

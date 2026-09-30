@@ -1,5 +1,5 @@
-// Игры раздела Para familias на экране (страницы.md §14б): memotest и «цвета, формы
-// и числа». Грузится только на страницах игр (main.js, data-game) — остальным
+// Игры раздела Para familias на экране (страницы.md §14б): memotest, «цвета, формы
+// и числа» и печать одного листа раскраски. Грузится только на страницах игр (main.js, data-game) — остальным
 // страницам этот код не нужен. Наборы карт и фигур приходят из данных JSON-ом
 // в разметке, тексты — из словаря атрибутами data-t-*, как у админки.
 
@@ -22,6 +22,16 @@ const fill = (text, vars) =>
 const readGame = (element) =>
   JSON.parse(element.querySelector('script[type="application/json"]').textContent)
 
+/**
+ * Фокус на первую карту или вариант после новой раздачи. Кадр ожидания после $nextTick:
+ * к этому моменту Alpine уже заменил элементы ленты, и фокус не уходит на удаляемые
+ */
+function focusFirstIn(component) {
+  component.$nextTick(() =>
+    requestAnimationFrame(() => component.root.querySelector('ul button')?.focus()),
+  )
+}
+
 // Колонок столько, чтобы колода легла ровными рядами без хвоста в последнем
 const MEMOTEST_COLUMNS = {
   8: 'grid-cols-4',
@@ -41,10 +51,13 @@ export function memotest() {
     open: [],
     moves: 0,
     busy: false,
+    timer: null,
     message: '',
     texts: {},
 
     init() {
+      // Корень игры запоминается здесь: в методе, вызванном кнопкой, $el — сама кнопка
+      this.root = this.$el
       this.texts = { ...this.$el.dataset }
       this.cards = readGame(this.$el).cards
       this.pairs = Number(this.$el.dataset.pairs) || Math.min(6, this.cards.length)
@@ -56,7 +69,11 @@ export function memotest() {
       this.shuffle()
     },
 
-    shuffle() {
+    /** focus — после нажатия «Mezclar» или «Jugar de nuevo»: кнопка, на которой стоял фокус,
+     *  пропадает или остаётся в стороне, и с клавиатуры игра начиналась бы с поиска колоды */
+    shuffle(focus = false) {
+      // Промах прошлой партии закрыл бы карты новой и снял бы блокировку раньше времени
+      clearTimeout(this.timer)
       const chosen = shuffled(this.cards).slice(0, this.pairs)
       this.deck = shuffled([...chosen, ...chosen]).map((card, key) => ({
         ...card,
@@ -68,13 +85,18 @@ export function memotest() {
       this.moves = 0
       this.busy = false
       this.message = ''
+      if (focus) focusFirstIn(this)
     },
 
     flip(card) {
       if (this.busy || card.open || card.done) return
       card.open = true
       this.open.push(card)
-      if (this.open.length < 2) return
+      // Открытую карту слышно, а не только видно: подпись кнопки меняется молча
+      if (this.open.length < 2) {
+        this.message = card.name
+        return
+      }
 
       this.moves++
       const [first, second] = this.open
@@ -82,13 +104,14 @@ export function memotest() {
       if (first.icon === second.icon) {
         first.done = second.done = true
         first.open = second.open = false
-        this.message = this.won ? '' : fill(this.texts.tMatch, { name: first.name })
+        this.message = this.won ? this.wonLabel : fill(this.texts.tMatch, { name: first.name })
         return
       }
 
       this.busy = true
-      this.message = this.texts.tNoMatch
-      setTimeout(() => {
+      // С именами обеих карт: одинаковую фразу второй раз подряд экранный диктор не прочтёт
+      this.message = fill(this.texts.tNoMatch, { first: first.name, second: second.name })
+      this.timer = setTimeout(() => {
         first.open = second.open = false
         this.busy = false
       }, MISMATCH_MS)
@@ -152,6 +175,8 @@ export function shapesGame() {
     texts: {},
 
     init() {
+      // Корень игры запоминается здесь: в методе, вызванном кнопкой, $el — сама кнопка
+      this.root = this.$el
       this.texts = { ...this.$el.dataset }
       this.data = readGame(this.$el)
       this.next()
@@ -163,7 +188,9 @@ export function shapesGame() {
       this.next()
     },
 
-    next() {
+    /** focus — после «Siguiente»: кнопка пропадает вместе с верным ответом, и фокус
+     *  уходил бы в начало страницы */
+    next(focus = false) {
       const previous = this.round
       this.state = 'ask'
       this.wrong = []
@@ -175,6 +202,7 @@ export function shapesGame() {
         this.round.prompt === previous.prompt &&
         this.round.answer === previous.answer
       )
+      if (focus) focusFirstIn(this)
     },
 
     colorName(shape, color) {
@@ -259,6 +287,23 @@ export function shapesGame() {
 
     get scoreLabel() {
       return fill(this.texts.tScore, { n: this.score })
+    },
+  }
+}
+
+/**
+ * Раскраски: печать одного листа. Лист отмечается на время печати — правило печати
+ * (main.css) прячет остальные; отметка снимается, когда окно печати закрыли
+ */
+export function coloringSheets() {
+  return {
+    printOne(button) {
+      const page = button.closest('[data-print-page]')
+      page.setAttribute('data-print-only', '')
+      window.addEventListener('afterprint', () => page.removeAttribute('data-print-only'), {
+        once: true,
+      })
+      window.print()
     },
   }
 }

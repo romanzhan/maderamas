@@ -1,0 +1,32 @@
+{{!-- Láminas para colorear (страницы.md §14б): сетка листов, у каждого — печать только
+      его; кнопка сверху печатает все, каждый на своём листе A4. Рисунки ИИ, показанные
+      владельцу до публикации (решение 30.09.2026), нарезает обычный конвейер картинок.
+      Какой лист печатать, скрипт отмечает на время печати (games.js, coloringSheets). --}}
+<section class="page-container mt-10 lg:mt-12" data-print-sheet data-game x-data="coloringSheets">
+  <h2 class="font-display text-h2 print:hidden lg:text-h2-lg">{{t "families.coloring.cardsTitle"}}</h2>
+
+  <div class="mt-4 print:hidden">{{> families/print-button}}</div>
+
+  <ul class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 lg:gap-6 print:mt-0 print:block">
+    {{#each activity.sheets}}
+      <li data-print-page class="flex flex-col gap-3">
+        <div class="overflow-hidden rounded-xl border border-line bg-cream print:rounded-none print:border-0">
+          {{> picture ../empty id=image alt=name sizes="(min-width: 1024px) 25vw, 50vw"
+              class="w-full"}}
+        </div>
+        <div class="flex items-center justify-between gap-2 print:hidden">
+          <p class="font-medium">{{name}}</p>
+          <button
+            type="button"
+            x-on:click="printOne($el)"
+            class="-mr-2 flex size-11 shrink-0 items-center justify-center rounded-lg
+              transition-colors duration-150 hover:bg-sand-hover"
+          >
+            <span class="sr-only">{{t "families.coloring.printOne" name=name}}</span>
+            {{> icon ../empty name="printer" class="size-5"}}
+          </button>
+        </div>
+      </li>
+    {{/each}}
+  </ul>
+</section>

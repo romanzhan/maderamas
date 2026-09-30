@@ -14,7 +14,7 @@
       data-pairs="{{#each activity.memotestPairs}}{{#if selected}}{{n}}{{/if}}{{/each}}"
       data-t-card-hidden="{{t "families.memotest.cardHidden" n="{n}"}}"
       data-t-match="{{t "families.memotest.match" name="{name}"}}"
-      data-t-no-match="{{t "families.memotest.noMatch"}}"
+      data-t-no-match="{{t "families.memotest.noMatch" first="{first}" second="{second}"}}"
       data-t-won="{{t "families.memotest.won" n="{n}"}}"
       data-t-moves="{{t "families.memotest.moves" n="{n}"}}"
       data-t-found="{{t "families.memotest.found" found="{found}" total="{total}"}}"
@@ -27,22 +27,13 @@
           <legend class="text-small font-medium">{{t "families.memotest.pairsLabel"}}</legend>
           <div class="mt-2 flex flex-wrap gap-2">
             {{#each activity.memotestPairs}}
-              <label class="{{> pill-class}} has-checked:border-clay has-checked:bg-cream">
-                <input
-                  type="radio"
-                  name="memotest-pares"
-                  value="{{n}}"
-                  class="sr-only"
-                  {{#if selected}}checked{{/if}}
-                  x-on:change="choose({{n}})"
-                />
-                <span class="text-small font-medium">{{label}}</span>
-              </label>
+              {{> radio ../empty chip=true name="memotest-pares" value=n text=label checked=selected
+                  onChange=(concat "choose(" n ")")}}
             {{/each}}
           </div>
         </fieldset>
         {{> button empty tertiary=true sizeMd=true icon="rotate-ccw" label="families.memotest.restart"
-            onClick="shuffle()"}}
+            onClick="shuffle(true)"}}
       </div>
 
       <p class="mt-6 flex flex-wrap gap-x-4 gap-y-1 text-small text-charcoal/70 tabular-nums">
@@ -81,7 +72,7 @@
 
       <div x-show="won" x-cloak class="mt-4 flex flex-col items-start gap-4 rounded-xl bg-cream p-4 lg:p-6">
         <p class="font-display text-h3 lg:text-h3-lg" x-text="wonLabel"></p>
-        {{> button empty primary=true sizeMd=true label="families.memotest.playAgain" onClick="shuffle()"}}
+        {{> button empty primary=true sizeMd=true label="families.memotest.playAgain" onClick="shuffle(true)"}}
       </div>
     </div>
 

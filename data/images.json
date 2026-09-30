@@ -1339,6 +1339,118 @@
       "1920": "blog-postura-1920-e7ca9a68.webp"
     }
   },
+  "colorear-ballena": {
+    "type": "content",
+    "width": 960,
+    "height": 1440,
+    "sizes": [
+      480,
+      960
+    ],
+    "format": "webp",
+    "files": {
+      "480": "colorear-ballena-480-c0800140.webp",
+      "960": "colorear-ballena-960-c0800140.webp"
+    }
+  },
+  "colorear-carpincho": {
+    "type": "content",
+    "width": 960,
+    "height": 1440,
+    "sizes": [
+      480,
+      960
+    ],
+    "format": "webp",
+    "files": {
+      "480": "colorear-carpincho-480-ebf7e2da.webp",
+      "960": "colorear-carpincho-960-ebf7e2da.webp"
+    }
+  },
+  "colorear-hornero": {
+    "type": "content",
+    "width": 960,
+    "height": 1440,
+    "sizes": [
+      480,
+      960
+    ],
+    "format": "webp",
+    "files": {
+      "480": "colorear-hornero-480-b47204fc.webp",
+      "960": "colorear-hornero-960-b47204fc.webp"
+    }
+  },
+  "colorear-huerta": {
+    "type": "content",
+    "width": 960,
+    "height": 1440,
+    "sizes": [
+      480,
+      960
+    ],
+    "format": "webp",
+    "files": {
+      "480": "colorear-huerta-480-c8806318.webp",
+      "960": "colorear-huerta-960-c8806318.webp"
+    }
+  },
+  "colorear-llama": {
+    "type": "content",
+    "width": 960,
+    "height": 1440,
+    "sizes": [
+      480,
+      960
+    ],
+    "format": "webp",
+    "files": {
+      "480": "colorear-llama-480-dd6b2cff.webp",
+      "960": "colorear-llama-960-dd6b2cff.webp"
+    }
+  },
+  "colorear-merienda": {
+    "type": "content",
+    "width": 960,
+    "height": 1440,
+    "sizes": [
+      480,
+      960
+    ],
+    "format": "webp",
+    "files": {
+      "480": "colorear-merienda-480-e76c0234.webp",
+      "960": "colorear-merienda-960-e76c0234.webp"
+    }
+  },
+  "colorear-pinguinos": {
+    "type": "content",
+    "width": 960,
+    "height": 1440,
+    "sizes": [
+      480,
+      960
+    ],
+    "format": "webp",
+    "files": {
+      "480": "colorear-pinguinos-480-8162391a.webp",
+      "960": "colorear-pinguinos-960-8162391a.webp"
+    }
+  },
+  "colorear-yaguarete": {
+    "type": "content",
+    "width": 960,
+    "height": 1440,
+    "sizes": [
+      480,
+      960
+    ],
+    "format": "webp",
+    "files": {
+      "480": "colorear-yaguarete-480-0700b45b.webp",
+      "960": "colorear-yaguarete-960-0700b45b.webp"
+    }
+  },
   "home-ajuste-1": {
     "type": "content",
     "width": 1920,

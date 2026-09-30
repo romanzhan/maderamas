@@ -328,12 +328,12 @@ export const adminContent = {
     }
   },
 
-  /** Варианты выпадающего списка: из схемы, из другого раздела или из тем вопросов */
   /** Условие показа поля из схемы: when: { kind: 'memotest' } */
   visible(model, field) {
     return Object.entries(field.when ?? {}).every(([key, value]) => getPath(model, key) === value)
   },
 
+  /** Варианты выпадающего списка: из схемы, из другого раздела или из тем вопросов */
   selectOptions(field) {
     if (field.options)
       return field.options.map((option) => ({ ...option, value: String(option.value) }))
@@ -574,14 +574,23 @@ export const adminContent = {
     }
   },
 
-  /** Обязательные поля — до сервера: пустое название не уйдёт в сборку и не уронит её */
+  /**
+   * Обязательные поля и наименьшая длина списков (min в схеме) — до сервера: пустое
+   * название или игра без карт не уйдут в сборку и не остановят публикацию всего сайта.
+   * Скрытые условием when поля не проверяются — к этой записи они не относятся
+   */
   missing(name, data) {
     const conf = this.schema.collections[name]
     if (!conf || !Array.isArray(data)) return null
     for (const item of data) {
       for (const field of conf.fields) {
-        if (field.required && ['', null, undefined].includes(getPath(item, field.key))) {
+        if (!this.visible(item, field)) continue
+        const value = getPath(item, field.key)
+        if (field.required && ['', null, undefined].includes(value)) {
           return `«${this.title(item, conf)}»: ${field.label}`
+        }
+        if (field.min && (Array.isArray(value) ? value.length : 0) < field.min) {
+          return `«${this.title(item, conf)}»: ${field.label} — ${this.texts.tMinItems.replace('{n}', field.min)}`
         }
       }
     }

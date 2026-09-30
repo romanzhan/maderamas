@@ -8,13 +8,17 @@
       промо-подложка — один из флагов blue | pink | yellow | green плюс onDark
       (он приходит вместе с флагом и выключен только у жёлтого).
 
+      Поля внутри — 16 на телефоне и 24 на компьютере, как у всех панелей
+      (стандарты-размеров.md п. 7; на компьютере было 16 — владелец 30.09.2026: «слишком
+      близко к краю»).
+
       Цвет текста на промо-фоне не выбирается: он закреплён за тоном
       в визуальная-система.md §2.2 — на жёлтом тёмный, на остальных светлый.
       Без флагов плитка песочная. Фото лежит на светлой подложке внутри: снимок
       прямо на цветном фоне спорит с ним и теряет собственный тон. --}}
 <a
   href="{{href}}"
-  class="group flex h-full flex-col gap-3 rounded-xl p-4 transition-colors duration-150
+  class="group flex h-full flex-col gap-3 rounded-xl p-4 transition-colors duration-150 lg:p-6
     {{#if blue}}surface-dark bg-promo-blue text-cream{{/if}}
     {{#if pink}}surface-dark bg-promo-pink text-cream{{/if}}
     {{#if yellow}}bg-promo-yellow text-charcoal{{/if}}
