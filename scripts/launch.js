@@ -18,7 +18,7 @@
 import { execSync, spawnSync } from 'node:child_process'
 import { randomUUID } from 'node:crypto'
 import { Resolver, resolve4 } from 'node:dns/promises'
-import { existsSync, readFileSync } from 'node:fs'
+import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { homedir } from 'node:os'
 import { resolve } from 'node:path'
 import { hostinger, waitFor } from './hostinger.js'
@@ -118,6 +118,39 @@ if (!sites.some((site) => site.domain === apexHost)) {
     throw new Error(
       `В аккаунте Hostinger нет сайта ${devHost} — не понимаю, на какой тариф ставить`,
     )
+  // Домен мог быть припаркован на сайте превью (так его завели в июле): пока он там,
+  // отдельный сайт хостинг не создаёт. Снимаем парковку, но сначала сохраняем зону DNS —
+  // в ней почта магазина — и после снятия проверяем, что зона на месте
+  const parkedPath = `/api/hosting/v1/accounts/${deploy.user}/websites/${devHost}/parked-domains`
+  const parked = await hostinger('GET', parkedPath)
+  if ((parked?.data ?? parked).some((item) => item.domain === apexHost)) {
+    const zonePath = `/api/dns/v1/zones/${apexHost}`
+    const before = await hostinger('GET', zonePath)
+    writeFileSync(
+      resolve(root, 'madera-data', 'backups', `dns-${apexHost}-${Date.now()}.json`),
+      JSON.stringify(before, null, 2),
+    )
+    await hostinger('DELETE', `${parkedPath}/${apexHost}`)
+    const after = await hostinger('GET', zonePath).catch(() => [])
+    const lost = before.filter(
+      (record) => !after.some((kept) => kept.name === record.name && kept.type === record.type),
+    )
+    if (lost.length) {
+      await hostinger('PUT', zonePath, {
+        overwrite: true,
+        zone: lost.map(({ name, type, ttl, records }) => ({
+          name,
+          type,
+          ttl,
+          records: records.map(({ content }) => ({ content })),
+        })),
+      })
+      console.log(`DNS: после снятия парковки вернул записи — ${lost.length}`)
+    }
+    console.log(
+      `Парковка ${apexHost} на ${devHost} снята, зона DNS цела (копия в madera-data/backups)`,
+    )
+  }
   await hostinger('POST', '/api/hosting/v1/websites', { domain: apexHost, order_id: dev.order_id })
   process.stdout.write(`Сайт ${apexHost} заведён, жду его папку на сервере`)
   await waitFor(
