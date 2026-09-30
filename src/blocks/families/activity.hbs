@@ -1,36 +1,26 @@
-{{!-- Игра раздела Para familias (страницы.md §14б): значок в тоне игры → H1 и лид →
-      строка «возраст · длительность · формат» → вводные абзацы → сама игра (на экране
+{{!-- Игра раздела Para familias (страницы.md §14б): H1 и лид → три карточки «возраст ·
+      длительность · формат» → вводные абзацы → сама игра (на экране
       или лист для печати) → как играть → разделы-советы → приглашение в Instagram →
       товары к игре → другие игры.
       Блоки — прямые дети <main>: при печати страницы с листом (data-print-sheet)
       остаётся только он (main.css, правило печати), и это правило обязано их видеть.
-      Значок, а не обложка: своих снимков у игр нет, а заглушка бренда на месте кадра
-      читалась бы браком (состояния-экранов.md п. 9). --}}
+      Ни обложки, ни значка над заголовком: своих снимков у игр нет, а цветной значок
+      над H1 владелец счёл лишним (30.09.2026) — он остаётся в плитках списка. --}}
 <main id="contenido" class="pb-16">
   <div class="page-container pt-6 lg:pt-10">
     {{> breadcrumbs empty items=breadcrumbs.items plain=breadcrumbs.plain}}
   </div>
 
   <header class="page-container mt-6 lg:mt-10">
-    <span class="flex size-14 items-center justify-center rounded-2xl {{activity.accent}}">
-      {{> icon empty name=activity.icon class="size-6"}}
-    </span>
-    <h1 class="mt-4 max-w-prose font-display text-h1 text-balance lg:text-h1-lg">{{activity.title}}</h1>
+    <h1 class="max-w-prose font-display text-h1 text-balance lg:text-h1-lg">{{activity.title}}</h1>
     <p class="mt-3 max-w-prose text-lead text-charcoal/70">{{activity.excerpt}}</p>
 
-    <dl class="mt-6 flex flex-wrap gap-x-8 gap-y-3">
-      <div class="flex flex-col gap-1">
-        <dt class="text-small text-charcoal/70">{{t "families.agesLabel"}}</dt>
-        <dd class="font-medium">{{activity.ages}}</dd>
-      </div>
-      <div class="flex flex-col gap-1">
-        <dt class="text-small text-charcoal/70">{{t "families.durationLabel"}}</dt>
-        <dd class="font-medium">{{activity.duration}}</dd>
-      </div>
-      <div class="flex flex-col gap-1">
-        <dt class="text-small text-charcoal/70">{{t "families.formatLabel"}}</dt>
-        <dd class="font-medium">{{activity.formatLabel}}</dd>
-      </div>
+    {{!-- Три карточки на песке: на телефоне столбиком (подпись формата длинная, в трети
+          ширины 360 она ломалась бы на три строки), с 640 — в ряд --}}
+    <dl class="mt-6 grid max-w-3xl gap-2 sm:grid-cols-3 sm:gap-3">
+      {{> families/fact label="families.agesLabel" value=activity.ages icon="baby"}}
+      {{> families/fact label="families.durationLabel" value=activity.duration icon="timer"}}
+      {{> families/fact label="families.formatLabel" value=activity.formatLabel icon=activity.formatIcon}}
     </dl>
 
     <div class="mt-8">
@@ -96,6 +86,6 @@
   {{/if}}
 
   <div class="page-container mt-12 lg:mt-16">
-    {{> link empty nav=true href="/para-familias/" label="families.backToList"}}
+    {{> link empty nav=true back=true href="/para-familias/" label="families.backToList"}}
   </div>
 </main>

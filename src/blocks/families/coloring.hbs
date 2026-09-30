@@ -9,17 +9,19 @@
 
   <ul class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 lg:gap-6 print:mt-0 print:block">
     {{#each activity.sheets}}
-      <li data-print-page class="flex flex-col gap-3">
-        <div class="overflow-hidden rounded-xl border border-line bg-cream print:rounded-none print:border-0">
-          {{> picture ../empty id=image alt=name sizes="(min-width: 1024px) 25vw, 50vw"
-              class="w-full"}}
-        </div>
-        <div class="flex items-center justify-between gap-2 print:hidden">
-          <p class="font-medium">{{name}}</p>
+      {{!-- Картинка, название и печать — одна карточка в рамке: кнопка относится к своему
+            листу, а не висит между листами (владелец 30.09.2026). Зазор между карточками
+            больше, чем внутри неё — принцип близости (стандарты-размеров.md п. 7) --}}
+      <li data-print-page class="flex flex-col overflow-hidden rounded-xl border border-line bg-cream
+        print:rounded-none print:border-0">
+        {{> picture ../empty id=image alt=name sizes="(min-width: 1024px) 25vw, 50vw" class="w-full"}}
+        <div class="flex items-center justify-between gap-2 border-t border-line py-1 pr-1 pl-3
+          print:hidden">
+          <p class="min-w-0 truncate text-small font-medium">{{name}}</p>
           <button
             type="button"
             x-on:click="printOne($el)"
-            class="-mr-2 flex size-11 shrink-0 items-center justify-center rounded-lg
+            class="flex size-11 shrink-0 items-center justify-center rounded-lg
               transition-colors duration-150 hover:bg-sand-hover"
           >
             <span class="sr-only">{{t "families.coloring.printOne" name=name}}</span>
