@@ -25,11 +25,13 @@ import { seoMeta } from './seo-meta.js'
 
 // Пункты безопасности общие для всех товаров и страниц (страницы.md §3): пер-товарных
 // полей безопасности нет. Список лежит здесь, а не в двух блоках сразу
+// tone — цвет кружка там, где пункты стоят цветными (карточки «Nosotros»), в том же
+// порядке, что на главной; страница товара тон не берёт
 const SAFETY = [
-  { key: 'Corners', icon: 'squircle' },
-  { key: 'Stable', icon: 'pyramid' },
-  { key: 'Hardware', icon: 'wrench' },
-  { key: 'Posture', icon: 'accessibility' },
+  { key: 'Corners', icon: 'squircle', tone: 'green' },
+  { key: 'Stable', icon: 'pyramid', tone: 'blue' },
+  { key: 'Hardware', icon: 'wrench', tone: 'yellow' },
+  { key: 'Posture', icon: 'accessibility', tone: 'pink' },
 ]
 
 // Шкала оценки для формы отзыва (компоненты.md 3.5): пять звёзд. Списка в шаблоне

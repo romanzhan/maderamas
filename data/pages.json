@@ -4,8 +4,36 @@
     "slug": "nosotros",
     "title": "Sobre nosotros",
     "lead": "Madera Más es mobiliario y objetos para el hogar creados con especial atención al diseño, la funcionalidad y la vida cotidiana.",
-    "body": "Creamos productos pensados para ser realmente útiles todos los días. Para nosotros es importante que un mueble no solo sea lindo, sino también práctico, resistente y capaz de acompañar el hogar durante muchos años.\n\nHoy, una parte importante de nuestra colección está dedicada al mobiliario infantil. Conocemos especialmente este mundo porque también somos padres y sabemos lo importantes que son para una familia la seguridad, la estabilidad, la comodidad y la posibilidad de adaptar los muebles a medida que los chicos crecen. Así nacieron nuestras sillas evolutivas, torres de aprendizaje y otros productos pensados para acompañar su autonomía.\n\nPero Madera Más es mucho más que mobiliario infantil.\n\nEstamos desarrollando y ampliando nuestra propuesta, incorporando poco a poco muebles y objetos funcionales para distintos espacios del hogar. Todos comparten una misma filosofía: diseño pensado, buenos materiales, formas simples y atención a cada detalle.\n\nNo buscamos crear objetos para una sola temporada. Nos gustan los muebles que se integran naturalmente a los espacios, resisten el uso cotidiano y mantienen su vigencia con el paso del tiempo.\n\nCada uno de nuestros productos recorre un camino que comienza con una idea y los primeros diseños, y continúa con su fabricación en nuestro taller. Mejoramos constantemente nuestros modelos, exploramos materiales y desarrollamos nuevas propuestas.\n\nMadera Más — objetos que se convierten en parte de tu hogar y crecen junto a tu familia.",
-    "sections": [],
+    "body": "Creamos productos pensados para ser realmente útiles todos los días. Para nosotros es importante que un mueble no solo sea lindo, sino también práctico, resistente y capaz de acompañar el hogar durante muchos años.",
+    "sections": [
+      {
+        "id": "familia",
+        "title": "También somos padres",
+        "body": "Hoy, una parte importante de nuestra colección está dedicada al mobiliario infantil. Conocemos especialmente este mundo porque también somos padres y sabemos lo importantes que son para una familia la seguridad, la estabilidad, la comodidad y la posibilidad de adaptar los muebles a medida que los chicos crecen. Así nacieron nuestras sillas evolutivas, torres de aprendizaje y otros productos pensados para acompañar su autonomía."
+      },
+      {
+        "id": "filosofia",
+        "title": "Una misma filosofía",
+        "quote": "Pero Madera Más es mucho más que mobiliario infantil.",
+        "body": "Estamos desarrollando y ampliando nuestra propuesta, incorporando poco a poco muebles y objetos funcionales para distintos espacios del hogar. Todos comparten una misma filosofía: diseño pensado, buenos materiales, formas simples y atención a cada detalle.",
+        "items": [
+          "Diseño pensado",
+          "Buenos materiales",
+          "Formas simples",
+          "Atención a cada detalle"
+        ]
+      },
+      {
+        "id": "duracion",
+        "title": "No para una sola temporada",
+        "body": "No buscamos crear objetos para una sola temporada. Nos gustan los muebles que se integran naturalmente a los espacios, resisten el uso cotidiano y mantienen su vigencia con el paso del tiempo."
+      },
+      {
+        "id": "taller",
+        "title": "De la idea al taller",
+        "body": "Cada uno de nuestros productos recorre un camino que comienza con una idea y los primeros diseños, y continúa con su fabricación en nuestro taller. Mejoramos constantemente nuestros modelos, exploramos materiales y desarrollamos nuevas propuestas."
+      }
+    ],
     "seo": {
       "title": null,
       "description": "Muebles y objetos para el hogar con diseño y fabricación propia: sillas evolutivas, torres de aprendizaje y más, pensados para acompañar a la familia."

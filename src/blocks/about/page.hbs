@@ -1,109 +1,126 @@
-{{!-- «Nosotros» (страницы.md §9). Без фотографий (владелец 30.09.2026: заглушки сняты,
-      страница держится на тексте). Сверху вниз: кто мы → история, рядом довод «почему
-      растущая» → этапы работы (если есть в данных) → живой отзыв → из чего сделано
-      и выход в каталог. Своих фактов у страницы нет: текст и этапы — pages.json, пункты
-      о материалах — те же, что на странице товара, отзыв — настоящий, с пометкой
-      источника (seo.md п. 5).
-      Кнопка в каталог — вывод последней секции, а не отдельная полоса: одна кнопка
-      в своей полосе читалась оторванной от страницы (владелец 30.09.2026). Последняя
-      секция светлая: тёмная полоса отзыва вплотную к тёмному подвалу слилась бы с ним. --}}
+{{!-- «Nosotros» (страницы.md §9). Страница без фотографий (владелец 30.09.2026), поэтому
+      держится на разметке текста: лид и вступление → главы рассказа с номерами (подзаголовок
+      слева, текст справа; у главы бывают фраза-акцент и пункты карточками) → «почему
+      растущая» → материалы цветными карточками → финал: итоговая фраза бренда, кнопка
+      в каталог и отзыв карточкой рядом.
+      Своих фактов у страницы нет: текст и главы — pages.json (текст заказчицы, разбитый на
+      части), материалы — те же пункты, что на странице товара, отзыв — настоящий, с пометкой
+      источника (seo.md п. 5). Цвет — только кружки значков (визуальная-система.md §2.3).
+      Последняя секция светлая и несёт кнопку: тёмная полоса у тёмного подвала слилась бы
+      с ним, а кнопка одна в своей полосе читалась оторванной (владелец 30.09.2026). --}}
 <main id="contenido">
   <div class="page-container pt-6 lg:pt-10">
     {{> breadcrumbs empty items=breadcrumbs.items plain=breadcrumbs.plain}}
 
-    <div class="mt-4 flex flex-col gap-4">
-      <h1 class="max-w-prose font-display text-h1 lg:text-h1-lg">{{page.heading}}</h1>
+    <div class="mt-4 flex max-w-3xl flex-col gap-4">
+      <h1 class="font-display text-h1 lg:text-h1-lg">{{page.heading}}</h1>
       {{#if page.lead}}
-        <p class="max-w-prose text-lead text-charcoal/70 lg:text-lead-lg">{{page.lead}}</p>
+        <p class="text-lead lg:text-lead-lg">{{page.lead}}</p>
       {{/if}}
+      <div class="text-charcoal/70">{{> prose empty paragraphs=page.body}}</div>
     </div>
   </div>
 
-  {{!-- История и рядом главный довод бренда. На компьютере карточка едет рядом с текстом,
-        пока его читают; на телефоне стоит после истории --}}
-  <section class="page-container mt-10 lg:mt-14">
-    <div class="grid items-start gap-8 lg:grid-cols-12 lg:gap-12">
-      <div class="lg:col-span-7">
-        {{> prose empty paragraphs=page.body}}
-      </div>
-
-      <aside class="rounded-2xl bg-sand p-6 lg:sticky lg:top-(--header-h) lg:col-span-5 lg:p-8">
-        <h2 class="font-display text-h3 lg:text-h3-lg">{{t "about.whyTitle"}}</h2>
-        <p class="mt-3 text-charcoal/70">{{t "about.whyText"}}</p>
-      </aside>
-    </div>
-  </section>
-
-  {{!-- Как рождается стул: этапы из данных, нумерованные; нет этапов — нет и секции --}}
+  {{!-- Главы: номер рисует счётчик CSS (step-counter), как у этапов на «Cómo funciona» —
+        цифры в данных разошлись бы с порядком глав --}}
   {{#if page.sections.length}}
-    <section class="page-container mt-12 lg:mt-16">
-      <h2 class="font-display text-h2 lg:text-h2-lg">{{t "about.processTitle"}}</h2>
-      <p class="mt-3 max-w-prose text-charcoal/70">{{t "about.processLead"}}</p>
-
-      <ol class="step-counter mt-6 grid gap-6 sm:grid-cols-2 lg:mt-8 lg:grid-cols-4 lg:gap-8">
-        {{#each page.sections}}
-          <li class="flex flex-col gap-3">
-            {{!-- Номер рисует счётчик CSS: держать цифры в данных значило бы следить,
-                  чтобы они не разошлись с порядком этапов --}}
+    <ol class="step-counter page-container mt-10 lg:mt-14">
+      {{#each page.sections}}
+        <li id="{{id}}" class="grid gap-4 border-t border-line py-10 lg:grid-cols-12 lg:gap-12 lg:py-14">
+          <div class="flex items-center gap-4 lg:col-span-4 lg:flex-col lg:items-start">
             <span
               data-step
               aria-hidden="true"
-              class="flex size-12 items-center justify-center rounded-full bg-sand
+              class="flex size-12 shrink-0 items-center justify-center rounded-full bg-sand
                 font-display text-h4 text-clay tabular-nums lg:text-h4-lg"
             ></span>
-            <h3 class="text-h4 lg:text-h4-lg">{{title}}</h3>
+            <h2 class="font-display text-h3 lg:text-h3-lg">{{title}}</h2>
+          </div>
+
+          <div class="flex flex-col gap-6 lg:col-span-8">
+            {{#if quote}}
+              {{!-- Фраза-акцент: вид крупный, смысл — обычный абзац, не цитата и не
+                    заголовок (seo.md п. 1: вид не задаёт смысл) --}}
+              <p class="border-l-4 border-clay pl-4 font-display text-h3 lg:pl-6 lg:text-h3-lg">{{quote}}</p>
+            {{/if}}
             {{> prose ../empty paragraphs=body}}
-          </li>
-        {{/each}}
-      </ol>
-    </section>
+            {{#if items.length}}
+              <ul class="grid gap-3 sm:grid-cols-2">
+                {{#each items}}
+                  <li class="flex min-h-14 items-center gap-3 rounded-xl bg-sand px-4 py-3 font-medium">
+                    <span class="flex size-8 shrink-0 items-center justify-center rounded-full bg-cream text-clay">
+                      {{> icon ../../empty name="check" class="size-4"}}
+                    </span>
+                    {{this}}
+                  </li>
+                {{/each}}
+              </ul>
+            {{/if}}
+          </div>
+        </li>
+      {{/each}}
+    </ol>
   {{/if}}
 
-  {{!-- Живой отзыв во всю ширину. Отзыв с Mercado Libre обязан нести пометку источника
-        и ссылку на оригинал (seo.md п. 5), поэтому имя автора здесь — ссылка --}}
-  {{#if home.reviews.length}}
-    {{#with home.reviews.[0]}}
-      <section class="surface-dark mt-12 bg-walnut text-cream lg:mt-16">
-        <div class="page-container py-12 lg:py-16">
-          <figure class="mx-auto flex max-w-prose flex-col items-center gap-6 text-center">
-            <blockquote class="font-display text-h3 lg:text-h3-lg">{{text}}</blockquote>
-            <figcaption class="flex flex-wrap items-center justify-center gap-x-2 text-small
-              text-cream/75">
+  {{!-- Главный довод бренда — выделенной карточкой, а не отдельной голой секцией --}}
+  <section class="page-container mt-2 lg:mt-4">
+    <div class="flex flex-col gap-6 rounded-2xl bg-sand p-6 sm:flex-row sm:items-start lg:gap-10 lg:p-10">
+      <span class="flex size-16 shrink-0 items-center justify-center rounded-full bg-promo-green text-cream">
+        {{> icon empty name="sprout" class="size-8"}}
+      </span>
+      <div class="flex max-w-3xl flex-col gap-3">
+        <h2 class="font-display text-h2 lg:text-h2-lg">{{t "about.whyTitle"}}</h2>
+        <p class="text-lead text-charcoal/70">{{t "about.whyText"}}</p>
+      </div>
+    </div>
+  </section>
+
+  {{!-- Из чего сделана: те же пункты, что на странице товара, — карточками с крупными
+        цветными значками, по тону на пункт, как на главной --}}
+  <section class="page-container mt-16 lg:mt-24">
+    <h2 class="font-display text-h2 lg:text-h2-lg">{{t "about.materialsTitle"}}</h2>
+    <p class="mt-3 max-w-prose text-charcoal/70">{{t "about.materialsLead"}}</p>
+
+    <ul class="mt-6 grid gap-4 sm:grid-cols-2 lg:mt-8 lg:grid-cols-4">
+      {{#each safety}}
+        <li class="rounded-2xl border border-line bg-cream p-6">
+          {{> feature-item ../empty icon=icon large=true
+              green=(eq tone "green") blue=(eq tone "blue")
+              yellow=(eq tone "yellow") pink=(eq tone "pink")
+              title=(concat "product.safety" key "")
+              text=(concat "product.safety" key "Text")}}
+        </li>
+      {{/each}}
+    </ul>
+  </section>
+
+  {{!-- Финал: итоговая фраза бренда и выход в каталог; рядом — отзыв карточкой. Отзыв
+        с Mercado Libre обязан нести пометку источника и ссылку на оригинал (seo.md п. 5) --}}
+  <section class="mt-16 bg-sand lg:mt-24">
+    <div class="page-container grid items-center gap-10 py-12 lg:grid-cols-12 lg:gap-12 lg:py-16">
+      <div class="flex flex-col items-start gap-6 {{#if home.reviews.length}}lg:col-span-7{{else}}lg:col-span-12{{/if}}">
+        <p class="max-w-2xl font-display text-h2 lg:text-h2-lg">{{t "about.closing"}}</p>
+        {{> button empty primary=true sizeLg=true label="home.heroCta" href=nav.catalogHref}}
+      </div>
+
+      {{#if home.reviews.length}}
+        {{#with home.reviews.[0]}}
+          <figure class="flex flex-col gap-4 rounded-2xl bg-cream p-6 shadow-sm lg:col-span-5 lg:p-8">
+            <span class="text-clay" aria-hidden="true">{{> icon ../empty name="quote" class="size-8"}}</span>
+            <blockquote class="text-lead">{{text}}</blockquote>
+            <figcaption class="flex flex-wrap items-center gap-x-2 text-small text-charcoal/70">
               {{#if sourceUrl}}
                 <a href="{{sourceUrl}}" target="_blank" rel="noopener nofollow"
-                  class="underline underline-offset-2 hover:text-cream">{{author}}</a>
+                  class="font-medium text-charcoal underline underline-offset-2 hover:text-clay">{{author}}</a>
               {{else}}
-                <span>{{author}}</span>
+                <span class="font-medium text-charcoal">{{author}}</span>
               {{/if}}
               <span aria-hidden="true">·</span>
               <span>{{t "home.reviewsFromMl"}}</span>
             </figcaption>
           </figure>
-        </div>
-      </section>
-    {{/with}}
-  {{/if}}
-
-  {{!-- Из чего сделана (те же пункты, что на странице товара и на «Cómo funciona»)
-        и вывод страницы — в каталог. Без отзыва полоса встаёт с обычным отступом --}}
-  <section class="bg-sand {{#unless home.reviews.length}}mt-12 lg:mt-16{{/unless}}">
-    <div class="page-container py-12 lg:py-16">
-      <h2 class="font-display text-h2 lg:text-h2-lg">{{t "about.materialsTitle"}}</h2>
-      <p class="mt-3 max-w-prose text-charcoal/70">{{t "about.materialsLead"}}</p>
-
-      <ul class="mt-6 grid gap-6 sm:grid-cols-2 lg:mt-8 lg:grid-cols-4">
-        {{#each safety}}
-          <li>
-            {{> feature-item ../empty icon=icon
-                title=(concat "product.safety" key "")
-                text=(concat "product.safety" key "Text")}}
-          </li>
-        {{/each}}
-      </ul>
-
-      <div class="mt-10 flex justify-center lg:mt-12">
-        {{> button empty primary=true sizeLg=true label="home.heroCta" href=nav.catalogHref}}
-      </div>
+        {{/with}}
+      {{/if}}
     </div>
   </section>
 </main>
