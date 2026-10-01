@@ -451,12 +451,6 @@
   box-shadow: 0 100vh 0 var(--color-walnut);
 }
 
-@utility band-screen {
-  @variant lg {
-    max-height: calc(100dvh - var(--header-h) - 24rem);
-  }
-}
-
 @utility page-container {
   width: 100%;
   margin-inline: auto;
