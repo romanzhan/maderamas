@@ -1507,50 +1507,52 @@
   },
   "home-hero-mid": {
     "type": "content",
-    "width": 1456,
-    "height": 819,
-    "sizes": [
-      480,
-      960,
-      1456
-    ],
-    "format": "webp",
-    "files": {
-      "480": "home-hero-mid-480-1da4ffa4.webp",
-      "960": "home-hero-mid-960-1da4ffa4.webp",
-      "1456": "home-hero-mid-1456-1da4ffa4.webp"
-    }
-  },
-  "home-hero-narrow": {
-    "type": "content",
-    "width": 656,
-    "height": 820,
-    "sizes": [
-      480,
-      656
-    ],
-    "format": "webp",
-    "files": {
-      "480": "home-hero-narrow-480-2795fd76.webp",
-      "656": "home-hero-narrow-656-2795fd76.webp"
-    }
-  },
-  "home-hero-wide": {
-    "type": "content",
-    "width": 1916,
-    "height": 821,
+    "width": 1920,
+    "height": 1071,
     "sizes": [
       480,
       960,
       1600,
-      1916
+      1920
     ],
     "format": "webp",
     "files": {
-      "480": "home-hero-wide-480-284d918d.webp",
-      "960": "home-hero-wide-960-284d918d.webp",
-      "1600": "home-hero-wide-1600-284d918d.webp",
-      "1916": "home-hero-wide-1916-284d918d.webp"
+      "480": "home-hero-mid-480-bca7a842.webp",
+      "960": "home-hero-mid-960-bca7a842.webp",
+      "1600": "home-hero-mid-1600-bca7a842.webp",
+      "1920": "home-hero-mid-1920-bca7a842.webp"
+    }
+  },
+  "home-hero-narrow": {
+    "type": "content",
+    "width": 856,
+    "height": 1142,
+    "sizes": [
+      480,
+      856
+    ],
+    "format": "webp",
+    "files": {
+      "480": "home-hero-narrow-480-0167ba30.webp",
+      "856": "home-hero-narrow-856-0167ba30.webp"
+    }
+  },
+  "home-hero-wide": {
+    "type": "content",
+    "width": 1920,
+    "height": 822,
+    "sizes": [
+      480,
+      960,
+      1600,
+      1920
+    ],
+    "format": "webp",
+    "files": {
+      "480": "home-hero-wide-480-b743430d.webp",
+      "960": "home-hero-wide-960-b743430d.webp",
+      "1600": "home-hero-wide-1600-b743430d.webp",
+      "1920": "home-hero-wide-1920-b743430d.webp"
     }
   },
   "home-picker-torre": {
