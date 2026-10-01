@@ -11,7 +11,9 @@
       iconFilled — брендовый значок (Simple Icons): он рисуется заливкой, а не контуром,
       и без этого флага остался бы пустым местом;
       onDark — на тёмной секции (глина там не читается, иконка становится кремовой);
-      один из флагов blue | pink | yellow | green — иконка в кружке этого тона. --}}
+      один из флагов blue | pink | yellow | green — иконка в кружке этого тона;
+      large — крупный кружок и значок: пункт стоит один в своей карточке («Nosotros»,
+      страница без фотографий — значок там главный цветной акцент). --}}
 {{#if compact}}
   <div class="flex items-start gap-3">
     <span class="icon-line shrink-0 {{#if onDark}}text-cream{{else}}text-clay{{/if}}">
@@ -29,7 +31,7 @@
   <div class="flex items-start gap-4
     {{#unless inline}}sm:flex-col sm:items-stretch sm:gap-2{{/unless}}">
     <span
-      class="flex size-12 shrink-0 items-center justify-center rounded-full
+      class="flex {{#if large}}size-16{{else}}size-12{{/if}} shrink-0 items-center justify-center rounded-full
         {{#if blue}}bg-promo-blue text-cream{{/if}}
         {{#if pink}}bg-promo-pink text-cream{{/if}}
         {{#if yellow}}bg-promo-yellow text-charcoal{{/if}}
@@ -37,7 +39,7 @@
         {{#unless blue}}{{#unless pink}}{{#unless yellow}}{{#unless green}}
           {{#if onDark}}bg-cream/20 text-cream{{else}}bg-sand text-clay{{/if}}
         {{/unless}}{{/unless}}{{/unless}}{{/unless}}"
-    >{{> icon empty name=icon class="size-6" filled=iconFilled}}</span>
+    >{{#if large}}{{> icon empty name=icon class="size-8" filled=iconFilled}}{{else}}{{> icon empty name=icon class="size-6" filled=iconFilled}}{{/if}}</span>
 
     <div class="min-w-0">
       <h3 class="text-h4 lg:text-h4-lg">{{t title}}</h3>
